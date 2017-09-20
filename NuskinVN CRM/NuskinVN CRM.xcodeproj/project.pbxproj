@@ -1,0 +1,612 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0FA6BF581FF292F7B044A7F1 /* Pods_NuskinVN_CRM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */; };
+		23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8131F7207FC0016DBDF /* AppDelegate.swift */; };
+		23CAF8161F7207FC0016DBDF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8151F7207FC0016DBDF /* ViewController.swift */; };
+		23CAF8191F7207FC0016DBDF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF8171F7207FC0016DBDF /* Main.storyboard */; };
+		23CAF81C1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF81A1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodeld */; };
+		23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81D1F7207FC0016DBDF /* Assets.xcassets */; };
+		23CAF8211F7207FC0016DBDF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81F1F7207FC0016DBDF /* LaunchScreen.storyboard */; };
+		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
+		41179C7AAAECBD6682B70CD1 /* Pods_NuskinVN_CRMTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		23CAF8281F7207FC0016DBDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 23CAF8081F7207FC0016DBDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 23CAF80F1F7207FC0016DBDF;
+			remoteInfo = "NuskinVN CRM";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		160D3B1D7895AA06D191ECBA /* Pods-NuskinVN CRM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRM.release.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM.release.xcconfig"; sourceTree = "<group>"; };
+		23CAF8101F7207FC0016DBDF /* NuskinVN CRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NuskinVN CRM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23CAF8131F7207FC0016DBDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		23CAF8151F7207FC0016DBDF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		23CAF8181F7207FC0016DBDF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		23CAF81B1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NuskinVN_CRM.xcdatamodel; sourceTree = "<group>"; };
+		23CAF81D1F7207FC0016DBDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		23CAF8201F7207FC0016DBDF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		23CAF8221F7207FC0016DBDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		23CAF8271F7207FC0016DBDF /* NuskinVN CRMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NuskinVN CRMTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuskinVN_CRMTests.swift; sourceTree = "<group>"; };
+		23CAF82D1F7207FC0016DBDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.release.xcconfig"; sourceTree = "<group>"; };
+		C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRM.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM.debug.xcconfig"; sourceTree = "<group>"; };
+		E263CF41350414D7107F36B8 /* Pods-NuskinVN CRMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRMTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		23CAF80D1F7207FC0016DBDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FA6BF581FF292F7B044A7F1 /* Pods_NuskinVN_CRM.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23CAF8241F7207FC0016DBDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41179C7AAAECBD6682B70CD1 /* Pods_NuskinVN_CRMTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20C319186689186F00805363 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */,
+				160D3B1D7895AA06D191ECBA /* Pods-NuskinVN CRM.release.xcconfig */,
+				E263CF41350414D7107F36B8 /* Pods-NuskinVN CRMTests.debug.xcconfig */,
+				439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		23CAF8071F7207FC0016DBDF = {
+			isa = PBXGroup;
+			children = (
+				23CAF8121F7207FC0016DBDF /* NuskinVN CRM */,
+				23CAF82A1F7207FC0016DBDF /* NuskinVN CRMTests */,
+				23CAF8111F7207FC0016DBDF /* Products */,
+				20C319186689186F00805363 /* Pods */,
+				E2E3A72B501FF952DC187C8F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		23CAF8111F7207FC0016DBDF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				23CAF8101F7207FC0016DBDF /* NuskinVN CRM.app */,
+				23CAF8271F7207FC0016DBDF /* NuskinVN CRMTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		23CAF8121F7207FC0016DBDF /* NuskinVN CRM */ = {
+			isa = PBXGroup;
+			children = (
+				23CAF8131F7207FC0016DBDF /* AppDelegate.swift */,
+				23CAF8151F7207FC0016DBDF /* ViewController.swift */,
+				23CAF8171F7207FC0016DBDF /* Main.storyboard */,
+				23CAF81D1F7207FC0016DBDF /* Assets.xcassets */,
+				23CAF81F1F7207FC0016DBDF /* LaunchScreen.storyboard */,
+				23CAF8221F7207FC0016DBDF /* Info.plist */,
+				23CAF81A1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodeld */,
+			);
+			path = "NuskinVN CRM";
+			sourceTree = "<group>";
+		};
+		23CAF82A1F7207FC0016DBDF /* NuskinVN CRMTests */ = {
+			isa = PBXGroup;
+			children = (
+				23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */,
+				23CAF82D1F7207FC0016DBDF /* Info.plist */,
+			);
+			path = "NuskinVN CRMTests";
+			sourceTree = "<group>";
+		};
+		E2E3A72B501FF952DC187C8F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */,
+				F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		23CAF80F1F7207FC0016DBDF /* NuskinVN CRM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23CAF8301F7207FC0016DBDF /* Build configuration list for PBXNativeTarget "NuskinVN CRM" */;
+			buildPhases = (
+				7AD7A79E62BE21B3CB76F9E6 /* [CP] Check Pods Manifest.lock */,
+				23CAF80C1F7207FC0016DBDF /* Sources */,
+				23CAF80D1F7207FC0016DBDF /* Frameworks */,
+				23CAF80E1F7207FC0016DBDF /* Resources */,
+				217C17E800656E2E9834FCCF /* [CP] Embed Pods Frameworks */,
+				A5A690D4523D23EF79EDE79C /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NuskinVN CRM";
+			productName = "NuskinVN CRM";
+			productReference = 23CAF8101F7207FC0016DBDF /* NuskinVN CRM.app */;
+			productType = "com.apple.product-type.application";
+		};
+		23CAF8261F7207FC0016DBDF /* NuskinVN CRMTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23CAF8331F7207FC0016DBDF /* Build configuration list for PBXNativeTarget "NuskinVN CRMTests" */;
+			buildPhases = (
+				BC2A9245CF5CD1593849BFFB /* [CP] Check Pods Manifest.lock */,
+				23CAF8231F7207FC0016DBDF /* Sources */,
+				23CAF8241F7207FC0016DBDF /* Frameworks */,
+				23CAF8251F7207FC0016DBDF /* Resources */,
+				9FE972AFB0519DC871C860C2 /* [CP] Embed Pods Frameworks */,
+				84077505BD3A7DEA93ECF91B /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				23CAF8291F7207FC0016DBDF /* PBXTargetDependency */,
+			);
+			name = "NuskinVN CRMTests";
+			productName = "NuskinVN CRMTests";
+			productReference = 23CAF8271F7207FC0016DBDF /* NuskinVN CRMTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		23CAF8081F7207FC0016DBDF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0900;
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = "Dai Pham";
+				TargetAttributes = {
+					23CAF80F1F7207FC0016DBDF = {
+						CreatedOnToolsVersion = 9.0;
+						ProvisioningStyle = Automatic;
+					};
+					23CAF8261F7207FC0016DBDF = {
+						CreatedOnToolsVersion = 9.0;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 23CAF80F1F7207FC0016DBDF;
+					};
+				};
+			};
+			buildConfigurationList = 23CAF80B1F7207FC0016DBDF /* Build configuration list for PBXProject "NuskinVN CRM" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 23CAF8071F7207FC0016DBDF;
+			productRefGroup = 23CAF8111F7207FC0016DBDF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				23CAF80F1F7207FC0016DBDF /* NuskinVN CRM */,
+				23CAF8261F7207FC0016DBDF /* NuskinVN CRMTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		23CAF80E1F7207FC0016DBDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23CAF8211F7207FC0016DBDF /* LaunchScreen.storyboard in Resources */,
+				23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */,
+				23CAF8191F7207FC0016DBDF /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23CAF8251F7207FC0016DBDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		217C17E800656E2E9834FCCF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/CorePlot/CorePlot.framework",
+				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CorePlot.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7AD7A79E62BE21B3CB76F9E6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NuskinVN CRM-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		84077505BD3A7DEA93ECF91B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9FE972AFB0519DC871C860C2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A5A690D4523D23EF79EDE79C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BC2A9245CF5CD1593849BFFB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NuskinVN CRMTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		23CAF80C1F7207FC0016DBDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23CAF8161F7207FC0016DBDF /* ViewController.swift in Sources */,
+				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
+				23CAF81C1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23CAF8231F7207FC0016DBDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		23CAF8291F7207FC0016DBDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 23CAF80F1F7207FC0016DBDF /* NuskinVN CRM */;
+			targetProxy = 23CAF8281F7207FC0016DBDF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		23CAF8171F7207FC0016DBDF /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				23CAF8181F7207FC0016DBDF /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		23CAF81F1F7207FC0016DBDF /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				23CAF8201F7207FC0016DBDF /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		23CAF82E1F7207FC0016DBDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		23CAF82F1F7207FC0016DBDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		23CAF8311F7207FC0016DBDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U57GJT6DUS;
+				INFOPLIST_FILE = "NuskinVN CRM/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = derasoft.com.NuskinVNCRM;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		23CAF8321F7207FC0016DBDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160D3B1D7895AA06D191ECBA /* Pods-NuskinVN CRM.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U57GJT6DUS;
+				INFOPLIST_FILE = "NuskinVN CRM/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = derasoft.com.NuskinVNCRM;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		23CAF8341F7207FC0016DBDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E263CF41350414D7107F36B8 /* Pods-NuskinVN CRMTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "NuskinVN CRMTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "derasoft.com.nuskin.NuskinVN-CRMTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NuskinVN CRM.app/NuskinVN CRM";
+			};
+			name = Debug;
+		};
+		23CAF8351F7207FC0016DBDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "NuskinVN CRMTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "derasoft.com.nuskin.NuskinVN-CRMTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NuskinVN CRM.app/NuskinVN CRM";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		23CAF80B1F7207FC0016DBDF /* Build configuration list for PBXProject "NuskinVN CRM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23CAF82E1F7207FC0016DBDF /* Debug */,
+				23CAF82F1F7207FC0016DBDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23CAF8301F7207FC0016DBDF /* Build configuration list for PBXNativeTarget "NuskinVN CRM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23CAF8311F7207FC0016DBDF /* Debug */,
+				23CAF8321F7207FC0016DBDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23CAF8331F7207FC0016DBDF /* Build configuration list for PBXNativeTarget "NuskinVN CRMTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23CAF8341F7207FC0016DBDF /* Debug */,
+				23CAF8351F7207FC0016DBDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		23CAF81A1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				23CAF81B1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodel */,
+			);
+			currentVersion = 23CAF81B1F7207FC0016DBDF /* NuskinVN_CRM.xcdatamodel */;
+			path = NuskinVN_CRM.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 23CAF8081F7207FC0016DBDF /* Project object */;
+}
