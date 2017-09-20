@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="AuthenticView" customModule="NuskinVN_CRM">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTD-4k-h9V">
+                    <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SVr-bP-VjG">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fp9-Ey-zdP">
+                                    <rect key="frame" x="34.5" y="113" width="250" height="212"/>
+                                    <subviews>
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="xxxxxxxxxx" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F6e-vF-ERE" userLabel="txtVNID">
+                                            <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="eF5-6z-ncr"/>
+                                            </constraints>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits" textContentType="cc-number"/>
+                                        </textField>
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="kOZ-0M-M0D" userLabel="txtEmail">
+                                            <rect key="frame" x="0.0" y="50" width="250" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="WTs-Hk-qdl"/>
+                                            </constraints>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits" keyboardType="emailAddress" textContentType="email"/>
+                                        </textField>
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Deo-aI-si8" userLabel="txtPassword">
+                                            <rect key="frame" x="0.0" y="100" width="250" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="ae7-ze-UOm"/>
+                                            </constraints>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                                        </textField>
+                                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Qwa-iR-Fxo" userLabel="btnRemember">
+                                            <rect key="frame" x="0.0" y="150" width="250" height="22"/>
+                                            <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                            <state key="normal" title="Remember me" image="checkbox_uncheck">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="Mw1-F0-Ans"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gnc-Qo-jI3" userLabel="btnProcess">
+                                            <rect key="frame" x="0.0" y="182" width="250" height="30"/>
+                                            <state key="normal" title="Process"/>
+                                            <connections>
+                                                <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="RqZ-Ae-yhS"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="250" id="Prm-uG-viS">
+                                            <variation key="heightClass=regular-widthClass=regular" constant="350"/>
+                                        </constraint>
+                                    </constraints>
+                                </stackView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerX" secondItem="SVr-bP-VjG" secondAttribute="centerX" id="ILL-jI-mj6"/>
+                                <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerY" secondItem="SVr-bP-VjG" secondAttribute="centerY" multiplier="0.8" id="ZP9-Bo-2xn"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="SVr-bP-VjG" firstAttribute="top" secondItem="jTD-4k-h9V" secondAttribute="top" id="2WR-7r-0pH"/>
+                        <constraint firstItem="SVr-bP-VjG" firstAttribute="height" secondItem="jTD-4k-h9V" secondAttribute="height" priority="250" id="A3m-MV-6m0"/>
+                        <constraint firstAttribute="bottom" secondItem="SVr-bP-VjG" secondAttribute="bottom" id="bWH-9h-O5U"/>
+                        <constraint firstAttribute="trailing" secondItem="SVr-bP-VjG" secondAttribute="trailing" id="foI-im-7zM"/>
+                        <constraint firstItem="SVr-bP-VjG" firstAttribute="leading" secondItem="jTD-4k-h9V" secondAttribute="leading" id="mXS-uZ-9rC"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="jTD-4k-h9V" secondAttribute="trailing" id="0mA-HQ-143"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="jTD-4k-h9V" secondAttribute="bottom" id="K7S-YO-jV1"/>
+                <constraint firstItem="jTD-4k-h9V" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="iK0-yx-xeq"/>
+                <constraint firstItem="SVr-bP-VjG" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="pUR-tc-QMb"/>
+                <constraint firstItem="jTD-4k-h9V" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="voq-nk-CQO"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="btnProcess" destination="Gnc-Qo-jI3" id="yph-9b-Bue"/>
+                <outlet property="btnRemember" destination="Qwa-iR-Fxo" id="XhX-vT-gM6"/>
+                <outlet property="scrollVIew" destination="jTD-4k-h9V" id="3zB-KW-yzl"/>
+                <outlet property="stckView" destination="Fp9-Ey-zdP" id="rF6-j6-gX8"/>
+                <outlet property="txtEmail" destination="kOZ-0M-M0D" id="fKw-4N-oKy"/>
+                <outlet property="txtPassword" destination="Deo-aI-si8" id="OFq-gZ-vKt"/>
+                <outlet property="txtVNID" destination="F6e-vF-ERE" id="1ov-Ca-cca"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="checkbox_uncheck" width="18" height="18"/>
+    </resources>
+</document>
