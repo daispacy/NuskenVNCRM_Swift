@@ -8,13 +8,13 @@
 
 import UIKit
 
-enum AuthenticType {
-    case AUTH_LOGIN
+enum AuthenticType: Int {
+    case AUTH_LOGIN = 1
     case AUTH_RESETPW
 }
 
 protocol AuthenticViewDelegate: class {
-    func AuthenticViewDidProcessEvent(view:AuthenticView,object:Any)
+    func AuthenticViewDidProcessEvent(view:AuthenticView)
 }
 
 class AuthenticView: UIView {
@@ -28,37 +28,21 @@ class AuthenticView: UIView {
     @IBOutlet fileprivate var btnProcess: UIButton!
     
     // MARK: - Properties
-    
-    weak fileprivate var delegate_: AuthenticViewDelegate?
+    weak var delegate_: AuthenticViewDelegate?
     var type_: AuthenticType!
+    var email:String?
+    var password:String?
+    var vnid:String?
+    var isRememberID:Bool?
     
     // MARK: - INIT
-    
-    init(delegate:AuthenticViewDelegate? = nil, type:AuthenticType = .AUTH_LOGIN) {
-        
-        super.init(frame:CGRect.zero)
-        
-        let view = loadFromXib()
-        // only assign variable after here
-        view.frame = bounds
-        
-        view.delegate_ = delegate
-        view.type_ = type
-        
-        addSubview(view)
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    func loadFromXib() -> AuthenticView
-    {
-        return Bundle.main.loadNibNamed(String(describing: AuthenticView.self), owner: self, options: nil)?.first as! AuthenticView
-    }
-    
+    func configView(delegate:AuthenticViewDelegate? = nil, type:AuthenticType = .AUTH_LOGIN) {
 
+        delegate_ = delegate
+        type_ = type
+        
+        configView()
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -66,12 +50,65 @@ class AuthenticView: UIView {
     }
     
     // MARK: - BUTTON EVENT
-    
-    @IBAction fileprivate func processAction(_ sender: UIButton) {
-        delegate_?.AuthenticViewDidProcessEvent(view: self, object:["lon":"chim"])
+    @IBAction private func processAction(_ sender: UIButton) {
+        if(sender.isEqual(btnProcess) == true) {
+            delegate_?.AuthenticViewDidProcessEvent(view: self)
+        } else {
+            btnRemember.isSelected = !btnRemember.isSelected
+        }
     }
 }
 
+// MARK: INTERFACE
+extension AuthenticView {
+    func configText() {
+        txtVNID.placeholder = "placeholder_vnid".localized()
+        txtEmail.placeholder = "placeholder_email".localized()
+        txtPassword.placeholder = "placeholder_password".localized()
+        btnRemember.setTitle("remember_me".localized(), for: .normal)
+        switch type_ {
+        case .AUTH_LOGIN:
+            btnProcess.setTitle("login".localized(), for: .normal)
+            break
+        default:
+            btnProcess.setTitle("reset_pw".localized(), for: .normal)
+            break
+        }
+    }
+}
+
+// MARK: CONFIG
 extension AuthenticView {
     
+    fileprivate func configView() {
+        
+        setupControl()
+        configText()
+        
+        switch type_ {
+        case .AUTH_LOGIN:
+            loadViewLogin()
+            break
+        case .AUTH_RESETPW:
+            loadViewReset()
+            break
+        default:
+            loadViewReset()
+            break
+        }
+    }
+    
+    private func loadViewLogin() {
+        txtVNID.isHidden = true
+    }
+    
+    private func loadViewReset() {
+        txtPassword.isHidden = true
+        btnRemember.isHidden = true
+    }
+    
+    private func setupControl() {
+        btnRemember.setImage(UIImage(named:"checkbox_check"), for: .selected)
+        btnRemember.setImage(UIImage(named:"checkbox_uncheck"), for: .normal)
+    }
 }

@@ -9,6 +9,7 @@ target 'NuskinVN CRM' do
   pod 'Alamofire'
   pod 'CorePlot'
   pod 'SQLite.swift'
+  pod 'Localize-Swift', '~> 2.0'
 
   target 'NuskinVN CRMTests' do
     inherit! :search_paths

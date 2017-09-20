@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import Localize_Swift
 
-class AuthenticViewController:UIViewController, AuthenticViewDelegate {
+class AuthenticViewController:RootViewController, AuthenticViewDelegate {
     
     private var authenticView:AuthenticView!
     
     var type_:AuthenticType!
-    
+    var actionSheet: UIAlertController!
     
     init(type:AuthenticType) {
         super.init(nibName: String(describing: AuthenticView.self), bundle: nil)
@@ -22,7 +23,8 @@ class AuthenticViewController:UIViewController, AuthenticViewDelegate {
     }
     
     override func loadView() {
-        authenticView = AuthenticView.init(delegate: self, type: type_) 
+        authenticView = Bundle.main.loadNibNamed(String(describing: AuthenticView.self), owner: self, options: nil)?.first as! AuthenticView
+        authenticView.configView(delegate:self,type:.AUTH_RESETPW)
         self.view = authenticView
     }
     
@@ -35,25 +37,16 @@ class AuthenticViewController:UIViewController, AuthenticViewDelegate {
 
         // Do any additional setup after loading the view.
     }
+    
+    // should call change text all view here
+    override func configText() {
+        authenticView.configText()
+    }
 }
 
 extension AuthenticViewController {
     
-    func AuthenticViewDidProcessEvent(view: AuthenticView, object: Any) {
-        print("\(object)");
-        /* fb
-         "https://m.me/daiphamit"
-         "fb-messenger://user-thread/thuyduongle"
-         */
-        
-        guard let url = URL(string: "zalo://user-thread/0938388208") else {
-            return //be safe
-        }
-        
-        if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        } else {
-            UIApplication.shared.openURL(url)
-        }
+    func AuthenticViewDidProcessEvent(view: AuthenticView) {
+        print("Get event from AuthenticView");
     }
 }

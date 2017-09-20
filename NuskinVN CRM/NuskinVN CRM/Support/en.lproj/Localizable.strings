@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  NuskinVN CRM
+
+  Created by Dai Pham on 9/20/17.
+  Copyright © 2017 Dai Pham. All rights reserved.
+*/
+
+"placeholder_vnid" = "xxxxxxx";
+"placeholder_email" = "Email";
+"placeholder_password" = "Password";
+"remember_me" = "Remember ID";
+"reset_pw" = "Reset Password";
+"login" = "Login";
