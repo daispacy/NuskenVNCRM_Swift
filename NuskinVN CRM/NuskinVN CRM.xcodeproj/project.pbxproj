@@ -12,6 +12,7 @@
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BC1F72AD7600B74AB4 /* crm.db */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
+		237F84B61F72DF73008B4822 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
 		23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8131F7207FC0016DBDF /* AppDelegate.swift */; };
 		23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81D1F7207FC0016DBDF /* Assets.xcassets */; };
 		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
@@ -40,6 +41,7 @@
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BC1F72AD7600B74AB4 /* crm.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.db; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		237F84B51F72DF73008B4822 /* LocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
 		23CAF8101F7207FC0016DBDF /* NuskinVN CRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NuskinVN CRM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CAF8131F7207FC0016DBDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23CAF81D1F7207FC0016DBDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -90,6 +92,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		237F84B41F72DF5C008B4822 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				237F84B51F72DF73008B4822 /* LocalService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		23CAF8071F7207FC0016DBDF = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +123,7 @@
 		23CAF8121F7207FC0016DBDF /* NuskinVN CRM */ = {
 			isa = PBXGroup;
 			children = (
+				237F84B41F72DF5C008B4822 /* Services */,
 				23DEDE371F72CBB8003D4097 /* Common */,
 				23E1ACBC1F7215FD0042DD44 /* Views */,
 				23E1ACBB1F7215F50042DD44 /* Controllers */,
@@ -411,6 +422,7 @@
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
+				237F84B61F72DF73008B4822 /* LocalService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

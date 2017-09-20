@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AppConfig.setLanguage(language: AppConfig.getCurrentLanguage())
         
+        LocalService.shared().getAllCustomers()
+        
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
         let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_RESETPW)
