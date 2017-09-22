@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
-        let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_RESETPW)
+        let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
         

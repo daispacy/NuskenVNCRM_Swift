@@ -6,9 +6,14 @@
   Copyright © 2017 Dai Pham. All rights reserved.
 */
 
-"placeholder_vnid" = "xxxxxxx";
+"placeholder_vnid" = "VNxxxxxxx";
 "placeholder_email" = "Thư điện tử";
 "placeholder_password" = "Mật khẩu";
 "remember_me" = "Ghi nhớ tài khoản";
 "reset_pw" = "Khôi phục mật khẩu";
 "login" = "Đăng nhập";
+
+//error
+"msg_err_email" = "Mật khẩu không hợp lệ";
+"msg_err_pw" = "Mật khẩu phải lớn hơn 5 ký tự";
+"msg_err_vnid" = "VNID không hợp lệ";

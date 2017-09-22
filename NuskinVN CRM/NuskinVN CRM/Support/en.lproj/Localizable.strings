@@ -6,9 +6,15 @@
   Copyright © 2017 Dai Pham. All rights reserved.
 */
 
-"placeholder_vnid" = "xxxxxxx";
+"placeholder_vnid" = "VNxxxxxxx";
 "placeholder_email" = "Email";
 "placeholder_password" = "Password";
 "remember_me" = "Remember ID";
 "reset_pw" = "Reset Password";
 "login" = "Login";
+
+//error
+"msg_err_email" = "Enter a valid email address";
+"msg_err_pw" = "Password must be greater than 5 characters";
+"msg_err_vnid" = "Enter a valid VNID";
+"msg_test" = "Password must be greater than 5 characters Password must be greater than 5 characters Password must be greater than 5 characters Password must be greater than 5 characters";

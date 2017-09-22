@@ -11,7 +11,7 @@ import Localize_Swift
 
 class AuthenticViewController:RootViewController, AuthenticViewDelegate {
     
-    private var authenticView:AuthenticView!
+    fileprivate var authenticView:AuthenticView!
     
     var type_:AuthenticType!
     var actionSheet: UIAlertController!
@@ -24,7 +24,7 @@ class AuthenticViewController:RootViewController, AuthenticViewDelegate {
     
     override func loadView() {
         authenticView = Bundle.main.loadNibNamed(String(describing: AuthenticView.self), owner: self, options: nil)?.first as! AuthenticView
-        authenticView.configView(delegate:self,type:.AUTH_RESETPW)
+        authenticView.configView(delegate:self,type:type_)
         self.view = authenticView
     }
     
@@ -34,8 +34,7 @@ class AuthenticViewController:RootViewController, AuthenticViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
     }
     
     // should call change text all view here
@@ -46,13 +45,49 @@ class AuthenticViewController:RootViewController, AuthenticViewDelegate {
 
 extension AuthenticViewController {
     
-    func AuthenticViewDidProcessEvent(view: AuthenticView) {
-        print("Get event from AuthenticView");
-        let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
+    func AuthenticViewDidProcessEvent(view: AuthenticView, isGotoReset: Bool) {
+        
         let appdelegate = UIApplication.shared.delegate as! AppDelegate
-        UIView.transition(with: appdelegate.window!, duration: 0.5, options: .transitionCrossDissolve, animations: {
-            appdelegate.window?.rootViewController = uinaviVC
-            appdelegate.window?.makeKeyAndVisible()
+        
+        if(isGotoReset) {
+            self.type_ = .AUTH_RESETPW
+        } else {
+            
+            if(self.type_ == .AUTH_RESETPW) {
+                // involke api reset password
+                
+            } else if(self.type_ == .AUTH_LOGIN){
+                // involke api login
+                
+            }
+            if(self.type_ == .AUTH_LOGIN) {
+                return
+            }
+            self.type_ = .AUTH_LOGIN
+            
+            
+            //            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
+            //
+            //            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .transitionCrossDissolve, animations: {
+            //                appdelegate.window?.rootViewController = uinaviVC
+            //                appdelegate.window?.makeKeyAndVisible()
+            //            }, completion: nil)
+            
+        }
+        
+        changeStateView()
+        
+//        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+//        self.present(test, animated: false, completion: nil)
+//        test.message(message: "msg_test".localized(), buttons: ["ok".localized()], select: {
+//            i in
+//            print("item select \(i)")
+//        })
+    }
+    
+    private func changeStateView() {
+        UIView.transition(with: self.authenticView, duration: 0.2, options: .transitionCrossDissolve, animations: {
+            self.authenticView.configView(delegate: self, type: self.type_)
         }, completion: nil)
     }
 }

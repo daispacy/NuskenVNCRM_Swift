@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,9 +23,15 @@
                             <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fp9-Ey-zdP">
-                                    <rect key="frame" x="34.5" y="113" width="250" height="212"/>
+                                    <rect key="frame" x="34.5" y="119.5" width="250" height="310"/>
                                     <subviews>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="xxxxxxxxxx" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F6e-vF-ERE" userLabel="txtVNID">
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MKC-pV-HHc" userLabel="lblMessage" customClass="CMessageLabel" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="250" height="0.0"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="xxxxxxxxxx" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F6e-vF-ERE" userLabel="txtVNID" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="40" id="eF5-6z-ncr"/>
@@ -35,7 +40,7 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <textInputTraits key="textInputTraits" textContentType="cc-number"/>
                                         </textField>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="kOZ-0M-M0D" userLabel="txtEmail">
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="kOZ-0M-M0D" userLabel="txtEmail" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="50" width="250" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="40" id="WTs-Hk-qdl"/>
@@ -44,7 +49,7 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <textInputTraits key="textInputTraits" keyboardType="emailAddress" textContentType="email"/>
                                         </textField>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Deo-aI-si8" userLabel="txtPassword">
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Deo-aI-si8" userLabel="txtPassword" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="100" width="250" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="40" id="ae7-ze-UOm"/>
@@ -53,8 +58,24 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
                                         </textField>
-                                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Qwa-iR-Fxo" userLabel="btnRemember">
-                                            <rect key="frame" x="0.0" y="150" width="250" height="22"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gnc-Qo-jI3" userLabel="btnProcess" customClass="CButton" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="150" width="250" height="40"/>
+                                            <color key="backgroundColor" red="0.1450980392" green="0.20392156859999999" blue="0.52941176469999995" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="LBb-ZS-NR6"/>
+                                            </constraints>
+                                            <state key="normal" title="Process">
+                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="RqZ-Ae-yhS"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Qwa-iR-Fxo" userLabel="btnRemember">
+                                            <rect key="frame" x="0.0" y="200" width="250" height="60"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="60" id="4Es-9P-wM9"/>
+                                            </constraints>
                                             <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             <state key="normal" title="Remember me" image="checkbox_uncheck">
                                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -63,11 +84,14 @@
                                                 <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="Mw1-F0-Ans"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gnc-Qo-jI3" userLabel="btnProcess">
-                                            <rect key="frame" x="0.0" y="182" width="250" height="30"/>
-                                            <state key="normal" title="Process"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHd-p3-vFa" userLabel="btnResetPassword">
+                                            <rect key="frame" x="0.0" y="270" width="250" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="bEq-gE-yyS"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
                                             <connections>
-                                                <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="RqZ-Ae-yhS"/>
+                                                <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="OMB-17-8d7"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -81,7 +105,7 @@
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerX" secondItem="SVr-bP-VjG" secondAttribute="centerX" id="ILL-jI-mj6"/>
-                                <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerY" secondItem="SVr-bP-VjG" secondAttribute="centerY" multiplier="0.8" id="ZP9-Bo-2xn"/>
+                                <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerY" secondItem="SVr-bP-VjG" secondAttribute="centerY" id="ZP9-Bo-2xn"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -104,8 +128,10 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="btnGoToResetPassword" destination="eHd-p3-vFa" id="Uth-uc-fGe"/>
                 <outlet property="btnProcess" destination="Gnc-Qo-jI3" id="yph-9b-Bue"/>
                 <outlet property="btnRemember" destination="Qwa-iR-Fxo" id="XhX-vT-gM6"/>
+                <outlet property="lblMEssage" destination="MKC-pV-HHc" id="fWA-KV-WAJ"/>
                 <outlet property="scrollVIew" destination="jTD-4k-h9V" id="3zB-KW-yzl"/>
                 <outlet property="stckView" destination="Fp9-Ey-zdP" id="rF6-j6-gX8"/>
                 <outlet property="txtEmail" destination="kOZ-0M-M0D" id="fKw-4N-oKy"/>

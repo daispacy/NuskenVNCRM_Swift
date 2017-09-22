@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0FA6BF581FF292F7B044A7F1 /* Pods_NuskinVN_CRM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */; };
+		2302487A1F753CAD00177679 /* CInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230248791F753CAD00177679 /* CInput.swift */; };
+		2302487D1F7547B600177679 /* CButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2302487C1F7547B600177679 /* CButton.swift */; };
+		2302487F1F755B4D00177679 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2302487E1F755B4D00177679 /* Support.swift */; };
+		230248821F755DF800177679 /* CMessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230248811F755DF800177679 /* CMessageLabel.swift */; };
+		230248861F7569ED00177679 /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230248841F7569ED00177679 /* CustomAlertController.swift */; };
+		230248871F7569ED00177679 /* CustomAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 230248851F7569ED00177679 /* CustomAlertController.xib */; };
 		231C72141F72BD4F00654621 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C72131F72BD4F00654621 /* RootViewController.swift */; };
 		232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17371F74C7FD0053A87D /* DashboardViewController.swift */; };
 		232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17391F74C80B0053A87D /* MenuViewController.swift */; };
@@ -47,6 +53,12 @@
 
 /* Begin PBXFileReference section */
 		160D3B1D7895AA06D191ECBA /* Pods-NuskinVN CRM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRM.release.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM.release.xcconfig"; sourceTree = "<group>"; };
+		230248791F753CAD00177679 /* CInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CInput.swift; sourceTree = "<group>"; };
+		2302487C1F7547B600177679 /* CButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CButton.swift; sourceTree = "<group>"; };
+		2302487E1F755B4D00177679 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		230248811F755DF800177679 /* CMessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMessageLabel.swift; sourceTree = "<group>"; };
+		230248841F7569ED00177679 /* CustomAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertController.swift; sourceTree = "<group>"; };
+		230248851F7569ED00177679 /* CustomAlertController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAlertController.xib; sourceTree = "<group>"; };
 		231C72131F72BD4F00654621 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		232F17371F74C7FD0053A87D /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		232F17391F74C80B0053A87D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
@@ -114,6 +126,49 @@
 				439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		230248771F753C4100177679 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				230248801F755D3000177679 /* CMessage */,
+				2302487B1F7547A100177679 /* CButton */,
+				230248781F753C4A00177679 /* CInput */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		230248781F753C4A00177679 /* CInput */ = {
+			isa = PBXGroup;
+			children = (
+				230248791F753CAD00177679 /* CInput.swift */,
+			);
+			path = CInput;
+			sourceTree = "<group>";
+		};
+		2302487B1F7547A100177679 /* CButton */ = {
+			isa = PBXGroup;
+			children = (
+				2302487C1F7547B600177679 /* CButton.swift */,
+			);
+			path = CButton;
+			sourceTree = "<group>";
+		};
+		230248801F755D3000177679 /* CMessage */ = {
+			isa = PBXGroup;
+			children = (
+				230248811F755DF800177679 /* CMessageLabel.swift */,
+			);
+			path = CMessage;
+			sourceTree = "<group>";
+		};
+		230248831F7569B000177679 /* CustomAlertController */ = {
+			isa = PBXGroup;
+			children = (
+				230248841F7569ED00177679 /* CustomAlertController.swift */,
+				230248851F7569ED00177679 /* CustomAlertController.xib */,
+			);
+			path = CustomAlertController;
 			sourceTree = "<group>";
 		};
 		232F173B1F74C8E50053A87D /* MenuView */ = {
@@ -202,6 +257,7 @@
 		23CAF8121F7207FC0016DBDF /* NuskinVN CRM */ = {
 			isa = PBXGroup;
 			children = (
+				230248771F753C4100177679 /* Components */,
 				2356DFF41F736AAC00134A73 /* Objects */,
 				237F84B41F72DF5C008B4822 /* Services */,
 				23DEDE371F72CBB8003D4097 /* Common */,
@@ -238,6 +294,7 @@
 				23CAF8131F7207FC0016DBDF /* AppDelegate.swift */,
 				2338A2B31F72A92700B74AB4 /* README.md */,
 				2338A2BA1F72AA5800B74AB4 /* Localizable.strings */,
+				2302487E1F755B4D00177679 /* Support.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -245,6 +302,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				230248831F7569B000177679 /* CustomAlertController */,
 				231C72131F72BD4F00654621 /* RootViewController.swift */,
 				23EA78751F72301E0017E47E /* AuthenticViewController.swift */,
 				232F17371F74C7FD0053A87D /* DashboardViewController.swift */,
@@ -386,6 +444,7 @@
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
 				232F174C1F74CA250053A87D /* MenuListView.xib in Resources */,
 				232F17501F74F7210053A87D /* DashboardView.xib in Resources */,
+				230248871F7569ED00177679 /* CustomAlertController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,22 +570,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				230248861F7569ED00177679 /* CustomAlertController.swift in Sources */,
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
+				230248821F755DF800177679 /* CMessageLabel.swift in Sources */,
 				232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */,
 				232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */,
+				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				232F17421F74C9650053A87D /* CustomerListViewController.swift in Sources */,
 				232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */,
 				232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */,
 				232F174A1F74CA170053A87D /* MenuListView.swift in Sources */,
 				23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
+				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				232F17441F74C9740053A87D /* OrderListViewController.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				237F84B61F72DF73008B4822 /* LocalService.swift in Sources */,
+				2302487D1F7547B600177679 /* CButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

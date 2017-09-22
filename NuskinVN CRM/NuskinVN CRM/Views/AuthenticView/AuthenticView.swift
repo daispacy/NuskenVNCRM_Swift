@@ -14,10 +14,10 @@ enum AuthenticType: Int {
 }
 
 protocol AuthenticViewDelegate: class {
-    func AuthenticViewDidProcessEvent(view:AuthenticView)
+    func AuthenticViewDidProcessEvent(view:AuthenticView, isGotoReset:Bool)
 }
 
-class AuthenticView: UIView {
+class AuthenticView: UIView, UITextFieldDelegate {
     
     @IBOutlet fileprivate var scrollVIew: UIScrollView!
     @IBOutlet fileprivate var stckView: UIStackView!
@@ -26,6 +26,8 @@ class AuthenticView: UIView {
     @IBOutlet fileprivate var txtPassword: UITextField!
     @IBOutlet fileprivate var btnRemember: UIButton!
     @IBOutlet fileprivate var btnProcess: UIButton!
+    @IBOutlet fileprivate var btnGoToResetPassword: UIButton!
+    @IBOutlet var lblMEssage: CMessageLabel!
     
     // MARK: - Properties
     weak var delegate_: AuthenticViewDelegate?
@@ -34,6 +36,8 @@ class AuthenticView: UIView {
     var password:String?
     var vnid:String?
     var isRememberID:Bool?
+    var activeField:UITextField?
+    var tapGesture:UITapGestureRecognizer?
     
     // MARK: - INIT
     func configView(delegate:AuthenticViewDelegate? = nil, type:AuthenticType = .AUTH_LOGIN) {
@@ -41,19 +45,110 @@ class AuthenticView: UIView {
         delegate_ = delegate
         type_ = type
         
+        txtPassword.delegate = self
+        txtEmail.delegate = self
+        txtVNID.delegate = self
+        
         configView()
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard(_:)))
+        self.addGestureRecognizer(tapGesture!)
+    }
+    
+    deinit {
+        self.removeObserver(self, forKeyPath: NSNotification.Name.UIKeyboardWillShow.rawValue)
+        self.removeObserver(self, forKeyPath: NSNotification.Name.UIKeyboardWillHide.rawValue)
+        self.removeGestureRecognizer(tapGesture!)
+    }
+    
+    func hideKeyboard(_ sender: UITapGestureRecognizer) {
+        resignTextField()
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        //Need to calculate keyboard exact size due to Apple suggestions
+//        self.scrollVIew.isScrollEnabled = true
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        
+        self.scrollVIew.contentInset = contentInsets
+        self.scrollVIew.scrollIndicatorInsets = contentInsets
+        
+        var aRect : CGRect = self.frame
+        aRect.size.height -= keyboardSize!.height
+        if let activeField = self.activeField {
+            if (!aRect.contains(activeField.frame.origin)){
+                self.scrollVIew.scrollRectToVisible(activeField.frame, animated: true)
+            }
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        //Once keyboard disappears, restore original positions
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+        self.scrollVIew.contentInset = contentInsets
+        self.scrollVIew.scrollIndicatorInsets = contentInsets
+        resignTextField()
+//        self.scrollVIew.isScrollEnabled = false
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField){
+        activeField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField){
+        activeField = nil
+        if(textField.isEqual(txtEmail) == true) {
+            if(Support.isValidEmailAddress(emailAddressString: textField.text!)) {
+                email = textField.text
+                lblMEssage.isHidden = true
+            } else {
+                lblMEssage .setMessage(msg: "msg_err_email".localized(), icon: "checkbox_check")
+                lblMEssage.isHidden = false
+            }
+        } else if(textField.isEqual(txtPassword) == true){
+            if(Support.isValidPassword(password:textField.text!)){
+                password = textField.text
+                lblMEssage.isHidden = true
+            } else {
+                lblMEssage .setMessage(msg: "msg_err_pw".localized(), icon: "checkbox_check")
+                lblMEssage.isHidden = false
+            }
+        } else if(textField.isEqual(txtVNID) == true){
+            if(Support.isValidVNID(vnid: textField.text!)) {
+                vnid = textField.text
+                lblMEssage.isHidden = true
+            } else {
+                lblMEssage .setMessage(msg: "msg_err_vnid".localized(), icon: "checkbox_check")
+                lblMEssage.isHidden = false
+            }
+        }
+    }
+    
+    func resignTextField() {
+        self.endEditing(true)
     }
     
     // MARK: - BUTTON EVENT
     @IBAction private func processAction(_ sender: UIButton) {
+        
+        resignTextField()
+        
         if(sender.isEqual(btnProcess) == true) {
-            delegate_?.AuthenticViewDidProcessEvent(view: self)
-        } else {
+            delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:false)
+        } else if (sender.isEqual(btnGoToResetPassword) == true){
+            delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:true)
+        }else {
             btnRemember.isSelected = !btnRemember.isSelected
         }
     }
@@ -66,6 +161,7 @@ extension AuthenticView {
         txtEmail.placeholder = "placeholder_email".localized()
         txtPassword.placeholder = "placeholder_password".localized()
         btnRemember.setTitle("remember_me".localized(), for: .normal)
+        btnGoToResetPassword.setTitle("reset_pw".localized(), for: .normal)
         switch type_ {
         case .AUTH_LOGIN:
             btnProcess.setTitle("login".localized(), for: .normal)
@@ -82,6 +178,11 @@ extension AuthenticView {
     
     fileprivate func configView() {
         
+        txtPassword.alpha = 0
+        btnRemember.alpha = 0
+        btnGoToResetPassword.alpha = 0
+        txtVNID.alpha = 0
+        
         setupControl()
         configText()
         
@@ -92,19 +193,43 @@ extension AuthenticView {
         case .AUTH_RESETPW:
             loadViewReset()
             break
-        default:
-            loadViewReset()
-            break
+        case .none:
+            return
+        case .some(_):
+            return
         }
+        
+        Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { t in
+            self.txtPassword.alpha = 1
+            self.btnRemember.alpha = 1
+            self.btnGoToResetPassword.alpha = 1
+            self.txtVNID.alpha = 1
+            t.invalidate()
+        })
     }
     
     private func loadViewLogin() {
+        txtPassword.isHidden = false
+        btnRemember.isHidden = false
+        btnGoToResetPassword.isHidden = false
         txtVNID.isHidden = true
+        
+        self.txtPassword.alpha = 1
+        self.btnRemember.alpha = 1
+        self.btnGoToResetPassword.alpha = 1
+        self.txtVNID.alpha = 0
     }
     
     private func loadViewReset() {
         txtPassword.isHidden = true
         btnRemember.isHidden = true
+        btnGoToResetPassword.isHidden = true
+        txtVNID.isHidden = false
+        
+        self.txtPassword.alpha = 0
+        self.btnRemember.alpha = 0
+        self.btnGoToResetPassword.alpha = 0
+        self.txtVNID.alpha = 1
     }
     
     private func setupControl() {

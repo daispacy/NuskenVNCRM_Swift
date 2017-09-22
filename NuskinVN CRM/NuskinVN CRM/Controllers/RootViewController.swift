@@ -26,5 +26,9 @@ class RootViewController: UIViewController {
     func configText() {
         
     }
+    
+    deinit {
+        print("\(String(describing: self.self)) dealloc")
+    }
 
 }
