@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AppConfig.setLanguage(language: AppConfig.getCurrentLanguage())
         
-        LocalService.shared().getAllCustomers()
+        print(LocalService.shared().getCustomer().firstname ?? "oi")
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
