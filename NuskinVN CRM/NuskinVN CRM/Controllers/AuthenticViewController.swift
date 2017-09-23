@@ -66,12 +66,12 @@ extension AuthenticViewController {
             self.type_ = .AUTH_LOGIN
             
             
-            //            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
-            //
-            //            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .transitionCrossDissolve, animations: {
-            //                appdelegate.window?.rootViewController = uinaviVC
-            //                appdelegate.window?.makeKeyAndVisible()
-            //            }, completion: nil)
+                        let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
+            
+                        UIView.transition(with: appdelegate.window!, duration: 0.5, options: .transitionCrossDissolve, animations: {
+                            appdelegate.window?.rootViewController = uinaviVC
+                            appdelegate.window?.makeKeyAndVisible()
+                        }, completion: nil)
             
         }
         

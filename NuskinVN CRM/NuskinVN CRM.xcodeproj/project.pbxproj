@@ -31,6 +31,8 @@
 		2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2356DFF51F736B1B00134A73 /* GroupCustomer.swift */; };
 		2356DFF81F736B3200134A73 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2356DFF71F736B3200134A73 /* Customer.swift */; };
 		237F84B61F72DF73008B4822 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
+		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
+		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
 		23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8131F7207FC0016DBDF /* AppDelegate.swift */; };
 		23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81D1F7207FC0016DBDF /* Assets.xcassets */; };
 		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
@@ -78,6 +80,8 @@
 		2356DFF51F736B1B00134A73 /* GroupCustomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCustomer.swift; sourceTree = "<group>"; };
 		2356DFF71F736B3200134A73 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		237F84B51F72DF73008B4822 /* LocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
+		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
+		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
 		23CAF8101F7207FC0016DBDF /* NuskinVN CRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NuskinVN CRM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CAF8131F7207FC0016DBDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23CAF81D1F7207FC0016DBDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -183,6 +187,10 @@
 		232F173C1F74C8F50053A87D /* DashboardView */ = {
 			isa = PBXGroup;
 			children = (
+				23BB51BA1F763F8D005FC2C7 /* ChartStatisticsOrder */,
+				23BB51B91F763F76005FC2C7 /* ChartStatisticsCustomer */,
+				23BB51B81F763F04005FC2C7 /* ChartStatisticsSales */,
+				23BB51B31F761E8E005FC2C7 /* TotalSummaryView */,
 				232F174D1F74F7140053A87D /* DashboardView.swift */,
 				232F174F1F74F7210053A87D /* DashboardView.xib */,
 			);
@@ -232,6 +240,36 @@
 				237F84B51F72DF73008B4822 /* LocalService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		23BB51B31F761E8E005FC2C7 /* TotalSummaryView */ = {
+			isa = PBXGroup;
+			children = (
+				23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */,
+				23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */,
+			);
+			path = TotalSummaryView;
+			sourceTree = "<group>";
+		};
+		23BB51B81F763F04005FC2C7 /* ChartStatisticsSales */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ChartStatisticsSales;
+			sourceTree = "<group>";
+		};
+		23BB51B91F763F76005FC2C7 /* ChartStatisticsCustomer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ChartStatisticsCustomer;
+			sourceTree = "<group>";
+		};
+		23BB51BA1F763F8D005FC2C7 /* ChartStatisticsOrder */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ChartStatisticsOrder;
 			sourceTree = "<group>";
 		};
 		23CAF8071F7207FC0016DBDF = {
@@ -440,6 +478,7 @@
 			files = (
 				2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */,
 				2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */,
+				23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */,
 				23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */,
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
 				232F174C1F74CA250053A87D /* MenuListView.xib in Resources */,
@@ -572,6 +611,7 @@
 			files = (
 				230248861F7569ED00177679 /* CustomAlertController.swift in Sources */,
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
+				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
 				230248821F755DF800177679 /* CMessageLabel.swift in Sources */,
 				232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */,

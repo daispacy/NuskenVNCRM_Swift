@@ -63,8 +63,8 @@ class AuthenticView: UIView, UITextFieldDelegate {
     }
     
     deinit {
-        self.removeObserver(self, forKeyPath: NSNotification.Name.UIKeyboardWillShow.rawValue)
-        self.removeObserver(self, forKeyPath: NSNotification.Name.UIKeyboardWillHide.rawValue)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.removeGestureRecognizer(tapGesture!)
     }
     

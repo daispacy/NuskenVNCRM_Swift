@@ -1,17 +1,23 @@
 /* 
-  Localizable.strings
-  NuskinVN CRM
+ Localizable.strings
+ NuskinVN CRM
+ 
+ Created by Dai Pham on 9/20/17.
+ Copyright © 2017 Dai Pham. All rights reserved.
+ */
 
-  Created by Dai Pham on 9/20/17.
-  Copyright © 2017 Dai Pham. All rights reserved.
-*/
-
+//authentic
 "placeholder_vnid" = "VNxxxxxxx";
 "placeholder_email" = "Email";
 "placeholder_password" = "Password";
 "remember_me" = "Remember ID";
 "reset_pw" = "Reset Password";
 "login" = "Login";
+
+//Dashboard
+"total_customer" = "Total Customer";
+"total_order_completed" = "Order processed";
+"total_order_uncompleted" = "Order not processed yet";
 
 //error
 "msg_err_email" = "Enter a valid email address";

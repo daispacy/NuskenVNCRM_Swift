@@ -6,12 +6,18 @@
   Copyright © 2017 Dai Pham. All rights reserved.
 */
 
+// authentic
 "placeholder_vnid" = "VNxxxxxxx";
 "placeholder_email" = "Thư điện tử";
 "placeholder_password" = "Mật khẩu";
 "remember_me" = "Ghi nhớ tài khoản";
 "reset_pw" = "Khôi phục mật khẩu";
 "login" = "Đăng nhập";
+
+//Dashboard
+"total_customer" = "Số lượng khách hàng";
+"total_order_completed" = "Đơn hàng đã xử lý";
+"total_order_uncompleted" = "Đơn hàng chưa xử lý";
 
 //error
 "msg_err_email" = "Mật khẩu không hợp lệ";
