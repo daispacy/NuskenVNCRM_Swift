@@ -17,11 +17,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        AppConfig.setLanguage(language: AppConfig.getCurrentLanguage())
+        AppConfig.setLanguage(language: AppConfig.getCurrentLanguage)
         
-        print(LocalService.shared().getCustomer().firstname ?? "oi")
+        UINavigationBar.appearance().barTintColor = UIColor(hex:Theme.colorNavigationBar)
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white]        
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
+        
+        
         
         let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
         window?.rootViewController = vc

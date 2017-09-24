@@ -67,8 +67,8 @@ extension AuthenticViewController {
             
             
                         let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
-            
-                        UIView.transition(with: appdelegate.window!, duration: 0.5, options: .transitionCrossDissolve, animations: {
+
+                        UIView.transition(with: appdelegate.window!, duration: 0.5, options: .preferredFramesPerSecond60, animations: {
                             appdelegate.window?.rootViewController = uinaviVC
                             appdelegate.window?.makeKeyAndVisible()
                         }, completion: nil)

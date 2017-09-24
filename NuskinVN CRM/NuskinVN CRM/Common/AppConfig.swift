@@ -10,7 +10,7 @@ import UIKit
 import Localize_Swift
 
 class AppConfig: NSObject {
-    static func getCurrentLanguage() -> String {
+    static var getCurrentLanguage: String {
         if(UserDefaults.standard.string(forKey: "AppConfig:Language") != nil) {
             return UserDefaults.standard.string(forKey: "AppConfig:Language")!
         } else {
@@ -23,7 +23,7 @@ class AppConfig: NSObject {
         if(!availableLanguages.contains(language)) {
             return;
         }
-        let currentLanguage = AppConfig.getCurrentLanguage()
+        let currentLanguage = AppConfig.getCurrentLanguage
         if(currentLanguage != language) {
             Localize.setCurrentLanguage(language)
             UserDefaults.standard.set(language, forKey: "AppConfig:Language")

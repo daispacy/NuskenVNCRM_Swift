@@ -37,11 +37,13 @@ class CustomAlertController: UIViewController {
         
         btnFirst.isHidden = true
         btnSecond.isHidden = true
-        btnFirst.backgroundColor = UIColor.blue
-        btnSecond.backgroundColor = UIColor.blue
-        btnFirst.setTitleColor(UIColor.white, for: .normal)
-        btnSecond.setTitleColor(UIColor.white, for: .normal)
+        btnFirst.backgroundColor = UIColor(hex:Theme.colorAlertButtonBackgroundColor)
+        btnSecond.backgroundColor = UIColor(hex:Theme.colorAlertButtonBackgroundColor)
+        btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
+        btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
     
+        lblMessage.textColor = UIColor(hex:Theme.colorAlertTextNormal)
+        
         vwcontrol.layer.cornerRadius = 10;
         vwcontrol.clipsToBounds      = true;
     }

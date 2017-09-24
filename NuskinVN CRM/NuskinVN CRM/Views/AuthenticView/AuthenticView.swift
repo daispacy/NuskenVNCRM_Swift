@@ -60,6 +60,8 @@ class AuthenticView: UIView, UITextFieldDelegate {
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard(_:)))
         self.addGestureRecognizer(tapGesture!)
+        
+        configColor()
     }
     
     deinit {
@@ -235,5 +237,30 @@ extension AuthenticView {
     private func setupControl() {
         btnRemember.setImage(UIImage(named:"checkbox_check"), for: .selected)
         btnRemember.setImage(UIImage(named:"checkbox_uncheck"), for: .normal)
+    }
+    
+    fileprivate func configColor() {
+        
+        self.backgroundColor = UIColor(hex:Theme.colorBottomBar)
+        
+        btnGoToResetPassword.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
+        btnRemember.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
+        
+        btnProcess.backgroundColor = UIColor(hex:Theme.colorATButtonBackgroundColor)
+        btnProcess.setTitleColor(UIColor(hex:Theme.colorATButtonTitleColor), for: .normal)
+        
+        txtVNID.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
+        txtVNID.backgroundColor = UIColor.clear
+        txtVNID.textColor = UIColor(hex:Theme.colorATTextColor)
+        
+        txtEmail.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
+        txtEmail.backgroundColor = UIColor.clear
+        txtEmail.textColor = UIColor(hex:Theme.colorATTextColor)
+        
+        txtPassword.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
+        txtPassword.backgroundColor = UIColor.clear
+        txtPassword.textColor = UIColor(hex:Theme.colorATTextColor)
+        
+        lblMEssage.textColor = UIColor(hex:Theme.colorATTextColor)
     }
 }
