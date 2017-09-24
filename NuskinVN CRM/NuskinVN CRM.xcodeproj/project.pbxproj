@@ -42,6 +42,7 @@
 		2365D4D81F77B41300673903 /* ChartStatisticsCustomer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4D61F77B41300673903 /* ChartStatisticsCustomer.xib */; };
 		2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */; };
 		2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */; };
+		2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */; };
 		237F84B61F72DF73008B4822 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
@@ -104,6 +105,7 @@
 		2365D4D61F77B41300673903 /* ChartStatisticsCustomer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsCustomer.xib; sourceTree = "<group>"; };
 		2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayCustomerListView.swift; sourceTree = "<group>"; };
 		2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BirthdayCustomerListView.xib; sourceTree = "<group>"; };
+		2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerBlockView.xib; sourceTree = "<group>"; };
 		237F84B51F72DF73008B4822 /* LocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 			children = (
 				2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */,
 				2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */,
+				2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */,
 			);
 			path = BirthdayCustomerListView;
 			sourceTree = "<group>";
@@ -548,6 +551,7 @@
 				23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */,
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
 				232F174C1F74CA250053A87D /* MenuListView.xib in Resources */,
+				2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */,
 				2365D4D81F77B41300673903 /* ChartStatisticsCustomer.xib in Resources */,
 				232F17501F74F7210053A87D /* DashboardView.xib in Resources */,
 				2365D4CF1F77A0A100673903 /* ChartStatisticsOrder.xib in Resources */,

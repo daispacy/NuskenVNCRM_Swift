@@ -25,6 +25,7 @@ class DashboardView: UIView {
     var chartStatisticsSales:ChartStatisticsSales!
     var chartStatisticsOrder:ChartStatisticsOrder!
     var chartStatisticsCustomer:ChartStatisticsCustomer!
+    var birthdayCustomerListView:BirthdayCustomerListView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -46,10 +47,13 @@ class DashboardView: UIView {
         
         chartStatisticsCustomer = Bundle.main.loadNibNamed(String(describing: ChartStatisticsCustomer.self), owner: self, options: nil)!.first as! ChartStatisticsCustomer
         
+        birthdayCustomerListView = Bundle.main.loadNibNamed(String(describing: BirthdayCustomerListView.self), owner: self, options: nil)!.first as! BirthdayCustomerListView
+        
         stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsSales, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsCustomer, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
+        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
     }
 }

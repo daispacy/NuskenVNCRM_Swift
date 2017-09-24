@@ -26,6 +26,9 @@ struct Customer {
     
     init(id: Int, dictionary:[String:Any]? = nil) {
         self.id = id
+        firstname = "pham quoc dai quoc dai"
+        lastname = "quoc dai"
+        birthday = "22/02/1989"
         if((dictionary) != nil) {
             self.group = dictionary!["group"] as? Int ?? 0
             self.classify = dictionary!["classify"] as? Int ?? 0
