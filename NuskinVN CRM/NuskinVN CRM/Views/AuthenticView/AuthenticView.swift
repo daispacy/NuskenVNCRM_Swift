@@ -235,7 +235,9 @@ extension AuthenticView {
     }
     
     private func setupControl() {
-        btnRemember.setImage(UIImage(named:"checkbox_check"), for: .selected)
+        let starIcon = FAKFontAwesome.starIcon(withSize: 15)
+        
+        btnRemember.setImage(starIcon, for: .selected)
         btnRemember.setImage(UIImage(named:"checkbox_uncheck"), for: .normal)
     }
     

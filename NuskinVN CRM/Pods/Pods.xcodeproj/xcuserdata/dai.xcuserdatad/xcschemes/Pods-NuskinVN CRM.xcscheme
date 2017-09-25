@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4794B33F03B3BABCAC2B47BD59B2AAEB"
+               BlueprintIdentifier = "C64403BDD06F61A0C65DA5F7E87F18F3"
                BuildableName = "Pods_NuskinVN_CRM.framework"
                BlueprintName = "Pods-NuskinVN CRM"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -47,7 +47,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4794B33F03B3BABCAC2B47BD59B2AAEB"
+            BlueprintIdentifier = "C64403BDD06F61A0C65DA5F7E87F18F3"
             BuildableName = "Pods_NuskinVN_CRM.framework"
             BlueprintName = "Pods-NuskinVN CRM"
             ReferencedContainer = "container:Pods.xcodeproj">
