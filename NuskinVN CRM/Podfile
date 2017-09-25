@@ -6,12 +6,12 @@ target 'NuskinVN CRM' do
   use_frameworks!
 
   # Pods for NuskinVN CRM
-  pod 'Alamofire'
-  pod 'Charts'
-  pod 'SQLite.swift'
-  pod 'Localize-Swift', '~> 2.0'
+  pod 'Alamofire', '= 4.5.1'
+  pod 'Charts', '= 3.0.2'
+  pod 'SQLite.swift', '= 0.11.3'
+  pod 'Localize-Swift', '= 2.0'
   pod 'Reachability'
-  pod 'FontAwesomeKit', '~> 2.2.0'
+  pod 'FontAwesomeKit', '= 2.2.1'
 
   target 'NuskinVN CRMTests' do
     inherit! :search_paths
