@@ -11,6 +11,7 @@ target 'NuskinVN CRM' do
   pod 'SQLite.swift'
   pod 'Localize-Swift', '~> 2.0'
   pod 'Reachability'
+  pod 'FontAwesomeKit', '~> 2.2.0'
 
   target 'NuskinVN CRMTests' do
     inherit! :search_paths

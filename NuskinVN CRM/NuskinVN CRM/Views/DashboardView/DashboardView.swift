@@ -12,10 +12,11 @@ protocol DashboardViewDelegate: class {
     
 }
 
-class DashboardView: UIView {
+class DashboardView: UIView, BirthdayCustomerListViewDelegate {
 
     
     @IBOutlet var stackView: UIStackView!
+    @IBOutlet var scrollView: UIScrollView!
     
     weak var delegate_: DashboardViewDelegate?
     
@@ -27,13 +28,19 @@ class DashboardView: UIView {
     var chartStatisticsCustomer:ChartStatisticsCustomer!
     var birthdayCustomerListView:BirthdayCustomerListView!
     
+    // MARK: - INIT
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(DashboardView.reloadWhenDetectRotation), name: NSNotification.Name(rawValue: "App:DeviceRotate"), object: nil)
         configView()
         
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "App:DeviceRotation"), object: self)
+    }
+    
+    // MARK: - INTERFACE
     func configView () {
         totalSummaryView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)?.first as! TotalSummaryView
         totalSummaryView.configSummary(totalCustomer: "100", totalOrderComplete: "50", totalOrderUnComplete: "30")
@@ -47,7 +54,7 @@ class DashboardView: UIView {
         
         chartStatisticsCustomer = Bundle.main.loadNibNamed(String(describing: ChartStatisticsCustomer.self), owner: self, options: nil)!.first as! ChartStatisticsCustomer
         
-        birthdayCustomerListView = Bundle.main.loadNibNamed(String(describing: BirthdayCustomerListView.self), owner: self, options: nil)!.first as! BirthdayCustomerListView
+        birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
         
         stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
@@ -55,5 +62,17 @@ class DashboardView: UIView {
         stackView.insertArrangedSubview(chartStatisticsCustomer, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
+    }
+    
+    func reloadWhenDetectRotation () {
+        if let view = birthdayCustomerListView {
+            view.refreshPopupMenu()
+        }
+    }
+}
+
+extension DashboardView {
+    func BirthdayCustomerListView(didSelect: BirthdayCustomerListView, customer: Customer) {
+        
     }
 }

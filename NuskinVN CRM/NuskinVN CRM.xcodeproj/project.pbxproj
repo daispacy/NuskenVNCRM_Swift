@@ -53,6 +53,7 @@
 		23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA78711F72184C0017E47E /* AuthenticView.swift */; };
 		23EA78741F7218640017E47E /* AuthenticView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23EA78731F7218640017E47E /* AuthenticView.xib */; };
 		23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA78751F72301E0017E47E /* AuthenticViewController.swift */; };
+		23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F09A1F1F780BB1005654F0 /* PoupMenu.swift */; };
 		23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */; };
 		41179C7AAAECBD6682B70CD1 /* Pods_NuskinVN_CRMTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */; };
 /* End PBXBuildFile section */
@@ -120,6 +121,7 @@
 		23EA78711F72184C0017E47E /* AuthenticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticView.swift; sourceTree = "<group>"; };
 		23EA78731F7218640017E47E /* AuthenticView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AuthenticView.xib; sourceTree = "<group>"; };
 		23EA78751F72301E0017E47E /* AuthenticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticViewController.swift; sourceTree = "<group>"; };
+		23F09A1F1F780BB1005654F0 /* PoupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoupMenu.swift; sourceTree = "<group>"; };
 		23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Wrap.swift"; sourceTree = "<group>"; };
 		2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 		230248771F753C4100177679 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				23F09A1E1F780B93005654F0 /* PopupMenu */,
 				2365D4D21F77AAA700673903 /* UIImage */,
 				23F0E0CE1F76C310007D3A19 /* Color */,
 				230248801F755D3000177679 /* CMessage */,
@@ -434,6 +437,14 @@
 			path = AuthenticView;
 			sourceTree = "<group>";
 		};
+		23F09A1E1F780B93005654F0 /* PopupMenu */ = {
+			isa = PBXGroup;
+			children = (
+				23F09A1F1F780BB1005654F0 /* PoupMenu.swift */,
+			);
+			path = PopupMenu;
+			sourceTree = "<group>";
+		};
 		23F0E0CE1F76C310007D3A19 /* Color */ = {
 			isa = PBXGroup;
 			children = (
@@ -700,6 +711,7 @@
 				232D2D041F76CB5200B93B45 /* Theme.swift in Sources */,
 				23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */,
 				23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */,
+				23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,

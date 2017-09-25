@@ -44,6 +44,7 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="scrollView" destination="3gc-6N-35V" id="NSv-0F-Xsn"/>
                 <outlet property="stackView" destination="g0K-1D-2Xh" id="O4P-dQ-ekH"/>
             </connections>
             <point key="canvasLocation" x="-45" y="14"/>

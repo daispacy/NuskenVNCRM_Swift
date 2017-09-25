@@ -54,4 +54,60 @@ class Support: NSObject {
         
         return  returnValue
     }
+    
+    static func showPopupMenu(items:[String],
+                              sender:Any,
+                              view:UIView,
+                              selector:Selector,
+                              showArrow:Bool? = false) {
+        
+        let sArrow = showArrow!
+        var arrowSize:CGFloat = 4
+        var showShadow:Bool = false
+        
+        if(sArrow) {
+            arrowSize = 9
+            showShadow = true
+            
+        }
+        
+        var menuArray:[KxMenuItem] = []
+        
+        for item in items {
+            menuArray .append(KxMenuItem(title: item, image: nil, target: sender as AnyObject, action: selector))
+        }
+        
+        let options = OptionalConfiguration(
+            
+            font: UIFont.boldSystemFont(ofSize: 16),
+            
+            arrowSize: arrowSize,
+            
+            marginXSpacing: 7,
+            
+            marginYSpacing: 7,
+            
+            intervalSpacing: 15,
+            
+            menuCornerRadius: 6,
+            
+            maskToBackground: false,
+            
+            shadowOfMenu: showShadow,
+            
+            hasSeperatorLine: true,
+            
+            seperatorLineHasInsets: false,
+            
+            textColor: Color(R: 255,G: 255, B: 255),
+            
+            menuBackgroundColor: Color(R: 1.0/255.0,G: 138.0/255.0, B: 175.0/255.0)
+            
+        )
+        
+        let rect = view.superview!.convert(view.frame.origin, to: nil)
+        
+        KxMenu.showMenuInView(view: UIApplication.shared.keyWindow!, fromRect: CGRect(origin: CGPoint(x:rect.x , y: rect.y), size: CGSize(width: view.frame.size.width, height:view.frame.size.height)), menuItems: menuArray, withOptions: options)
+        KxMenu.sharedMenu().menuView.target = sender
+    }
 }
