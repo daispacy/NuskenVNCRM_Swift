@@ -22,7 +22,7 @@
 		232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17371F74C7FD0053A87D /* DashboardViewController.swift */; };
 		232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17391F74C80B0053A87D /* MenuViewController.swift */; };
 		232F17421F74C9650053A87D /* CustomerListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17411F74C9650053A87D /* CustomerListViewController.swift */; };
-		232F17441F74C9740053A87D /* OrderListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17431F74C9740053A87D /* OrderListViewController.swift */; };
+		232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17431F74C9740053A87D /* OrderManagerViewController.swift */; };
 		232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17451F74C9880053A87D /* SettingListViewController.swift */; };
 		232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17471F74C99B0053A87D /* InfoListViewController.swift */; };
 		232F174A1F74CA170053A87D /* MenuListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17491F74CA170053A87D /* MenuListView.swift */; };
@@ -32,6 +32,7 @@
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BC1F72AD7600B74AB4 /* crm.db */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
+		2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */; };
 		2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2356DFF51F736B1B00134A73 /* GroupCustomer.swift */; };
 		2356DFF81F736B3200134A73 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2356DFF71F736B3200134A73 /* Customer.swift */; };
 		2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */; };
@@ -49,6 +50,8 @@
 		23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8131F7207FC0016DBDF /* AppDelegate.swift */; };
 		23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81D1F7207FC0016DBDF /* Assets.xcassets */; };
 		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
+		23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */; };
+		23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D31D051F7BE4C600BCD198 /* OrderManageView.xib */; };
 		23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DEDE381F72CBD7003D4097 /* AppConfig.swift */; };
 		23E146E31F796FF200ECCC32 /* FontAwesomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E146E41F796FF200ECCC32 /* FontAwesomeKit.framework */; };
 		23E146E51F796FF900ECCC32 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E146E61F796FF900ECCC32 /* Reachability.framework */; };
@@ -86,7 +89,7 @@
 		232F17371F74C7FD0053A87D /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		232F17391F74C80B0053A87D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		232F17411F74C9650053A87D /* CustomerListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListViewController.swift; sourceTree = "<group>"; };
-		232F17431F74C9740053A87D /* OrderListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListViewController.swift; sourceTree = "<group>"; };
+		232F17431F74C9740053A87D /* OrderManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManagerViewController.swift; sourceTree = "<group>"; };
 		232F17451F74C9880053A87D /* SettingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingListViewController.swift; sourceTree = "<group>"; };
 		232F17471F74C99B0053A87D /* InfoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoListViewController.swift; sourceTree = "<group>"; };
 		232F17491F74CA170053A87D /* MenuListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListView.swift; sourceTree = "<group>"; };
@@ -98,6 +101,7 @@
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BC1F72AD7600B74AB4 /* crm.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.db; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Wrap.swift"; sourceTree = "<group>"; };
 		2356DFF51F736B1B00134A73 /* GroupCustomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCustomer.swift; sourceTree = "<group>"; };
 		2356DFF71F736B3200134A73 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartStatisticsOrder.swift; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.swift"; sourceTree = SOURCE_ROOT; };
@@ -119,6 +123,8 @@
 		23CAF8271F7207FC0016DBDF /* NuskinVN CRMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NuskinVN CRMTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuskinVN_CRMTests.swift; sourceTree = "<group>"; };
 		23CAF82D1F7207FC0016DBDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManageView.swift; sourceTree = "<group>"; };
+		23D31D051F7BE4C600BCD198 /* OrderManageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderManageView.xib; sourceTree = "<group>"; };
 		23DEDE381F72CBD7003D4097 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		23E146E41F796FF200ECCC32 /* FontAwesomeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FontAwesomeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E146E61F796FF900ECCC32 /* Reachability.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Reachability.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -249,6 +255,8 @@
 		232F173E1F74C9130053A87D /* OrderManageView */ = {
 			isa = PBXGroup;
 			children = (
+				23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */,
+				23D31D051F7BE4C600BCD198 /* OrderManageView.xib */,
 			);
 			path = OrderManageView;
 			sourceTree = "<group>";
@@ -280,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				2365D4D31F77AAC200673903 /* UIImage+Wrap.swift */,
+				2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */,
 			);
 			path = UIImage;
 			sourceTree = "<group>";
@@ -413,7 +422,7 @@
 				232F17371F74C7FD0053A87D /* DashboardViewController.swift */,
 				232F17391F74C80B0053A87D /* MenuViewController.swift */,
 				232F17411F74C9650053A87D /* CustomerListViewController.swift */,
-				232F17431F74C9740053A87D /* OrderListViewController.swift */,
+				232F17431F74C9740053A87D /* OrderManagerViewController.swift */,
 				232F17451F74C9880053A87D /* SettingListViewController.swift */,
 				232F17471F74C99B0053A87D /* InfoListViewController.swift */,
 			);
@@ -564,6 +573,7 @@
 			files = (
 				2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */,
 				2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */,
+				23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */,
 				2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */,
 				23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */,
 				232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */,
@@ -722,13 +732,15 @@
 				23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */,
 				23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */,
 				23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */,
+				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
-				232F17441F74C9740053A87D /* OrderListViewController.swift in Sources */,
+				232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */,
 				232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */,
+				23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,

@@ -23,7 +23,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fp9-Ey-zdP">
-                                    <rect key="frame" x="34.5" y="119.5" width="250" height="310"/>
+                                    <rect key="frame" x="34.5" y="129.5" width="250" height="290"/>
                                     <subviews>
                                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MKC-pV-HHc" userLabel="lblMessage" customClass="CMessageLabel" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="0.0"/>
@@ -31,33 +31,66 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="xxxxxxxxxx" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F6e-vF-ERE" userLabel="txtVNID" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="aIJ-kA-xzX">
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="eF5-6z-ncr"/>
-                                            </constraints>
-                                            <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <textInputTraits key="textInputTraits" textContentType="cc-number"/>
-                                        </textField>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="kOZ-0M-M0D" userLabel="txtEmail" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MfO-Ig-uRy" customClass="CImageView" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="Ljr-D3-ROT"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="xxxxxxxxxx" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F6e-vF-ERE" userLabel="txtVNID" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="50" y="0.0" width="200" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="eF5-6z-ncr"/>
+                                                    </constraints>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits" textContentType="cc-number"/>
+                                                </textField>
+                                            </subviews>
+                                        </stackView>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="xW6-5S-OOS">
                                             <rect key="frame" x="0.0" y="50" width="250" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="WTs-Hk-qdl"/>
-                                            </constraints>
-                                            <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <textInputTraits key="textInputTraits" keyboardType="emailAddress" textContentType="email"/>
-                                        </textField>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Deo-aI-si8" userLabel="txtPassword" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hmE-0k-i5h" customClass="CImageView" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="Esq-C7-b2I"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="kOZ-0M-M0D" userLabel="txtEmail" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="50" y="0.0" width="200" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="WTs-Hk-qdl"/>
+                                                    </constraints>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="emailAddress" textContentType="email"/>
+                                                </textField>
+                                            </subviews>
+                                        </stackView>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="MB2-L6-afR">
                                             <rect key="frame" x="0.0" y="100" width="250" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="ae7-ze-UOm"/>
-                                            </constraints>
-                                            <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
-                                        </textField>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OSe-dF-eKZ" customClass="CImageView" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="iTA-Sa-ee9"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Deo-aI-si8" userLabel="txtPassword" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="50" y="0.0" width="200" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="ae7-ze-UOm"/>
+                                                    </constraints>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                                                </textField>
+                                            </subviews>
+                                        </stackView>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gnc-Qo-jI3" userLabel="btnProcess" customClass="CButton" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="150" width="250" height="40"/>
                                             <color key="backgroundColor" red="0.1450980392" green="0.20392156859999999" blue="0.52941176469999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -71,10 +104,10 @@
                                                 <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="RqZ-Ae-yhS"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Qwa-iR-Fxo" userLabel="btnRemember">
-                                            <rect key="frame" x="0.0" y="200" width="250" height="60"/>
+                                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Qwa-iR-Fxo" userLabel="btnRemember" customClass="CButtonWithImage" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="200" width="250" height="40"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="60" id="4Es-9P-wM9"/>
+                                                <constraint firstAttribute="height" constant="40" id="4Es-9P-wM9"/>
                                             </constraints>
                                             <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             <state key="normal" title="Remember me" image="checkbox_uncheck">
@@ -85,7 +118,7 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHd-p3-vFa" userLabel="btnResetPassword">
-                                            <rect key="frame" x="0.0" y="270" width="250" height="40"/>
+                                            <rect key="frame" x="0.0" y="250" width="250" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="40" id="bEq-gE-yyS"/>
                                             </constraints>
@@ -131,8 +164,14 @@
                 <outlet property="btnGoToResetPassword" destination="eHd-p3-vFa" id="Uth-uc-fGe"/>
                 <outlet property="btnProcess" destination="Gnc-Qo-jI3" id="yph-9b-Bue"/>
                 <outlet property="btnRemember" destination="Qwa-iR-Fxo" id="XhX-vT-gM6"/>
+                <outlet property="iconEmail" destination="hmE-0k-i5h" id="Mt2-2z-KCo"/>
+                <outlet property="iconPassword" destination="OSe-dF-eKZ" id="VSn-ce-zup"/>
+                <outlet property="iconVNID" destination="MfO-Ig-uRy" id="ftv-OO-WYE"/>
                 <outlet property="lblMEssage" destination="MKC-pV-HHc" id="fWA-KV-WAJ"/>
                 <outlet property="scrollVIew" destination="jTD-4k-h9V" id="3zB-KW-yzl"/>
+                <outlet property="stackEmail" destination="xW6-5S-OOS" id="4jB-RW-bDA"/>
+                <outlet property="stackPassword" destination="MB2-L6-afR" id="0HT-Gw-FOy"/>
+                <outlet property="stackVNID" destination="aIJ-kA-xzX" id="jYt-9c-4Pi"/>
                 <outlet property="stckView" destination="Fp9-Ey-zdP" id="rF6-j6-gX8"/>
                 <outlet property="txtEmail" destination="kOZ-0M-M0D" id="fKw-4N-oKy"/>
                 <outlet property="txtPassword" destination="Deo-aI-si8" id="OFq-gZ-vKt"/>

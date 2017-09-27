@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FontAwesomeKit
 
 class Support: NSObject {
     
@@ -109,5 +110,17 @@ class Support: NSObject {
         
         KxMenu.showMenuInView(view: UIApplication.shared.keyWindow!, fromRect: CGRect(origin: CGPoint(x:rect.x , y: rect.y), size: CGSize(width: view.frame.size.width, height:view.frame.size.height)), menuItems: menuArray, withOptions: options)
         KxMenu.sharedMenu().menuView.target = sender
+    }
+    
+    static func imageWithIconFont(code:String,size:CGFloat,color:String? = "0xffffff") -> UIImage? {
+    
+        if let checkIcon = FAKFontAwesome.init(code: code, size: size) {
+            if let cl = color {
+                checkIcon.addAttribute(NSForegroundColorAttributeName, value: UIColor(hex:cl))
+            }
+            return checkIcon.image(with: CGSize(width:size,height:size))
+        }
+        
+        return nil
     }
 }

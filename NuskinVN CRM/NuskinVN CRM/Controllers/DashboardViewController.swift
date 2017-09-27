@@ -8,11 +8,11 @@
 
 import UIKit
 
-class DashboardViewController: RootViewController, DashboardViewDelegate {
+class DashboardViewController: RootViewController, DashboardViewDelegate, UITabBarControllerDelegate {
     
     private var dashboardView:DashboardView!
     private var leftButtonMenu:UIButton!
-    private var rightButtonMenu:UIButton!
+    private var rightButtonMenu:UIButton!    
 
     // MARK: - INIT
     override func viewDidLoad() {
@@ -33,6 +33,12 @@ class DashboardViewController: RootViewController, DashboardViewDelegate {
         rightButtonMenu.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
         let item2 = UIBarButtonItem(customView: rightButtonMenu)
         self.navigationItem.rightBarButtonItem  = item2
+        
+        // Do any additional setup after loading the view.
+        let itemTabbar = UITabBarItem(title: "title_tabar_button_customer".localized(), image: UIImage(named: "menu_white_icon"), selectedImage: UIImage(named: "menu_white_icon"))
+        itemTabbar.tag = 1989
+        tabBarItem  = itemTabbar
+        tabBarController?.delegate = self
     }
 
     override func loadView() {
@@ -98,5 +104,20 @@ class DashboardViewController: RootViewController, DashboardViewDelegate {
     
     @objc fileprivate func menuItemRightPress(menuItem:KxMenuItem) {
         
+    }
+}
+
+extension DashboardViewController {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if viewController.isKind(of: UINavigationController.self) {
+            if let navi:UINavigationController = viewController as? UINavigationController {
+                if navi.viewControllers[0].isKind(of:DashboardViewController.self) {
+                    print("change root this navi to Customer Controller")
+                } else if navi.viewControllers[0].isKind(of:CustomerListViewController.self) {
+                    print("change root this navi to Dashboard Controller")
+                }
+            }
+        }
     }
 }

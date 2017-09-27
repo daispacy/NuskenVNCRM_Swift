@@ -12,8 +12,8 @@ class CMessageLabel: UILabel {
 
     func setMessage(msg:String!, icon:String) {
         let attachment = NSTextAttachment()
-        attachment.image = UIImage(named: icon)
-        attachment.bounds = CGRect(x: 0, y: 0, width: 10, height: 10)
+        attachment.image = Support.imageWithIconFont(code: icon, size: 12)
+        attachment.bounds = CGRect(x: 0, y:0, width: 12, height: 12)
         let attachmentStr = NSAttributedString(attachment: attachment)
         let myString = NSMutableAttributedString(string: "")
         myString.append(attachmentStr)

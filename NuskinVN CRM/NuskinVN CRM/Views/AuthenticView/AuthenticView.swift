@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FontAwesomeKit
 
 enum AuthenticType: Int {
     case AUTH_LOGIN = 1
@@ -21,9 +22,15 @@ class AuthenticView: UIView, UITextFieldDelegate {
     
     @IBOutlet fileprivate var scrollVIew: UIScrollView!
     @IBOutlet fileprivate var stckView: UIStackView!
-    @IBOutlet fileprivate var txtVNID: UITextField!
-    @IBOutlet fileprivate var txtEmail: UITextField!
-    @IBOutlet fileprivate var txtPassword: UITextField!
+    @IBOutlet var stackVNID: UIStackView!
+    @IBOutlet var stackEmail: UIStackView!
+    @IBOutlet var stackPassword: UIStackView!
+    @IBOutlet var iconVNID: CImageView!
+    @IBOutlet var iconEmail: CImageView!
+    @IBOutlet var iconPassword: CImageView!
+    @IBOutlet fileprivate var txtVNID: CInput!
+    @IBOutlet fileprivate var txtEmail: CInput!
+    @IBOutlet fileprivate var txtPassword: CInput!
     @IBOutlet fileprivate var btnRemember: UIButton!
     @IBOutlet fileprivate var btnProcess: UIButton!
     @IBOutlet fileprivate var btnGoToResetPassword: UIButton!
@@ -115,7 +122,7 @@ class AuthenticView: UIView, UITextFieldDelegate {
                 email = textField.text
                 lblMEssage.isHidden = true
             } else {
-                lblMEssage .setMessage(msg: "msg_err_email".localized(), icon: "checkbox_check")
+                lblMEssage .setMessage(msg: "msg_err_email".localized(), icon: "\u{f071}")
                 lblMEssage.isHidden = false
             }
         } else if(textField.isEqual(txtPassword) == true){
@@ -123,7 +130,7 @@ class AuthenticView: UIView, UITextFieldDelegate {
                 password = textField.text
                 lblMEssage.isHidden = true
             } else {
-                lblMEssage .setMessage(msg: "msg_err_pw".localized(), icon: "checkbox_check")
+                lblMEssage .setMessage(msg: "msg_err_pw".localized(), icon: "\u{f071}")
                 lblMEssage.isHidden = false
             }
         } else if(textField.isEqual(txtVNID) == true){
@@ -131,7 +138,7 @@ class AuthenticView: UIView, UITextFieldDelegate {
                 vnid = textField.text
                 lblMEssage.isHidden = true
             } else {
-                lblMEssage .setMessage(msg: "msg_err_vnid".localized(), icon: "checkbox_check")
+                lblMEssage .setMessage(msg: "msg_err_vnid".localized(), icon: "\u{f071}")
                 lblMEssage.isHidden = false
             }
         }
@@ -211,10 +218,10 @@ extension AuthenticView {
     }
     
     private func loadViewLogin() {
-        txtPassword.isHidden = false
+        stackPassword.isHidden = false
         btnRemember.isHidden = false
         btnGoToResetPassword.isHidden = false
-        txtVNID.isHidden = true
+        stackVNID.isHidden = true
         
         self.txtPassword.alpha = 1
         self.btnRemember.alpha = 1
@@ -223,22 +230,24 @@ extension AuthenticView {
     }
     
     private func loadViewReset() {
-        txtPassword.isHidden = true
+        stackPassword.isHidden = true
         btnRemember.isHidden = true
         btnGoToResetPassword.isHidden = true
-        txtVNID.isHidden = false
+        stackVNID.isHidden = false
         
         self.txtPassword.alpha = 0
         self.btnRemember.alpha = 0
         self.btnGoToResetPassword.alpha = 0
-        self.txtVNID.alpha = 1
+        txtVNID.alpha = 1
     }
     
     private func setupControl() {
-        let starIcon = FAKFontAwesome.starIcon(withSize: 15)
-        
-        btnRemember.setImage(starIcon, for: .selected)
-        btnRemember.setImage(UIImage(named:"checkbox_uncheck"), for: .normal)
+        if let imageCheck = Support.imageWithIconFont(code: "\u{f14a}", size: 22) {
+            btnRemember.setImage(imageCheck, for: .selected)            
+        }
+        if let imageUnCheck = Support.imageWithIconFont(code: "\u{f0c8}", size: 22) {
+            btnRemember.setImage(imageUnCheck, for: .normal)
+        }
     }
     
     fileprivate func configColor() {
