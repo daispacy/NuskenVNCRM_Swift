@@ -27,4 +27,26 @@ extension UIColor {
             blue: CGFloat(b) / 0xff, alpha: 1
         )
     }
+    
+    convenience init(_gradient frame: CGRect) {
+        
+        // create the background layer that will hold the gradient
+        let backgroundGradientLayer = CAGradientLayer()
+        backgroundGradientLayer.frame = frame
+        
+        let colors = [UIColor(hex:"0xf02e71"),UIColor(hex:"0x018AAF")]
+        // we create an array of CG colors from out UIColor array
+        let cgColors = colors.map({$0.cgColor})
+        
+        backgroundGradientLayer.colors = cgColors
+        backgroundGradientLayer.startPoint = CGPoint(x: 0, y: 0.5);
+        backgroundGradientLayer.endPoint = CGPoint(x: 1, y: 0.5);
+        
+        UIGraphicsBeginImageContext(backgroundGradientLayer.bounds.size)
+        backgroundGradientLayer.render(in: UIGraphicsGetCurrentContext()!)
+        let backgroundColorImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        self.init(patternImage: backgroundColorImage!)
+    }
 }

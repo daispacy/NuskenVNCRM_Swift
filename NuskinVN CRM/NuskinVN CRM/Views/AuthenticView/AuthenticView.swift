@@ -57,6 +57,7 @@ class AuthenticView: UIView, UITextFieldDelegate {
         txtVNID.delegate = self
         
         configView()
+        configColor()
     }
     
     override func awakeFromNib() {
@@ -67,8 +68,6 @@ class AuthenticView: UIView, UITextFieldDelegate {
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard(_:)))
         self.addGestureRecognizer(tapGesture!)
-        
-        configColor()
     }
     
     deinit {
@@ -179,6 +178,9 @@ extension AuthenticView {
             btnProcess.setTitle("reset_pw".localized(), for: .normal)
             break
         }
+        
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
     }
 }
 
@@ -258,7 +260,7 @@ extension AuthenticView {
         btnRemember.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
         
         btnProcess.backgroundColor = UIColor(hex:Theme.colorATButtonBackgroundColor)
-        btnProcess.setTitleColor(UIColor(hex:Theme.colorATButtonTitleColor), for: .normal)
+        btnProcess.setTitleColor(UIColor(_gradient:btnProcess.titleLabel!.frame), for: .normal)
         
         txtVNID.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
         txtVNID.backgroundColor = UIColor.clear
