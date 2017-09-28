@@ -55,14 +55,14 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="mNy-wp-LCm">
                                             <rect key="frame" x="69" y="0.0" width="132" height="40"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MkQ-Ke-GOX" customClass="CButton" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MkQ-Ke-GOX" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="46" height="40"/>
                                                     <state key="normal" title="Button"/>
                                                     <connections>
                                                         <action selector="buttonPress:" destination="-1" eventType="touchUpInside" id="TUp-sc-gU5"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L2a-jE-DMt" customClass="CButton" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L2a-jE-DMt" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
                                                     <rect key="frame" x="86" y="0.0" width="46" height="40"/>
                                                     <state key="normal" title="Button"/>
                                                     <connections>

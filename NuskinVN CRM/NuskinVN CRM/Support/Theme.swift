@@ -10,6 +10,10 @@ import UIKit
 
 class Theme: NSObject {
     
+    static var colorGradient:Array<UIColor> {
+        return [UIColor(hex:"0xe30b7a"),UIColor(hex:"0x349ad5")]
+    }
+    
     // MARK: - COMMON
     static var colorNavigationBar:String {
         return "0x018AAF"

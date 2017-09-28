@@ -66,23 +66,23 @@ extension AuthenticViewController {
             self.type_ = .AUTH_LOGIN
             
             
-            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
-            
-            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .overrideInheritedCurve, animations: {
-                appdelegate.window?.rootViewController = uinaviVC
-                appdelegate.window?.makeKeyAndVisible()
-            }, completion: nil)
+//            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
+//            
+//            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .overrideInheritedCurve, animations: {
+//                appdelegate.window?.rootViewController = uinaviVC
+//                appdelegate.window?.makeKeyAndVisible()
+//            }, completion: nil)
             
         }                
         
         changeStateView()
         
-        //        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
-        //        self.present(test, animated: false, completion: nil)
-        //        test.message(message: "msg_test".localized(), buttons: ["ok".localized()], select: {
-        //            i in
-        //            print("item select \(i)")
-        //        })
+                let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+                self.present(test, animated: false, completion: nil)
+                test.message(message: "msg_test".localized(), buttons: ["ok".localized()], select: {
+                    i in
+                    print("item select \(i)")
+                })
     }
     
     func test(object:KxMenuItem){
@@ -92,6 +92,8 @@ extension AuthenticViewController {
     private func changeStateView() {
         UIView.transition(with: self.authenticView, duration: 0.2, options: .transitionCrossDissolve, animations: {
             self.authenticView.configView(delegate: self, type: self.type_)
-        }, completion: nil)
+        }, completion: {done in
+            self.authenticView.configView(delegate: self, type: self.type_)
+        })
     }
 }

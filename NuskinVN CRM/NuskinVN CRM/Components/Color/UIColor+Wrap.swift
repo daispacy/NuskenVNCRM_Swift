@@ -28,19 +28,37 @@ extension UIColor {
         )
     }
     
-    convenience init(_gradient frame: CGRect) {
+    convenience init(_gradient colors:Array<UIColor> = [UIColor(hex:"0xe30b7a"),UIColor(hex:"0x349ad5")],
+                     frame: CGRect,
+                     isReverse:Bool = false,
+                     startP:CGPoint? = nil,
+                     endP:CGPoint? = nil) {
         
         // create the background layer that will hold the gradient
         let backgroundGradientLayer = CAGradientLayer()
         backgroundGradientLayer.frame = frame
         
-        let colors = [UIColor(hex:"0xf02e71"),UIColor(hex:"0x018AAF")]
         // we create an array of CG colors from out UIColor array
-        let cgColors = colors.map({$0.cgColor})
+        var cgColors = colors.map({$0.cgColor})
+        if(isReverse) {
+            cgColors = colors.reversed().map({$0.cgColor})
+        }
         
         backgroundGradientLayer.colors = cgColors
-        backgroundGradientLayer.startPoint = CGPoint(x: 0, y: 0.5);
-        backgroundGradientLayer.endPoint = CGPoint(x: 1, y: 0.5);
+        if(isReverse) {
+            backgroundGradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+            backgroundGradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        } else {
+            backgroundGradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
+            backgroundGradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        }
+        
+        if let sp = startP {
+            backgroundGradientLayer.startPoint = sp
+        }
+        if let ep = endP {
+            backgroundGradientLayer.endPoint = ep
+        }
         
         UIGraphicsBeginImageContext(backgroundGradientLayer.bounds.size)
         backgroundGradientLayer.render(in: UIGraphicsGetCurrentContext()!)

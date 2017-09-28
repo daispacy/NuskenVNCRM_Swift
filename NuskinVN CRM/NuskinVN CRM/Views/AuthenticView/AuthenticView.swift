@@ -31,8 +31,8 @@ class AuthenticView: UIView, UITextFieldDelegate {
     @IBOutlet fileprivate var txtVNID: CInput!
     @IBOutlet fileprivate var txtEmail: CInput!
     @IBOutlet fileprivate var txtPassword: CInput!
-    @IBOutlet fileprivate var btnRemember: UIButton!
-    @IBOutlet fileprivate var btnProcess: UIButton!
+    @IBOutlet fileprivate var btnRemember: CButtonWithImage!
+    @IBOutlet fileprivate var btnProcess: CButton!
     @IBOutlet fileprivate var btnGoToResetPassword: UIButton!
     @IBOutlet var lblMEssage: CMessageLabel!
     
@@ -178,7 +178,6 @@ extension AuthenticView {
             btnProcess.setTitle("reset_pw".localized(), for: .normal)
             break
         }
-        
         self.setNeedsLayout()
         self.layoutIfNeeded()
     }
@@ -260,7 +259,10 @@ extension AuthenticView {
         btnRemember.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
         
         btnProcess.backgroundColor = UIColor(hex:Theme.colorATButtonBackgroundColor)
-        btnProcess.setTitleColor(UIColor(_gradient:btnProcess.titleLabel!.frame), for: .normal)
+        if let titleLabel = btnProcess.titleLabel {
+            btnProcess.setTitleColor(UIColor(_gradient:Theme.colorGradient,
+                                             frame:titleLabel.frame), for: .normal)
+        }
         
         txtVNID.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
         txtVNID.backgroundColor = UIColor.clear

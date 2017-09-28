@@ -11,8 +11,8 @@ import UIKit
 class CustomAlertController: UIViewController {
 
     @IBOutlet var lblMessage: UILabel!
-    @IBOutlet var btnFirst: CButton!
-    @IBOutlet var btnSecond: CButton!
+    @IBOutlet var btnFirst: CButtonAlert!
+    @IBOutlet var btnSecond: CButtonAlert!
     @IBOutlet var vwcontrol: UIView!
     
     private var select_: ((Int) -> Void)?
@@ -37,8 +37,8 @@ class CustomAlertController: UIViewController {
         
         btnFirst.isHidden = true
         btnSecond.isHidden = true
-        btnFirst.backgroundColor = UIColor(hex:Theme.colorAlertButtonBackgroundColor)
-        btnSecond.backgroundColor = UIColor(hex:Theme.colorAlertButtonBackgroundColor)
+        btnFirst.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnFirst.frame, isReverse:true)
+        btnSecond.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnSecond.frame, isReverse:true)
         btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
         btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
     
