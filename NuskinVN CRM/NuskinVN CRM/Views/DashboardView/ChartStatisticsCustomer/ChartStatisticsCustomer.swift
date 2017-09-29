@@ -10,18 +10,9 @@ import UIKit
 import Charts
 import Charts.Swift
 
-class ChartStatisticsCustomer: UIView {
+class ChartStatisticsCustomer: PieChartView {
 
     var months: [String]!
-    
-    @IBOutlet var lblTitle: UILabel!
-    @IBOutlet var chartView: BarChartView!
-    @IBOutlet var chartViewHeight: NSLayoutConstraint!
-    
-    @IBOutlet var btnMenu1: CButtonChart!
-    @IBOutlet var btnMenu2: CButtonChart!
-    @IBOutlet var btnMenu3: CButtonChart!
-    @IBOutlet var btnMenu4: CButtonChart!
     
     // MARK: - INIT
     override func awakeFromNib() {
@@ -29,129 +20,63 @@ class ChartStatisticsCustomer: UIView {
 
         configChart()
         
-       menuPress(btnMenu4)
+        
+        let unitsSold = [20.0, 4.0, 6.0]
+        
+        setChart(["Jan", "Feb", "Mar"], values: unitsSold)
     }
     
     // MARK: - INTERFACE
     func setChart(_ dataPoints: [String], values: [Double]) {
-        chartView.noDataText = "no_data_chart_summary_sales".localized()
-        chartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
-        chartView.xAxis.labelCount = dataPoints.count;
-        
-        var dataEntries: [BarChartDataEntry] = []
+        noDataText = "no_data_chart_summary_sales".localized()
+     
+        var dataEntries: [PieChartDataEntry] = []
         
         for i in 0..<dataPoints.count {
-            let dataEntry = BarChartDataEntry(x:Double(i), y:values[i])
+            let dataEntry = PieChartDataEntry(value: values[i], label: nil)
             dataEntries.append(dataEntry)
         }
         
-        var chartDataSet:BarChartDataSet = BarChartDataSet()
+        var chartDataSet:PieChartDataSet = PieChartDataSet()
         
-        if let dt = chartView.data {
+        if let dt = data {
             if(dt.dataSetCount > 0) {
-                chartDataSet = chartView.data?.dataSets[0] as! BarChartDataSet
+                chartDataSet = data?.dataSets[0] as! PieChartDataSet
                 chartDataSet.values = dataEntries
             }
         }
         
         if(chartDataSet.values.count == 0) {
-            chartDataSet = BarChartDataSet(values: dataEntries, label:nil)
-            chartDataSet.highlightAlpha = 0
-            chartDataSet.axisDependency = .left
-            chartDataSet.stackLabels = []
+            chartDataSet = PieChartDataSet(values: dataEntries, label:nil)
         }
         
-        let chartData = BarChartData(dataSet: chartDataSet)
-        chartData.barWidth = 0.7
-        chartData.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
+        chartDataSet.sliceSpace = 1.0
+        chartDataSet.selectionShift = 10.0
+        holeRadiusPercent = 0.8
         
-        chartDataSet.colors = [UIColor(hex:Theme.colorDBChartProcess)]
+        let chartData = PieChartData(dataSet: chartDataSet)
+        chartData.setValueTextColor(UIColor.clear)        
         
-        chartView.data = chartData
-        chartView.animate(yAxisDuration: 1.5)
-    }
-    
-    // MARK: - EVENT
-    @IBAction func menuPress(_ sender: UIButton) {
-        btnMenu1.isSelected = false
-        btnMenu2.isSelected = false
-        btnMenu3.isSelected = false
-        btnMenu4.isSelected = false
+        chartDataSet.colors = [UIColor(hex:"0xffab00"),UIColor(hex:"0x38a4dd"),UIColor(hex:"0xff1744")]
         
-        sender.isSelected = !sender.isSelected
-        
-        var unitsSold = [20.0, 4.0, 6.0]
-        
-        switch sender {
-        case btnMenu1:
-            months = ["Jan", "Feb", "Mar"]
-            unitsSold = [22.0, 41.0, 6.0]
-            break
-        case btnMenu2:
-            months = ["Apr", "May", "Jun"]
-            unitsSold = [26.0, 4.0, 65.0]
-            break
-        case btnMenu3:
-            months = ["Jul", "Aug", "Sep"]
-            unitsSold = [22.0, 55.0, 34.0]
-            break
-        case btnMenu4:
-            months = ["Oct", "Nov", "Dec"]
-            unitsSold = [80.0, 45.0, 13.0]
-            break
-        default:
-            months = ["Oct", "Nov", "Dec"]
-            break
-        }
-        
-        setChart(months, values: unitsSold)
+        data = chartData
+        animate(yAxisDuration: 1.5)
     }
     
     // MARK: - PRIVATE
     private func configChart() {
     
-        lblTitle.textColor = UIColor(hex:Theme.colorDBTitleChart)
-        lblTitle.text = "title_chart_customer".localized()
-        btnMenu1.setTitle("1st_quarter", for: .normal)
-        btnMenu2.setTitle("2st_quarter", for: .normal)
-        btnMenu3.setTitle("3st_quarter", for: .normal)
-        btnMenu4.setTitle("4st_quarter", for: .normal)
+        legend.horizontalAlignment = .left
+        legend.verticalAlignment = .bottom
+        legend.orientation = .vertical
+        legend.drawInside = false
+        legend.xEntrySpace = 0.0
+        legend.yEntrySpace = 0.0
+        legend.yOffset = 0.0
+        legend.form = .empty
         
-        chartView.xAxis.drawAxisLineEnabled = false
-        chartView.xAxis.drawGridLinesEnabled = false
-        chartView.xAxis.labelPosition = .bottom
-        chartView.xAxis.granularityEnabled = false
-        chartView.xAxis.labelTextColor = UIColor(hex:Theme.colorDBTextNormal)
+        backgroundColor = UIColor.white
         
-//        chartView.leftAxis.enabled = true
-        chartView.leftAxis.drawAxisLineEnabled = false
-        chartView.leftAxis.drawGridLinesEnabled = true
-        chartView.leftAxis.labelTextColor = UIColor.clear
-        
-        chartView.rightAxis.enabled = false
-
-        
-        chartView.legend.horizontalAlignment = .center
-        chartView.legend.verticalAlignment = .bottom
-        chartView.legend.drawInside = false
-        chartView.legend.form = .none
-        chartView.legend.orientation = .horizontal
-        chartView.legend.xEntrySpace = 0.0
-        
-        chartView.drawBordersEnabled = false
-        chartView.drawValueAboveBarEnabled = true
-        chartView.drawGridBackgroundEnabled = false
-        chartView.drawValueAboveBarEnabled = true
-        chartView.drawBarShadowEnabled = false
-        
-        chartView.backgroundColor = UIColor.white
-        chartView.pinchZoomEnabled = false
-        chartView.fitBars = true
-        chartView.scaleXEnabled = false
-        chartView.scaleYEnabled = false
-        
-        chartView.chartDescription?.text = ""
-        
-        chartViewHeight.constant = chartView.bounds.size.height*60/100
+        chartDescription?.text = ""
     }
 }

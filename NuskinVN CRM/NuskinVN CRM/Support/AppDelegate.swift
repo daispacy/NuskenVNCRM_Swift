@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        AppConfig.setLanguage(language: AppConfig.getCurrentLanguage)
+        AppConfig.setLanguage(language: "vi")
         
         UINavigationBar.appearance().barTintColor = UIColor(hex:Theme.colorNavigationBar)
         UINavigationBar.appearance().tintColor = UIColor.white
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let ww = window {
             
-            let isLogin:Bool = false
+            let isLogin:Bool = true
             if !isLogin {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc

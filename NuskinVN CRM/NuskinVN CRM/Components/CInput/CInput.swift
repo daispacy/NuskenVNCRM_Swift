@@ -19,10 +19,14 @@ class CInput: UITextField {
         return CGFloat(5)
     }()
     
+    var alphaLayer:CGFloat = {
+        return CGFloat(0.4)
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        configTextField(isBorder:true)
+        configTextField(isBorder:false)
     }
     
     override func layoutSubviews() {
@@ -45,7 +49,7 @@ class CInput: UITextField {
         cornerLayer.lineWidth = 1.0
         cornerLayer.position = CGPoint(x:-2,y:-2)
         cornerLayer.path = cornerPath.cgPath
-        cornerLayer.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
+        cornerLayer.strokeColor = UIColor.white.withAlphaComponent(alphaLayer).cgColor
         cornerLayer.fillColor = nil;
         self.layer.addSublayer(cornerLayer)
         
@@ -54,14 +58,14 @@ class CInput: UITextField {
         backgroundLayer.lineWidth = 1.0
         backgroundLayer.frame = self.bounds
         backgroundLayer.path = backgroundPath.cgPath
-        backgroundLayer.fillColor = UIColor.white.withAlphaComponent(0.2).cgColor;
+        backgroundLayer.fillColor = UIColor.white.withAlphaComponent(alphaLayer).cgColor;
         self.layer.addSublayer(backgroundLayer)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        configTextField(isBorder:true)
+        configTextField(isBorder:false)
     }
  
     override func textRect(forBounds bounds: CGRect) -> CGRect {
@@ -83,7 +87,7 @@ class CInput: UITextField {
     func configTextField(isSecurity:Bool? = false, isBorder:Bool? = true) {
         
         self.clipsToBounds = false
-        backgroundColor = UIColor.white
+//        backgroundColor = UIColor.white
         self.setValue(UIColor.white.withAlphaComponent(0.6), forKeyPath: "_placeholderLabel.textColor")
         self.tintColor = UIColor.white
         
@@ -92,7 +96,7 @@ class CInput: UITextField {
         if(isBorder)! {
             
             self.layer.borderWidth = 1.0;
-            self.layer.borderColor = UIColor.white.cgColor;
+            self.layer.borderColor = UIColor.white.withAlphaComponent(alphaLayer).cgColor;
             self.layer.cornerRadius = paddingRightView;
         }
     }

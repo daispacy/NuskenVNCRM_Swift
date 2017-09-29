@@ -91,4 +91,43 @@ class Theme: NSObject {
     static var colorATButtonTitleColor:String {
         return "0x018AAF"
     }
+    
+    // MARK: - FONT
+    class font: NSObject {
+        static var bold:String {
+            return "Roboto-Medium"
+        }
+        
+        static var boldItalic:String {
+            return "Roboto-MediumItalic"
+        }
+               
+        static var normal:String {
+            return "Roboto-Light"
+        }
+        
+        static var normalItalic:String {
+            return "Roboto-LightItalic"
+        }
+    }
+    
+    // MARK: - fontSize
+    class fontSize: NSObject {
+        
+        static var small:CGFloat {
+            return 14
+        }
+        
+        static var normal:CGFloat {
+            return 17
+        }
+        
+        static var medium:CGFloat {
+            return 21
+        }
+        
+        static var larger:CGFloat {
+            return 30
+        }
+    }
 }

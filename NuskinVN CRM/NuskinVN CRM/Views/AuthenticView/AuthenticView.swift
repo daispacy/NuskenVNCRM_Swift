@@ -36,6 +36,9 @@ class AuthenticView: UIView, UITextFieldDelegate {
     @IBOutlet fileprivate var btnGoToResetPassword: UIButton!
     @IBOutlet var lblMEssage: CMessageLabel!
     
+    @IBOutlet var topContraintLogo: NSLayoutConstraint!
+    
+    
     // MARK: - Properties
     weak var delegate_: AuthenticViewDelegate?
     var type_: AuthenticType!
@@ -169,13 +172,14 @@ extension AuthenticView {
         txtEmail.placeholder = "placeholder_email".localized()
         txtPassword.placeholder = "placeholder_password".localized()
         btnRemember.setTitle("remember_me".localized(), for: .normal)
-        btnGoToResetPassword.setTitle("reset_pw".localized(), for: .normal)
+        btnGoToResetPassword.setTitle("reset_pw".uppercased().localized(), for: .normal)
+        btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         switch type_ {
         case .AUTH_LOGIN:
-            btnProcess.setTitle("login".localized(), for: .normal)
+            btnProcess.setTitle("login".uppercased().localized(), for: .normal)
             break
         default:
-            btnProcess.setTitle("reset_pw".localized(), for: .normal)
+            btnProcess.setTitle("reset_pw".uppercased().localized(), for: .normal)
             break
         }
         self.setNeedsLayout()
@@ -256,7 +260,10 @@ extension AuthenticView {
         self.backgroundColor = UIColor(hex:Theme.colorBottomBar)
         
         btnGoToResetPassword.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
+        btnGoToResetPassword.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.medium)
+        
         btnRemember.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
+        btnRemember.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
         
         btnProcess.backgroundColor = UIColor(hex:Theme.colorATButtonBackgroundColor)
         if let titleLabel = btnProcess.titleLabel {
@@ -267,15 +274,19 @@ extension AuthenticView {
         txtVNID.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
         txtVNID.backgroundColor = UIColor.clear
         txtVNID.textColor = UIColor(hex:Theme.colorATTextColor)
+        txtVNID.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         
         txtEmail.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
         txtEmail.backgroundColor = UIColor.clear
         txtEmail.textColor = UIColor(hex:Theme.colorATTextColor)
+        txtEmail.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         
         txtPassword.layer.borderColor = UIColor(hex:Theme.colorATBorderColor).cgColor
         txtPassword.backgroundColor = UIColor.clear
         txtPassword.textColor = UIColor(hex:Theme.colorATTextColor)
+        txtPassword.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         
         lblMEssage.textColor = UIColor(hex:Theme.colorATTextColor)
+        lblMEssage.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
     }
 }

@@ -15,9 +15,10 @@
 "login" = "Login";
 
 //Dashboard
-"total_customer" = "Total Customer";
-"total_order_completed" = "Order processed";
-"total_order_uncompleted" = "Order not processed yet";
+"number_customer" = "Customers number";
+"number_order_completed" = "Order processed";
+"number_order_uncompleted" = "Order not processed yet";
+"total_customer" = "Total number of customers";
 
 //error
 "msg_err_email" = "Enter a valid email address";

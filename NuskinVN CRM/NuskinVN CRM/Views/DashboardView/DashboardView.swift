@@ -23,9 +23,8 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
     //custom view
     var totalSummaryView:TotalSummaryView!
     var totalSalesView:TotalSummaryView!
-    var chartStatisticsSales:ChartStatisticsSales!
+    var totalSummaryCustomerView:TotalSummaryView!
     var chartStatisticsOrder:ChartStatisticsOrder!
-    var chartStatisticsCustomer:ChartStatisticsCustomer!
     var birthdayCustomerListView:BirthdayCustomerListView!
     
     // MARK: - INIT
@@ -42,24 +41,26 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
     
     // MARK: - INTERFACE
     func configView () {
+        // block summary
         totalSummaryView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)?.first as! TotalSummaryView
         totalSummaryView.configSummary(totalCustomer: "100", totalOrderComplete: "50", totalOrderUnComplete: "30")
         
+        // block total
         totalSalesView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
-        totalSalesView.configSales(total: "100", totalOne: "50", totalTwo: "30")
+        totalSalesView.loadTotalSales(total: "550.000.000")
         
-        chartStatisticsSales = Bundle.main.loadNibNamed(String(describing: ChartStatisticsSales.self), owner: self, options: nil)!.first as! ChartStatisticsSales
+        //block chart summary customer
+        totalSummaryCustomerView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
+        totalSummaryCustomerView.loadChartCustomer(dataChart: ["test"], totalOrdered: "100.000.000", totalNotOrderd: "50.000.000")
         
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
-        
-        chartStatisticsCustomer = Bundle.main.loadNibNamed(String(describing: ChartStatisticsCustomer.self), owner: self, options: nil)!.first as! ChartStatisticsCustomer
-        
+
         birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
         
+        // insert custom view into stack
         stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(chartStatisticsSales, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(chartStatisticsCustomer, at: stackView.arrangedSubviews.count)
+        stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
     }

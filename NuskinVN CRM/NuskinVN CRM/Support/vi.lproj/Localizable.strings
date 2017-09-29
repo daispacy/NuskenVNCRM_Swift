@@ -15,9 +15,10 @@
 "login" = "Đăng nhập";
 
 //Dashboard
-"total_customer" = "Số lượng khách hàng";
-"total_order_completed" = "Đơn hàng đã xử lý";
-"total_order_uncompleted" = "Đơn hàng chưa xử lý";
+"number_customer" = "Số lượng khách hàng";
+"number_order_completed" = "Đơn hàng đã xử lý";
+"number_order_uncompleted" = "Đơn hàng chưa xử lý";
+"total_customer" = "Tổng số khách hàng";
 
 //error
 "msg_err_email" = "Mật khẩu không hợp lệ";
