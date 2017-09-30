@@ -249,10 +249,19 @@ class KxMenuView: UIView {
         overlay.addSubview(self)
         view.addSubview(overlay)
         self.contentView.isHidden = true
-        let toFrame = self.frame
+        var toFrame = self.frame
+        
+        if self.kxMenuViewOptions.arrowSize > 4 {
+            if self.arrowDirection == .Up {
+                toFrame.origin.y -= toFrame.height/2
+            } else {
+                toFrame.origin.y += toFrame.height/2
+            }
+        }
+        
         self.frame = CGRect(origin: self.arrowPoint(), size: CGSize(width: 1, height: 1))
         
-        UIView.animate(withDuration: 0.2, animations: { () -> Void in
+        UIView.animate(withDuration: 0, animations: { () -> Void in
             self.alpha = 1
             self.frame = toFrame
         }) { (_) -> Void in
@@ -437,10 +446,9 @@ class KxMenuView: UIView {
         let point:CGPoint
         switch self.arrowDirection! {
         case .Up:
-            
-            point = CGPoint(x: self.frame.minX + self.arrowPosition, y: self.frame.minY)
+            point = CGPoint(x: self.frame.minX + self.arrowPosition, y: self.frame.midY)
         case .Down:
-            point = CGPoint(x: self.frame.minX + self.arrowPosition, y: self.frame.minY)
+            point = CGPoint(x: self.frame.minX + self.arrowPosition, y: self.frame.midY)
         case .Left:
             point = CGPoint(x: self.frame.minX, y: self.frame.minY + self.arrowPosition)
         case .Right:
@@ -492,24 +500,12 @@ class KxMenuView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        self.drawBackground(frame: self.bounds, inContext: UIGraphicsGetCurrentContext()!)
+        self.drawBackground(frame: self.bounds)
     }
     
     
-    func drawBackground(frame: CGRect, inContext context: CGContext) {
+    func drawBackground(frame: CGRect) {
 
-        let R0: CGFloat = self.kxMenuViewOptions.menuBackgroundColor.R
-        let G0: CGFloat = self.kxMenuViewOptions.menuBackgroundColor.G
-        let B0: CGFloat = self.kxMenuViewOptions.menuBackgroundColor.B
-        let R1 = self.kxMenuViewOptions.menuBackgroundColor1.R
-        let G1 = self.kxMenuViewOptions.menuBackgroundColor1.G
-        let B1 = self.kxMenuViewOptions.menuBackgroundColor1.B
-        
-        let tintColor = KxMenu().tintColor
-        if !(tintColor == nil) {
-            _ = tintColor?.rgb()
-        }
-        
         var X0 = frame.origin.x
         var X1 = frame.origin.x + frame.size.width
         var Y0 = frame.origin.y
@@ -555,7 +551,7 @@ class KxMenuView: UIView {
             arrowPath.addLine(to: CGPoint(x: arrowX1, y: arrowY0))
             arrowPath.addLine(to: CGPoint(x: arrowX1, y: arrowY1))
             arrowPath.addLine(to: CGPoint(x: arrowX0, y: arrowYM))
-            UIColor(red: R0, green: G0, blue: B0, alpha: 1).set()
+            UIColor.clear.set()
             X0 += self.kxMenuViewOptions.arrowSize
         case .Right:
             let arrowYM: CGFloat = self.arrowPosition
@@ -567,40 +563,12 @@ class KxMenuView: UIView {
             arrowPath.addLine(to: CGPoint(x: arrowX1, y: arrowY0))
             arrowPath.addLine(to: CGPoint(x: arrowX1, y: arrowY1))
             arrowPath.addLine(to: CGPoint(x: arrowX0, y: arrowYM))
-            UIColor(red: R1, green: G1, blue: B1, alpha: 1).set()
+            UIColor.clear.set()
             X1 -= self.kxMenuViewOptions.arrowSize
         default:
             break
         }
         arrowPath.fill()
-        
-//        // render body
-//        let bodyFrame = CGRect(x: X0, y: Y0, width: X1 - X0, height: Y1 - Y0)
-//        //配置：这里修改菜单圆角
-//        let borderPath = UIBezierPath(roundedRect: bodyFrame, cornerRadius: self.kxMenuViewOptions.menuCornerRadius)
-//        let locations: [CGFloat] = [0.5, 0,0.5,1]
-//        let components: [CGFloat] = [
-//            R0, G0, B0, 1,
-//            R1, G1, B1, 1,
-//            ]
-//        let colorSpace = CGColorSpaceCreateDeviceRGB()
-//        let gradient = CGGradient(colorSpace: colorSpace,
-//                                  colorComponents: components,
-//                                  locations: locations,
-//                                  count: MemoryLayout.size(ofValue: locations)/MemoryLayout.size(ofValue: locations[0]))
-//
-//        borderPath.addClip()
-//
-//        let start,end: CGPoint
-//        if self.arrowDirection! == .Left || self.arrowDirection! == .Right {
-//            start = CGPoint(x: X0, y: Y0)
-//            end = CGPoint(x: X1, y: Y0)
-//        } else {
-//            start = CGPoint(x: X0, y: Y0)
-//            end = CGPoint(x: X0, y: Y1)
-//        }
-//        context.drawLinearGradient(gradient!, start: start, end: end, options: .drawsBeforeStartLocation)
-        
     }
 }
 
