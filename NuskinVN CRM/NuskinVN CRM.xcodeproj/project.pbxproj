@@ -63,6 +63,9 @@
 		2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */; };
 		2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */; };
 		2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */; };
+		2372E9851F7FD7E600B4F0AB /* Daysquare.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2372E9861F7FD7E600B4F0AB /* Daysquare.framework */; };
+		2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */; };
+		2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */; };
 		237F84B61F72DF73008B4822 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
@@ -156,6 +159,9 @@
 		2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayCustomerListView.swift; sourceTree = "<group>"; };
 		2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BirthdayCustomerListView.xib; sourceTree = "<group>"; };
 		2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerBlockView.xib; sourceTree = "<group>"; };
+		2372E9861F7FD7E600B4F0AB /* Daysquare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Daysquare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarViewController.xib; sourceTree = "<group>"; };
 		237F84B51F72DF73008B4822 /* LocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
@@ -193,6 +199,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2372E9851F7FD7E600B4F0AB /* Daysquare.framework in Frameworks */,
 				23E146E51F796FF900ECCC32 /* Reachability.framework in Frameworks */,
 				23E146E31F796FF200ECCC32 /* FontAwesomeKit.framework in Frameworks */,
 				232D2CFE1F76C7BD00B93B45 /* SystemConfiguration.framework in Frameworks */,
@@ -379,6 +386,15 @@
 			path = BirthdayCustomerListView;
 			sourceTree = "<group>";
 		};
+		2372E9871F7FD8D700B4F0AB /* CalendarController */ = {
+			isa = PBXGroup;
+			children = (
+				2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */,
+				2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */,
+			);
+			path = CalendarController;
+			sourceTree = "<group>";
+		};
 		237F84B41F72DF5C008B4822 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -512,6 +528,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				2372E9871F7FD8D700B4F0AB /* CalendarController */,
 				230248831F7569B000177679 /* CustomAlertController */,
 				231C72131F72BD4F00654621 /* RootViewController.swift */,
 				23EA78751F72301E0017E47E /* AuthenticViewController.swift */,
@@ -567,6 +584,7 @@
 		E2E3A72B501FF952DC187C8F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2372E9861F7FD7E600B4F0AB /* Daysquare.framework */,
 				23E146E61F796FF900ECCC32 /* Reachability.framework */,
 				23E146E41F796FF200ECCC32 /* FontAwesomeKit.framework */,
 				232D2CFD1F76C7BC00B93B45 /* SystemConfiguration.framework */,
@@ -687,6 +705,7 @@
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
 				235722211F7D58170096A636 /* RobotoCondensed-Light.ttf in Resources */,
 				235722271F7D58170096A636 /* Roboto-ThinItalic.ttf in Resources */,
+				2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */,
 				2357222A1F7D58170096A636 /* Roboto-LightItalic.ttf in Resources */,
 				232F174C1F74CA250053A87D /* MenuListView.xib in Resources */,
 				2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */,
@@ -724,6 +743,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
+				"${BUILT_PRODUCTS_DIR}/Daysquare/Daysquare.framework",
 				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Localize-Swift/Localize_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
@@ -733,6 +753,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Daysquare.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesomeKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Localize_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
@@ -854,6 +875,7 @@
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,
+				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */,

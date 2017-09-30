@@ -260,7 +260,7 @@ extension AuthenticView {
         self.backgroundColor = UIColor(hex:Theme.colorBottomBar)
         
         btnGoToResetPassword.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
-        btnGoToResetPassword.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.medium)
+        btnGoToResetPassword.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         
         btnRemember.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
         btnRemember.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)

@@ -75,6 +75,10 @@ extension AuthenticViewController {
         
         changeStateView()
         
+        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
+        present(test, animated: false, completion: nil)
+        
+        /*
         let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
         self.present(test, animated: false, completion: {done in
             //            test.message(message: "msg_test".localized(), buttons: ["ok".localized().uppercased()], select: {
@@ -98,6 +102,7 @@ extension AuthenticViewController {
                 
             })
         })
+ */
     }
     
     func test(object:KxMenuItem){

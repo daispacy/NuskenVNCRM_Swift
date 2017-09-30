@@ -26,6 +26,7 @@ class CustomAlertController: UIViewController {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -77,6 +78,7 @@ class CustomAlertController: UIViewController {
             showButton(buttons!)
         } else {
             tapGesture = UITapGestureRecognizer(target: self.view, action: #selector(self.dismissView(gesture:)))
+            self.view.addGestureRecognizer(tapGesture!)
         }
         
         //handle message
@@ -91,6 +93,7 @@ class CustomAlertController: UIViewController {
             showButton(buttons!)
         } else {
             tapGesture = UITapGestureRecognizer(target: self.view, action: #selector(self.dismissView(gesture:)))
+            self.view.addGestureRecognizer(tapGesture!)
         }
         
         //handle message
