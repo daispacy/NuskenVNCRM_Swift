@@ -154,10 +154,10 @@ class TotalSummaryView: UIView {
             lblNumberPotentialDistributors.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
             lblCustomerRegister.text = "customer_register".localized()
-            lblNumberCustomerRegister.text = "76 962"
+            lblNumberCustomerRegister.text = "239 793"
             
             lblPotentialDistributors.text = "potential_distributors".localized()
-            lblNumberPotentialDistributors.text = "239 793"
+            lblNumberPotentialDistributors.text = "76 962"
             
             lblOther.text = "other".localized()
             lblNumberOther.text = "502 833"

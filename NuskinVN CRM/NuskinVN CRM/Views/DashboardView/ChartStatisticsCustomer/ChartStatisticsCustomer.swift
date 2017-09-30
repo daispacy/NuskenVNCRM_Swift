@@ -21,7 +21,7 @@ class ChartStatisticsCustomer: PieChartView {
         configChart()
         
         
-        let unitsSold = [20.0, 4.0, 6.0]
+        let unitsSold = [239793.0, 76982.0, 502833.0]
         
         setChart(["Jan", "Feb", "Mar"], values: unitsSold)
     }

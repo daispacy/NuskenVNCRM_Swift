@@ -51,7 +51,7 @@ class CButton: UIButton {
         cornerLayer.lineWidth = 1.0
         cornerLayer.position = CGPoint(x:-2,y:-2)
         cornerLayer.path = cornerPath.cgPath
-        cornerLayer.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
+        cornerLayer.strokeColor = UIColor.white.withAlphaComponent(0.4).cgColor
         cornerLayer.fillColor = nil;
         self.layer.addSublayer(cornerLayer)
     }
@@ -105,7 +105,7 @@ class CButtonWithImage: UIButton {
             cornerLayer.lineWidth = 1.0
             cornerLayer.position = CGPoint(x:-2.5,y:-2)
             cornerLayer.path = cornerPath.cgPath
-            cornerLayer.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
+            cornerLayer.strokeColor = UIColor.white.withAlphaComponent(0.4).cgColor
             cornerLayer.fillColor = nil;
             imV.layer.addSublayer(cornerLayer)
         }

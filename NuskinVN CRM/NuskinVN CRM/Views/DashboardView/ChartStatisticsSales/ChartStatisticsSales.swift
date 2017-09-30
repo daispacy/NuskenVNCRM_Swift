@@ -27,7 +27,7 @@ class ChartStatisticsSales: UIView {
         
         configChart()
         
-        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        months = ["Jan", "Feb"]
         let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
         
         setChart(months, values: unitsSold)
@@ -63,7 +63,7 @@ class ChartStatisticsSales: UIView {
         let chartData = BarChartData(dataSet: chartDataSet)
         chartData.barWidth = 0.1
         
-        chartDataSet.colors = [UIColor(hex:Theme.colorDBChartProcess)]
+        chartDataSet.colors = [UIColor(hex:"0x008ab0"),UIColor(hex:"0xe30b7a")]
         
         chartView.data = chartData
     }

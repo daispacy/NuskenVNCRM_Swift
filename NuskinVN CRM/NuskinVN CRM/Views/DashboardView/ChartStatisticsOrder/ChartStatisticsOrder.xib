@@ -15,75 +15,79 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="sRx-BJ-z6h">
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="sRx-BJ-z6h">
                     <rect key="frame" x="0.0" y="20" width="375" height="627"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NeH-fk-87b">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
+                            <rect key="frame" x="166.5" y="0.0" width="42" height="237"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="S9K-di-Xck">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="40.5"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y2q-V1-IRc" customClass="BarChartView" customModule="Charts">
+                            <rect key="frame" x="37.5" y="237" width="300" height="350"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="djA-8y-iAd">
-                                    <rect key="frame" x="82.5" y="10" width="210" height="10.5"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="hAO-oa-uO4" customClass="CButtonChart" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="46" height="10.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="30" id="BBW-YE-jxl"/>
-                                            </constraints>
-                                            <state key="normal" title="Button"/>
-                                            <connections>
-                                                <action selector="menuPress:" destination="iN0-l3-epB" eventType="touchUpInside" id="W4j-Qg-R9f"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="bDT-L2-8Uj" customClass="CButtonChart" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                            <rect key="frame" x="56" y="0.0" width="46" height="10.5"/>
-                                            <state key="normal" title="Button"/>
-                                            <connections>
-                                                <action selector="menuPress:" destination="iN0-l3-epB" eventType="touchUpInside" id="NJw-Uj-knV"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="2mg-jy-zrX" customClass="CButtonChart" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                            <rect key="frame" x="112" y="0.0" width="46" height="10.5"/>
-                                            <state key="normal" title="Button"/>
-                                            <connections>
-                                                <action selector="menuPress:" destination="iN0-l3-epB" eventType="touchUpInside" id="u4k-oP-pdv"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="7Rt-OR-u94" customClass="CButtonChart" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                            <rect key="frame" x="168" y="0.0" width="42" height="10.5"/>
-                                            <state key="normal" title="Quý 4"/>
-                                            <connections>
-                                                <action selector="menuPress:" destination="iN0-l3-epB" eventType="touchUpInside" id="HAX-Ve-TFP"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="bDT-L2-8Uj" firstAttribute="height" secondItem="hAO-oa-uO4" secondAttribute="height" id="7n3-3c-cAf"/>
-                                        <constraint firstItem="2mg-jy-zrX" firstAttribute="height" secondItem="hAO-oa-uO4" secondAttribute="height" id="dOO-oN-GgR"/>
-                                        <constraint firstItem="7Rt-OR-u94" firstAttribute="height" secondItem="hAO-oa-uO4" secondAttribute="height" id="waF-Ak-rrE"/>
-                                    </constraints>
-                                    <variation key="heightClass=regular-widthClass=regular" spacing="20"/>
-                                </stackView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tuần 2, 23/12" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ezv-Ae-7r7">
+                                    <rect key="frame" x="98" y="319.5" width="103.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstItem="djA-8y-iAd" firstAttribute="centerX" secondItem="S9K-di-Xck" secondAttribute="centerX" id="9he-T7-Be2"/>
-                                <constraint firstItem="djA-8y-iAd" firstAttribute="top" secondItem="S9K-di-Xck" secondAttribute="top" constant="10" id="PeC-PV-uvM"/>
-                                <constraint firstAttribute="bottom" secondItem="djA-8y-iAd" secondAttribute="bottom" constant="20" id="qid-fL-Bgj"/>
+                                <constraint firstItem="ezv-Ae-7r7" firstAttribute="centerX" secondItem="y2q-V1-IRc" secondAttribute="centerX" id="9wh-vi-hEX"/>
+                                <constraint firstAttribute="bottom" secondItem="ezv-Ae-7r7" secondAttribute="bottom" constant="10" id="CWZ-Y8-T0U"/>
+                                <constraint firstAttribute="width" constant="300" id="KdC-27-2v5"/>
+                                <constraint firstAttribute="height" constant="350" id="VaC-4d-NJa"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y2q-V1-IRc" customClass="BarChartView" customModule="Charts">
-                            <rect key="frame" x="0.0" y="40.5" width="375" height="586.5"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="gbK-DB-FSr">
+                            <rect key="frame" x="90.5" y="587" width="194" height="40"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Sl0-wq-Hil">
+                                    <rect key="frame" x="0.0" y="0.0" width="72" height="40"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uyv-wc-sYZ" customClass="CView" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="10" width="20" height="20"/>
+                                            <color key="backgroundColor" red="0.0" green="0.54117647058823526" blue="0.69019607843137254" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="A9j-KK-uEK"/>
+                                                <constraint firstAttribute="height" constant="20" id="txt-QQ-PM8"/>
+                                            </constraints>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5CE-MJ-opa">
+                                            <rect key="frame" x="30" y="10" width="42" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="aPD-Jy-XaN">
+                                    <rect key="frame" x="122" y="0.0" width="72" height="40"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IuW-d0-9o6" customClass="CView" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="10" width="20" height="20"/>
+                                            <color key="backgroundColor" red="0.8901960784313725" green="0.043137254901960784" blue="0.47843137254901957" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="Lfp-eU-BeL"/>
+                                                <constraint firstAttribute="height" constant="20" id="Niw-3p-28x"/>
+                                            </constraints>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2bO-gu-FEQ">
+                                            <rect key="frame" x="30" y="10" width="42" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
                             <constraints>
-                                <constraint firstAttribute="height" constant="586.5" id="VaC-4d-NJa"/>
+                                <constraint firstAttribute="height" constant="40" id="lvr-W3-Ihb"/>
                             </constraints>
-                        </view>
+                        </stackView>
                     </subviews>
                 </stackView>
             </subviews>
@@ -98,13 +102,11 @@
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="btnMenu1" destination="hAO-oa-uO4" id="QqK-fD-svK"/>
-                <outlet property="btnMenu2" destination="bDT-L2-8Uj" id="HAV-gE-JAA"/>
-                <outlet property="btnMenu3" destination="2mg-jy-zrX" id="A5D-27-03v"/>
-                <outlet property="btnMenu4" destination="7Rt-OR-u94" id="ZhQ-cO-LEe"/>
                 <outlet property="chartView" destination="y2q-V1-IRc" id="hcB-Od-5fa"/>
-                <outlet property="chartViewHeight" destination="VaC-4d-NJa" id="KQ7-Ud-N0g"/>
+                <outlet property="lblProcess" destination="5CE-MJ-opa" id="imI-Vg-WIJ"/>
                 <outlet property="lblTitle" destination="NeH-fk-87b" id="FmK-Tb-EYO"/>
+                <outlet property="lblTitleChart" destination="ezv-Ae-7r7" id="NBe-qN-Ue4"/>
+                <outlet property="lblUnprocess" destination="2bO-gu-FEQ" id="Lfz-4R-4SS"/>
             </connections>
             <point key="canvasLocation" x="-106" y="37"/>
         </view>

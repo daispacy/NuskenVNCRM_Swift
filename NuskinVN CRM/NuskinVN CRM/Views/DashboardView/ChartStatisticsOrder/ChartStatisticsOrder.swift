@@ -16,12 +16,11 @@ class ChartStatisticsOrder: UIView {
     
     @IBOutlet var lblTitle: UILabel!
     @IBOutlet var chartView: BarChartView!
-    @IBOutlet var chartViewHeight: NSLayoutConstraint!
     
-    @IBOutlet var btnMenu1: CButtonChart!
-    @IBOutlet var btnMenu2: CButtonChart!
-    @IBOutlet var btnMenu3: CButtonChart!
-    @IBOutlet var btnMenu4: CButtonChart!
+    @IBOutlet var lblTitleChart: UILabel!
+    @IBOutlet var lblProcess: UILabel!
+    @IBOutlet var lblUnprocess: UILabel!
+    
     
     // MARK: - INIT
     override func awakeFromNib() {
@@ -29,18 +28,20 @@ class ChartStatisticsOrder: UIView {
 
         configChart()
         
-        menuPress(btnMenu2)
+        let unitsSold = [26.0, 15.0]
+        
+        setChart(["".localized(),"".localized()], values: unitsSold)
     }
     
     // MARK: - INTERFACE
-    func setChart(_ dataPoints: [String], values: [Array<Double>]) {
+    func setChart(_ dataPoints: [String], values: [Double]) {
         chartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
         chartView.xAxis.labelCount = dataPoints.count;
         
         var dataEntries: [BarChartDataEntry] = []
         
-        for i in 0..<dataPoints.count {
-            let dataEntry = BarChartDataEntry(x:Double(i), yValues:values[i])
+        for i in 0..<values.count {
+            let dataEntry = BarChartDataEntry(x:Double(i), y:values[i])
             dataEntries.append(dataEntry)
         }
         
@@ -60,63 +61,34 @@ class ChartStatisticsOrder: UIView {
         
         chartDataSet.drawIconsEnabled = false
         
-        chartDataSet.colors = [UIColor(hex:Theme.colorDBChartProcess), UIColor(hex:Theme.colorDBChartNonProcess)]
-        chartDataSet.stackLabels = ["process".localized(),"nonprocess".localized()];
+        chartDataSet.colors = [UIColor(hex:"0x008ab0"),UIColor(hex:"0xe30b7a")]
+        chartDataSet.stackLabels = [];
+        chartDataSet.highlightAlpha = 0
         
         let chartData = BarChartData(dataSet: chartDataSet)
-        chartData.barWidth = 0.7
+        chartData.barWidth = 0.4
         chartData.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
+        chartData.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
         
         chartView.data = chartData
         chartView.animate(yAxisDuration: 1.5)
     }
     
-    // MARK: - EVENT
-    @IBAction func menuPress(_ sender: UIButton) {
-        btnMenu1.isSelected = false
-        btnMenu2.isSelected = false
-        btnMenu3.isSelected = false
-        btnMenu4.isSelected = false
-        
-        sender.isSelected = !sender.isSelected
-        
-        var unitsSold = [[15.0,26.0], [4.0,15.0], [15.0,65.0]]
-        
-        switch sender {
-        case btnMenu1:
-            months = ["Jan", "Feb", "Mar"]
-            unitsSold = [[15.0,26.0], [4.0,15.0], [15.0,65.0]]
-            break
-        case btnMenu2:
-            months = ["Apr", "May", "Jun"]
-            unitsSold = [[15.0,26.0], [4.0,15.0], [15.0,65.0]]
-            break
-        case btnMenu3:
-            months = ["Jul", "Aug", "Sep"]
-            unitsSold = [[15.0,26.0], [4.0,15.0], [15.0,65.0]]
-            break
-        case btnMenu4:
-            months = ["Oct", "Nov", "Dec"]
-            unitsSold = [[15.0,26.0], [4.0,15.0], [15.0,65.0]]
-            break
-        default:
-            months = ["Oct", "Nov", "Dec"]
-            break
-        }
-        
-        setChart(months, values: unitsSold)
-    }
-    
     // MARK: - PRIVATE
     private func configChart() {
         
-        lblTitle.textColor = UIColor(hex:Theme.colorDBTitleChart)
         lblTitle.text = "title_chart_order".localized()
-        btnMenu1.setTitle("1st_quarter", for: .normal)
-        btnMenu2.setTitle("2st_quarter", for: .normal)
-        btnMenu3.setTitle("3st_quarter", for: .normal)
-        btnMenu4.setTitle("4st_quarter", for: .normal)
+        lblProcess.text = "process".localized()
+        lblUnprocess.text = "unprocess".localized()
         
+        lblTitleChart.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
+        lblTitleChart.textColor = UIColor(hex:Theme.colorDBTextNormal)
+        
+        lblProcess.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
+        lblProcess.textColor = UIColor(hex:Theme.colorDBTextNormal)
+        
+        lblUnprocess.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
+        lblUnprocess.textColor = UIColor(hex:Theme.colorDBTextNormal)
         
         // setup chart
         chartView.noDataText = "no_data_chart_summary_sales".localized()
@@ -138,9 +110,10 @@ class ChartStatisticsOrder: UIView {
         chartView.legend.horizontalAlignment = .center
         chartView.legend.verticalAlignment = .bottom
         chartView.legend.drawInside = false
-        chartView.legend.form = .square
+        chartView.legend.form = .empty
         chartView.legend.orientation = .horizontal
-        chartView.legend.xEntrySpace = 4.0
+        chartView.legend.xEntrySpace = 1.0
+        chartView.legend.stackSpace = 0.1
         
         chartView.drawBordersEnabled = false
         chartView.drawValueAboveBarEnabled = true
@@ -150,12 +123,10 @@ class ChartStatisticsOrder: UIView {
         
         chartView.backgroundColor = UIColor.white
         chartView.pinchZoomEnabled = false
-        chartView.fitBars = true
+        chartView.fitBars = false
         chartView.scaleXEnabled = false
         chartView.scaleYEnabled = false
         
         chartView.chartDescription?.text = ""
-        
-        chartViewHeight.constant = UIScreen.main.bounds.size.height*60/100
     }
 }
