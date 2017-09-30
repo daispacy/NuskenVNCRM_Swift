@@ -25,6 +25,7 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
     var totalSalesView:TotalSummaryView!
     var totalSummaryCustomerView:TotalSummaryView!
     var chartStatisticsOrder:ChartStatisticsOrder!
+    var topProductView: TopProductView!
     var birthdayCustomerListView:BirthdayCustomerListView!
     
     // MARK: - INIT
@@ -53,8 +54,13 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
         totalSummaryCustomerView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
         totalSummaryCustomerView.loadChartCustomer(dataChart: ["test"], totalOrdered: "100.000.000", totalNotOrderd: "50.000.000")
         
+        //block chart order
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
 
+        //block top product
+        topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
+        
+        //block customer ordered before 30 days
         birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
         
         // insert custom view into stack
@@ -62,6 +68,7 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
         stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
+        stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
     }
     

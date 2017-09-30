@@ -25,16 +25,16 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ayW-Hf-8mg">
-                    <rect key="frame" x="52" y="240" width="270" height="208"/>
+                    <rect key="frame" x="27.5" y="239.5" width="320" height="208"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="RN3-T2-viK">
-                            <rect key="frame" x="0.0" y="0.0" width="270" height="208"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="208"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YBA-RM-6XQ" userLabel="vwMessage">
-                                    <rect key="frame" x="0.0" y="0.0" width="270" height="128"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="128"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R4r-g4-cOT">
-                                            <rect key="frame" x="10" y="20" width="250" height="108"/>
+                                            <rect key="frame" x="10" y="20" width="300" height="108"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -50,10 +50,10 @@
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="juR-VQ-Uom" userLabel="vwButton">
-                                    <rect key="frame" x="0.0" y="148" width="270" height="60"/>
+                                    <rect key="frame" x="0.0" y="148" width="320" height="60"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="mNy-wp-LCm">
-                                            <rect key="frame" x="85" y="0.0" width="100" height="40"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mNy-wp-LCm">
+                                            <rect key="frame" x="120" y="0.0" width="80" height="40"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MkQ-Ke-GOX" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="30" height="40"/>
@@ -63,7 +63,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L2a-jE-DMt" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="70" y="0.0" width="30" height="40"/>
+                                                    <rect key="frame" x="50" y="0.0" width="30" height="40"/>
                                                     <state key="normal" title="   "/>
                                                     <connections>
                                                         <action selector="buttonPress:" destination="-1" eventType="touchUpInside" id="ZAv-tD-4bm"/>
@@ -85,7 +85,7 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="270" id="lr9-I1-VdF"/>
+                        <constraint firstAttribute="width" constant="320" id="dOy-XF-yMW"/>
                         <constraint firstItem="RN3-T2-viK" firstAttribute="top" secondItem="ayW-Hf-8mg" secondAttribute="top" id="mDL-ff-eUU"/>
                         <constraint firstItem="RN3-T2-viK" firstAttribute="leading" secondItem="ayW-Hf-8mg" secondAttribute="leading" id="nwi-q1-O9v"/>
                         <constraint firstAttribute="trailing" secondItem="RN3-T2-viK" secondAttribute="trailing" id="ohk-zC-RBg"/>

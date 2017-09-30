@@ -41,7 +41,7 @@ class Theme: NSObject {
     
     // MARK: - COLOR DASHBOARD
     static var colorDBTitleChart:String {
-        return "0x018AAF"
+        return "0x333333"
     }
     static var colorDBChartNonProcess:String {
         return "0xFFEB3C"

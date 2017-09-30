@@ -46,9 +46,7 @@ class AuthenticViewController:RootViewController, AuthenticViewDelegate {
 extension AuthenticViewController {
     
     func AuthenticViewDidProcessEvent(view: AuthenticView, isGotoReset: Bool) {
-        
-        let appdelegate = UIApplication.shared.delegate as! AppDelegate
-        
+                        
         if(isGotoReset) {
             self.type_ = .AUTH_RESETPW
         } else {
@@ -66,23 +64,23 @@ extension AuthenticViewController {
             self.type_ = .AUTH_LOGIN
             
             
-//            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
-//            
-//            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .overrideInheritedCurve, animations: {
-//                appdelegate.window?.rootViewController = uinaviVC
-//                appdelegate.window?.makeKeyAndVisible()
-//            }, completion: nil)
+            //            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
+            //
+            //            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .overrideInheritedCurve, animations: {
+            //                appdelegate.window?.rootViewController = uinaviVC
+            //                appdelegate.window?.makeKeyAndVisible()
+            //            }, completion: nil)
             
         }                
         
         changeStateView()
         
-                let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
         self.present(test, animated: false, completion: {done in
-//            test.message(message: "msg_test".localized(), buttons: ["ok".uppercased().localized()], select: {
-//                i in
-//                print("item select \(i)")
-//            })
+            //            test.message(message: "msg_test".localized(), buttons: ["ok".localized().uppercased()], select: {
+            //                i in
+            //                print("item select \(i)")
+            //            })
             let paragraph = NSMutableParagraphStyle()
             paragraph.lineSpacing = 7
             paragraph.alignment = .center
@@ -93,8 +91,11 @@ extension AuthenticViewController {
             let attributeLast = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
             attributedFirst.append(attributedMain)
             attributedFirst.append(attributeLast)
-            test.message(attribute: attributedFirst, buttons: ["ok".uppercased().localized()], select: { i in
-                print("item select \(i)")
+            test.message(attribute: attributedFirst, buttons: ["cancel".localized().uppercased(),"goto_dashboard".localized().uppercased()], select: { i in
+                if i > 0 {
+                    AppConfig.gotoDashboardAfterSigninSuccess()
+                }
+                
             })
         })
     }

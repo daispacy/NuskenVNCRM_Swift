@@ -67,6 +67,10 @@
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
+		23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CA607E1F7F8705007C3305 /* TopProductView.swift */; };
+		23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CA60801F7F8716007C3305 /* TopProductView.xib */; };
+		23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CA60831F7F8742007C3305 /* BlockTopProductView.xib */; };
+		23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CA60851F7FA86F007C3305 /* CLabelGradient.swift */; };
 		23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8131F7207FC0016DBDF /* AppDelegate.swift */; };
 		23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81D1F7207FC0016DBDF /* Assets.xcassets */; };
 		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
@@ -156,6 +160,10 @@
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
+		23CA607E1F7F8705007C3305 /* TopProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopProductView.swift; sourceTree = "<group>"; };
+		23CA60801F7F8716007C3305 /* TopProductView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopProductView.xib; sourceTree = "<group>"; };
+		23CA60831F7F8742007C3305 /* BlockTopProductView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockTopProductView.xib; sourceTree = "<group>"; };
+		23CA60851F7FA86F007C3305 /* CLabelGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLabelGradient.swift; sourceTree = "<group>"; };
 		23CAF8101F7207FC0016DBDF /* NuskinVN CRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NuskinVN CRM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CAF8131F7207FC0016DBDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23CAF81D1F7207FC0016DBDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -222,7 +230,7 @@
 				23F09A1E1F780B93005654F0 /* PopupMenu */,
 				2365D4D21F77AAA700673903 /* UIImage */,
 				23F0E0CE1F76C310007D3A19 /* Color */,
-				230248801F755D3000177679 /* CMessage */,
+				230248801F755D3000177679 /* Label */,
 				2302487B1F7547A100177679 /* CButton */,
 				230248781F753C4A00177679 /* CInput */,
 			);
@@ -246,12 +254,13 @@
 			path = CButton;
 			sourceTree = "<group>";
 		};
-		230248801F755D3000177679 /* CMessage */ = {
+		230248801F755D3000177679 /* Label */ = {
 			isa = PBXGroup;
 			children = (
 				230248811F755DF800177679 /* CMessageLabel.swift */,
+				23CA60851F7FA86F007C3305 /* CLabelGradient.swift */,
 			);
-			path = CMessage;
+			path = Label;
 			sourceTree = "<group>";
 		};
 		230248831F7569B000177679 /* CustomAlertController */ = {
@@ -275,6 +284,7 @@
 		232F173C1F74C8F50053A87D /* DashboardView */ = {
 			isa = PBXGroup;
 			children = (
+				23CA607D1F7F86E1007C3305 /* TopProductView */,
 				2365D4D91F77C81700673903 /* BirthdayCustomerListView */,
 				23BB51BA1F763F8D005FC2C7 /* ChartStatisticsOrder */,
 				23BB51B91F763F76005FC2C7 /* ChartStatisticsCustomer */,
@@ -419,6 +429,16 @@
 				2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */,
 			);
 			path = ChartStatisticsOrder;
+			sourceTree = "<group>";
+		};
+		23CA607D1F7F86E1007C3305 /* TopProductView */ = {
+			isa = PBXGroup;
+			children = (
+				23CA607E1F7F8705007C3305 /* TopProductView.swift */,
+				23CA60801F7F8716007C3305 /* TopProductView.xib */,
+				23CA60831F7F8742007C3305 /* BlockTopProductView.xib */,
+			);
+			path = TopProductView;
 			sourceTree = "<group>";
 		};
 		23CAF8071F7207FC0016DBDF = {
@@ -647,6 +667,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
+				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
 				2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */,
 				2357222C1F7D58170096A636 /* Roboto-BlackItalic.ttf in Resources */,
 				2357222D1F7D58170096A636 /* Roboto-Bold.ttf in Resources */,
@@ -835,6 +857,7 @@
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */,
+				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
 				232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */,
 				23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
@@ -843,6 +866,7 @@
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
 				237F84B61F72DF73008B4822 /* LocalService.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,
+				23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

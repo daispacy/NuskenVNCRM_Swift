@@ -20,6 +20,8 @@
 "number_order_uncompleted" = "Đơn hàng chưa xử lý";
 "total_customer" = "Tổng số khách hàng";
 
+"unlisted_customer_list_for_30_days" = "Danh sách khách đặt hàng 30 ngày trước";
+
 //error
 "msg_err_email" = "Mật khẩu không hợp lệ";
 "msg_err_pw" = "Mật khẩu phải lớn hơn 5 ký tự";

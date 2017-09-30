@@ -172,14 +172,14 @@ extension AuthenticView {
         txtEmail.placeholder = "placeholder_email".localized()
         txtPassword.placeholder = "placeholder_password".localized()
         btnRemember.setTitle("remember_me".localized(), for: .normal)
-        btnGoToResetPassword.setTitle("reset_pw".uppercased().localized(), for: .normal)
+        btnGoToResetPassword.setTitle("reset_pw".localized().uppercased(), for: .normal)
         btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         switch type_ {
         case .AUTH_LOGIN:
-            btnProcess.setTitle("login".uppercased().localized(), for: .normal)
+            btnProcess.setTitle("login".localized().uppercased(), for: .normal)
             break
         default:
-            btnProcess.setTitle("reset_pw".uppercased().localized(), for: .normal)
+            btnProcess.setTitle("reset_pw".localized().uppercased(), for: .normal)
             break
         }
         self.setNeedsLayout()

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="BlockTopProductView" customModule="NuskinVN_CRM" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="426" height="140"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MqI-jR-vlN">
+                    <rect key="frame" x="0.0" y="139" width="426" height="1"/>
+                    <color key="backgroundColor" red="0.83137254900000002" green="0.84705882349999995" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="PZl-HJ-KSp"/>
+                    </constraints>
+                </view>
+                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="aOr-bH-QF0">
+                    <rect key="frame" x="20" y="10" width="426" height="120"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_top_product_block" translatesAutoresizingMaskIntoConstraints="NO" id="OiC-xm-1GW">
+                            <rect key="frame" x="0.0" y="30" width="60" height="60"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="60" id="7rN-Md-9fu"/>
+                                <constraint firstAttribute="height" constant="60" id="Ajz-xp-TZ0"/>
+                            </constraints>
+                        </imageView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="svn-WQ-MZJ">
+                            <rect key="frame" x="80" y="39.5" width="426" height="41"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TPX-A4-0q3">
+                                    <rect key="frame" x="0.0" y="0.0" width="426" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MM6-m6-DzZ">
+                                    <rect key="frame" x="0.0" y="20.5" width="426" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="MqI-jR-vlN" secondAttribute="bottom" id="06J-RI-bOL"/>
+                <constraint firstItem="aOr-bH-QF0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="5E3-n9-2xa"/>
+                <constraint firstItem="aOr-bH-QF0" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="CEG-od-7q9"/>
+                <constraint firstAttribute="trailing" secondItem="aOr-bH-QF0" secondAttribute="trailing" id="UML-ce-dGG"/>
+                <constraint firstItem="MqI-jR-vlN" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="cRX-wg-tC5"/>
+                <constraint firstAttribute="trailing" secondItem="MqI-jR-vlN" secondAttribute="trailing" id="i7H-9I-zxk"/>
+                <constraint firstAttribute="bottom" secondItem="aOr-bH-QF0" secondAttribute="bottom" constant="10" id="yzi-lz-88I"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="icon" destination="OiC-xm-1GW" id="8io-E3-Prl"/>
+                <outlet property="lblName" destination="TPX-A4-0q3" id="hvP-zw-t6r"/>
+                <outlet property="lblSub" destination="MM6-m6-DzZ" id="pui-Xp-PBF"/>
+            </connections>
+            <point key="canvasLocation" x="59" y="-141"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="ic_top_product_block" width="42" height="42"/>
+    </resources>
+</document>

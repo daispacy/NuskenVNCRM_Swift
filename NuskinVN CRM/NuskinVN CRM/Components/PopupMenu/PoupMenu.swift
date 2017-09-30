@@ -27,6 +27,7 @@ struct OptionalConfiguration {
     let seperatorLineHasInsets: Bool
     let textColor: Color
     let menuBackgroundColor: Color
+    let menuBackgroundColor1: Color
 }
 
 class KxMenuOverlay: UIView {
@@ -140,6 +141,15 @@ extension UIColor {
         }
     }
 }
+
+class KxGradientView: UIView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: frame, isReverse: true)
+        layer.cornerRadius = 5
+    }
+}
+
 class KxMenuView: UIView {
     
     var kxMenuViewOptions: OptionalConfiguration!
@@ -293,7 +303,7 @@ class KxMenuView: UIView {
     }
     
     
-    func mkContentView() -> UIView? {
+    func mkContentView() -> KxGradientView? {
         for v in self.subviews {
             v.removeFromSuperview()
         }
@@ -350,9 +360,9 @@ class KxMenuView: UIView {
         if self.kxMenuViewOptions.seperatorLineHasInsets { insets = 4 }
         
         let gradientLine = KxMenuView.gradientLine(size: CGSize(width: maxItemWidth - kMarginX * insets, height: 0.4))
-        let contentView = UIView(frame: CGRect.zero)
+        let contentView = KxGradientView(frame: CGRect.zero)
         contentView.autoresizingMask = []
-        contentView.backgroundColor = UIColor.clear
+//        contentView.backgroundColor = UIColor.clear
         contentView.isOpaque = false
         var itemY: CGFloat = kMarginY * 2
         var itemNum = 0
@@ -491,9 +501,9 @@ class KxMenuView: UIView {
         let R0: CGFloat = self.kxMenuViewOptions.menuBackgroundColor.R
         let G0: CGFloat = self.kxMenuViewOptions.menuBackgroundColor.G
         let B0: CGFloat = self.kxMenuViewOptions.menuBackgroundColor.B
-        let R1 = R0
-        let G1 = G0
-        let B1 = B0
+        let R1 = self.kxMenuViewOptions.menuBackgroundColor1.R
+        let G1 = self.kxMenuViewOptions.menuBackgroundColor1.G
+        let B1 = self.kxMenuViewOptions.menuBackgroundColor1.B
         
         let tintColor = KxMenu().tintColor
         if !(tintColor == nil) {
@@ -521,7 +531,7 @@ class KxMenuView: UIView {
             arrowPath.addLine(to: CGPoint(x: arrowX1, y: arrowY1))
             arrowPath.addLine(to: CGPoint(x: arrowX0, y: arrowY1))
             arrowPath.addLine(to: CGPoint(x: arrowXM, y: arrowY0))
-            UIColor(red: R0, green: G0, blue: B0, alpha: 1).set()
+            Theme.colorGradient.last!.set()
             Y0 += self.kxMenuViewOptions.arrowSize
         case .Down:
             let arrowXM: CGFloat = self.arrowPosition
@@ -533,7 +543,7 @@ class KxMenuView: UIView {
             arrowPath.addLine(to: CGPoint(x: arrowX1, y: arrowY0))
             arrowPath.addLine(to: CGPoint(x: arrowX0, y: arrowY0))
             arrowPath.addLine(to: CGPoint(x: arrowXM, y: arrowY1))
-            UIColor(red: R1, green: G1, blue: B1, alpha: 1).set()
+            Theme.colorGradient.first!.set()
             Y1 -= self.kxMenuViewOptions.arrowSize
         case .Left:
             let arrowYM: CGFloat = self.arrowPosition
@@ -564,32 +574,32 @@ class KxMenuView: UIView {
         }
         arrowPath.fill()
         
-        // render body
-        let bodyFrame = CGRect(x: X0, y: Y0, width: X1 - X0, height: Y1 - Y0)
-        //配置：这里修改菜单圆角
-        let borderPath = UIBezierPath(roundedRect: bodyFrame, cornerRadius: self.kxMenuViewOptions.menuCornerRadius)
-        let locations: [CGFloat] = [0, 1]
-        let components: [CGFloat] = [
-            R0, G0, B0, 1,
-            R1, G1, B1, 1,
-            ]
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let gradient = CGGradient(colorSpace: colorSpace,
-                                  colorComponents: components,
-                                  locations: locations,
-                                  count: MemoryLayout.size(ofValue: locations)/MemoryLayout.size(ofValue: locations[0]))
-        
-        borderPath.addClip()
-        
-        let start,end: CGPoint
-        if self.arrowDirection! == .Left || self.arrowDirection! == .Right {
-            start = CGPoint(x: X0, y: Y0)
-            end = CGPoint(x: X1, y: Y0)
-        } else {
-            start = CGPoint(x: X0, y: Y0)
-            end = CGPoint(x: X0, y: Y1)
-        }
-        context.drawLinearGradient(gradient!, start: start, end: end, options: .drawsBeforeStartLocation)
+//        // render body
+//        let bodyFrame = CGRect(x: X0, y: Y0, width: X1 - X0, height: Y1 - Y0)
+//        //配置：这里修改菜单圆角
+//        let borderPath = UIBezierPath(roundedRect: bodyFrame, cornerRadius: self.kxMenuViewOptions.menuCornerRadius)
+//        let locations: [CGFloat] = [0.5, 0,0.5,1]
+//        let components: [CGFloat] = [
+//            R0, G0, B0, 1,
+//            R1, G1, B1, 1,
+//            ]
+//        let colorSpace = CGColorSpaceCreateDeviceRGB()
+//        let gradient = CGGradient(colorSpace: colorSpace,
+//                                  colorComponents: components,
+//                                  locations: locations,
+//                                  count: MemoryLayout.size(ofValue: locations)/MemoryLayout.size(ofValue: locations[0]))
+//
+//        borderPath.addClip()
+//
+//        let start,end: CGPoint
+//        if self.arrowDirection! == .Left || self.arrowDirection! == .Right {
+//            start = CGPoint(x: X0, y: Y0)
+//            end = CGPoint(x: X1, y: Y0)
+//        } else {
+//            start = CGPoint(x: X0, y: Y0)
+//            end = CGPoint(x: X0, y: Y1)
+//        }
+//        context.drawLinearGradient(gradient!, start: start, end: end, options: .drawsBeforeStartLocation)
         
     }
 }

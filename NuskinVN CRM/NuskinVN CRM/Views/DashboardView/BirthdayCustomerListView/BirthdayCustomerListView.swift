@@ -21,10 +21,11 @@ protocol CustomerBlockViewDelegate: class {
 class CustomerBlockView: UIView {
     
     @IBOutlet var imgvAvatar: UIImageView!
-    @IBOutlet var imgvStatus: UIImageView!
+    @IBOutlet var vwStatus: UIView!
     @IBOutlet var lblName: UILabel!
     @IBOutlet var lblBirthday: UILabel!
     @IBOutlet var bottomLine: UIView!
+    @IBOutlet var lblStatus: UILabel!
     
     weak var delegate:CustomerBlockViewDelegate?
     var tapOpenPopup:UITapGestureRecognizer?
@@ -54,7 +55,16 @@ class CustomerBlockView: UIView {
         lblName.text = "\(data.firstname ?? "") \(data.lastname ?? "")"
         lblBirthday.text = data.birthday
         imgvAvatar.image = UIImage(named:"checkbox_check")
-        imgvStatus.image = UIImage(named:"checkbox_uncheck")
+        
+        if(data.status == 1) {
+            vwStatus.backgroundColor = UIColor(hex:"0x009688")
+            lblStatus.text = "reminded".localized()
+        } else {
+            vwStatus.backgroundColor = UIColor(hex:"0xf44336")
+            lblStatus.text = "not_prompted".localized()
+        }
+        lblStatus.textColor = vwStatus.backgroundColor
+        
     }
     
     func hideBottomLine(isHide:Bool) {
@@ -73,14 +83,20 @@ class CustomerBlockView: UIView {
     // MARK: - PRIVATE
     private func configView() {
         lblName.textColor = UIColor(hex:Theme.colorDBTextNormal)
+        lblName.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
+        lblStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
+        
         lblBirthday.textColor = UIColor(hex:Theme.colorDBTextNormal)
+        lblBirthday.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
         bottomLine.backgroundColor = UIColor(hex:Theme.colorDBBackgroundDashboard)
     }
 }
 
 class BirthdayCustomerListView: UIView, CustomerBlockViewDelegate {
 
-    @IBOutlet var lblTitle: UILabel!
+    @IBOutlet var lblTitle: CLabelGradient!
     @IBOutlet var stackListCustomer: UIStackView!
     
     weak var delegate:BirthdayCustomerListViewDelegate?
@@ -118,8 +134,9 @@ class BirthdayCustomerListView: UIView, CustomerBlockViewDelegate {
     
     // MARK: - PRIVATE
     private func configView() {
-        lblTitle.text = "title_dashboard_birthday_customer".localized()
-        lblTitle.textColor = UIColor(hex:Theme.colorDBTitleChart)
+        lblTitle.text = "unlisted_customer_list_for_30_days".localized().uppercased()
+        lblTitle.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
+        
     }
     
     func refreshPopupMenu() {

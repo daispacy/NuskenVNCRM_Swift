@@ -102,7 +102,9 @@ class Support: NSObject {
             
             textColor: Color(R: 255,G: 255, B: 255),
             
-            menuBackgroundColor: Color(R: 1.0/255.0,G: 138.0/255.0, B: 175.0/255.0)
+            menuBackgroundColor: Color(R: 227.0/255.0,G: 11.0/255.0, B: 122.0/255.0),
+            
+            menuBackgroundColor1: Color(R: 52.0/255.0,G: 154.0/255.0, B: 213.0/255.0)
             
         )
         

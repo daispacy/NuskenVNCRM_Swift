@@ -31,24 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let ww = window {
             
-            let isLogin:Bool = true
+            let isLogin:Bool = false
             if !isLogin {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc
-                
+                ww.makeKeyAndVisible()
             } else {
                 
-                let vc:UITabBarController = UITabBarController.init()
-                let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
-                let uinaviVC2 = UINavigationController.init(rootViewController: OrderManagerViewController())
-                vc.setViewControllers([uinaviVC,uinaviVC2], animated: true)
-                
-                let itemTabbar = UITabBarItem(title: "title_tabar_button_order".localized(), image: UIImage(named: "menu_white_icon"), selectedImage: UIImage(named: "menu_white_icon"))
-                uinaviVC2.tabBarItem  = itemTabbar
-                
-                ww.rootViewController = vc
+                AppConfig.gotoDashboardAfterSigninSuccess()
             }
-            ww.makeKeyAndVisible()
         }
         
         return true

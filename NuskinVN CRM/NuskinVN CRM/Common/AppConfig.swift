@@ -30,4 +30,18 @@ class AppConfig: NSObject {
             UserDefaults.standard.synchronize()
         }
     }
+    
+    static func gotoDashboardAfterSigninSuccess() {
+        let appdelegate = UIApplication.shared.delegate as! AppDelegate
+        let vc:UITabBarController = UITabBarController.init()
+        let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
+        let uinaviVC2 = UINavigationController.init(rootViewController: OrderManagerViewController())
+        vc.setViewControllers([uinaviVC,uinaviVC2], animated: true)
+        
+        let itemTabbar = UITabBarItem(title: "title_tabar_button_order".localized(), image: UIImage(named: "menu_white_icon"), selectedImage: UIImage(named: "menu_white_icon"))
+        uinaviVC2.tabBarItem  = itemTabbar
+        
+        appdelegate.window!.rootViewController = vc
+        appdelegate.window!.makeKeyAndVisible()
+    }
 }

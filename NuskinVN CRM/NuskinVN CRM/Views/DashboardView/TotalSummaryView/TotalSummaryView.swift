@@ -47,7 +47,7 @@ class TotalSummaryView: UIView {
     
     
     let attributedStringUnitSales:NSMutableAttributedString =  {
-        return NSMutableAttributedString(string: "currency_unit".uppercased().localized(), attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTextNormal)])
+        return NSMutableAttributedString(string: "currency_unit".localized().uppercased(), attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTextNormal)])
     }()
     
     let attributedStringUnitCustomer:NSMutableAttributedString =  {

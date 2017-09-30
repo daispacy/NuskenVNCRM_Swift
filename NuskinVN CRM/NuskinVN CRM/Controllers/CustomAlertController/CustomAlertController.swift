@@ -121,11 +121,11 @@ class CustomAlertController: UIViewController {
         }
         btnFirst?.isHidden = false
         let text1:String = list[0]
-        btnFirst?.setTitle("      \(text1)      ", for: .normal)
+        btnFirst?.setTitle("    \(text1)    ", for: .normal)
         if(list.count > 1) {
             let text2 = list[1]
             btnSecond?.isHidden = false
-            btnSecond?.setTitle("      \(text2)      ", for: .normal)
+            btnSecond?.setTitle("    \(text2)    ", for: .normal)
         } else {
             btnSecond?.isHidden = true
         }

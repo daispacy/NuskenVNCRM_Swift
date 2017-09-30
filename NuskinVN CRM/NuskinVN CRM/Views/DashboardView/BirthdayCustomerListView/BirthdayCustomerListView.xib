@@ -15,10 +15,10 @@
             <rect key="frame" x="0.0" y="0.0" width="379" height="503"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="9Nk-d6-H4H">
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="9Nk-d6-H4H">
                     <rect key="frame" x="0.0" y="20" width="379" height="463"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0YV-1c-23u">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0YV-1c-23u" customClass="CLabelGradient" customModule="NuskinVN_CRM" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="379" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
@@ -38,6 +38,7 @@
                 <constraint firstAttribute="trailing" secondItem="9Nk-d6-H4H" secondAttribute="trailing" id="EVY-Nc-84U"/>
                 <constraint firstItem="9Nk-d6-H4H" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Sd5-Oi-48g"/>
                 <constraint firstItem="9Nk-d6-H4H" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="Xtl-lV-nkk"/>
+                <constraint firstItem="6eK-B0-72i" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="ZJI-79-Edi"/>
                 <constraint firstAttribute="bottom" secondItem="9Nk-d6-H4H" secondAttribute="bottom" constant="20" id="eA1-IU-2GA"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
