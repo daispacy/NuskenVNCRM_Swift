@@ -49,8 +49,9 @@ extension AuthenticViewController {
                         
         if(isGotoReset) {
             self.type_ = .AUTH_RESETPW
+            AppConfig.setLanguage(language: "vi")
         } else {
-            
+            AppConfig.setLanguage(language: "en")
             if(self.type_ == .AUTH_RESETPW) {
                 // involke api reset password
                 
@@ -71,14 +72,14 @@ extension AuthenticViewController {
             //                appdelegate.window?.makeKeyAndVisible()
             //            }, completion: nil)
             
-        }                
+        }
         
         changeStateView()
         
-        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
-        present(test, animated: false, completion: nil)
+//        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
+//        present(test, animated: false, completion: nil)
         
-        /*
+        
         let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
         self.present(test, animated: false, completion: {done in
             //            test.message(message: "msg_test".localized(), buttons: ["ok".localized().uppercased()], select: {
@@ -102,7 +103,7 @@ extension AuthenticViewController {
                 
             })
         })
- */
+ 
     }
     
     func test(object:KxMenuItem){

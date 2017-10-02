@@ -65,7 +65,7 @@ class TopProductView: UIView {
 }
 
 // MARK: - BLOCK TOP PRODUCT
-class BlockTopProductView: UIView {
+class BlockTopProductView: CViewSwitchLanguage {
     
     @IBOutlet var icon: UIImageView!
     @IBOutlet var lblName: UILabel!
@@ -75,6 +75,10 @@ class BlockTopProductView: UIView {
         super.awakeFromNib()
         
         configView()
+    }
+    
+    override func reloadTexts() {
+        // set text here
     }
     
     func configView() {

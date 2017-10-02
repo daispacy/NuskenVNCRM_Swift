@@ -18,7 +18,7 @@ protocol AuthenticViewDelegate: class {
     func AuthenticViewDidProcessEvent(view:AuthenticView, isGotoReset:Bool)
 }
 
-class AuthenticView: UIView, UITextFieldDelegate {
+class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
     
     @IBOutlet fileprivate var scrollVIew: UIScrollView!
     @IBOutlet fileprivate var stckView: UIStackView!
@@ -74,8 +74,6 @@ class AuthenticView: UIView, UITextFieldDelegate {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.removeGestureRecognizer(tapGesture!)
     }
     
@@ -162,6 +160,11 @@ class AuthenticView: UIView, UITextFieldDelegate {
         }else {
             btnRemember.isSelected = !btnRemember.isSelected
         }
+    }
+    
+    // from protocol
+    override func reloadTexts() {
+        configText()
     }
 }
 

@@ -18,7 +18,7 @@ protocol CustomerBlockViewDelegate: class {
     func CustomerBlockView(didSelect:CustomerBlockView,customer:Customer)
 }
 
-class CustomerBlockView: UIView {
+class CustomerBlockView: CViewSwitchLanguage {
     
     @IBOutlet var imgvAvatar: UIImageView!
     @IBOutlet var vwStatus: UIView!
@@ -44,6 +44,10 @@ class CustomerBlockView: UIView {
     
     deinit {
          self.removeGestureRecognizer(tapOpenPopup!)
+    }
+    
+    override func reloadTexts() {
+        // set text here
     }
     
     // MARK: - INTERFACE

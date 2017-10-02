@@ -12,7 +12,7 @@ protocol DashboardViewDelegate: class {
     
 }
 
-class DashboardView: UIView, BirthdayCustomerListViewDelegate {
+class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
 
     
     @IBOutlet var stackView: UIStackView!
@@ -21,6 +21,7 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
     weak var delegate_: DashboardViewDelegate?
     
     //custom view
+    var menuDashboard:MenuDashboardView!
     var totalSummaryView:TotalSummaryView!
     var totalSalesView:TotalSummaryView!
     var totalSummaryCustomerView:TotalSummaryView!
@@ -42,6 +43,10 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
     
     // MARK: - INTERFACE
     func configView () {
+        
+        // block menu
+        menuDashboard = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
+        
         // block summary
         totalSummaryView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)?.first as! TotalSummaryView
         totalSummaryView.configSummary(totalCustomer: "100", totalOrderComplete: "50", totalOrderUnComplete: "30")
@@ -64,12 +69,17 @@ class DashboardView: UIView, BirthdayCustomerListViewDelegate {
         birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
         
         // insert custom view into stack
+        stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
         stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
+    }
+    
+    override func reloadTexts() {
+        // set text here
     }
     
     func reloadWhenDetectRotation () {

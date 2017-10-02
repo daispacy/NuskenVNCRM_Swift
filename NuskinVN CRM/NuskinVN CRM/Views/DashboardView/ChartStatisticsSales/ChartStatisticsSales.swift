@@ -10,7 +10,7 @@ import UIKit
 import Charts
 import Charts.Swift
 
-class ChartStatisticsSales: UIView {
+class ChartStatisticsSales: CViewSwitchLanguage {
 
     var months: [String]!
     
@@ -31,6 +31,10 @@ class ChartStatisticsSales: UIView {
         let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
         
         setChart(months, values: unitsSold)
+    }
+    
+    override func reloadTexts() {
+        // set text here
     }
     
     func setChart(_ dataPoints: [String], values: [Double]) {

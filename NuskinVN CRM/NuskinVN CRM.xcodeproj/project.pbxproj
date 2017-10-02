@@ -33,6 +33,10 @@
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BC1F72AD7600B74AB4 /* crm.db */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
+		234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A11F826BB500CC4436 /* MenuDashboardView.swift */; };
+		234D77A41F826BEB00CC4436 /* MenuDashboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */; };
+		234D77A81F82742500CC4436 /* PopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A61F82742500CC4436 /* PopupController.swift */; };
+		234D77A91F82742500CC4436 /* PopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 234D77A71F82742500CC4436 /* PopupController.xib */; };
 		2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */; };
 		2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2356DFF51F736B1B00134A73 /* GroupCustomer.swift */; };
 		2356DFF81F736B3200134A73 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2356DFF71F736B3200134A73 /* Customer.swift */; };
@@ -54,6 +58,7 @@
 		2357222D1F7D58170096A636 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2357221B1F7D58170096A636 /* Roboto-Bold.ttf */; };
 		2357222E1F7D58170096A636 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2357221C1F7D58170096A636 /* Roboto-Thin.ttf */; };
 		2357222F1F7D58170096A636 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2357221D1F7D58170096A636 /* Roboto-Black.ttf */; };
+		235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235AB34D1F81F6940036ADFA /* Protocols.swift */; };
 		2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */; };
 		2365D4CF1F77A0A100673903 /* ChartStatisticsOrder.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */; };
 		2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4D01F77A9C700673903 /* CButtonChart.swift */; };
@@ -129,6 +134,10 @@
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BC1F72AD7600B74AB4 /* crm.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.db; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		234D77A11F826BB500CC4436 /* MenuDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuDashboardView.swift; sourceTree = "<group>"; };
+		234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuDashboardView.xib; sourceTree = "<group>"; };
+		234D77A61F82742500CC4436 /* PopupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupController.swift; sourceTree = "<group>"; };
+		234D77A71F82742500CC4436 /* PopupController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PopupController.xib; sourceTree = "<group>"; };
 		2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Wrap.swift"; sourceTree = "<group>"; };
 		2356DFF51F736B1B00134A73 /* GroupCustomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCustomer.swift; sourceTree = "<group>"; };
 		2356DFF71F736B3200134A73 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
@@ -150,6 +159,7 @@
 		2357221B1F7D58170096A636 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		2357221C1F7D58170096A636 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		2357221D1F7D58170096A636 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
+		235AB34D1F81F6940036ADFA /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartStatisticsOrder.swift; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.swift"; sourceTree = SOURCE_ROOT; };
 		2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChartStatisticsOrder.xib; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.xib"; sourceTree = SOURCE_ROOT; };
 		2365D4D01F77A9C700673903 /* CButtonChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CButtonChart.swift; sourceTree = "<group>"; };
@@ -291,6 +301,7 @@
 		232F173C1F74C8F50053A87D /* DashboardView */ = {
 			isa = PBXGroup;
 			children = (
+				234D77A01F826B7900CC4436 /* MenuDashboardView */,
 				23CA607D1F7F86E1007C3305 /* TopProductView */,
 				2365D4D91F77C81700673903 /* BirthdayCustomerListView */,
 				23BB51BA1F763F8D005FC2C7 /* ChartStatisticsOrder */,
@@ -333,6 +344,24 @@
 			path = CustomerServiceView;
 			sourceTree = "<group>";
 		};
+		234D77A01F826B7900CC4436 /* MenuDashboardView */ = {
+			isa = PBXGroup;
+			children = (
+				234D77A11F826BB500CC4436 /* MenuDashboardView.swift */,
+				234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */,
+			);
+			path = MenuDashboardView;
+			sourceTree = "<group>";
+		};
+		234D77A51F82740100CC4436 /* PopupController */ = {
+			isa = PBXGroup;
+			children = (
+				234D77A61F82742500CC4436 /* PopupController.swift */,
+				234D77A71F82742500CC4436 /* PopupController.xib */,
+			);
+			path = PopupController;
+			sourceTree = "<group>";
+		};
 		2356DFF41F736AAC00134A73 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
@@ -365,6 +394,14 @@
 				2357221D1F7D58170096A636 /* Roboto-Black.ttf */,
 			);
 			path = Font;
+			sourceTree = "<group>";
+		};
+		235AB34C1F81F66A0036ADFA /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				235AB34D1F81F6940036ADFA /* Protocols.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		2365D4D21F77AAA700673903 /* UIImage */ = {
@@ -480,6 +517,7 @@
 		23CAF8121F7207FC0016DBDF /* NuskinVN CRM */ = {
 			isa = PBXGroup;
 			children = (
+				235AB34C1F81F66A0036ADFA /* Protocols */,
 				230248771F753C4100177679 /* Components */,
 				2356DFF41F736AAC00134A73 /* Objects */,
 				237F84B41F72DF5C008B4822 /* Services */,
@@ -528,6 +566,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				234D77A51F82740100CC4436 /* PopupController */,
 				2372E9871F7FD8D700B4F0AB /* CalendarController */,
 				230248831F7569B000177679 /* CustomAlertController */,
 				231C72131F72BD4F00654621 /* RootViewController.swift */,
@@ -719,7 +758,9 @@
 				232F17501F74F7210053A87D /* DashboardView.xib in Resources */,
 				2365D4CF1F77A0A100673903 /* ChartStatisticsOrder.xib in Resources */,
 				2357222B1F7D58170096A636 /* Roboto-Italic.ttf in Resources */,
+				234D77A91F82742500CC4436 /* PopupController.xib in Resources */,
 				235722281F7D58170096A636 /* RobotoCondensed-Regular.ttf in Resources */,
+				234D77A41F826BEB00CC4436 /* MenuDashboardView.xib in Resources */,
 				230248871F7569ED00177679 /* CustomAlertController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -852,6 +893,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				234D77A81F82742500CC4436 /* PopupController.swift in Sources */,
 				230248861F7569ED00177679 /* CustomAlertController.swift in Sources */,
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
@@ -861,6 +903,7 @@
 				232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */,
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
+				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
 				232F17421F74C9650053A87D /* CustomerListViewController.swift in Sources */,
 				232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */,
 				2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */,
@@ -882,6 +925,7 @@
 				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
 				232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */,
 				23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */,
+				234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,

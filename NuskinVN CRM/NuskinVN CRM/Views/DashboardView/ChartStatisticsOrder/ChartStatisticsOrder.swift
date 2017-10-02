@@ -10,7 +10,7 @@ import UIKit
 import Charts
 import Charts.Swift
 
-class ChartStatisticsOrder: UIView {
+class ChartStatisticsOrder: CViewSwitchLanguage {
 
     var months: [String]!
     
@@ -31,6 +31,10 @@ class ChartStatisticsOrder: UIView {
         let unitsSold = [26.0, 15.0]
         
         setChart(["".localized(),"".localized()], values: unitsSold)
+    }
+    
+    override func reloadTexts() {
+        // set text here
     }
     
     // MARK: - INTERFACE

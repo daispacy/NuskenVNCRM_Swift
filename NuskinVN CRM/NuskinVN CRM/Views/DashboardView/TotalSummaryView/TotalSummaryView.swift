@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TotalSummaryView: UIView {
+class TotalSummaryView: CViewSwitchLanguage {
     
     // summary
     @IBOutlet var lblCustomer: UILabel!
@@ -61,6 +61,10 @@ class TotalSummaryView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+    }
+    
+    override func reloadTexts() {
+        // set text here
     }
     
     // MARK: - INTERFACE
