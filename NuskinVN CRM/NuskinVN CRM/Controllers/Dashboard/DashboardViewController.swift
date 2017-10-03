@@ -18,6 +18,8 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configText()
+        
         // Do any additional setup after loading the view.
         leftButtonMenu = UIButton(type: .custom)
         leftButtonMenu.setImage(UIImage(named: "menu_white_icon"), for: .normal)
@@ -35,12 +37,16 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         self.navigationItem.rightBarButtonItem  = item2
         
         // Do any additional setup after loading the view.
-        let itemTabbar = UITabBarItem(title: "title_tabar_button_customer".localized(), image: UIImage(named: "menu_white_icon"), selectedImage: UIImage(named: "menu_white_icon"))
-        itemTabbar.tag = 1989
-        tabBarItem  = itemTabbar
         tabBarController?.delegate = self
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
+        itemTabbar.tag = 10
+        tabBarItem  = itemTabbar
+    }
+    
     override func loadView() {
         dashboardView = Bundle.main.loadNibNamed(String(describing: DashboardView.self), owner: self, options: nil)?.first as! DashboardView
         dashboardView.delegate_ = self
@@ -78,6 +84,10 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         }
     }
     
+    override func configText() {
+        self.title = "dashboard".localized().uppercased()
+    }
+    
     // MARK: - MENUBAR ENVENT
     @objc func menuPress(sender:UIButton) {
         
@@ -109,15 +119,17 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
 
 extension DashboardViewController {
 
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if viewController.isKind(of: UINavigationController.self) {
-            if let navi:UINavigationController = viewController as? UINavigationController {
-                if navi.viewControllers[0].isKind(of:DashboardViewController.self) {
-                    print("change root this navi to Customer Controller")
-                } else if navi.viewControllers[0].isKind(of:CustomerListViewController.self) {
-                    print("change root this navi to Dashboard Controller")
-                }
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if tabBarController.tabBar.selectedItem?.tag == 1 {
+            let itemTabbar = UITabBarItem(title: "Dashboard".localized(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
+            itemTabbar.tag = 9
+            tabBarItem  = itemTabbar
+        } else {
+            if tabBarItem.tag == 10 {
+                AppConfig.navigation.changeController(to: GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main), on: tabBarController, index: 0)
             }
         }
+        return true
     }
 }

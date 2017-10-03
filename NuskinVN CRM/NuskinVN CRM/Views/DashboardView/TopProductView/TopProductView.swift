@@ -54,7 +54,7 @@ class TopProductView: UIView {
         btnNumber.setTitle("    \("number".localized())    ", for: .normal)
         btnRevenue.setTitle("    \("revenue".localized())    ", for: .normal)
         
-        if let checkIcon = Support.imageWithIconFont(code: "\u{f067}", size: 22,color: "0xe30b7a") {
+        if let checkIcon = Support.image.iconFont(code: "\u{f067}", size: 22,color: "0xe30b7a") {
             btnOtherProduct.setImage(checkIcon, for: .normal)
         }
         btnOtherProduct.setTitle("other_product".localized(), for: .normal)

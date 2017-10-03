@@ -17,15 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        AppConfig.setLanguage(language: "vi")
+        AppConfig.language.setLanguage(language: "vi")
         
         UINavigationBar.appearance().barTintColor = UIColor(hex:Theme.colorNavigationBar)
         UINavigationBar.appearance().tintColor = UIColor.white
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white]
-        
-        UITabBar.appearance().backgroundColor = UIColor(hex:Theme.colorBottomBar)
-        UITabBar.appearance().tintColor = UIColor(hex:Theme.colorBottomBar)
-//        UITabBar.appearance().
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white,NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!]
+        UINavigationBar.appearance().isTranslucent = false
+                
+        UITabBar.appearance().unselectedItemTintColor = UIColor.white
+        UITabBar.appearance().tintColor = UIColor.white
+        UITabBar.appearance().barTintColor = UIColor(hex:"0xe30b7a")
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.white,NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!], for: UIControlState.selected)
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.white,NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!], for: UIControlState.normal)
+        UITabBar.appearance().isTranslucent = false
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
@@ -38,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 ww.makeKeyAndVisible()
             } else {
                 
-                AppConfig.gotoDashboardAfterSigninSuccess()
+                AppConfig.navigation.gotoDashboardAfterSigninSuccess()
             }
         }
         

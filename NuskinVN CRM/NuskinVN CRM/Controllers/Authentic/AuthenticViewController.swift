@@ -49,9 +49,9 @@ extension AuthenticViewController {
                         
         if(isGotoReset) {
             self.type_ = .AUTH_RESETPW
-            AppConfig.setLanguage(language: "vi")
+            AppConfig.language.setLanguage(language: "vi")
         } else {
-            AppConfig.setLanguage(language: "en")
+            AppConfig.language.setLanguage(language: "en")
             if(self.type_ == .AUTH_RESETPW) {
                 // involke api reset password
                 
@@ -98,7 +98,7 @@ extension AuthenticViewController {
             attributedFirst.append(attributeLast)
             test.message(attribute: attributedFirst, buttons: ["cancel".localized().uppercased(),"goto_dashboard".localized().uppercased()], select: { i in
                 if i > 0 {
-                    AppConfig.gotoDashboardAfterSigninSuccess()
+                    AppConfig.navigation.gotoDashboardAfterSigninSuccess()
                 }
                 
             })

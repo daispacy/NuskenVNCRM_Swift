@@ -118,7 +118,7 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField){
         activeField = nil
         if(textField.isEqual(txtEmail) == true) {
-            if(Support.isValidEmailAddress(emailAddressString: textField.text!)) {
+            if(Support.validate.isValidEmailAddress(emailAddressString: textField.text!)) {
                 email = textField.text
                 lblMEssage.isHidden = true
             } else {
@@ -126,7 +126,7 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
                 lblMEssage.isHidden = false
             }
         } else if(textField.isEqual(txtPassword) == true){
-            if(Support.isValidPassword(password:textField.text!)){
+            if(Support.validate.isValidPassword(password:textField.text!)){
                 password = textField.text
                 lblMEssage.isHidden = true
             } else {
@@ -134,7 +134,7 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
                 lblMEssage.isHidden = false
             }
         } else if(textField.isEqual(txtVNID) == true){
-            if(Support.isValidVNID(vnid: textField.text!)) {
+            if(Support.validate.isValidVNID(vnid: textField.text!)) {
                 vnid = textField.text
                 lblMEssage.isHidden = true
             } else {
@@ -250,10 +250,10 @@ extension AuthenticView {
     }
     
     private func setupControl() {
-        if let imageCheck = Support.imageWithIconFont(code: "\u{f14a}", size: 22) {
+        if let imageCheck = Support.image.iconFont(code: "\u{f14a}", size: 22) {
             btnRemember.setImage(imageCheck, for: .selected)            
         }
-        if let imageUnCheck = Support.imageWithIconFont(code: "\u{f0c8}", size: 22) {
+        if let imageUnCheck = Support.image.iconFont(code: "\u{f0c8}", size: 22) {
             btnRemember.setImage(imageUnCheck, for: .normal)
         }
     }

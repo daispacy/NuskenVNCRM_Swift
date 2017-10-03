@@ -6,6 +6,11 @@
   Copyright © 2017 Dai Pham. All rights reserved.
 */
 
+//tabbar
+"title_tabbar_button_order" = "Đơn hàng";
+"title_tabbar_button_customer" = "Khách hàng";
+"title_tabbar_button_dashboard" = "Dashboard";
+
 // authentic
 "placeholder_vnid" = "VNxxxxxxx";
 "placeholder_email" = "Thư điện tử";

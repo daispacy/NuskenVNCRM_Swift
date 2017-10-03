@@ -92,6 +92,20 @@ class Theme: NSObject {
         return "0x018AAF"
     }
     
+    // MARK: - MANAGE COLOR
+    class color: NSObject {
+        // MARK: - COLOR GROUP - LIST CUSTOMER
+        class customer: color {
+            static var titleGroup: String {
+                return "0x333333"
+            }
+            
+            static var subGroup:String {
+                return "0x323232"
+            }
+        }
+    }
+    
     // MARK: - FONT
     class font: NSObject {
         static var bold:String {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GroupCustomerController" customModule="NuskinVN_CRM" customModuleProvider="target">
+            <connections>
+                <outlet property="collectView" destination="mly-EH-L4g" id="fsu-HX-CXS"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="vwOverlay" destination="8Xp-RN-fMO" id="5mK-L6-vYn"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Xp-RN-fMO">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="mly-EH-L4g">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" red="0.83137254900000002" green="0.84705882349999995" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="1" id="y55-VN-v6Q">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="JhT-KP-G9R"/>
+                        <outlet property="delegate" destination="-1" id="UDc-uC-dZf"/>
+                    </connections>
+                </collectionView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="mly-EH-L4g" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="CyS-4W-Nj6"/>
+                <constraint firstItem="8Xp-RN-fMO" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Dxc-cA-684"/>
+                <constraint firstItem="8Xp-RN-fMO" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="ISO-TA-no6"/>
+                <constraint firstItem="mly-EH-L4g" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="gL7-VZ-Vfq"/>
+                <constraint firstItem="mly-EH-L4g" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="lh1-Xj-rrM"/>
+                <constraint firstItem="8Xp-RN-fMO" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="sIc-xu-fRF"/>
+                <constraint firstItem="8Xp-RN-fMO" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="tBo-pq-4dV"/>
+                <constraint firstItem="mly-EH-L4g" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="wju-3y-Yty"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+        </view>
+    </objects>
+</document>

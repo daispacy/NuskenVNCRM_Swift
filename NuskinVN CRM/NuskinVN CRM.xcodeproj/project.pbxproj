@@ -15,13 +15,17 @@
 		230248861F7569ED00177679 /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230248841F7569ED00177679 /* CustomAlertController.swift */; };
 		230248871F7569ED00177679 /* CustomAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 230248851F7569ED00177679 /* CustomAlertController.xib */; };
 		231C72141F72BD4F00654621 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C72131F72BD4F00654621 /* RootViewController.swift */; };
+		2323238D1F83452A00290926 /* GroupCustomerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2323238B1F83452A00290926 /* GroupCustomerController.swift */; };
+		2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2323238C1F83452A00290926 /* GroupCustomerController.xib */; };
+		232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */; };
+		232323931F834B7B00290926 /* GroupCollectCustomerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232323921F834B7B00290926 /* GroupCollectCustomerCell.xib */; };
 		232D2CFE1F76C7BD00B93B45 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232D2CFD1F76C7BC00B93B45 /* SystemConfiguration.framework */; };
 		232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232D2CFF1F76C81E00B93B45 /* ChartStatisticsSales.xib */; };
 		232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D2D011F76C83400B93B45 /* ChartStatisticsSales.swift */; };
 		232D2D041F76CB5200B93B45 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D2D031F76CB5200B93B45 /* Theme.swift */; };
 		232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17371F74C7FD0053A87D /* DashboardViewController.swift */; };
 		232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17391F74C80B0053A87D /* MenuViewController.swift */; };
-		232F17421F74C9650053A87D /* CustomerListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17411F74C9650053A87D /* CustomerListViewController.swift */; };
+		232F17421F74C9650053A87D /* CustomerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17411F74C9650053A87D /* CustomerListController.swift */; };
 		232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17431F74C9740053A87D /* OrderManagerViewController.swift */; };
 		232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17451F74C9880053A87D /* SettingListViewController.swift */; };
 		232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17471F74C99B0053A87D /* InfoListViewController.swift */; };
@@ -114,13 +118,17 @@
 		230248841F7569ED00177679 /* CustomAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertController.swift; sourceTree = "<group>"; };
 		230248851F7569ED00177679 /* CustomAlertController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAlertController.xib; sourceTree = "<group>"; };
 		231C72131F72BD4F00654621 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		2323238B1F83452A00290926 /* GroupCustomerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCustomerController.swift; sourceTree = "<group>"; };
+		2323238C1F83452A00290926 /* GroupCustomerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupCustomerController.xib; sourceTree = "<group>"; };
+		232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCollectCustomerCell.swift; sourceTree = "<group>"; };
+		232323921F834B7B00290926 /* GroupCollectCustomerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupCollectCustomerCell.xib; sourceTree = "<group>"; };
 		232D2CFD1F76C7BC00B93B45 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		232D2CFF1F76C81E00B93B45 /* ChartStatisticsSales.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartStatisticsSales.xib; sourceTree = "<group>"; };
 		232D2D011F76C83400B93B45 /* ChartStatisticsSales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartStatisticsSales.swift; sourceTree = "<group>"; };
 		232D2D031F76CB5200B93B45 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		232F17371F74C7FD0053A87D /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		232F17391F74C80B0053A87D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
-		232F17411F74C9650053A87D /* CustomerListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListViewController.swift; sourceTree = "<group>"; };
+		232F17411F74C9650053A87D /* CustomerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListController.swift; sourceTree = "<group>"; };
 		232F17431F74C9740053A87D /* OrderManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManagerViewController.swift; sourceTree = "<group>"; };
 		232F17451F74C9880053A87D /* SettingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingListViewController.swift; sourceTree = "<group>"; };
 		232F17471F74C99B0053A87D /* InfoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoListViewController.swift; sourceTree = "<group>"; };
@@ -287,6 +295,57 @@
 				230248851F7569ED00177679 /* CustomAlertController.xib */,
 			);
 			path = CustomAlertController;
+			sourceTree = "<group>";
+		};
+		232323861F83432E00290926 /* Customers */ = {
+			isa = PBXGroup;
+			children = (
+				2323238A1F83437700290926 /* CustomerListController */,
+				232323871F83433F00290926 /* GroupCustomerController */,
+			);
+			path = Customers;
+			sourceTree = "<group>";
+		};
+		232323871F83433F00290926 /* GroupCustomerController */ = {
+			isa = PBXGroup;
+			children = (
+				2323238B1F83452A00290926 /* GroupCustomerController.swift */,
+				2323238C1F83452A00290926 /* GroupCustomerController.xib */,
+			);
+			path = GroupCustomerController;
+			sourceTree = "<group>";
+		};
+		232323881F83435100290926 /* Authentic */ = {
+			isa = PBXGroup;
+			children = (
+				23EA78751F72301E0017E47E /* AuthenticViewController.swift */,
+			);
+			path = Authentic;
+			sourceTree = "<group>";
+		};
+		232323891F83435C00290926 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				232F17371F74C7FD0053A87D /* DashboardViewController.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		2323238A1F83437700290926 /* CustomerListController */ = {
+			isa = PBXGroup;
+			children = (
+				232F17411F74C9650053A87D /* CustomerListController.swift */,
+			);
+			path = CustomerListController;
+			sourceTree = "<group>";
+		};
+		2323238F1F834B3500290926 /* GroupCollectCustomerCell */ = {
+			isa = PBXGroup;
+			children = (
+				232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */,
+				232323921F834B7B00290926 /* GroupCollectCustomerCell.xib */,
+			);
+			path = GroupCollectCustomerCell;
 			sourceTree = "<group>";
 		};
 		232F173B1F74C8E50053A87D /* MenuView */ = {
@@ -541,6 +600,8 @@
 		23DEDE371F72CBB8003D4097 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				2302487E1F755B4D00177679 /* Support.swift */,
+				232D2D031F76CB5200B93B45 /* Theme.swift */,
 				23DEDE381F72CBD7003D4097 /* AppConfig.swift */,
 			);
 			path = Common;
@@ -556,8 +617,6 @@
 				23CAF8131F7207FC0016DBDF /* AppDelegate.swift */,
 				2338A2B31F72A92700B74AB4 /* README.md */,
 				2338A2BA1F72AA5800B74AB4 /* Localizable.strings */,
-				2302487E1F755B4D00177679 /* Support.swift */,
-				232D2D031F76CB5200B93B45 /* Theme.swift */,
 				2335A2301F7DEA7200D8A47E /* Launch Screen.storyboard */,
 			);
 			path = Support;
@@ -566,14 +625,14 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				232323891F83435C00290926 /* Dashboard */,
+				232323881F83435100290926 /* Authentic */,
+				232323861F83432E00290926 /* Customers */,
 				234D77A51F82740100CC4436 /* PopupController */,
 				2372E9871F7FD8D700B4F0AB /* CalendarController */,
 				230248831F7569B000177679 /* CustomAlertController */,
 				231C72131F72BD4F00654621 /* RootViewController.swift */,
-				23EA78751F72301E0017E47E /* AuthenticViewController.swift */,
-				232F17371F74C7FD0053A87D /* DashboardViewController.swift */,
 				232F17391F74C80B0053A87D /* MenuViewController.swift */,
-				232F17411F74C9650053A87D /* CustomerListViewController.swift */,
 				232F17431F74C9740053A87D /* OrderManagerViewController.swift */,
 				232F17451F74C9880053A87D /* SettingListViewController.swift */,
 				232F17471F74C99B0053A87D /* InfoListViewController.swift */,
@@ -584,6 +643,7 @@
 		23E1ACBC1F7215FD0042DD44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2323238F1F834B3500290926 /* GroupCollectCustomerCell */,
 				232F17401F74C9250053A87D /* CustomerServiceView */,
 				232F173F1F74C91D0053A87D /* SettingView */,
 				232F173E1F74C9130053A87D /* OrderManageView */,
@@ -724,6 +784,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */,
 				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
 				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
 				2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */,
@@ -733,6 +794,7 @@
 				2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */,
 				23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */,
 				2335A2311F7DEA7200D8A47E /* Launch Screen.storyboard in Resources */,
+				232323931F834B7B00290926 /* GroupCollectCustomerCell.xib in Resources */,
 				235722291F7D58170096A636 /* Roboto-BoldItalic.ttf in Resources */,
 				2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */,
 				23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */,
@@ -904,7 +966,7 @@
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
 				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
-				232F17421F74C9650053A87D /* CustomerListViewController.swift in Sources */,
+				232F17421F74C9650053A87D /* CustomerListController.swift in Sources */,
 				232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */,
 				2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */,
 				2365D4D41F77AAC200673903 /* UIImage+Wrap.swift in Sources */,
@@ -913,6 +975,7 @@
 				232D2D041F76CB5200B93B45 /* Theme.swift in Sources */,
 				23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */,
 				23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */,
+				2323238D1F83452A00290926 /* GroupCustomerController.swift in Sources */,
 				23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */,
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
@@ -930,6 +993,7 @@
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
+				232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */,
 				237F84B61F72DF73008B4822 /* LocalService.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,
 				23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */,
