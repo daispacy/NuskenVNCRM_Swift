@@ -52,7 +52,6 @@ class AppConfig: NSObject {
             uinaviVC2.tabBarItem  = itemTabbar2
            
             AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
-            
         }
         
         static func changeRootControllerTo(viewcontroller:UIViewController, animated:Bool? = false) {

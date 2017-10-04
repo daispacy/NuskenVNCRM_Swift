@@ -6,17 +6,15 @@
 //  Copyright © 2017 Dai Pham. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import SQLite
 
 protocol LocalServiceDelegate:class {
-    func LocalService(localService:LocalService,didReceiveUserData:Any)
-    func LocalService(localService:LocalService,didFailedUser:Any)
-    func LocalService(localService:LocalService,didReceiveGroupData:Any)
-    func LocalService(localService:LocalService,didFailedGroup:Any)
+    func localService(localService:LocalService,didReceiveData:Any)
+    func localService(localService:LocalService,didFailed:Any)
 }
 
-class LocalService {
+class LocalService: NSObject {
     
     private static var sharedLocalService: LocalService = {
         let networkManager = LocalService(db: "crm")
@@ -25,14 +23,24 @@ class LocalService {
     
     // MARK: -
     weak var delegate_:LocalServiceDelegate?
-    private let db: Connection!
+    private var db: Connection!
     var listCustomer:Array<Any>?
     var listGroup:Array<Any>?
     
     // Initialization
     
-    private init(db: String) {
+     init(db: String) {
         let pathDB = Bundle.main.path(forResource: db, ofType: "db")!
+        do {
+            self.db = try Connection(pathDB)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    override init() {
+        super.init()
+        let pathDB = Bundle.main.path(forResource: "crm", ofType: "db")!
         do {
             self.db = try Connection(pathDB)
         } catch {
@@ -70,10 +78,10 @@ class LocalService {
                 list.append(customer)
             }
             listCustomer = list
-            delegate_?.LocalService(localService: self, didReceiveUserData: list)
+            delegate_?.localService(localService: self, didReceiveData: list)
         } catch {
             print(error.localizedDescription)
-            delegate_?.LocalService(localService: self, didFailedUser: error)
+            delegate_?.localService(localService: self, didFailed: error)
         }
     }
     
@@ -220,39 +228,55 @@ class LocalService {
     func getAllGroup() {
         let group = Table("group")
         let id = Expression<Int>("id")
+        let level = Expression<Int>("level")
         let name = Expression<String?>("name")
         let social = Expression<String?>("social")
+        let color = Expression<String?>("color")
         
         var list:Array<GroupCustomer> = []
         do {
         for gr in try db.prepare(group) {
             var customer = GroupCustomer(id: gr[id])
-            customer.name = String(describing:gr[name])
-            customer.social = String(describing:gr[social])
+            if let data = gr[name] {
+                customer.name = data
+            }
+            if let data = gr[social] {
+                customer.social = data
+            }
+            
+            if let data = gr[color] {
+                customer.color = data
+            }
+            
+            customer.level = gr[level]
             list.append(customer)
             }
             
-            delegate_?.LocalService(localService: self, didReceiveGroupData: list)
+            delegate_?.localService(localService: self, didReceiveData: list)
         } catch {
             print(error.localizedDescription)
-            delegate_?.LocalService(localService: self, didFailedGroup: error)
+            delegate_?.localService(localService: self, didFailed: error)
         }
     }
     
-    func addGroup(name:String? = nil) {
-        guard name == nil else { return }
+    func addGroup(obj:GroupCustomer) -> Bool{
+       
         let group = Table("group")
-        let name = Expression<String?>("name")
         
-        let insert = group.insert(name <- "Alice")
+        let level = Expression<Int>("level")
+        let name = Expression<String>("name")
+//        let social = Expression<String?>("social")
+        let color = Expression<String>("color")
+        
         do {
+            let insert = group.insert(name <- obj.name!, level <- obj.level!, color <- obj.color!)
             try db.run(insert)
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
         } catch {
             print(error)
+            return false
         }
-        
-        getAllGroup()
+        return true
     }
     
     func updateGroup (object:GroupCustomer? = nil) {

@@ -10,45 +10,45 @@ import UIKit
 
 class GroupCollectCustomerCell: UICollectionViewCell {
     
-    var object:[String:Any]?
+    var object:GroupCustomer!
     
-    @IBOutlet var icon: UIImageView!
+    @IBOutlet var icon: CImageViewRoundGradient!
     @IBOutlet var lblTitle: UILabel!
     @IBOutlet var lblSubtitle: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        lblSubtitle.text = ""
-        lblTitle.text = ""
-        
         configView()
     }
     
     // MARK: - INTERFACE
-    func show(data:[String:Any]) {
-        object = data
-        guard let obj = object else { return }
+    func show(data:GroupCustomer) {
         
-        if let title:String = obj["title"] as? String {
+        object = data
+        
+        if let title = object.name {
             lblTitle.text = title.uppercased()
+            if title == "add_group".localized() {
+                backgroundColor = UIColor.clear
+                icon.image = Support.image.iconFont(code: "\u{f067}", size: icon.frame.size.width*30/100)
+            }
         }
         
-        if let title:String = obj["subTitle"] as? String {
-            lblSubtitle.text = title
+        if object.numberCustomer != nil {
+            lblSubtitle.text! = "\(object.numberCustomer!)"
         }
         
         if lblSubtitle.text?.characters.count == 0 {
             lblSubtitle.isHidden = true
-            icon.backgroundColor = UIColor(hex:Theme.color.customer.subGroup)
         }
         
-        if let ic = obj["icon"] {
-            icon.image = UIImage(named: ic as! String)
-        }
-        
-        if let ic = obj["iconfont"] {
-            icon.image = Support.image.iconFont(code: ic as! String, size: icon.frame.size.width*30/100)
+        if let color = object.color {
+            if color == "gradient" {
+                icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
+            } else {
+                icon.backgroundColor = UIColor(hex:color)
+            }
         }
     }
     
@@ -60,7 +60,17 @@ class GroupCollectCustomerCell: UICollectionViewCell {
         lblTitle.textColor = UIColor(hex:Theme.color.customer.titleGroup)
         lblSubtitle.textColor = UIColor(hex:Theme.color.customer.subGroup)
         
-        icon.layer.cornerRadius = icon.frame.size.width/2
-        icon.layer.masksToBounds = true
+        object = nil
+        lblSubtitle.isHidden = false
+        lblSubtitle.text = ""
+        lblTitle.text = ""
+        backgroundColor = UIColor.white
+        icon.image = UIImage(named: "ic_group_white_75")
+        icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        configView()
     }
 }

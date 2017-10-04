@@ -8,18 +8,25 @@
 
 import UIKit
 
+enum GroupLevel: Int {
+    case ten = 1
+    case nine
+    case seven
+    case three
+    case one
+}
+
 struct GroupCustomer {
     let id:Int
     var name:String?
     var social:String?
+    var color: String?
+    var level: Int?
+    var numberCustomer: Int?
     
     
-    init(id: Int, dictionary:[String:Any]? = nil) {
+    init(id: Int) {
         self.id = id
-        if((dictionary) != nil) {
-            self.social = dictionary!["social"] as? String ?? ""
-            
-        }
     }
 }
 

@@ -19,6 +19,8 @@
 		2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2323238C1F83452A00290926 /* GroupCustomerController.xib */; };
 		232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */; };
 		232323931F834B7B00290926 /* GroupCollectCustomerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232323921F834B7B00290926 /* GroupCollectCustomerCell.xib */; };
+		232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232537ED1F84BC5E0072F68F /* AddGroupController.swift */; };
+		232537F01F84BC5E0072F68F /* AddGroupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232537EE1F84BC5E0072F68F /* AddGroupController.xib */; };
 		232D2CFE1F76C7BD00B93B45 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232D2CFD1F76C7BC00B93B45 /* SystemConfiguration.framework */; };
 		232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232D2CFF1F76C81E00B93B45 /* ChartStatisticsSales.xib */; };
 		232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D2D011F76C83400B93B45 /* ChartStatisticsSales.swift */; };
@@ -75,7 +77,7 @@
 		2372E9851F7FD7E600B4F0AB /* Daysquare.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2372E9861F7FD7E600B4F0AB /* Daysquare.framework */; };
 		2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */; };
 		2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */; };
-		237F84B61F72DF73008B4822 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
+		23810C311F85338400C0B5C7 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
@@ -122,6 +124,8 @@
 		2323238C1F83452A00290926 /* GroupCustomerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupCustomerController.xib; sourceTree = "<group>"; };
 		232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCollectCustomerCell.swift; sourceTree = "<group>"; };
 		232323921F834B7B00290926 /* GroupCollectCustomerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupCollectCustomerCell.xib; sourceTree = "<group>"; };
+		232537ED1F84BC5E0072F68F /* AddGroupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupController.swift; sourceTree = "<group>"; };
+		232537EE1F84BC5E0072F68F /* AddGroupController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddGroupController.xib; sourceTree = "<group>"; };
 		232D2CFD1F76C7BC00B93B45 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		232D2CFF1F76C81E00B93B45 /* ChartStatisticsSales.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartStatisticsSales.xib; sourceTree = "<group>"; };
 		232D2D011F76C83400B93B45 /* ChartStatisticsSales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartStatisticsSales.swift; sourceTree = "<group>"; };
@@ -311,6 +315,8 @@
 			children = (
 				2323238B1F83452A00290926 /* GroupCustomerController.swift */,
 				2323238C1F83452A00290926 /* GroupCustomerController.xib */,
+				232537ED1F84BC5E0072F68F /* AddGroupController.swift */,
+				232537EE1F84BC5E0072F68F /* AddGroupController.xib */,
 			);
 			path = GroupCustomerController;
 			sourceTree = "<group>";
@@ -823,6 +829,7 @@
 				234D77A91F82742500CC4436 /* PopupController.xib in Resources */,
 				235722281F7D58170096A636 /* RobotoCondensed-Regular.ttf in Resources */,
 				234D77A41F826BEB00CC4436 /* MenuDashboardView.xib in Resources */,
+				232537F01F84BC5E0072F68F /* AddGroupController.xib in Resources */,
 				230248871F7569ED00177679 /* CustomAlertController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -964,6 +971,7 @@
 				232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */,
 				232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */,
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
+				232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
 				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
 				232F17421F74C9650053A87D /* CustomerListController.swift in Sources */,
@@ -982,6 +990,7 @@
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,
 				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
+				23810C311F85338400C0B5C7 /* LocalService.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */,
@@ -994,7 +1003,6 @@
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
 				232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */,
-				237F84B61F72DF73008B4822 /* LocalService.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,
 				23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */,
 			);
