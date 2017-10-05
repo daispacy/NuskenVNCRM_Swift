@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CustomerListController" customModule="NuskinVN_CRM" customModuleProvider="target">
+            <connections>
+                <outlet property="btnAddNewCustomer" destination="Mhy-Sp-qrr" id="0FC-hU-a7F"/>
+                <outlet property="btnCheckOrDelete" destination="rpe-BN-iWk" id="dXu-qp-cCi"/>
+                <outlet property="btnFilterGroup" destination="bWU-2t-4Ub" id="2EY-3h-j0l"/>
+                <outlet property="indicatorLoading" destination="exP-6I-edW" id="mVR-Q0-HQu"/>
+                <outlet property="lblMessageData" destination="LNu-Mm-kvo" id="zmo-X9-yrO"/>
+                <outlet property="searchBar" destination="vm6-KM-2PG" id="4le-In-iW2"/>
+                <outlet property="tableView" destination="aQb-G1-PFr" id="RDl-AI-SEA"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="BwP-8v-qEf">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="69L-gK-d2V">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="QTH-su-bcQ">
+                                    <rect key="frame" x="10" y="10" width="355" height="90"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="QfD-0M-D4k">
+                                            <rect key="frame" x="0.0" y="0.0" width="355" height="40"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bWU-2t-4Ub" customClass="CButtonWithImageRight" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="235" height="40"/>
+                                                    <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="-100" maxY="0.0"/>
+                                                    <state key="normal" image="arrow_down_black">
+                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="chooseGroup:" destination="-1" eventType="touchUpInside" id="FhV-mI-mfX"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mhy-Sp-qrr">
+                                                    <rect key="frame" x="255" y="0.0" width="40" height="40"/>
+                                                    <color key="backgroundColor" red="0.0" green="0.54117647058823526" blue="0.69019607843137254" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="5EU-vY-GVc"/>
+                                                    </constraints>
+                                                    <state key="normal" image="add_white_48"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="7"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="addNewCustomer:" destination="-1" eventType="touchUpInside" id="XRR-29-qhv"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rpe-BN-iWk">
+                                                    <rect key="frame" x="315" y="0.0" width="40" height="40"/>
+                                                    <color key="backgroundColor" red="0.95686274509803915" green="0.2627450980392157" blue="0.21176470588235294" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="DlI-Kq-HxY"/>
+                                                    </constraints>
+                                                    <state key="normal" image="delete_white_48"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="7"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="checkOrDeleteCustomers:" destination="-1" eventType="touchUpInside" id="GOg-kB-EDb"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="kQS-wG-D15"/>
+                                            </constraints>
+                                        </stackView>
+                                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="vm6-KM-2PG">
+                                            <rect key="frame" x="0.0" y="50" width="355" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="4FG-H4-fy8"/>
+                                            </constraints>
+                                            <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </searchBar>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="QTH-su-bcQ" firstAttribute="top" secondItem="69L-gK-d2V" secondAttribute="top" constant="10" id="94B-OE-45M"/>
+                                <constraint firstItem="QTH-su-bcQ" firstAttribute="leading" secondItem="69L-gK-d2V" secondAttribute="leading" constant="10" id="R7r-0U-m0R"/>
+                                <constraint firstAttribute="trailing" secondItem="QTH-su-bcQ" secondAttribute="trailing" constant="10" id="eTm-5M-ISP"/>
+                                <constraint firstAttribute="bottom" secondItem="QTH-su-bcQ" secondAttribute="bottom" constant="10" id="inT-aY-haF"/>
+                            </constraints>
+                        </view>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="aQb-G1-PFr">
+                            <rect key="frame" x="0.0" y="120" width="375" height="547"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="cZ7-i6-Ggs"/>
+                                <outlet property="delegate" destination="-1" id="jM8-ny-6YR"/>
+                            </connections>
+                        </tableView>
+                    </subviews>
+                </stackView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Customer" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LNu-Mm-kvo">
+                    <rect key="frame" x="0.0" y="120" width="375" height="547"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="exP-6I-edW">
+                    <rect key="frame" x="169" y="375.5" width="37" height="37"/>
+                    <color key="color" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </activityIndicatorView>
+            </subviews>
+            <color key="backgroundColor" red="0.83137254900000002" green="0.84705882349999995" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="exP-6I-edW" firstAttribute="centerX" secondItem="aQb-G1-PFr" secondAttribute="centerX" id="0EC-SI-LqK"/>
+                <constraint firstItem="LNu-Mm-kvo" firstAttribute="top" secondItem="aQb-G1-PFr" secondAttribute="top" id="0bd-9Q-rNY"/>
+                <constraint firstItem="exP-6I-edW" firstAttribute="centerY" secondItem="aQb-G1-PFr" secondAttribute="centerY" id="FDD-9I-rcQ"/>
+                <constraint firstItem="LNu-Mm-kvo" firstAttribute="bottom" secondItem="aQb-G1-PFr" secondAttribute="bottom" id="cWA-qc-ZyP"/>
+                <constraint firstItem="LNu-Mm-kvo" firstAttribute="trailing" secondItem="aQb-G1-PFr" secondAttribute="trailing" id="etR-TL-KKg"/>
+                <constraint firstItem="BwP-8v-qEf" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="kuz-bN-e6z"/>
+                <constraint firstItem="BwP-8v-qEf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="m9J-wK-HKF"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="BwP-8v-qEf" secondAttribute="trailing" id="wiy-tf-4X0"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="BwP-8v-qEf" secondAttribute="bottom" id="zhI-wk-7t4"/>
+                <constraint firstItem="LNu-Mm-kvo" firstAttribute="leading" secondItem="aQb-G1-PFr" secondAttribute="leading" id="zzV-jR-rxy"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="add_white_48" width="16" height="16"/>
+        <image name="arrow_down_black" width="10" height="10"/>
+        <image name="delete_white_48" width="16" height="16"/>
+    </resources>
+</document>

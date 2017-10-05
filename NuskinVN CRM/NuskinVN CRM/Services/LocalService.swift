@@ -9,9 +9,14 @@
 import Foundation
 import SQLite
 
+enum LocalServiceType: Int {
+    case customer = 1
+    case group
+}
+
 protocol LocalServiceDelegate:class {
-    func localService(localService:LocalService,didReceiveData:Any)
-    func localService(localService:LocalService,didFailed:Any)
+    func localService(localService:LocalService,didReceiveData:Any, type:LocalServiceType)
+    func localService(localService:LocalService,didFailed:Any, type:LocalServiceType)
 }
 
 class LocalService: NSObject {
@@ -66,27 +71,26 @@ class LocalService: NSObject {
                 customer.group = user[1] as? Int
                 customer.status = user[12] as? Int
                 customer.classify = user[6] as? Int
-                customer.firstname = String(describing:user[2])
-                customer.lastname = String(describing:user[3])
-                customer.email = String(describing:user[4])
-                customer.phone = String(describing:user[5])
-                customer.birthday = String(describing:user[7])
-                customer.social = String(describing:user[8])
-                customer.company = String(describing:user[9])
-                customer.address = String(describing:user[10])
-                customer.properties = String(describing:user[11])
+                customer.firstname = user[2] as? String
+                customer.lastname = user[3] as? String
+                customer.email = user[4] as? String
+                customer.phone = user[5] as? String
+                customer.birthday = user[7] as? String
+                customer.social = user[8] as? String
+                customer.company = user[9] as? String
+                customer.address = user[10] as? String
+                customer.properties = user[11] as? String
                 list.append(customer)
             }
             listCustomer = list
-            delegate_?.localService(localService: self, didReceiveData: list)
+            delegate_?.localService(localService: self, didReceiveData: list, type:.customer)
         } catch {
             print(error.localizedDescription)
-            delegate_?.localService(localService: self, didFailed: error)
+            delegate_?.localService(localService: self, didFailed: error, type:.customer)
         }
     }
     
-    func addCustomer(object:Customer? = nil) {
-        guard object == nil else { return }
+    func addCustomer(object:Customer) -> Bool{
         let customer = Table("customer")
         let group = Expression<Int?>("group")
         let status = Expression<Int?>("status")
@@ -101,27 +105,29 @@ class LocalService: NSObject {
         let address = Expression<String?>("address")
         let properties = Expression<String?>("properties")
         
-        let insert = customer.insert(group <- object?.group,
-                                     status <- object?.status,
-                                     classify <- object?.classify,
-                                     firstname <- object?.firstname,
-                                     lastname <- object?.lastname,
-                                     email <- object?.email,
-                                     phone <- object?.phone,
-                                     birthday <- object?.birthday,
-                                     social <- object?.social,
-                                     company <- object?.company,
-                                     address <- object?.address,
-                                     properties <- object?.properties)
+        let insert = customer.insert(group <- object.group,
+                                     status <- object.status,
+                                     classify <- object.classify,
+                                     firstname <- object.firstname,
+                                     lastname <- object.lastname,
+                                     email <- object.email,
+                                     phone <- object.phone,
+                                     birthday <- object.birthday,
+                                     social <- object.social,
+                                     company <- object.company,
+                                     address <- object.address,
+                                     properties <- object.properties)
         do {
             try db.run(insert)
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
+            return true
         } catch {
             print(error)
+            return false
         }
     }
     
-    func getCustomer(em:String? = nil) -> Customer {
+    func getCustomer(em:String? = nil, group:Int? = 0) -> Customer {
         
         let customer = Table("customer")
         let id = Expression<Int>("id")
@@ -151,15 +157,15 @@ class LocalService: NSObject {
                 customer.group = user[group]
                 customer.status = user[status]
                 customer.classify = user[classify]
-                customer.firstname = String(describing:user[firstname])
-                customer.lastname = String(describing:user[lastname])
-                customer.email = String(describing:user[email])
-                customer.phone = String(describing:user[phone])
-                customer.birthday = String(describing:user[birthday])
-                customer.social = String(describing:user[social])
-                customer.company = String(describing:user[company])
-                customer.address = String(describing:user[address])
-                customer.properties = String(describing:user[properties])
+                customer.firstname = user[firstname]
+                customer.lastname = user[lastname]
+                customer.email = user[email]
+                customer.phone = user[phone]
+                customer.birthday = user[birthday]
+                customer.social = user[social]
+                customer.company = user[company]
+                customer.address = user[address]
+                customer.properties = user[properties]
                 //String(describing: user[name]))
                 // example get a row in mysql
                 return customer
@@ -252,10 +258,10 @@ class LocalService: NSObject {
             list.append(customer)
             }
             
-            delegate_?.localService(localService: self, didReceiveData: list)
+            delegate_?.localService(localService: self, didReceiveData: list, type:.group)
         } catch {
             print(error.localizedDescription)
-            delegate_?.localService(localService: self, didFailed: error)
+            delegate_?.localService(localService: self, didFailed: error, type:.group)
         }
     }
     
@@ -279,33 +285,36 @@ class LocalService: NSObject {
         return true
     }
     
-    func updateGroup (object:GroupCustomer? = nil) {
-        guard object == nil else { return }
+    func updateGroup (object:GroupCustomer) {
         let group = Table("group")
         let id = Expression<Int>("id")
-        let name = Expression<String?>("name")
-        let social = Expression<String?>("social")
+        let level = Expression<Int>("level")
+        let name = Expression<String>("name")
+        //        let social = Expression<String?>("social")
+        let color = Expression<String>("color")
         
-        let alice = group.filter(id == object!.id)
+        let alice = group.filter(id == object.id)
         
         do {
-            try db.run(alice.update(name <- object!.name, social <- object!.social))
+            try db.run(alice.update(name <- object.name!, level <- object.level!, color <- object.color!))
         } catch {
             print(error)
         }
     }
     
-    func deleteGroup(object:GroupCustomer? = nil) {
-        guard object == nil else { return }
+    func deleteGroup(object:GroupCustomer) -> Bool{
+        
         let group = Table("group")
         let id = Expression<Int>("id")
         
-        let alice = group.filter(id == object!.id)
+        let alice = group.filter(id == object.id)
         
         do {
             try db.run(alice.delete())
+            return true
         } catch {
             print(error)
+            return false
         }
     }
 }

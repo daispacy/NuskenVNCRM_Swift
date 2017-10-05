@@ -178,5 +178,11 @@ class CButtonAlert: UIButton {
         self.layer.cornerRadius = paddingRightView;
         self.clipsToBounds      = false;
     }
-    
+}
+
+class CButtonWithImageRight: UIButton {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width-30, 0, 0)
+    }
 }

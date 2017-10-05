@@ -29,7 +29,9 @@ class AddGroupController: UIViewController {
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var containerView: UIView!
     
-    var tapGesture:UITapGestureRecognizer!
+    var isEdit: Bool!
+    
+//    var tapGesture:UITapGestureRecognizer!
     var group:GroupCustomer!
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -38,11 +40,12 @@ class AddGroupController: UIViewController {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        
+        isEdit = false
     }
     
     deinit {
-        vwOverlay.removeGestureRecognizer(tapGesture)
+//        vwOverlay.removeGestureRecognizer(tapGesture)
+        print("deinit AddGroupController")
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -52,8 +55,8 @@ class AddGroupController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissView))
-        vwOverlay.addGestureRecognizer(tapGesture)
+//        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissView))
+//        vwOverlay.addGestureRecognizer(tapGesture)
         
         configView()
         configText()
@@ -73,8 +76,10 @@ class AddGroupController: UIViewController {
             return
         }
         group.name = txtName.text
-        dismissView()
-        onAddGroup?(group!)
+        if group.validAddNewGroup() {
+            dismissView()
+            onAddGroup?(group!)
+        }
     }
     
     @IBAction func cancel(_ sender: Any) {
@@ -105,6 +110,14 @@ class AddGroupController: UIViewController {
         default:
             group.level = GroupLevel.one.rawValue
         }
+    }
+    
+    // MARK: - properties
+    func setEditGroup(gr:GroupCustomer) {
+        group = gr
+        isEdit = true
+        configText()
+        configViewWhenEditAGroup()
     }
     
     // MARK: - config
@@ -189,6 +202,12 @@ class AddGroupController: UIViewController {
         txtName.placeholder = "placeholder_name_group".localized()
         lblGroupColor.text = "choose_group_color".localized()
         lblGroupLevel.text = "choose_group_level".localized()
+        btnCancel.setTitle("cancel".localized(), for: .normal)
+        if isEdit {
+            btnAdd.setTitle("update".localized(), for: .normal)
+        } else {
+            btnAdd.setTitle("add".localized(), for: .normal)
+        }
         _ = groupLevel.map({
             switch ($0.tag) {
             case 11:
@@ -217,9 +236,10 @@ class AddGroupController: UIViewController {
     func setSelectedColor(tag:Int) {
         _ = groupColor.map({
             if $0.tag == tag {
-                if let imageCheck = Support.image.iconFont(code: "\u{f00c}", size: $0.frame.size.width) {
-                    $0.setImage(imageCheck, for: .normal)
-                }
+//                if let imageCheck = Support.image.iconFont(code: "\u{f00c}", size: $0.frame.size.width) {
+//
+//                }
+                $0.setImage(UIImage(named: "ic_check_white_36"), for: .normal)
                 if tag == 7 {
                     iconColor.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: iconColor.frame, isReverse: true)
                 } else {
@@ -253,6 +273,83 @@ class AddGroupController: UIViewController {
                 }
             } else {
                 $0.setImage(nil, for: .normal)
+            }
+        })
+    }
+    
+    // MARK: - configView when Edit A Group
+    func configViewWhenEditAGroup() {
+        txtName.text = group!.name
+        _ = groupColor.map({
+            if group!.color == "gradient" {
+                if $0.tag == 7 {
+                    setSelectedColor(tag: $0.tag)
+                }
+            } else {
+                if group!.color == "0xf54337" {
+                    if $0.tag == 1 {
+                        setSelectedColor(tag: $0.tag)
+                    }
+                } else if group!.color == "0xea1e63" {
+                    if $0.tag == 2 {
+                        setSelectedColor(tag: $0.tag)
+                    }
+                } else if group!.color == "0x009788" {
+                    if $0.tag == 3 {
+                        setSelectedColor(tag: $0.tag)
+                    }
+                } else if group!.color == "0xffeb3c" {
+                    if $0.tag == 4 {
+                        setSelectedColor(tag: $0.tag)
+                    }
+                } else if group.color == "0x607d8b" {
+                    if $0.tag == 5 {
+                        setSelectedColor(tag: $0.tag)
+                    }
+                } else if group!.color == "0x9e9e9e" {
+                    if $0.tag == 6 {
+                        setSelectedColor(tag: $0.tag)
+                    }
+                }
+            }
+        })
+        
+        _ = groupLevel.map({
+            $0.isSelected = false
+            switch (group!.level!) {
+            case GroupLevel.one.rawValue:
+                if $0.tag == 15 {
+                    $0.isSelected = true
+                }
+                break
+                
+            case GroupLevel.three.rawValue:
+                if $0.tag == 14 {
+                    $0.isSelected = true
+                }
+                break
+                
+            case GroupLevel.seven.rawValue:
+                if $0.tag == 13 {
+                    $0.isSelected = true
+                }
+                break
+                
+            case GroupLevel.nine.rawValue:
+                if $0.tag == 12 {
+                    $0.isSelected = true
+                }
+                break
+            case GroupLevel.ten.rawValue:
+                if $0.tag == 11 {
+                    $0.isSelected = true
+                }
+                break
+            default:
+                if $0.tag == 11 {
+                    $0.isSelected = true
+                }
+                break
             }
         })
     }

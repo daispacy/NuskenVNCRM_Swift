@@ -69,12 +69,12 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
             }
             
             if( view.isEqual(leftButtonMenu) == true) {
-                Support.showPopupMenu(items: ["popup_menu_left_item".localized()],
+                Support.popup.showMenu(items: ["popup_menu_left_item".localized()],
                                       sender: self,
                                       view: leftButtonMenu,
                                       selector: #selector(self.menuItemLeftPress(menuItem:)))
             } else {
-                Support.showPopupMenu(items: ["popup_menu_right_item".localized(),
+                Support.popup.showMenu(items: ["popup_menu_right_item".localized(),
                                               "popup_menu_right_item".localized(),
                                               "popup_menu_right_item".localized()],
                                       sender: self,
@@ -92,12 +92,12 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     @objc func menuPress(sender:UIButton) {
         
         if( sender.isEqual(leftButtonMenu) == true) {
-            Support.showPopupMenu(items: ["popup_menu_left_item".localized()],
+            Support.popup.showMenu(items: ["popup_menu_left_item".localized()],
                                   sender: self,
                                   view: leftButtonMenu,
                                   selector: #selector(self.menuItemLeftPress(menuItem:)))
         } else {
-            Support.showPopupMenu(items: ["popup_menu_right_item".localized(),
+            Support.popup.showMenu(items: ["popup_menu_right_item".localized(),
                                           "popup_menu_right_item".localized(),
                                           "popup_menu_right_item".localized()],
                                   sender: self,
@@ -127,7 +127,7 @@ extension DashboardViewController {
             tabBarItem  = itemTabbar
         } else {
             if tabBarItem.tag == 10 {
-                AppConfig.navigation.changeController(to: GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main), on: tabBarController, index: 0)
+                AppConfig.navigation.changeController(to: CustomerListController(nibName: "CustomerListController", bundle: Bundle.main), on: tabBarController, index: 0)
             }
         }
         return true

@@ -12,7 +12,6 @@ class GroupCustomerController: RootViewController,
 UICollectionViewDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegateFlowLayout,
-UITabBarControllerDelegate,
 LocalServiceDelegate {
     
     @IBOutlet var vwOverlay: UIView!
@@ -38,8 +37,6 @@ LocalServiceDelegate {
         // Do any additional setup after loading the view.
         collectView.register(UINib(nibName: "GroupCollectCustomerCell", bundle: Bundle.main), forCellWithReuseIdentifier: "cell")
         
-        tabBarController?.delegate = self
-        
         localService = LocalService.init()
         localService.delegate_ = self
         localService.getAllGroup()
@@ -49,15 +46,27 @@ LocalServiceDelegate {
         title = "group_customer".localized().uppercased()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        let itemTabbar = UITabBarItem(title: "title_tabbar_button_dashboard".localized(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
-        itemTabbar.tag = 9
-        tabBarItem  = itemTabbar
-    }
-    
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         collectView.reloadData()
+    }
+    
+    // MARK: - private
+    func showPopupGroup(object:GroupCustomer? = nil) {
+        let vc = AddGroupController(nibName: "AddGroupController", bundle: Bundle.main)
+        
+        present(vc, animated: false, completion: {done in
+            if object != nil {
+                vc.setEditGroup(gr: object!)
+            }
+        })
+        vc.onAddGroup = { group in
+            if object != nil {
+                _ = self.localService.updateGroup(object: group)
+            } else {
+                _ = self.localService.addGroup(obj: group)
+            }
+            self.localService.getAllGroup()
+        }
     }
 }
 
@@ -67,7 +76,36 @@ extension GroupCustomerController {
         let cell:GroupCollectCustomerCell = collectView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! GroupCollectCustomerCell
         
         cell.show(data: listGroups[indexPath.row])
-        
+        cell.onSelectOption = {
+            sender, group in
+            let popup = PopupOptionGroupController(nibName: "PopupOptionGroupController", bundle: Bundle.main)
+            popup.onSelect = {
+                option in
+                switch option.tag {
+                case 2:
+                    Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {
+                        i in
+                        if i == 1 {
+                            if self.localService.deleteGroup(object: group) {
+                                self.localService.getAllGroup()
+                            }
+                        }
+                    })
+                    
+                default:
+                    self.showPopupGroup(object: group)
+                }
+            }
+            popup.show(data: [OptionGroup(name: "edit_group".localized(),
+                                          icon: "ic_edit_gradient_36",
+                                          tag: 1),
+                              OptionGroup(name: "delete_group".localized(),
+                                          icon: "ic_delete_gradient_36",
+                                          tag: 2),
+                              ],
+                       fromView: sender as! UIButton)
+            self.present(popup, animated: false, completion: nil)
+        }
         return cell
     }
     
@@ -79,13 +117,7 @@ extension GroupCustomerController {
         
         let obj:GroupCustomer = listGroups![indexPath.row]
             if obj.id == 0 {
-                let vc = AddGroupController(nibName: "AddGroupController", bundle: Bundle.main)
-                present(vc, animated: false, completion: nil)
-                vc.onAddGroup = { group in
-                    if self.localService.addGroup(obj: group) {
-                        self.localService.getAllGroup()
-                    }                    
-                }
+                showPopupGroup()
             }
     }
     
@@ -112,37 +144,17 @@ extension GroupCustomerController {
 // MARK: - Local Services
 extension GroupCustomerController {
     
-    func localService(localService: LocalService, didFailed: Any) {
+    func localService(localService: LocalService, didFailed: Any, type:LocalServiceType) {
         print("Cant get Group Customer")
     }
     
-    func localService(localService: LocalService, didReceiveData: Any) {
-        listGroups.removeAll()
-        let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
-        listGroups.append(contentsOf: list)
-        listGroups.append(defaultItem)
-        collectView.reloadData()
-    }
-}
-
-// MARK: - tabbar delegate
-extension GroupCustomerController {
-    
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        
-        if(self.presentedViewController != nil) {
-            return false
+    func localService(localService: LocalService, didReceiveData: Any, type:LocalServiceType) {
+        DispatchQueue.main.async {
+            self.listGroups.removeAll()
+            let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
+            self.listGroups.append(contentsOf: list)
+            self.listGroups.append(self.defaultItem)
+            self.collectView.reloadData()
         }
-        
-        if tabBarController.tabBar.selectedItem?.tag == 1 {
-            let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
-            itemTabbar.tag = 10
-            tabBarItem  = itemTabbar
-        } else {
-            if tabBarItem.tag == 9 {
-                AppConfig.navigation.changeController(to: DashboardViewController(), on: tabBarController, index: 0)
-            }
-        }
-        return true
     }
 }

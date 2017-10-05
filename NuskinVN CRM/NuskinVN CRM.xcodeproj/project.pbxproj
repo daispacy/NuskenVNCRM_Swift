@@ -27,7 +27,6 @@
 		232D2D041F76CB5200B93B45 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D2D031F76CB5200B93B45 /* Theme.swift */; };
 		232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17371F74C7FD0053A87D /* DashboardViewController.swift */; };
 		232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17391F74C80B0053A87D /* MenuViewController.swift */; };
-		232F17421F74C9650053A87D /* CustomerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17411F74C9650053A87D /* CustomerListController.swift */; };
 		232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17431F74C9740053A87D /* OrderManagerViewController.swift */; };
 		232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17451F74C9880053A87D /* SettingListViewController.swift */; };
 		232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17471F74C99B0053A87D /* InfoListViewController.swift */; };
@@ -64,6 +63,10 @@
 		2357222D1F7D58170096A636 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2357221B1F7D58170096A636 /* Roboto-Bold.ttf */; };
 		2357222E1F7D58170096A636 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2357221C1F7D58170096A636 /* Roboto-Thin.ttf */; };
 		2357222F1F7D58170096A636 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2357221D1F7D58170096A636 /* Roboto-Black.ttf */; };
+		2357546F1F85DF53003C8B1F /* PopupOptionGroupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2357546D1F85DF52003C8B1F /* PopupOptionGroupController.xib */; };
+		235754701F85DF53003C8B1F /* PopupOptionGroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357546E1F85DF53003C8B1F /* PopupOptionGroupController.swift */; };
+		235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235754711F863D8D003C8B1F /* CustomerListController.swift */; };
+		235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 235754721F863D8D003C8B1F /* CustomerListController.xib */; };
 		235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235AB34D1F81F6940036ADFA /* Protocols.swift */; };
 		2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */; };
 		2365D4CF1F77A0A100673903 /* ChartStatisticsOrder.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */; };
@@ -78,6 +81,8 @@
 		2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */; };
 		2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */; };
 		23810C311F85338400C0B5C7 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
+		2386CBDC1F865A81005B5F23 /* CustomerListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */; };
+		2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
@@ -132,7 +137,6 @@
 		232D2D031F76CB5200B93B45 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		232F17371F74C7FD0053A87D /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		232F17391F74C80B0053A87D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
-		232F17411F74C9650053A87D /* CustomerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListController.swift; sourceTree = "<group>"; };
 		232F17431F74C9740053A87D /* OrderManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManagerViewController.swift; sourceTree = "<group>"; };
 		232F17451F74C9880053A87D /* SettingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingListViewController.swift; sourceTree = "<group>"; };
 		232F17471F74C99B0053A87D /* InfoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoListViewController.swift; sourceTree = "<group>"; };
@@ -171,6 +175,10 @@
 		2357221B1F7D58170096A636 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		2357221C1F7D58170096A636 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		2357221D1F7D58170096A636 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
+		2357546D1F85DF52003C8B1F /* PopupOptionGroupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopupOptionGroupController.xib; sourceTree = "<group>"; };
+		2357546E1F85DF53003C8B1F /* PopupOptionGroupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupOptionGroupController.swift; sourceTree = "<group>"; };
+		235754711F863D8D003C8B1F /* CustomerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListController.swift; sourceTree = "<group>"; };
+		235754721F863D8D003C8B1F /* CustomerListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListController.xib; sourceTree = "<group>"; };
 		235AB34D1F81F6940036ADFA /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartStatisticsOrder.swift; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.swift"; sourceTree = SOURCE_ROOT; };
 		2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChartStatisticsOrder.xib; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.xib"; sourceTree = SOURCE_ROOT; };
@@ -185,6 +193,8 @@
 		2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarViewController.xib; sourceTree = "<group>"; };
 		237F84B51F72DF73008B4822 /* LocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
+		2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListCell.swift; sourceTree = "<group>"; };
+		2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListCell.xib; sourceTree = "<group>"; };
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
@@ -317,6 +327,8 @@
 				2323238C1F83452A00290926 /* GroupCustomerController.xib */,
 				232537ED1F84BC5E0072F68F /* AddGroupController.swift */,
 				232537EE1F84BC5E0072F68F /* AddGroupController.xib */,
+				2357546E1F85DF53003C8B1F /* PopupOptionGroupController.swift */,
+				2357546D1F85DF52003C8B1F /* PopupOptionGroupController.xib */,
 			);
 			path = GroupCustomerController;
 			sourceTree = "<group>";
@@ -340,7 +352,8 @@
 		2323238A1F83437700290926 /* CustomerListController */ = {
 			isa = PBXGroup;
 			children = (
-				232F17411F74C9650053A87D /* CustomerListController.swift */,
+				235754711F863D8D003C8B1F /* CustomerListController.swift */,
+				235754721F863D8D003C8B1F /* CustomerListController.xib */,
 			);
 			path = CustomerListController;
 			sourceTree = "<group>";
@@ -379,13 +392,6 @@
 			path = DashboardView;
 			sourceTree = "<group>";
 		};
-		232F173D1F74C9020053A87D /* CustomerManageView */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CustomerManageView;
-			sourceTree = "<group>";
-		};
 		232F173E1F74C9130053A87D /* OrderManageView */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,20 +399,6 @@
 				23D31D051F7BE4C600BCD198 /* OrderManageView.xib */,
 			);
 			path = OrderManageView;
-			sourceTree = "<group>";
-		};
-		232F173F1F74C91D0053A87D /* SettingView */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SettingView;
-			sourceTree = "<group>";
-		};
-		232F17401F74C9250053A87D /* CustomerServiceView */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CustomerServiceView;
 			sourceTree = "<group>";
 		};
 		234D77A01F826B7900CC4436 /* MenuDashboardView */ = {
@@ -503,6 +495,24 @@
 				237F84B51F72DF73008B4822 /* LocalService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		2386CBD81F865A43005B5F23 /* Customers */ = {
+			isa = PBXGroup;
+			children = (
+				2386CBD91F865A5A005B5F23 /* CustomerListCell */,
+				2323238F1F834B3500290926 /* GroupCollectCustomerCell */,
+			);
+			path = Customers;
+			sourceTree = "<group>";
+		};
+		2386CBD91F865A5A005B5F23 /* CustomerListCell */ = {
+			isa = PBXGroup;
+			children = (
+				2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */,
+				2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */,
+			);
+			path = CustomerListCell;
 			sourceTree = "<group>";
 		};
 		239CB0DE1F7EB87900E42781 /* CView */ = {
@@ -649,11 +659,8 @@
 		23E1ACBC1F7215FD0042DD44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				2323238F1F834B3500290926 /* GroupCollectCustomerCell */,
-				232F17401F74C9250053A87D /* CustomerServiceView */,
-				232F173F1F74C91D0053A87D /* SettingView */,
+				2386CBD81F865A43005B5F23 /* Customers */,
 				232F173E1F74C9130053A87D /* OrderManageView */,
-				232F173D1F74C9020053A87D /* CustomerManageView */,
 				232F173C1F74C8F50053A87D /* DashboardView */,
 				232F173B1F74C8E50053A87D /* MenuView */,
 				23EA78701F72182A0017E47E /* AuthenticView */,
@@ -807,14 +814,17 @@
 				2357221E1F7D58170096A636 /* Roboto-Medium.ttf in Resources */,
 				2357221F1F7D58170096A636 /* Roboto-Light.ttf in Resources */,
 				2357222F1F7D58170096A636 /* Roboto-Black.ttf in Resources */,
+				2357546F1F85DF53003C8B1F /* PopupOptionGroupController.xib in Resources */,
 				232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */,
 				23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */,
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
+				235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */,
 				235722211F7D58170096A636 /* RobotoCondensed-Light.ttf in Resources */,
 				235722271F7D58170096A636 /* Roboto-ThinItalic.ttf in Resources */,
 				2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */,
 				2357222A1F7D58170096A636 /* Roboto-LightItalic.ttf in Resources */,
 				232F174C1F74CA250053A87D /* MenuListView.xib in Resources */,
+				2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */,
 				2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */,
 				2365D4D81F77B41300673903 /* ChartStatisticsCustomer.xib in Resources */,
 				2357222E1F7D58170096A636 /* Roboto-Thin.ttf in Resources */,
@@ -968,13 +978,15 @@
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
 				230248821F755DF800177679 /* CMessageLabel.swift in Sources */,
+				235754701F85DF53003C8B1F /* PopupOptionGroupController.swift in Sources */,
 				232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */,
 				232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */,
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
 				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
-				232F17421F74C9650053A87D /* CustomerListController.swift in Sources */,
+				235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */,
+				2386CBDC1F865A81005B5F23 /* CustomerListCell.swift in Sources */,
 				232F17461F74C9880053A87D /* SettingListViewController.swift in Sources */,
 				2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */,
 				2365D4D41F77AAC200673903 /* UIImage+Wrap.swift in Sources */,

@@ -12,9 +12,12 @@ class GroupCollectCustomerCell: UICollectionViewCell {
     
     var object:GroupCustomer!
     
+    var onSelectOption: ((Any,GroupCustomer) -> Void)?
+    
     @IBOutlet var icon: CImageViewRoundGradient!
     @IBOutlet var lblTitle: UILabel!
     @IBOutlet var lblSubtitle: UILabel!
+    @IBOutlet var btnOption: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -32,6 +35,7 @@ class GroupCollectCustomerCell: UICollectionViewCell {
             if title == "add_group".localized() {
                 backgroundColor = UIColor.clear
                 icon.image = Support.image.iconFont(code: "\u{f067}", size: icon.frame.size.width*30/100)
+                btnOption.isHidden = true
             }
         }
         
@@ -52,6 +56,12 @@ class GroupCollectCustomerCell: UICollectionViewCell {
         }
     }
     
+    // MARK: - event
+    @IBAction func optionPress(_ sender: Any) {
+        
+        onSelectOption?(sender,object)
+    }
+    
     // MARK: - PRIVATE
     func configView() {
         lblTitle.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
@@ -62,6 +72,7 @@ class GroupCollectCustomerCell: UICollectionViewCell {
         
         object = nil
         lblSubtitle.isHidden = false
+        btnOption.isHidden = false
         lblSubtitle.text = ""
         lblTitle.text = ""
         backgroundColor = UIColor.white

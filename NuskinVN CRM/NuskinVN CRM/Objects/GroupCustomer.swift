@@ -28,5 +28,16 @@ struct GroupCustomer {
     init(id: Int) {
         self.id = id
     }
+    
+    func validAddNewGroup()->Bool {
+        guard name != nil else {
+            return false
+        }
+        if name!.characters.count > 0 && level != nil {
+            return true
+        }
+        
+        return false
+    }
 }
 

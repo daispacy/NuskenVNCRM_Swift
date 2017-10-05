@@ -154,7 +154,7 @@ class BirthdayCustomerListView: UIView, CustomerBlockViewDelegate {
                 return
             }
             
-            Support.showPopupMenu(items: ["test test testse"], sender: self, view: view, selector: #selector(self.sendCongrabBirthday(menuItem:)),showArrow: true)
+            Support.popup.showMenu(items: ["test test testse"], sender: self, view: view, selector: #selector(self.sendCongrabBirthday(menuItem:)),showArrow: true)
         }
     }
 }
@@ -163,7 +163,7 @@ extension BirthdayCustomerListView {
     func CustomerBlockView(didSelect: CustomerBlockView, customer:Customer) {
         customerSelected = customer        
         
-        Support.showPopupMenu(items: ["popup_menu_item_send_birthday".localized()],
+        Support.popup.showMenu(items: ["popup_menu_item_send_birthday".localized()],
                               sender: self,
                               view: didSelect,
                               selector: #selector(self.sendCongrabBirthday(menuItem:)),
