@@ -18,22 +18,27 @@ enum GroupLevel: Int {
 
 struct GroupCustomer {
     let id:Int
+    var store_id:Int
+    var distributor_id:Int
+    var server_id:Int?
     var name:String?
     var social:String?
     var color: String?
-    var level: Int?
+    var position: Int?
     var numberCustomer: Int?
     
     
-    init(id: Int) {
+    init(id: Int, distributor_id:Int,store_id:Int) {
         self.id = id
+        self.distributor_id = distributor_id
+        self.store_id = store_id
     }
     
     func validAddNewGroup()->Bool {
         guard name != nil else {
             return false
         }
-        if name!.characters.count > 0 && level != nil {
+        if name!.characters.count > 0 && position != nil {
             return true
         }
         

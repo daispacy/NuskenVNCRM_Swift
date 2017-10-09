@@ -32,7 +32,7 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
     @IBOutlet fileprivate var txtEmail: CInput!
     @IBOutlet fileprivate var txtPassword: CInput!
     @IBOutlet fileprivate var btnRemember: CButtonWithImage!
-    @IBOutlet fileprivate var btnProcess: CButton!
+    @IBOutlet var btnProcess: CButton!
     @IBOutlet fileprivate var btnGoToResetPassword: UIButton!
     @IBOutlet var lblMEssage: CMessageLabel!
     
@@ -58,6 +58,8 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
         txtPassword.delegate = self
         txtEmail.delegate = self
         txtVNID.delegate = self
+        
+        txtPassword.isSecureTextEntry = true
         
         configView()
         configColor()
@@ -117,31 +119,6 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField){
         activeField = nil
-        if(textField.isEqual(txtEmail) == true) {
-            if(Support.validate.isValidEmailAddress(emailAddressString: textField.text!)) {
-                email = textField.text
-                lblMEssage.isHidden = true
-            } else {
-                lblMEssage .setMessage(msg: "msg_err_email".localized(), icon: "\u{f071}")
-                lblMEssage.isHidden = false
-            }
-        } else if(textField.isEqual(txtPassword) == true){
-            if(Support.validate.isValidPassword(password:textField.text!)){
-                password = textField.text
-                lblMEssage.isHidden = true
-            } else {
-                lblMEssage .setMessage(msg: "msg_err_pw".localized(), icon: "\u{f071}")
-                lblMEssage.isHidden = false
-            }
-        } else if(textField.isEqual(txtVNID) == true){
-            if(Support.validate.isValidVNID(vnid: textField.text!)) {
-                vnid = textField.text
-                lblMEssage.isHidden = true
-            } else {
-                lblMEssage .setMessage(msg: "msg_err_vnid".localized(), icon: "\u{f071}")
-                lblMEssage.isHidden = false
-            }
-        }
     }
     
     func resignTextField() {
@@ -154,11 +131,47 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
         resignTextField()
         
         if(sender.isEqual(btnProcess) == true) {
-            delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:false)
+
+            var stringMessage:String = ""
+            if(Support.validate.isValidEmailAddress(emailAddressString: txtEmail.text!)) {
+                email = txtEmail.text
+            } else {
+                stringMessage.append("msg_err_email".localized())
+            }
+            
+            if type_ == .AUTH_LOGIN {
+                if(Support.validate.isValidPassword(password:txtPassword.text!)){
+                    password = txtPassword.text
+                } else {
+                    if stringMessage.characters.count > 0 {
+                        stringMessage.append("\n\("msg_err_pw".localized())")
+                    } else {
+                        stringMessage.append("msg_err_pw".localized())
+                    }
+                }
+            } else {
+                if(Support.validate.isValidVNID(vnid: txtVNID.text!)) {
+                    vnid = txtVNID.text
+                } else {
+                    if stringMessage.characters.count > 0 {
+                        stringMessage.append("\n\("msg_err_vnid".localized())")
+                    } else {
+                        stringMessage.append("msg_err_vnid".localized())
+                    }
+                }
+            }
+            
+            lblMEssage.setMessage(msg: stringMessage, icon: "\u{f071}")
+            lblMEssage.isHidden = stringMessage.characters.count == 0
+            
+            if lblMEssage.isHidden == true {
+                delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:false)
+            }
         } else if (sender.isEqual(btnGoToResetPassword) == true){
             delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:true)
         }else {
             btnRemember.isSelected = !btnRemember.isSelected
+            AppConfig.setting.setRememerID(isRemember: btnRemember.isSelected)
         }
     }
     

@@ -21,7 +21,7 @@ LocalServiceDelegate {
     
     var listGroups:[GroupCustomer]!
     let defaultItem:GroupCustomer = {
-        var group = GroupCustomer(id: 0)
+        var group = GroupCustomer(id: 0, distributor_id: 0, store_id: 0)
         group.name = "add_group".localized()
         group.color = "0xbec2c5"
         return group
@@ -116,9 +116,12 @@ extension GroupCustomerController {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let obj:GroupCustomer = listGroups![indexPath.row]
-            if obj.id == 0 {
-                showPopupGroup()
-            }
+        if obj.id == 0 {
+            showPopupGroup()
+        } else {
+            let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

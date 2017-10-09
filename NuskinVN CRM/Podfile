@@ -13,6 +13,8 @@ target 'NuskinVN CRM' do
   pod 'Reachability'
   pod 'FontAwesomeKit', '= 2.2.1'
   pod 'Daysquare', :git => 'https://github.com/unixzii/Daysquare.git'
+  pod 'RxSwift',    '= 3.0'
+  pod 'RxCocoa',    '= 3.0'
 
   target 'NuskinVN CRMTests' do
     inherit! :search_paths

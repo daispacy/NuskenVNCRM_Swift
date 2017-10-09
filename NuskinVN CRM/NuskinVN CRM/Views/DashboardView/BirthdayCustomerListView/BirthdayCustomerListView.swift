@@ -55,8 +55,9 @@ class CustomerBlockView: CViewSwitchLanguage {
         guard let data = customer else { return }
         
         object = data
-        
-        lblName.text = "\(data.firstname ?? "") \(data.lastname ?? "")"
+        if let fname = data.fullname {
+            lblName.text = "\(fname)"
+        }
         lblBirthday.text = data.birthday
         imgvAvatar.image = UIImage(named:"checkbox_check")
         
@@ -112,11 +113,11 @@ class BirthdayCustomerListView: UIView, CustomerBlockViewDelegate {
         
         configView()
         
-        reloadListCustomer([Customer(id:10),
-                            Customer(id:10),
-                            Customer(id:10),
-                            Customer(id:10),
-                            Customer(id:10)])
+        reloadListCustomer([Customer(id: 0, distributor_id: 0, store_id: 0),
+                            Customer(id: 0, distributor_id: 0, store_id: 0),
+                            Customer(id: 0, distributor_id: 0, store_id: 0),
+                            Customer(id: 0, distributor_id: 0, store_id: 0),
+                            Customer(id: 0, distributor_id: 0, store_id: 0)])
     }
 
     // MARK: - INTERFACE

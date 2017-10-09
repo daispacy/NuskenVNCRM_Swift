@@ -103,8 +103,7 @@ class CustomAlertController: UIViewController {
     // MARK: - BUTTON EVENT
     @IBAction private func buttonPress(_ sender: UIButton) {
         
-        dismiss(animated: false, completion: nil)
-        
+        dismiss(animated: false, completion: nil)        
         if(sender.isEqual(btnFirst) == true) {
             select_?(0)
         } else {

@@ -8,6 +8,8 @@
 
 import UIKit
 import Localize_Swift
+import RxSwift
+import RxCocoa
 
 class RootViewController: UIViewController {
     

@@ -66,12 +66,12 @@ UITabBarControllerDelegate{
         var sql:String = "select * from customer where (1 > 0) "
         if groupSelected != "all".localized() {
             if let gr = groupSelected {
-                sql.append("AND 'group' = (select id from 'group' where name = '\(gr)') ")
+                sql.append("AND 'group_id' = (select id from 'group' where name = '\(gr)') ")
             }
         }
         if searchText.characters.count > 0 {
             if let text = searchText {
-                sql.append(" AND (firstname like '\(text)' OR lastname like '\(text)%') OR phone like '\(text)%' OR email like '\(text)%'")
+                sql.append(" AND (firstname like '\(text)' OR lastname like '\(text)%') OR tel like '\(text)%' OR email like '\(text)%'")
             }
         }
         print(sql)

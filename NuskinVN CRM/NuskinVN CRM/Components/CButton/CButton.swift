@@ -186,3 +186,29 @@ class CButtonWithImageRight: UIButton {
         imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width-30, 0, 0)
     }
 }
+
+extension UIButton {
+    func startAnimation(activityIndicatorStyle:UIActivityIndicatorViewStyle) {
+        
+        stopAnimation()
+        
+        self.isEnabled = false
+        
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: activityIndicatorStyle)
+        indicator.tag = 10001
+        self.addSubview(indicator)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        indicator.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        indicator.startAnimating()
+    }
+    func stopAnimation() {
+        _ = self.subviews.map({
+            if $0.isKind(of:UIActivityIndicatorView.self) {
+                $0.removeFromSuperview()
+            }
+        })
+        
+        self.isEnabled = true
+    }
+}

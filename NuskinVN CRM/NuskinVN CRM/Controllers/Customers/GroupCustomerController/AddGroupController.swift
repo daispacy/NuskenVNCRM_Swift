@@ -98,17 +98,17 @@ class AddGroupController: UIViewController {
         
         switch sender.tag {
         case 11:
-            group.level = GroupLevel.ten.rawValue
+            group.position = GroupLevel.ten.rawValue
         case 12:
-            group.level = GroupLevel.nine.rawValue
+            group.position = GroupLevel.nine.rawValue
         case 13:
-            group.level = GroupLevel.seven.rawValue
+            group.position = GroupLevel.seven.rawValue
         case 14:
-            group.level = GroupLevel.three.rawValue
+            group.position = GroupLevel.three.rawValue
         case 15:
-            group.level = GroupLevel.one.rawValue
+            group.position = GroupLevel.one.rawValue
         default:
-            group.level = GroupLevel.one.rawValue
+            group.position = GroupLevel.one.rawValue
         }
     }
     
@@ -195,7 +195,7 @@ class AddGroupController: UIViewController {
         containerView.layer.cornerRadius = 12
         containerView.clipsToBounds      = true
         
-        group = GroupCustomer(id: 0)
+        group = GroupCustomer(id: 0, distributor_id: 0, store_id: 0)
     }
     
     func configText() {
@@ -316,7 +316,7 @@ class AddGroupController: UIViewController {
         
         _ = groupLevel.map({
             $0.isSelected = false
-            switch (group!.level!) {
+            switch (group!.position!) {
             case GroupLevel.one.rawValue:
                 if $0.tag == 15 {
                     $0.isSelected = true

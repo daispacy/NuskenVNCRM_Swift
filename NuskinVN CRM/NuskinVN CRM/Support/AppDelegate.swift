@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let ww = window {
             
-            let isLogin:Bool = false
+            let isLogin:Bool = User.isValid()
             if !isLogin {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc

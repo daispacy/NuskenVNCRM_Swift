@@ -11,6 +11,20 @@ import Localize_Swift
 
 class AppConfig: NSObject {
     
+    // MARK: - Other
+    class setting: AppConfig {
+        static func setRememerID(isRemember:Bool) {
+            UserDefaults.standard.setValue(isRemember, forKey: "App:RememberUser")
+            UserDefaults.standard.synchronize()
+        }
+        static func isRememberUser() -> Bool {
+            if let remember =  UserDefaults.standard.value(forKey: "App:RememberUser") as? Bool {
+                return remember
+            }
+            return false
+        }
+    }
+    
     // MARK: - language
     class language: AppConfig {
         static var getCurrentLanguage: String {
