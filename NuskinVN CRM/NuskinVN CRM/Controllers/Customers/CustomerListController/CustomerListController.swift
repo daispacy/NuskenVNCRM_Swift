@@ -30,6 +30,7 @@ UITabBarControllerDelegate{
     let localService:LocalService = LocalService.init()
     var groupSelected:String! = "all".localized()
     var searchText:String! = ""
+    var expandRow:NSInteger = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,11 +72,11 @@ UITabBarControllerDelegate{
         }
         if searchText.characters.count > 0 {
             if let text = searchText {
-                sql.append(" AND (firstname like '\(text)' OR lastname like '\(text)%') OR tel like '\(text)%' OR email like '\(text)%'")
+                sql.append(" AND (fullname like '\(text)' OR tel like '\(text)%' OR email like '\(text)%'")
             }
         }
         print(sql)
-        localService.customSelectSQL(sql: sql)
+        localService.getCustomerWithCustom(sql: sql)
         showLoading(isShow: true, isShowMessage: false)
     }
     
@@ -102,7 +103,7 @@ UITabBarControllerDelegate{
         var listData:[String] = ["all".localized()]
         if listGroup.count > 0 {
             _ = listGroup.map({
-                listData.append($0.name!)
+                listData.append($0.name)
             })
         }
         popupC.show(data: listData, fromView: sender)
@@ -125,14 +126,21 @@ UITabBarControllerDelegate{
 extension CustomerListController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
-        
-        cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit)
+        cell.removeFunctionView()
+        cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit, isSelect:expandRow == indexPath.row)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if expandRow == indexPath.row {
+            return
+        }
+        expandRow = indexPath.row
         
+        self.tableView.beginUpdates()
+        self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
+        self.tableView.endUpdates()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -182,6 +190,8 @@ extension CustomerListController {
 extension CustomerListController {
     func configView() {
         
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = UITableViewAutomaticDimension
         tableView.register(UINib(nibName: "CustomerListCell", bundle: Bundle.main), forCellReuseIdentifier: "cell")
         
         btnFilterGroup.layer.borderWidth = 1.0

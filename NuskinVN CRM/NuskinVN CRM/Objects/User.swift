@@ -19,7 +19,7 @@ struct User {
                 return User(json: ["id":0,"store_id":0, "email":"","username": ""])!
             }
         }
-        return User(json: ["id":0,"store_id":0, "email":"","username": ""])!
+        return User()
         
     }()
     
@@ -27,23 +27,23 @@ struct User {
         return initUser
     }
 
-    let store_id: Int
+    var store_id: Int64? = 0
     
-    let id: Int
+    var id: Int64? = 0
     
-    let username: String
+    var username: String? = ""
     
-    let email: String
+    var email: String? = ""
     
     var fullname: String? = nil
     
     var password: String? = nil
     
-    var type: Int? = 0
+    var type: Int64? = 0
     
     var address: String? = nil
     
-    var status: Int? = 0
+    var status: Int64? = 0
     
     var properties: JSON? = nil
     
@@ -54,7 +54,7 @@ struct User {
     var cell: String? = nil
     
     static func isValid() -> Bool {
-        if currentUser().email.characters.count == 0 || currentUser().id == 0 {
+        if currentUser().email?.characters.count == 0 || currentUser().id == 0 {
             return false
         }
         return AppConfig.setting.isRememberUser() == true
@@ -73,32 +73,32 @@ extension User {
                 return nil
         }
         
-        if let id = json["id"] as? Int {
+        if let id = json["id"] as? Int64 {
             self.id = id
         } else if let id = json["id"] as? String {
-            self.id = Int(id)!
+            self.id = Int64(id)!
         } else {
             return nil
         }
         
-        if let id = json["store_id"] as? Int {
+        if let id = json["store_id"] as? Int64 {
             self.store_id = id
         } else if let id = json["store_id"] as? String {
-            self.store_id = Int(id)!
+            self.store_id = Int64(id)!
         } else {
             return nil
         }
         
-        if let id = json["type"] as? Int {
+        if let id = json["type"] as? Int64 {
             self.type = id
         } else if let id = json["type"] as? String {
-            self.type = Int(id)!
+            self.type = Int64(id)!
         }
         
-        if let id = json["status"] as? Int {
+        if let id = json["status"] as? Int64 {
             self.status = id
         } else if let id = json["status"] as? String {
-            self.status = Int(id)!
+            self.status = Int64(id)!
         }
         
         self.username = username

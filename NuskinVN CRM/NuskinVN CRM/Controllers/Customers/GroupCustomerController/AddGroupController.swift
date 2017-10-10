@@ -72,10 +72,10 @@ class AddGroupController: UIViewController {
     }
     
     @IBAction func addGroup(_ sender: Any) {
-        guard txtName.text!.characters.count > 0 else {
+        guard txtName.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 else {
             return
         }
-        group.name = txtName.text
+        group.name = txtName.text!
         if group.validAddNewGroup() {
             dismissView()
             onAddGroup?(group!)
@@ -195,7 +195,7 @@ class AddGroupController: UIViewController {
         containerView.layer.cornerRadius = 12
         containerView.clipsToBounds      = true
         
-        group = GroupCustomer(id: 0, distributor_id: 0, store_id: 0)
+        group = GroupCustomer(id: 0, distributor_id: User.currentUser().id!, store_id: User.currentUser().store_id!)
     }
     
     func configText() {
@@ -316,7 +316,7 @@ class AddGroupController: UIViewController {
         
         _ = groupLevel.map({
             $0.isSelected = false
-            switch (group!.position!) {
+            switch (group!.position) {
             case GroupLevel.one.rawValue:
                 if $0.tag == 15 {
                     $0.isSelected = true

@@ -30,30 +30,29 @@ class GroupCollectCustomerCell: UICollectionViewCell {
         
         object = data
         
-        if let title = object.name {
-            lblTitle.text = title.uppercased()
-            if title == "add_group".localized() {
-                backgroundColor = UIColor.clear
-                icon.image = Support.image.iconFont(code: "\u{f067}", size: icon.frame.size.width*30/100)
-                btnOption.isHidden = true
-            }
+        
+        lblTitle.text = object.name.uppercased()
+        if object.name == "add_group".localized() {
+            backgroundColor = UIColor.clear
+            icon.image = Support.image.iconFont(code: "\u{f067}", size: icon.frame.size.width*30/100)
+            btnOption.isHidden = true
         }
         
-        if object.numberCustomer != nil {
-            lblSubtitle.text! = "\(object.numberCustomer!)"
-        }
+        
+        lblSubtitle.text! = "\(object.numberCustomer)"
+        
         
         if lblSubtitle.text?.characters.count == 0 {
             lblSubtitle.isHidden = true
         }
         
-        if let color = object.color {
-            if color == "gradient" {
-                icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
-            } else {
-                icon.backgroundColor = UIColor(hex:color)
-            }
+        let color = object.color
+        if color == "gradient" {
+            icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
+        } else {
+            icon.backgroundColor = UIColor(hex:color)
         }
+        
     }
     
     // MARK: - event

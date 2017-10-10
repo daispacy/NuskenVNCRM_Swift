@@ -9,13 +9,12 @@
 import UIKit
 
 class CustomerListCell: UITableViewCell {
-
-    @IBOutlet var stackViewFunction: UIStackView!
     
     @IBOutlet var btnCheck: UIButton!
     @IBOutlet var imgAvatar: CImageViewRoundGradient!
     @IBOutlet var lblName: UILabel!
     @IBOutlet var collectButtonsFunction: [UIButton]!
+    @IBOutlet var stackViewContainer: UIStackView!
     
     var onSelectCustomer:((Customer) -> Void)?
     
@@ -26,17 +25,16 @@ class CustomerListCell: UITableViewCell {
     // MARK: - init
     override func awakeFromNib() {
         super.awakeFromNib()
-        configView()
-        configText()
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
+        isSelect = false
+        isEdit = false
     }
     
     // MARK: - private
     func configView() {
+        
+        backgroundColor = UIColor.white
+        selectedBackgroundView?.backgroundColor = backgroundColor
+        
         lblName.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         lblName.textColor = UIColor(hex:Theme.color.customer.titleGroup)
         
@@ -46,21 +44,36 @@ class CustomerListCell: UITableViewCell {
         if let imageUnCheck = Support.image.iconFont(code: "\u{f096}", size: 24, color:"0xd4d8db") {
             btnCheck.setImage(imageUnCheck, for: .normal)
         }
+        
         btnCheck.isHidden = !isEdit
         
-        stackViewFunction.isHidden = !isSelect
+        if isSelect {
+            
+            let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
+            stackViewContainer.insertArrangedSubview(functionView, at: stackViewContainer.arrangedSubviews.count)
+            
+        }
+    }
+    
+    func removeFunctionView() {
+        _ = stackViewContainer.arrangedSubviews.map({
+            if $0 .isKind(of: FunctionStackViewCustomer.self) {
+                $0.removeFromSuperview()
+            }
+        })
     }
     
     func configText() {
-        isSelect = !isSelect
-        configView()
+        
     }
     
     // MARK: - interface
-    func show(customer:Customer, isEdit:Bool) {
+    func show(customer:Customer, isEdit:Bool,isSelect:Bool) {
         object = customer
         self.isEdit = isEdit
+        self.isSelect = isSelect
         configView()
+        lblName.text = object.fullname
     }
     
     // MARK: - check event
@@ -72,8 +85,22 @@ class CustomerListCell: UITableViewCell {
     
     // MARK: - reuse
     override func prepareForReuse() {
-        super.prepareForReuse()
+        
+        removeFunctionView()
+        
+        object = nil
+        isSelect = false
+        isEdit = false
         configView()
         configText()
+        super.prepareForReuse()
+    }
+}
+
+class FunctionStackViewCustomer: UIView {
+    override func awakeFromNib() {
+        super.awakeFromNib()
+//        translatesAutoresizingMaskIntoConstraints = false
+//        heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
 }

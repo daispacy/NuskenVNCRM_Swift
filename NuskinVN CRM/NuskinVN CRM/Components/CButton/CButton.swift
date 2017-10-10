@@ -188,14 +188,16 @@ class CButtonWithImageRight: UIButton {
 }
 
 extension UIButton {
+    
     func startAnimation(activityIndicatorStyle:UIActivityIndicatorViewStyle) {
+        
+        self.setTitleColor(UIColor.clear, for: .disabled)
         
         stopAnimation()
         
         self.isEnabled = false
-        
+
         let indicator = UIActivityIndicatorView(activityIndicatorStyle: activityIndicatorStyle)
-        indicator.tag = 10001
         self.addSubview(indicator)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true

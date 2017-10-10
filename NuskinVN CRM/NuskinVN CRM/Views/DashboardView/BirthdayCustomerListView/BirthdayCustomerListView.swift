@@ -55,9 +55,9 @@ class CustomerBlockView: CViewSwitchLanguage {
         guard let data = customer else { return }
         
         object = data
-        if let fname = data.fullname {
-            lblName.text = "\(fname)"
-        }
+       
+        lblName.text = "\(data.fullname)"
+        
         lblBirthday.text = data.birthday
         imgvAvatar.image = UIImage(named:"checkbox_check")
         

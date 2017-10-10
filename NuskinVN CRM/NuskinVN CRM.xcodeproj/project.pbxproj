@@ -14,6 +14,7 @@
 		230248821F755DF800177679 /* CMessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230248811F755DF800177679 /* CMessageLabel.swift */; };
 		230248861F7569ED00177679 /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230248841F7569ED00177679 /* CustomAlertController.swift */; };
 		230248871F7569ED00177679 /* CustomAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 230248851F7569ED00177679 /* CustomAlertController.xib */; };
+		230FC7241F8CA66400C51497 /* FunctionStackViewCustomer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */; };
 		231C72141F72BD4F00654621 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C72131F72BD4F00654621 /* RootViewController.swift */; };
 		2323238D1F83452A00290926 /* GroupCustomerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2323238B1F83452A00290926 /* GroupCustomerController.swift */; };
 		2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2323238C1F83452A00290926 /* GroupCustomerController.xib */; };
@@ -131,6 +132,7 @@
 		230248811F755DF800177679 /* CMessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMessageLabel.swift; sourceTree = "<group>"; };
 		230248841F7569ED00177679 /* CustomAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertController.swift; sourceTree = "<group>"; };
 		230248851F7569ED00177679 /* CustomAlertController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAlertController.xib; sourceTree = "<group>"; };
+		230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunctionStackViewCustomer.xib; sourceTree = "<group>"; };
 		231C72131F72BD4F00654621 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		2323238B1F83452A00290926 /* GroupCustomerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCustomerController.swift; sourceTree = "<group>"; };
 		2323238C1F83452A00290926 /* GroupCustomerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupCustomerController.xib; sourceTree = "<group>"; };
@@ -540,6 +542,7 @@
 			children = (
 				2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */,
 				2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */,
+				230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */,
 			);
 			path = CustomerListCell;
 			sourceTree = "<group>";
@@ -846,6 +849,7 @@
 				2357222F1F7D58170096A636 /* Roboto-Black.ttf in Resources */,
 				2357546F1F85DF53003C8B1F /* PopupOptionGroupController.xib in Resources */,
 				232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */,
+				230FC7241F8CA66400C51497 /* FunctionStackViewCustomer.xib in Resources */,
 				23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */,
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
 				235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */,

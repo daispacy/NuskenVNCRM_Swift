@@ -65,6 +65,7 @@ LocalServiceDelegate {
             } else {
                 _ = self.localService.addGroup(obj: group)
             }
+            LocalService.shared().startSyncData()
             self.localService.getAllGroup()
         }
     }
@@ -86,7 +87,10 @@ extension GroupCustomerController {
                     Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {
                         i in
                         if i == 1 {
-                            if self.localService.deleteGroup(object: group) {
+                            var gr = group
+                            gr.status = 0
+                            if self.localService.updateGroup(object: gr) {
+                                LocalService.shared().startSyncData()
                                 self.localService.getAllGroup()
                             }
                         }
