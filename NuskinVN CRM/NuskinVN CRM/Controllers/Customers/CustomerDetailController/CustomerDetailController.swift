@@ -7,19 +7,373 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 class CustomerDetailController: RootViewController {
 
+    @IBOutlet var scrollView: UIScrollView!
+    
+    @IBOutlet var imvAvatar: CImageViewRoundGradient!
+    @IBOutlet var btnChoosePhotos: UIButton!
+    
+    @IBOutlet var collectBrand: [UILabel]!
+    
+    
+    @IBOutlet var txtName: UITextField!
+    @IBOutlet var txtEmail: UITextField!
+    @IBOutlet var btnBirthday: CButtonWithImageRight1!
+    @IBOutlet var txtAddress: UITextField!
+    @IBOutlet var btnGender: CButtonWithImageRight2!
+    @IBOutlet var txtPhone: UITextField!
+    @IBOutlet var txtFacebook: UITextField!
+    @IBOutlet var txtSkype: UITextField!
+    @IBOutlet var txtViber: UITextField!
+    @IBOutlet var txtZalo: UITextField!
+    @IBOutlet var btnDistrict: CButtonWithImageRight2!
+    @IBOutlet var btnCity: CButtonWithImageRight2!
+    @IBOutlet var btnGroup: CButtonWithImageRight2!
+    @IBOutlet var btnProcess: CButtonAlert!
+    @IBOutlet var btnCancel: CButtonAlert!
+    
+    @IBOutlet var lblErrorEmail: UILabel!
+    @IBOutlet var lblErrorName: UILabel!
+    
+    var activeField:UITextField?
+    var tapGesture:UITapGestureRecognizer?
+    var customer:Customer = Customer(id: 0, distributor_id: User.currentUser().id!, store_id: User.currentUser().store_id!)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        title = "add_customer".uppercased().localized()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
+        self.view.addGestureRecognizer(tapGesture!)
+        
+        configView()
+        configText()
+        bindControl()
+    }
+    
+    deinit {
+       self.view.removeGestureRecognizer(tapGesture!)
+    }
+    
+    // MARK: - custom
+    func hideKeyboard() {
+        self.view.endEditing(true)
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        //Need to calculate keyboard exact size due to Apple suggestions        
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect : CGRect = self.view.frame
+        aRect.size.height -= keyboardSize!.height
+        if let activeField = self.activeField {
+            if (!aRect.contains(activeField.frame.origin)){
+                self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
+            }
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        //Once keyboard disappears, restore original positions
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        hideKeyboard()
+    }
+    
+    // MARK: - private
+    private func bindControl() {
+        
+        // validate
+        let funcValidateEmail = Support.validate.self
+        
+        let nameIsValid = txtName.rx.text.orEmpty
+            .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
+            .shareReplay(1)
+        let emailIsValid = txtEmail.rx.text.orEmpty
+            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0)}
+            .shareReplay(1)
+        
+        nameIsValid.bind(to: lblErrorName.rx.isHidden).disposed(by: disposeBag)
+        emailIsValid.bind(to: lblErrorEmail.rx.isHidden).disposed(by: disposeBag)
+        
+        let everythingValid = Observable.combineLatest(nameIsValid, emailIsValid) { $0 && $1 }
+            .shareReplay(1)
+        
+        everythingValid
+            .bind(to: btnProcess.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        //listern data
+        txtName.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.fullname = $0
+        })
+            .disposed(by: disposeBag)
+        
+        txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.email = $0
+        })
+            .disposed(by: disposeBag)
+        
+        txtZalo.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.zalo = $0
+        })
+            .disposed(by: disposeBag)
+        
+        txtPhone.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.tel = $0
+        })
+            .disposed(by: disposeBag)
+        txtSkype.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.skype = $0
+        })
+            .disposed(by: disposeBag)
+        txtViber.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.viber = $0
+        })
+            .disposed(by: disposeBag)
+        txtFacebook.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.facebook = $0
+        })
+            .disposed(by: disposeBag)
+        txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            self?.customer.address = $0
+        })
+            .disposed(by: disposeBag)
+        
+        btnBirthday.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                
+                let datePicker = DatePickerController(nibName: "DatePickerController", bundle: Bundle.main)
+                datePicker.onSelectDate = { date in
+                    self?.customer.birthday = date
+                    self?.btnBirthday.setTitle(date, for: .normal)
+                    self?.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                }
+                self?.present(datePicker, animated: false, completion: {
+                    datePicker.setTitle(title: "select_date".localized())
+                    if let dateStr = self?.customer.birthday {
+                        if dateStr.characters.count > 0 {
+                            datePicker.setDate(date: dateStr.toDate())
+                        }
+                    }
+                })
+            })
+            .disposed(by: disposeBag)
+        
+        btnGroup.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                
+                let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
+                vc.onSelectGroup = {group in
+                    if group.server_id == 0 {
+                        self?.customer.group_id = group.id
+                    } else {
+                        self?.customer.group_id = group.server_id
+                    }
+                    self?.btnGroup.setTitle(group.name, for: .normal)
+                    self?.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                }
+                self?.navigationController?.pushViewController(vc, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        btnChoosePhotos.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                self?.showSelectGetPhotos()
+            })
+            .disposed(by: disposeBag)
+        
+        btnGender.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                let popupC = PopupController(nibName: "PopupController", bundle: Bundle.main)
+                popupC.onSelect = {
+                    item, index in
+                    print("\(item) \(index)")
+                    self?.btnGender.setTitle(item, for: .normal)
+                    self?.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    self?.customer.gender = Int64(index)
+                }
+                popupC.onDismiss = {
+                    self?.btnGender.imageView!.transform = (self?.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi)))!
+                }
+                var topVC = UIApplication.shared.keyWindow?.rootViewController
+                while((topVC!.presentedViewController) != nil){
+                    topVC = topVC!.presentedViewController
+                }
+                topVC?.present(popupC, animated: false, completion: {isDone in
+                    self?.btnGender.imageView!.transform = (self?.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi)))!
+                })
+                popupC.show(data: ["male".localized(),"female".localized()], fromView: (self?.btnGender.superview)!)
+            })
+            .disposed(by: disposeBag)
+        
+        // event process
+        btnProcess.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                print(self?.customer)
+                
+            })
+            .disposed(by: disposeBag)
+        
+        btnCancel.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+                
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func showSelectGetPhotos() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
+            alertController.dismiss(animated: true, completion: nil)
+        }
+        let okAction = UIAlertAction(title: "camera".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+            let imagePickerController = UIImagePickerController()
+            
+            imagePickerController.sourceType = .camera
+            imagePickerController.modalPresentationStyle = .fullScreen
+            imagePickerController.delegate = self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate
+            self.present(imagePickerController, animated: true, completion: nil)
+            
+        }
+        let actionPhotos = UIAlertAction(title: "photo_library".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+            let imagePickerController = UIImagePickerController()
+            
+            imagePickerController.sourceType = .photoLibrary
+            imagePickerController.modalPresentationStyle = .popover
+            imagePickerController.delegate = self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate
+            self.present(imagePickerController, animated: true, completion: nil)
+            
+        }
+        alertController.addAction(cancelAction)
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            alertController.addAction(okAction)
+        }
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            alertController.addAction(actionPhotos)
+        }
+        self.navigationController?.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func configView() {
+        
+        
+        configButton(btnCity)
+        configButton(btnGroup)
+        configButton(btnGender)
+        configButton(btnBirthday)
+        configButton(btnDistrict)
+        
+        configTextfield(txtName)
+        configTextfield(txtEmail)
+        configTextfield(txtPhone)
+        configTextfield(txtSkype)
+        configTextfield(txtViber)
+        configTextfield(txtFacebook)
+        configTextfield(txtZalo)
+        configTextfield(txtAddress)
+        
+        btnProcess.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnProcess.frame, isReverse:true)
+        btnProcess.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
+        btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
+        btnCancel.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
+        btnCancel.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
+        btnCancel.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
+        lblErrorName.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
+        lblErrorEmail.font = lblErrorName.font
+        lblErrorName.textColor = UIColor.red
+        lblErrorEmail.textColor = lblErrorName.textColor
+        
+        _ = collectBrand.map({
+            $0.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
+            $0.textColor = UIColor(hex: Theme.color.customer.subGroup)
+        })
+    }
+    
+    override func configText() {
+        
+        txtName.placeholder = "placeholder_fullname".localized()
+        txtEmail.placeholder = "placeholder_email".localized()
+        btnGender.setTitle("placeholder_gender".localized(), for: .normal)
+        txtPhone.placeholder = "placeholder_phone".localized()
+        txtFacebook.placeholder = "placeholder_facebook".localized()
+        txtSkype.placeholder = "placeholder_skype".localized()
+        txtViber.placeholder = "placeholder_viber".localized()
+        txtZalo.placeholder = "placeholder_zalo".localized()
+        txtAddress.placeholder = "placeholder_address".localized()
+        
+        btnBirthday.setTitle("placeholder_birthday".localized(), for: .normal)
+        btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
+        btnCity.setTitle("placeholder_city".localized(), for: .normal)
+        btnGroup.setTitle("placeholder_group".localized(), for: .normal)
+        
+        if customer.id == 0 {
+            btnProcess.setTitle("add".localized(), for: .normal)
+        } else {
+            btnProcess.setTitle("update".localized(), for: .normal)
+        }
+        
+        btnCancel.setTitle("cancel".localized(), for: .normal)
+        
+        lblErrorEmail.text = "invalid_email".localized()
+        lblErrorName.text = "invalid_fullname".localized()
+        
+        _ = collectBrand.map({
+            $0.text = $0.accessibilityIdentifier?.localized()
+        })
+    }
+    
+    private func configButton(_ button:UIButton, isHolder:Bool = false) {
+        button.setTitleColor(UIColor(hex:"0xC7C7CD"), for: .normal)
+        button.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+    }
+    
+    private func configTextfield(_ textfield:UITextField) {
+        textfield.textColor = UIColor(hex: Theme.color.customer.subGroup)
+        textfield.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+    }
+}
+
+extension CustomerDetailController: UIImagePickerControllerDelegate {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        // Whatever you want here
+        imvAvatar.image = image
+        picker.dismiss(animated: true, completion: nil)
+        let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
+        let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
+        self.customer.tempAvatar = strBase64
     }
 }
 
 class CButtonWithImageRight1: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
-        imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width, 0, 40)
+        imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width-5, 0, 25)
+        titleEdgeInsets = UIEdgeInsetsMake(0, -15, 0, 0)
+    }
+}
+
+class CButtonWithImageRight2: UIButton {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width - 10, 0, 20)
+        titleEdgeInsets = UIEdgeInsetsMake(0, -13, 0, 0)
     }
 }

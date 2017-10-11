@@ -32,7 +32,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) detect Customers nearly</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) embed Photos</string>
+	<string>$(PRODUCT_NAME) get Photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) take a photo</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Medium.ttf</string>

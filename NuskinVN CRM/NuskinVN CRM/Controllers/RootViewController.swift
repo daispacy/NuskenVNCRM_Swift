@@ -13,6 +13,8 @@ import RxCocoa
 
 class RootViewController: UIViewController {
     
+    var disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

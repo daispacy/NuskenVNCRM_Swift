@@ -110,7 +110,7 @@ UITabBarControllerDelegate{
     }
     
     @IBAction func addNewCustomer(_ sender: Any) {
-        let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
+        let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

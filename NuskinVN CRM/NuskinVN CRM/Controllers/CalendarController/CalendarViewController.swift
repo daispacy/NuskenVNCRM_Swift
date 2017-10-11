@@ -11,6 +11,9 @@ import Daysquare
 
 class CalendarViewController: UIViewController {
 
+    
+    var onSelectDate:((String)->Void)?
+    
     var tapGesture:UITapGestureRecognizer?
     @IBOutlet var calendarView: DAYCalendarView!
     @IBOutlet var vwBackGround: UIView!
@@ -54,7 +57,7 @@ class CalendarViewController: UIViewController {
     func didChangeValue (calendar:DAYCalendarView) {
         let formatter = DateFormatter()
         formatter.dateFormat = "YYYY/MM/dd"
-        print("\(formatter.string(from: calendar.selectedDate))")
+        onSelectDate?("\(formatter.string(from: calendar.selectedDate))")        
     }
     
     

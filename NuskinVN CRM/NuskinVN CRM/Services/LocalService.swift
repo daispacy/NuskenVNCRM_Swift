@@ -29,8 +29,6 @@ class LocalService: NSObject,LocalServiceDelegate {
     // MARK: -
     weak var delegate_:LocalServiceDelegate?
     private var db: Connection!
-    var listCustomer:Array<Any>?
-    var listGroup:Array<Any>?
     
     var isSync:Bool = false
     var timerSyncToServer:Timer?
@@ -39,6 +37,7 @@ class LocalService: NSObject,LocalServiceDelegate {
     
     init(db: String) {
         let pathDB = Bundle.main.path(forResource: db, ofType: "db")!
+        print(pathDB)
         do {
             self.db = try Connection(pathDB)
         } catch {
@@ -62,7 +61,7 @@ class LocalService: NSObject,LocalServiceDelegate {
         self.syncToServer()
         
         // loop
-        self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*1, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
+        self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*10, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
     }
     
     // MARK: - Accessors
@@ -111,9 +110,10 @@ class LocalService: NSObject,LocalServiceDelegate {
                 customer.gender = user[20] as! Int64
                 customer.last_login = user[21] as! String
                 customer.date_created = user[22] as! String
+                customer.tempAvatar = user[23] as! String
                 list.append(customer)
             }
-            listCustomer = list
+            
             delegate_?.localService(localService: self, didReceiveData: list, type:.customer)
         } catch {
             print(error.localizedDescription)
@@ -145,6 +145,7 @@ class LocalService: NSObject,LocalServiceDelegate {
         let country = Expression<String?>("country")
         let last_login = Expression<String?>("last_login")
         let date_created = Expression<String?>("date_created")
+        let temp_avatar = Expression<String?>("temp_avatar")
         
         var pro:String = ""
         if object.properties != nil {
@@ -172,7 +173,8 @@ class LocalService: NSObject,LocalServiceDelegate {
                                      server_id <- object.server_id,
                                      facebbook <- object.facebook,
                                      last_login <- object.last_login,
-                                     date_created <- object.date_created)
+                                     date_created <- object.date_created,
+                                     temp_avatar <- object.tempAvatar)
         do {
             try db.run(insert)
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
@@ -208,6 +210,7 @@ class LocalService: NSObject,LocalServiceDelegate {
         let country = Expression<String?>("country")
         let last_login = Expression<String?>("last_login")
         let date_created = Expression<String?>("date_created")
+        let temp_avatar = Expression<String?>("temp_avatar")
         
         var pro:String = ""
         if object.properties != nil {
@@ -238,7 +241,8 @@ class LocalService: NSObject,LocalServiceDelegate {
                                     server_id <- object.server_id,
                                     facebbook <- object.facebook,
                                     last_login <- object.last_login,
-                                    date_created <- object.date_created))
+                                    date_created <- object.date_created,
+                                    temp_avatar <- object.tempAvatar))
             // UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
             // WHERE ("id" = 1)
         } catch {

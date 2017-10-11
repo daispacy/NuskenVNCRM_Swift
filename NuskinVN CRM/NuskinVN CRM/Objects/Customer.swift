@@ -35,6 +35,7 @@ struct Customer {
     var date_created:String = ""
     var properties:JSON?
     var status:Int64 = 0
+    var tempAvatar:String = ""
     
     init(id: Int64, distributor_id:Int64, store_id:Int64) {
         self.id = id
@@ -66,8 +67,15 @@ struct Customer {
             "country":country,
             "last_login":last_login,
             "date_created":date_created,
-            "status":status
+            "status":status,
+            "tempAvatar":tempAvatar
         ]
+    }
+    
+    var getAvatar:UIImage {        
+        let dataDecoded:NSData = NSData(base64Encoded: tempAvatar, options: NSData.Base64DecodingOptions(rawValue: 0))!
+        let decodedimage:UIImage = UIImage(data: dataDecoded as Data)!
+        return decodedimage
     }
 }
 

@@ -31,8 +31,9 @@ class AddGroupController: UIViewController {
     
     var isEdit: Bool!
     
-//    var tapGesture:UITapGestureRecognizer!
+    var tapGesture:UITapGestureRecognizer!
     var group:GroupCustomer!
+    var activeField:UITextField?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -44,7 +45,8 @@ class AddGroupController: UIViewController {
     }
     
     deinit {
-//        vwOverlay.removeGestureRecognizer(tapGesture)
+        vwOverlay.removeGestureRecognizer(tapGesture)
+        NotificationCenter.default.removeObserver(self)
         print("deinit AddGroupController")
     }
     
@@ -55,22 +57,60 @@ class AddGroupController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissView))
-//        vwOverlay.addGestureRecognizer(tapGesture)
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
+        vwOverlay.addGestureRecognizer(tapGesture)
         
         configView()
         configText()
         
         // default gradient => view on xin file to know tag of buttons
         setSelectedColor(tag: 7)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    // MARK: - event
+    // MARK: - custom
+    func hideKeyboard() {
+        txtName.resignFirstResponder()
+    }
+    
     func dismissView () {
         onDismiss?()
         dismiss(animated: false, completion: nil)
     }
     
+    func keyboardWillShow(notification: NSNotification) {
+        //Need to calculate keyboard exact size due to Apple suggestions
+        //        self.scrollVIew.isScrollEnabled = true
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect : CGRect = self.view.frame
+        aRect.size.height -= keyboardSize!.height
+        if let activeField = self.activeField {
+            if (!aRect.contains(activeField.frame.origin)){
+                self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
+            }
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        //Once keyboard disappears, restore original positions
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        hideKeyboard()
+        //        self.scrollVIew.isScrollEnabled = false
+    }
+    
+    // MARK: - event
     @IBAction func addGroup(_ sender: Any) {
         guard txtName.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 else {
             return

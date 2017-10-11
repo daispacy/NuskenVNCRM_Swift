@@ -41,6 +41,7 @@
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BC1F72AD7600B74AB4 /* crm.db */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
+		233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233F78581F8E4C1600EDB1AF /* String+wrap.swift */; };
 		234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A11F826BB500CC4436 /* MenuDashboardView.swift */; };
 		234D77A41F826BEB00CC4436 /* MenuDashboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */; };
 		234D77A81F82742500CC4436 /* PopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A61F82742500CC4436 /* PopupController.swift */; };
@@ -91,6 +92,10 @@
 		23853AA91F8B86B10039D653 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23853AAA1F8B86B20039D653 /* Alamofire.framework */; };
 		2386CBDC1F865A81005B5F23 /* CustomerListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */; };
 		2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */; };
+		238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E5A1F8E5767006C55BF /* DatePickerController.swift */; };
+		238F5E5D1F8E5767006C55BF /* DatePickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 238F5E5B1F8E5767006C55BF /* DatePickerController.xib */; };
+		238F5E5F1F8E8281006C55BF /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E5E1F8E8281006C55BF /* City.swift */; };
+		238F5E611F8E828E006C55BF /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E601F8E828E006C55BF /* Country.swift */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
@@ -161,6 +166,7 @@
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BC1F72AD7600B74AB4 /* crm.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.db; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		233F78581F8E4C1600EDB1AF /* String+wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+wrap.swift"; sourceTree = "<group>"; };
 		234D77A11F826BB500CC4436 /* MenuDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuDashboardView.swift; sourceTree = "<group>"; };
 		234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuDashboardView.xib; sourceTree = "<group>"; };
 		234D77A61F82742500CC4436 /* PopupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupController.swift; sourceTree = "<group>"; };
@@ -211,6 +217,10 @@
 		23853AAA1F8B86B20039D653 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListCell.swift; sourceTree = "<group>"; };
 		2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListCell.xib; sourceTree = "<group>"; };
+		238F5E5A1F8E5767006C55BF /* DatePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerController.swift; sourceTree = "<group>"; };
+		238F5E5B1F8E5767006C55BF /* DatePickerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerController.xib; sourceTree = "<group>"; };
+		238F5E5E1F8E8281006C55BF /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		238F5E601F8E828E006C55BF /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
@@ -289,6 +299,7 @@
 				230248801F755D3000177679 /* Label */,
 				2302487B1F7547A100177679 /* CButton */,
 				230248781F753C4A00177679 /* CInput */,
+				233F78581F8E4C1600EDB1AF /* String+wrap.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -452,6 +463,8 @@
 				2356DFF51F736B1B00134A73 /* GroupCustomer.swift */,
 				2356DFF71F736B3200134A73 /* Customer.swift */,
 				23853AA71F8B853D0039D653 /* User.swift */,
+				238F5E5E1F8E8281006C55BF /* City.swift */,
+				238F5E601F8E828E006C55BF /* Country.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -545,6 +558,15 @@
 				230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */,
 			);
 			path = CustomerListCell;
+			sourceTree = "<group>";
+		};
+		238F5E591F8E5749006C55BF /* DatePickerController */ = {
+			isa = PBXGroup;
+			children = (
+				238F5E5A1F8E5767006C55BF /* DatePickerController.swift */,
+				238F5E5B1F8E5767006C55BF /* DatePickerController.xib */,
+			);
+			path = DatePickerController;
 			sourceTree = "<group>";
 		};
 		239CB0DE1F7EB87900E42781 /* CView */ = {
@@ -673,6 +695,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				238F5E591F8E5749006C55BF /* DatePickerController */,
 				232323891F83435C00290926 /* Dashboard */,
 				232323881F83435100290926 /* Authentic */,
 				232323861F83432E00290926 /* Customers */,
@@ -834,6 +857,7 @@
 				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
 				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
 				2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */,
+				238F5E5D1F8E5767006C55BF /* DatePickerController.xib in Resources */,
 				2357222C1F7D58170096A636 /* Roboto-BlackItalic.ttf in Resources */,
 				2357222D1F7D58170096A636 /* Roboto-Bold.ttf in Resources */,
 				235722261F7D58170096A636 /* RobotoCondensed-LightItalic.ttf in Resources */,
@@ -1021,6 +1045,7 @@
 				235754701F85DF53003C8B1F /* PopupOptionGroupController.swift in Sources */,
 				232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */,
 				232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */,
+				238F5E611F8E828E006C55BF /* Country.swift in Sources */,
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
@@ -1041,6 +1066,7 @@
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
+				238F5E5F1F8E8281006C55BF /* City.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,
 				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
 				23810C311F85338400C0B5C7 /* LocalService.swift in Sources */,
@@ -1048,12 +1074,14 @@
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				232F17441F74C9740053A87D /* OrderManagerViewController.swift in Sources */,
 				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
+				238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */,
 				2353D8DB1F8BA0BE006FCFF1 /* JSON.swift in Sources */,
 				232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */,
 				23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */,
 				234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
 				23853AA61F8B30F50039D653 /* SyncService.swift in Sources */,
+				233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,

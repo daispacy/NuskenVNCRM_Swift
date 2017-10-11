@@ -17,6 +17,7 @@ LocalServiceDelegate {
     @IBOutlet var vwOverlay: UIView!
     @IBOutlet var collectView: UICollectionView!
     
+    var onSelectGroup:((GroupCustomer)->Void)?
     var localService:LocalService!
     
     var listGroups:[GroupCustomer]!
@@ -123,8 +124,8 @@ extension GroupCustomerController {
         if obj.id == 0 {
             showPopupGroup()
         } else {
-            let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-            self.navigationController?.pushViewController(vc, animated: true)
+            onSelectGroup?(obj)
+            self.navigationController?.popViewController(animated: true)
         }
     }
     
