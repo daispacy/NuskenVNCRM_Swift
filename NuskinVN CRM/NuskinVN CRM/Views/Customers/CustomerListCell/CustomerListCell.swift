@@ -16,7 +16,7 @@ class CustomerListCell: UITableViewCell {
     @IBOutlet var collectButtonsFunction: [UIButton]!
     @IBOutlet var stackViewContainer: UIStackView!
     
-    var onSelectCustomer:((Customer) -> Void)?
+    var onSelectCustomer:((Customer, Bool) -> Void)?
     
     var isEdit:Bool = false
     var object:Customer!
@@ -27,6 +27,18 @@ class CustomerListCell: UITableViewCell {
         super.awakeFromNib()
         isSelect = false
         isEdit = false
+        
+        let bgColorView = UIView()
+        let btLine = UIView()
+        bgColorView.addSubview(btLine)
+        btLine.backgroundColor = UIColor(hex:"0xEBEBF1")
+        btLine.translatesAutoresizingMaskIntoConstraints = false
+        btLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        btLine.leadingAnchor.constraint(equalTo: bgColorView.leadingAnchor, constant: 40).isActive = true
+        btLine.trailingAnchor.constraint(equalTo: bgColorView.trailingAnchor, constant: 0).isActive = true
+        btLine.bottomAnchor.constraint(equalTo: bgColorView.bottomAnchor, constant: 0).isActive = true
+        bgColorView.backgroundColor = UIColor.clear
+        selectedBackgroundView = bgColorView
     }
     
     // MARK: - private
@@ -38,10 +50,10 @@ class CustomerListCell: UITableViewCell {
         lblName.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         lblName.textColor = UIColor(hex:Theme.color.customer.titleGroup)
         
-        if let imageCheck = Support.image.iconFont(code: "\u{f14a}", size: 24, color:"0xd4d8db") {
+        if let imageCheck = Support.image.iconFont(code: "\u{f14a}", size: 24, color:"0x71757A") {
             btnCheck.setImage(imageCheck, for: .selected)
         }
-        if let imageUnCheck = Support.image.iconFont(code: "\u{f096}", size: 24, color:"0xd4d8db") {
+        if let imageUnCheck = Support.image.iconFont(code: "\u{f096}", size: 24, color:"0x71757A") {
             btnCheck.setImage(imageUnCheck, for: .normal)
         }
         
@@ -76,18 +88,22 @@ class CustomerListCell: UITableViewCell {
         lblName.text = object.fullname
     }
     
+    func setSelect() {
+        btnCheck.isSelected = !btnCheck.isSelected
+        onSelectCustomer?(object,btnCheck.isSelected)
+    }
+    
     // MARK: - check event
     @IBAction func pressCheck(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        onSelectCustomer?(object)
+        onSelectCustomer?(object,sender.isSelected)
     }
     
     
     // MARK: - reuse
     override func prepareForReuse() {
-        
         removeFunctionView()
-        
+        btnCheck.isSelected = false
         object = nil
         isSelect = false
         isEdit = false

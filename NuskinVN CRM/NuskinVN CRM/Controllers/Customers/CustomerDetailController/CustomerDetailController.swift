@@ -222,9 +222,12 @@ class CustomerDetailController: RootViewController {
             .disposed(by: disposeBag)
         
         // event process
+        let localService = LocalService.shared()
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
-                print(self?.customer)
+                if localService.addCustomer(object: (self?.customer)!) {
+                    self?.navigationController?.popToRootViewController(animated: true)
+                }
                 
             })
             .disposed(by: disposeBag)

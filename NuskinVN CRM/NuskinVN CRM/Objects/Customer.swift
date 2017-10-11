@@ -34,7 +34,7 @@ struct Customer {
     var last_login:String = ""
     var date_created:String = ""
     var properties:JSON?
-    var status:Int64 = 0
+    var status:Int64 = 1
     var tempAvatar:String = ""
     
     init(id: Int64, distributor_id:Int64, store_id:Int64) {

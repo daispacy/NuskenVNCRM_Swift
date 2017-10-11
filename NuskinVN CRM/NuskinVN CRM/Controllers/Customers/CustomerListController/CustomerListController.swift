@@ -28,9 +28,10 @@ UITabBarControllerDelegate{
     var listCustomer:[Customer] = []
     var listGroup:[GroupCustomer] = []
     let localService:LocalService = LocalService.init()
-    var groupSelected:String! = "all".localized()
+    var groupSelected:GroupCustomer! = GroupCustomer.init(id: 0, distributor_id: 0, store_id: 0)
     var searchText:String! = ""
     var expandRow:NSInteger = -1
+    var listCustomerSelected:[Customer] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,20 +65,27 @@ UITabBarControllerDelegate{
     
     func refreshListCustomer() {
         
-        var sql:String = "select * from customer where (1 > 0) "
-        if groupSelected != "all".localized() {
+        self.listCustomer.removeAll()
+        self.tableView.reloadData()
+        
+        var sql:String = "select * from `customer` where (`status` = '1') "
+        if groupSelected.id != 0 {
             if let gr = groupSelected {
-                sql.append("AND 'group_id' = (select id from 'group' where name = '\(gr)') ")
+                if gr.server_id > 0 {
+                    sql.append("AND (`server_id` = '\(gr.server_id)')")
+                } else {
+                    sql.append("AND (`group_id` = '\(gr.id)')")
+                }
             }
         }
         if searchText.characters.count > 0 {
             if let text = searchText {
-                sql.append(" AND (fullname like '\(text)' OR tel like '\(text)%' OR email like '\(text)%'")
+                sql.append(" AND (`fullname` like '\(text)%' OR `tel` like '\(text)%' OR `email` like '\(text)%')")
             }
         }
         print(sql)
-        localService.getCustomerWithCustom(sql: sql)
         showLoading(isShow: true, isShowMessage: false)
+        localService.getCustomerWithCustom(sql: sql)
     }
     
     // MARK: - event button
@@ -86,7 +94,11 @@ UITabBarControllerDelegate{
         popupC.onSelect = {
             item, index in
             print("\(item) \(index)")
-            self.groupSelected = item
+            if index > 0 {
+                self.groupSelected = self.listGroup[index-1]
+            } else {
+                self.groupSelected = GroupCustomer(id: 0, distributor_id: 0, store_id: 0)
+            }
             self.btnFilterGroup.setTitle(item, for: .normal)
             self.refreshListCustomer()
         }
@@ -116,8 +128,27 @@ UITabBarControllerDelegate{
     
     @IBAction func checkOrDeleteCustomers(_ sender: Any) {
         isEdit = !isEdit
+        if !isEdit {
+            if self.listCustomerSelected.count > 0 {
+                Support.popup.showAlert(message: "would_you_like_delete_customers?".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {
+                    i in
+                    if i == 1 {
+                        _ = self.listCustomerSelected.map({
+                            var cus = $0
+                            cus.status = 0
+                            LocalService.shared().updateCustomer(object: cus)
+                        })
+                        self.listCustomerSelected.removeAll()
+                        self.configView()
+                        self.refreshListCustomer()
+                    } else {
+                        self.listCustomerSelected.removeAll()
+                    }
+                })
+            }
+        }
         configView()
-        tableView.reloadData()
+        refreshListCustomer()
     }
     
 }
@@ -128,19 +159,34 @@ extension CustomerListController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
         cell.removeFunctionView()
         cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit, isSelect:expandRow == indexPath.row)
+        cell.onSelectCustomer = { customer, isAdd in
+            if isAdd {
+                self.listCustomerSelected.append(customer)
+            } else {
+                self.listCustomerSelected = self.listCustomerSelected.filter{ $0.id != customer.id }
+            }
+            print(self.listCustomerSelected)
+        }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if expandRow == indexPath.row {
-            return
+        if isEdit {
+            let cell = tableView.cellForRow(at: indexPath) as! CustomerListCell
+            cell.setSelect()
+        } else {
+            if expandRow == indexPath.row {
+                // reset expand
+                expandRow = -1
+            } else {
+                expandRow = indexPath.row
+            }
+            
+            self.tableView.beginUpdates()
+            self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
+            self.tableView.endUpdates()
         }
-        expandRow = indexPath.row
-        
-        self.tableView.beginUpdates()
-        self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
-        self.tableView.endUpdates()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -220,7 +266,7 @@ extension CustomerListController {
     
     func showLoading(isShow:Bool,isShowMessage:Bool) {
         
-        //        lblMessageData.isHidden = !isShowMessage
+        lblMessageData.isHidden = !isShowMessage
         
         if isShow {
             indicatorLoading.startAnimating()

@@ -89,19 +89,19 @@ class LocalService: NSObject,LocalServiceDelegate {
         do {
             var list:Array<Customer> = []
             for user in try db.prepare(sql!) {
-                var customer = Customer(id: user[0] as! Int64, distributor_id:user[1] as! Int64, store_id:user[14] as! Int64)
-                customer.group_id = user[2] as! Int64
-                customer.status = user[12] as! Int64
-                customer.type = user[6] as! Int64
-                customer.fullname = user[3] as! String
-                customer.email = user[4] as! String
-                customer.tel = user[5] as! String
-                customer.birthday = user[7] as! String
-                customer.skype = user[8] as! String
-                customer.company = user[9] as! String
-                customer.address = user[10] as! String
-                customer.properties = user[11] as? JSON
-                customer.server_id = user[13] as! Int64
+                var customer = Customer(id: user[0] as! Int64, distributor_id:user[14] as! Int64, store_id:user[13] as! Int64)
+                customer.group_id = user[1] as! Int64
+                customer.status = user[11] as! Int64
+                customer.type = user[5] as! Int64
+                customer.fullname = user[2] as! String
+                customer.email = user[3] as! String
+                customer.tel = user[4] as! String
+                customer.birthday = user[6] as! String
+                customer.skype = user[7] as! String
+                customer.company = user[8] as! String
+                customer.address = user[9] as! String
+                customer.properties = user[10] as? JSON
+                customer.server_id = user[12] as! Int64
                 customer.area_id = user[15] as! Int64
                 customer.viber = user[16] as! String
                 customer.zalo = user[17] as! String
@@ -111,6 +111,7 @@ class LocalService: NSObject,LocalServiceDelegate {
                 customer.last_login = user[21] as! String
                 customer.date_created = user[22] as! String
                 customer.tempAvatar = user[23] as! String
+                customer.facebook = user[24] as! String
                 list.append(customer)
             }
             
@@ -139,7 +140,7 @@ class LocalService: NSObject,LocalServiceDelegate {
         let viber = Expression<String?>("viber")
         let zalo = Expression<String?>("zalo")
         let skype = Expression<String?>("skype")
-        let facebbook = Expression<String?>("facebbook")
+        let facebbook = Expression<String?>("facebook")
         let gender = Expression<Int64>("gender")
         let city = Expression<String?>("city")
         let country = Expression<String?>("country")
@@ -204,7 +205,7 @@ class LocalService: NSObject,LocalServiceDelegate {
         let viber = Expression<String?>("viber")
         let zalo = Expression<String?>("zalo")
         let skype = Expression<String?>("skype")
-        let facebbook = Expression<String?>("facebbook")
+        let facebbook = Expression<String?>("facebook")
         let gender = Expression<Int64>("gender")
         let city = Expression<String?>("city")
         let country = Expression<String?>("country")
