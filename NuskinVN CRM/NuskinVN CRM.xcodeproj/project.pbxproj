@@ -38,8 +38,8 @@
 		2335A2311F7DEA7200D8A47E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2335A2301F7DEA7200D8A47E /* Launch Screen.storyboard */; };
 		2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2336C5771F875ED00008DE86 /* CustomerDetailController.swift */; };
 		2336C57A1F875ED00008DE86 /* CustomerDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2336C5781F875ED00008DE86 /* CustomerDetailController.xib */; };
+		23384C3B1F90F46100DCAC53 /* crm.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 23384C3A1F90F46100DCAC53 /* crm.sqlite */; };
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
-		2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BC1F72AD7600B74AB4 /* crm.db */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
 		233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233F78581F8E4C1600EDB1AF /* String+wrap.swift */; };
 		234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A11F826BB500CC4436 /* MenuDashboardView.swift */; };
@@ -74,6 +74,8 @@
 		235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235754711F863D8D003C8B1F /* CustomerListController.swift */; };
 		235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 235754721F863D8D003C8B1F /* CustomerListController.xib */; };
 		235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235AB34D1F81F6940036ADFA /* Protocols.swift */; };
+		2365131C1F8FD4DE006076BF /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365131B1F8FD4DE006076BF /* City.swift */; };
+		2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365131D1F8FE2DF006076BF /* DeepLink.swift */; };
 		2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */; };
 		2365D4CF1F77A0A100673903 /* ChartStatisticsOrder.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */; };
 		2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4D01F77A9C700673903 /* CButtonChart.swift */; };
@@ -94,8 +96,6 @@
 		2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */; };
 		238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E5A1F8E5767006C55BF /* DatePickerController.swift */; };
 		238F5E5D1F8E5767006C55BF /* DatePickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 238F5E5B1F8E5767006C55BF /* DatePickerController.xib */; };
-		238F5E5F1F8E8281006C55BF /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E5E1F8E8281006C55BF /* City.swift */; };
-		238F5E611F8E828E006C55BF /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E601F8E828E006C55BF /* Country.swift */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
@@ -106,6 +106,8 @@
 		23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF8131F7207FC0016DBDF /* AppDelegate.swift */; };
 		23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23CAF81D1F7207FC0016DBDF /* Assets.xcassets */; };
 		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
+		23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2FB931F8F79F5002EA64E /* SimpleListController.swift */; };
+		23D2FB961F8F79F6002EA64E /* SimpleListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D2FB941F8F79F5002EA64E /* SimpleListController.xib */; };
 		23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */; };
 		23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D31D051F7BE4C600BCD198 /* OrderManageView.xib */; };
 		23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DEDE381F72CBD7003D4097 /* AppConfig.swift */; };
@@ -116,6 +118,7 @@
 		23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA78751F72301E0017E47E /* AuthenticViewController.swift */; };
 		23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F09A1F1F780BB1005654F0 /* PoupMenu.swift */; };
 		23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */; };
+		23F68B111F90D243007B94EE /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F68B101F90D243007B94EE /* libsqlite3.0.tbd */; };
 		41179C7AAAECBD6682B70CD1 /* Pods_NuskinVN_CRMTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -161,10 +164,10 @@
 		2335A2301F7DEA7200D8A47E /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		2336C5771F875ED00008DE86 /* CustomerDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailController.swift; sourceTree = "<group>"; };
 		2336C5781F875ED00008DE86 /* CustomerDetailController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerDetailController.xib; sourceTree = "<group>"; };
+		23384C3A1F90F46100DCAC53 /* crm.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.sqlite; sourceTree = "<group>"; };
 		2338A2B31F72A92700B74AB4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2338A2B91F72AA5800B74AB4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		2338A2BC1F72AD7600B74AB4 /* crm.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.db; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		233F78581F8E4C1600EDB1AF /* String+wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+wrap.swift"; sourceTree = "<group>"; };
 		234D77A11F826BB500CC4436 /* MenuDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuDashboardView.swift; sourceTree = "<group>"; };
@@ -199,6 +202,8 @@
 		235754711F863D8D003C8B1F /* CustomerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListController.swift; sourceTree = "<group>"; };
 		235754721F863D8D003C8B1F /* CustomerListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListController.xib; sourceTree = "<group>"; };
 		235AB34D1F81F6940036ADFA /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		2365131B1F8FD4DE006076BF /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		2365131D1F8FE2DF006076BF /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartStatisticsOrder.swift; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.swift"; sourceTree = SOURCE_ROOT; };
 		2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChartStatisticsOrder.xib; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.xib"; sourceTree = SOURCE_ROOT; };
 		2365D4D01F77A9C700673903 /* CButtonChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CButtonChart.swift; sourceTree = "<group>"; };
@@ -219,8 +224,6 @@
 		2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListCell.xib; sourceTree = "<group>"; };
 		238F5E5A1F8E5767006C55BF /* DatePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerController.swift; sourceTree = "<group>"; };
 		238F5E5B1F8E5767006C55BF /* DatePickerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerController.xib; sourceTree = "<group>"; };
-		238F5E5E1F8E8281006C55BF /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
-		238F5E601F8E828E006C55BF /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
@@ -235,6 +238,8 @@
 		23CAF8271F7207FC0016DBDF /* NuskinVN CRMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NuskinVN CRMTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuskinVN_CRMTests.swift; sourceTree = "<group>"; };
 		23CAF82D1F7207FC0016DBDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		23D2FB931F8F79F5002EA64E /* SimpleListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleListController.swift; sourceTree = "<group>"; };
+		23D2FB941F8F79F5002EA64E /* SimpleListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SimpleListController.xib; sourceTree = "<group>"; };
 		23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManageView.swift; sourceTree = "<group>"; };
 		23D31D051F7BE4C600BCD198 /* OrderManageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderManageView.xib; sourceTree = "<group>"; };
 		23DEDE381F72CBD7003D4097 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -245,6 +250,7 @@
 		23EA78751F72301E0017E47E /* AuthenticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticViewController.swift; sourceTree = "<group>"; };
 		23F09A1F1F780BB1005654F0 /* PoupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoupMenu.swift; sourceTree = "<group>"; };
 		23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Wrap.swift"; sourceTree = "<group>"; };
+		23F68B101F90D243007B94EE /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.release.xcconfig"; sourceTree = "<group>"; };
 		C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRM.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM.debug.xcconfig"; sourceTree = "<group>"; };
@@ -257,12 +263,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23F68B111F90D243007B94EE /* libsqlite3.0.tbd in Frameworks */,
+				2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */,
 				23853AA91F8B86B10039D653 /* Alamofire.framework in Frameworks */,
 				2372E9851F7FD7E600B4F0AB /* Daysquare.framework in Frameworks */,
 				23E146E51F796FF900ECCC32 /* Reachability.framework in Frameworks */,
 				23E146E31F796FF200ECCC32 /* FontAwesomeKit.framework in Frameworks */,
 				232D2CFE1F76C7BD00B93B45 /* SystemConfiguration.framework in Frameworks */,
-				2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */,
 				0FA6BF581FF292F7B044A7F1 /* Pods_NuskinVN_CRM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -292,14 +299,15 @@
 		230248771F753C4100177679 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				233F78581F8E4C1600EDB1AF /* String+wrap.swift */,
+				2365D4D31F77AAC200673903 /* UIImage+Wrap.swift */,
+				2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */,
+				23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */,
 				239CB0DE1F7EB87900E42781 /* CView */,
 				23F09A1E1F780B93005654F0 /* PopupMenu */,
-				2365D4D21F77AAA700673903 /* UIImage */,
-				23F0E0CE1F76C310007D3A19 /* Color */,
 				230248801F755D3000177679 /* Label */,
 				2302487B1F7547A100177679 /* CButton */,
 				230248781F753C4A00177679 /* CInput */,
-				233F78581F8E4C1600EDB1AF /* String+wrap.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -460,11 +468,11 @@
 		2356DFF41F736AAC00134A73 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				2365131B1F8FD4DE006076BF /* City.swift */,
 				2356DFF51F736B1B00134A73 /* GroupCustomer.swift */,
 				2356DFF71F736B3200134A73 /* Customer.swift */,
 				23853AA71F8B853D0039D653 /* User.swift */,
-				238F5E5E1F8E8281006C55BF /* City.swift */,
-				238F5E601F8E828E006C55BF /* Country.swift */,
+				2365131D1F8FE2DF006076BF /* DeepLink.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -500,15 +508,6 @@
 				235AB34D1F81F6940036ADFA /* Protocols.swift */,
 			);
 			path = Protocols;
-			sourceTree = "<group>";
-		};
-		2365D4D21F77AAA700673903 /* UIImage */ = {
-			isa = PBXGroup;
-			children = (
-				2365D4D31F77AAC200673903 /* UIImage+Wrap.swift */,
-				2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */,
-			);
-			path = UIImage;
 			sourceTree = "<group>";
 		};
 		2365D4D91F77C81700673903 /* BirthdayCustomerListView */ = {
@@ -667,6 +666,15 @@
 			path = "NuskinVN CRMTests";
 			sourceTree = "<group>";
 		};
+		23D2FB921F8F79C4002EA64E /* SimpleListController */ = {
+			isa = PBXGroup;
+			children = (
+				23D2FB931F8F79F5002EA64E /* SimpleListController.swift */,
+				23D2FB941F8F79F5002EA64E /* SimpleListController.xib */,
+			);
+			path = SimpleListController;
+			sourceTree = "<group>";
+		};
 		23DEDE371F72CBB8003D4097 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -680,8 +688,8 @@
 		23E1ACBA1F7215D90042DD44 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				23384C3A1F90F46100DCAC53 /* crm.sqlite */,
 				2357220B1F7D58170096A636 /* Font */,
-				2338A2BC1F72AD7600B74AB4 /* crm.db */,
 				23CAF81D1F7207FC0016DBDF /* Assets.xcassets */,
 				23CAF8221F7207FC0016DBDF /* Info.plist */,
 				23CAF8131F7207FC0016DBDF /* AppDelegate.swift */,
@@ -695,6 +703,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				23D2FB921F8F79C4002EA64E /* SimpleListController */,
 				238F5E591F8E5749006C55BF /* DatePickerController */,
 				232323891F83435C00290926 /* Dashboard */,
 				232323881F83435100290926 /* Authentic */,
@@ -740,17 +749,10 @@
 			path = PopupMenu;
 			sourceTree = "<group>";
 		};
-		23F0E0CE1F76C310007D3A19 /* Color */ = {
-			isa = PBXGroup;
-			children = (
-				23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */,
-			);
-			path = Color;
-			sourceTree = "<group>";
-		};
 		E2E3A72B501FF952DC187C8F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				23F68B101F90D243007B94EE /* libsqlite3.0.tbd */,
 				23853AAA1F8B86B20039D653 /* Alamofire.framework */,
 				2372E9861F7FD7E600B4F0AB /* Daysquare.framework */,
 				23E146E61F796FF900ECCC32 /* Reachability.framework */,
@@ -856,6 +858,7 @@
 				2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */,
 				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
 				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
+				23D2FB961F8F79F6002EA64E /* SimpleListController.xib in Resources */,
 				2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */,
 				238F5E5D1F8E5767006C55BF /* DatePickerController.xib in Resources */,
 				2357222C1F7D58170096A636 /* Roboto-BlackItalic.ttf in Resources */,
@@ -864,9 +867,9 @@
 				2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */,
 				23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */,
 				2335A2311F7DEA7200D8A47E /* Launch Screen.storyboard in Resources */,
+				23384C3B1F90F46100DCAC53 /* crm.sqlite in Resources */,
 				232323931F834B7B00290926 /* GroupCollectCustomerCell.xib in Resources */,
 				235722291F7D58170096A636 /* Roboto-BoldItalic.ttf in Resources */,
-				2338A2BD1F72AD7600B74AB4 /* crm.db in Resources */,
 				23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */,
 				2357221E1F7D58170096A636 /* Roboto-Medium.ttf in Resources */,
 				2357221F1F7D58170096A636 /* Roboto-Light.ttf in Resources */,
@@ -928,6 +931,7 @@
 				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SQLCipher/SQLCipher.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -940,6 +944,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLCipher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1045,7 +1050,6 @@
 				235754701F85DF53003C8B1F /* PopupOptionGroupController.swift in Sources */,
 				232F173A1F74C80B0053A87D /* MenuViewController.swift in Sources */,
 				232F17481F74C99B0053A87D /* InfoListViewController.swift in Sources */,
-				238F5E611F8E828E006C55BF /* Country.swift in Sources */,
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
@@ -1066,7 +1070,6 @@
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
-				238F5E5F1F8E8281006C55BF /* City.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,
 				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
 				23810C311F85338400C0B5C7 /* LocalService.swift in Sources */,
@@ -1084,9 +1087,12 @@
 				233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
+				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
 				232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */,
+				2365131C1F8FD4DE006076BF /* City.swift in Sources */,
+				23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,
 				23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */,
 			);

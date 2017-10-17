@@ -25,6 +25,64 @@ class AppConfig: NSObject {
         }
     }
     
+    // MARK: - deeplink
+    class deeplink:AppConfig {
+        static func setZalo(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Zalo")
+            UserDefaults.standard.synchronize()
+        }
+        static func zalo() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Zalo") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setViber(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Viber")
+            UserDefaults.standard.synchronize()
+        }
+        static func viber() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Viber") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setSkype(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Skype")
+            UserDefaults.standard.synchronize()
+        }
+        static func skype() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Skype") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setFacebook(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Facebook")
+            UserDefaults.standard.synchronize()
+        }
+        static func facebook() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Facebook") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setFacebookGroup(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:FacebookGroup")
+            UserDefaults.standard.synchronize()
+        }
+        static func facebookGroup() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:FacebookGroup") {
+                return str as! String
+            }
+            return ""
+        }
+    }
+    
     // MARK: - language
     class language: AppConfig {
         static var getCurrentLanguage: String {
@@ -52,6 +110,9 @@ class AppConfig: NSObject {
     // MARK: - navigation
     class navigation: AppConfig {
         static func gotoDashboardAfterSigninSuccess() {
+            
+            //start service if signin Success
+            LocalService.shared().startSyncData()
             
             let vc:UITabBarController = UITabBarController.init()
             

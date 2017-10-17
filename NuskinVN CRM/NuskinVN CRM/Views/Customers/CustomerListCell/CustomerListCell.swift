@@ -7,20 +7,26 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class CustomerListCell: UITableViewCell {
     
     @IBOutlet var btnCheck: UIButton!
     @IBOutlet var imgAvatar: CImageViewRoundGradient!
     @IBOutlet var lblName: UILabel!
-    @IBOutlet var collectButtonsFunction: [UIButton]!
     @IBOutlet var stackViewContainer: UIStackView!
+    @IBOutlet var btnEdit: UIButton!
+    
     
     var onSelectCustomer:((Customer, Bool) -> Void)?
+    var onEditCustomer:((Customer) -> Void)?
     
     var isEdit:Bool = false
     var object:Customer!
     var isSelect:Bool = false
+    var isChecked:Bool = false
+    var disposeBag = DisposeBag()
     
     // MARK: - init
     override func awakeFromNib() {
@@ -39,6 +45,10 @@ class CustomerListCell: UITableViewCell {
         btLine.bottomAnchor.constraint(equalTo: bgColorView.bottomAnchor, constant: 0).isActive = true
         bgColorView.backgroundColor = UIColor.clear
         selectedBackgroundView = bgColorView
+        
+        btnEdit.rx.tap.subscribe(onNext:{ [weak self] in
+            self?.onEditCustomer?((self?.object)!)
+        }).disposed(by: disposeBag)
     }
     
     // MARK: - private
@@ -58,10 +68,29 @@ class CustomerListCell: UITableViewCell {
         }
         
         btnCheck.isHidden = !isEdit
+        btnCheck.isSelected = isChecked
         
         if isSelect {
             
             let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
+            functionView.btnViber.isHidden = self.object.viber.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
+            functionView.btnSkype.isHidden = self.object.skype.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
+            functionView.btnZalo.isHidden = self.object.zalo.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
+            functionView.btnFacebook.isHidden = self.object.facebook.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
+            
+            functionView.onSelectFunction = {[weak self]
+                identifier in
+                print("open \(identifier)")
+                if identifier == "facebook" {
+                    
+                } else if identifier == "skype" {
+                    
+                } else if identifier == "viber" {
+                    
+                } else if identifier == "zalo" {
+                    
+                }
+            }
             stackViewContainer.insertArrangedSubview(functionView, at: stackViewContainer.arrangedSubviews.count)
             
         }
@@ -80,16 +109,21 @@ class CustomerListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(customer:Customer, isEdit:Bool,isSelect:Bool) {
+    func show(customer:Customer, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = customer
         self.isEdit = isEdit
         self.isSelect = isSelect
+        self.isChecked = isChecked
         configView()
         lblName.text = object.fullname
+        if object.getAvatar != UIImage() {
+            imgAvatar.image = object.getAvatar
+        }
     }
     
     func setSelect() {
         btnCheck.isSelected = !btnCheck.isSelected
+        self.isChecked = btnCheck.isSelected
         onSelectCustomer?(object,btnCheck.isSelected)
     }
     
@@ -105,6 +139,7 @@ class CustomerListCell: UITableViewCell {
         removeFunctionView()
         btnCheck.isSelected = false
         object = nil
+        isChecked = false
         isSelect = false
         isEdit = false
         configView()
@@ -114,9 +149,30 @@ class CustomerListCell: UITableViewCell {
 }
 
 class FunctionStackViewCustomer: UIView {
+    
+    @IBOutlet var btnFacebook: UIButton!
+    @IBOutlet var btnZalo: UIButton!
+    @IBOutlet var btnSkype: UIButton!
+    @IBOutlet var btnViber: UIButton!
+    
+    var onSelectFunction:((String)->Void)?
+    
+    var disposeBag = DisposeBag()
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-//        translatesAutoresizingMaskIntoConstraints = false
-//        heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+        btnFacebook.rx.tap.subscribe(onNext: { [weak self] in
+            self?.onSelectFunction?("facebook")
+            }).disposed(by: disposeBag)
+        btnZalo.rx.tap.subscribe(onNext: {[weak self] in
+            self?.onSelectFunction?("zalo")
+        }).disposed(by: disposeBag)
+        btnSkype.rx.tap.subscribe(onNext: {[weak self] in
+            self?.onSelectFunction?("skype")
+        }).disposed(by: disposeBag)
+        btnViber.rx.tap.subscribe(onNext: {[weak self] in
+            self?.onSelectFunction?("viber")
+        }).disposed(by: disposeBag)
     }
 }

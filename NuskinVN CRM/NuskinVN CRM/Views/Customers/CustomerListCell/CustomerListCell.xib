@@ -47,11 +47,18 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z2b-Em-2bi">
-                                        <rect key="frame" x="90" y="0.0" width="200" height="64.5"/>
+                                        <rect key="frame" x="90" y="0.0" width="150" height="64.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ra3-Mt-AoT">
+                                        <rect key="frame" x="250" y="0.0" width="40" height="64.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="rZb-4i-hv3"/>
+                                        </constraints>
+                                        <state key="normal" image="ic_edit_gradient_48"/>
+                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -77,6 +84,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="btnCheck" destination="Uyb-lS-zdr" id="Xma-or-BE5"/>
+                <outlet property="btnEdit" destination="ra3-Mt-AoT" id="mNu-SC-V2y"/>
                 <outlet property="imgAvatar" destination="nqX-i5-E7b" id="fHB-9x-x8Q"/>
                 <outlet property="lblName" destination="Z2b-Em-2bi" id="uKk-LD-plH"/>
                 <outlet property="stackViewContainer" destination="Bpi-T2-Ees" id="M3y-fP-7ct"/>
@@ -86,6 +94,7 @@
     </objects>
     <resources>
         <image name="checkbox_check" width="18" height="18"/>
+        <image name="ic_edit_gradient_48" width="16" height="16"/>
         <image name="ic_group_gradient_75" width="25" height="25"/>
     </resources>
 </document>

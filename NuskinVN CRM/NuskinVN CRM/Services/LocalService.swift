@@ -19,10 +19,14 @@ protocol LocalServiceDelegate:class {
     func localService(localService:LocalService,didFailed:Any, type:LocalServiceType)
 }
 
+let path = NSSearchPathForDirectoriesInDomains(
+    .documentDirectory, .userDomainMask, true
+    ).first!
+
 class LocalService: NSObject,LocalServiceDelegate {
-    
+
     private static var sharedLocalService: LocalService = {
-        let networkManager = LocalService(db: "crm")
+        let networkManager = LocalService()
         return networkManager
     }()
     
@@ -30,29 +34,75 @@ class LocalService: NSObject,LocalServiceDelegate {
     weak var delegate_:LocalServiceDelegate?
     private var db: Connection!
     
+    var isMoveDB:Bool = false
     var isSync:Bool = false
     var timerSyncToServer:Timer?
     
     // Initialization
-    
-    init(db: String) {
-        let pathDB = Bundle.main.path(forResource: db, ofType: "db")!
-        print(pathDB)
+    override init() {
+        super.init()
+        
         do {
-            self.db = try Connection(pathDB)
+            self.db = try Connection("\(prepareDatabaseFile())")
         } catch {
             fatalError(error.localizedDescription)
         }
     }
     
-    override init() {
-        super.init()
-        let pathDB = Bundle.main.path(forResource: "crm", ofType: "db")!
-        do {
-            self.db = try Connection(pathDB)
-        } catch {
-            fatalError(error.localizedDescription)
+    func prepareDatabaseFile() -> String {
+        let fileName: String = "crm.sqlite"
+        
+        let fileManager:FileManager = FileManager.default
+        let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        let documentUrl = directory.appendingPathComponent(fileName)
+        let bundleUrl = Bundle.main.resourceURL?.appendingPathComponent(fileName)
+        
+        // here check if file already exists on simulator
+        if fileManager.fileExists(atPath: (documentUrl.path)) {
+            print("document file exists!")
+            return documentUrl.path
+        } else if fileManager.fileExists(atPath: (bundleUrl?.path)!) {
+                print("document file does not exist, copy from bundle!")
+             do {
+               try fileManager.copyItem(at:bundleUrl!, to:documentUrl)
+             } catch let error as NSError {
+                print("Couldn't copy file to final location! Error:\(error.description)")
+            }
         }
+            return documentUrl.path
+        }
+        
+    func copyDatabaseIfNeeded(localService:LocalService,_ complete:(LocalService)->Void) {
+        // Move database file from bundle to documents folder
+        
+        let fileManager = FileManager.default
+        
+        let documentsUrl = fileManager.urls(for: .documentDirectory,
+                                            in: .userDomainMask)
+        
+        guard documentsUrl.count != 0 else {
+            return // Could not find documents URL
+        }
+        
+        let finalDatabaseURL = documentsUrl.first!.appendingPathComponent("crm.db")
+        
+        if !( (try? finalDatabaseURL.checkResourceIsReachable()) ?? false) {
+            print("DB does not exist in documents folder")
+            
+            let documentsURL = Bundle.main.resourceURL?.appendingPathComponent("crm.db")
+            
+            do {
+                try fileManager.copyItem(atPath: (documentsURL?.path)!, toPath: finalDatabaseURL.path)
+                complete(localService)
+            } catch let error as NSError {
+                print("Couldn't copy file to final location! Error:\(error.description)")
+            }
+            
+        } else {
+            print("Database file found at path: \(finalDatabaseURL.path)")
+        }
+        
     }
     
     //start service
@@ -60,8 +110,12 @@ class LocalService: NSObject,LocalServiceDelegate {
         // first
         self.syncToServer()
         
+        if let bool = self.timerSyncToServer?.isValid {
+            if bool {self.timerSyncToServer?.invalidate()}
+        }
+        
         // loop
-        self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*10, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
+        self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*5, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
     }
     
     // MARK: - Accessors
@@ -70,7 +124,7 @@ class LocalService: NSObject,LocalServiceDelegate {
     }
     
     // MARK: - Customer SQL
-    func customerSQl(sql:String, onComplete:(()->Void)){
+    func customSQl(sql:String, onComplete:(()->Void)){
         if sql.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
             do {
                 try self.db.run(sql)
@@ -112,6 +166,7 @@ class LocalService: NSObject,LocalServiceDelegate {
                 customer.date_created = user[22] as! String
                 customer.tempAvatar = user[23] as! String
                 customer.facebook = user[24] as! String
+                customer.synced = user[25] as! Int64
                 list.append(customer)
             }
             
@@ -147,6 +202,7 @@ class LocalService: NSObject,LocalServiceDelegate {
         let last_login = Expression<String?>("last_login")
         let date_created = Expression<String?>("date_created")
         let temp_avatar = Expression<String?>("temp_avatar")
+        let synced = Expression<Int64?>("synced")
         
         var pro:String = ""
         if object.properties != nil {
@@ -175,7 +231,8 @@ class LocalService: NSObject,LocalServiceDelegate {
                                      facebbook <- object.facebook,
                                      last_login <- object.last_login,
                                      date_created <- object.date_created,
-                                     temp_avatar <- object.tempAvatar)
+                                     temp_avatar <- object.tempAvatar,
+                                     synced <- object.synced)
         do {
             try db.run(insert)
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
@@ -186,9 +243,10 @@ class LocalService: NSObject,LocalServiceDelegate {
         }
     }
     
-    func updateCustomer(object:Customer) {
+    func updateCustomer(object:Customer) ->Bool{
         
         let customer = Table("customer")
+        let id = Expression<Int64>("id")
         let group = Expression<Int64>("group_id")
         let server_id = Expression<Int64>("server_id")
         let store_id = Expression<Int64>("store_id")
@@ -196,7 +254,6 @@ class LocalService: NSObject,LocalServiceDelegate {
         let status = Expression<Int64?>("status")
         let classify = Expression<Int64?>("type")
         let firstname = Expression<String?>("fullname")
-        let email = Expression<String?>("email")
         let phone = Expression<String?>("tel")
         let birthday = Expression<String?>("birthday")
         let company = Expression<String?>("company")
@@ -212,22 +269,23 @@ class LocalService: NSObject,LocalServiceDelegate {
         let last_login = Expression<String?>("last_login")
         let date_created = Expression<String?>("date_created")
         let temp_avatar = Expression<String?>("temp_avatar")
+        let synced = Expression<Int64?>("synced")
         
         var pro:String = ""
         if object.properties != nil {
             pro.append(object.properties!.description)
         }
         
-        let alice = customer.filter(email == object.email)
+        let alice = customer.filter(id == object.id)
         
         do {
             try db.run(alice.update(group <- object.group_id,
+                                    id <- object.id,
                                     store_id <- object.store_id,
                                     distributor_id <- object.distributor_id,
                                     status <- object.status,
                                     classify <- object.type,
                                     firstname <- object.fullname,
-                                    email <- object.email,
                                     phone <- object.tel,
                                     birthday <- object.birthday,
                                     company <- object.company,
@@ -243,11 +301,14 @@ class LocalService: NSObject,LocalServiceDelegate {
                                     facebbook <- object.facebook,
                                     last_login <- object.last_login,
                                     date_created <- object.date_created,
-                                    temp_avatar <- object.tempAvatar))
+                                    temp_avatar <- object.tempAvatar,
+                                    synced <- 0))
             // UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
             // WHERE ("id" = 1)
+            return true
         } catch {
             print(error)
+            return false
         }
     }
     
@@ -262,6 +323,15 @@ class LocalService: NSObject,LocalServiceDelegate {
             try db.run(alice.delete())
         } catch {
             print(error)
+        }
+    }
+    
+    func countLocalData(sql:String) -> Int64{
+        do {
+            return try db.scalar(sql) as! Int64
+        } catch {
+            print(error)
+            return 0
         }
     }
     
@@ -321,7 +391,7 @@ class LocalService: NSObject,LocalServiceDelegate {
                 customer.position = gr[position]
                 list.append(customer)
             }
-            
+                                       
             delegate_?.localService(localService: self, didReceiveData: list, type:.group)
         } catch {
             print(error.localizedDescription)
@@ -338,9 +408,10 @@ class LocalService: NSObject,LocalServiceDelegate {
         let position = Expression<Int64>("position")
         let name = Expression<String?>("name")
         let color = Expression<String?>("color")
+        let synced = Expression<Int64?>("synced")
         
         do {
-            let insert = group.insert(name <- obj.name, position <- obj.position, color <- obj.color,store_id <- obj.store_id,server_id <- obj.server_id,distributor_id <- obj.distributor_id)
+            let insert = group.insert(name <- obj.name, position <- obj.position, color <- obj.color,store_id <- obj.store_id,server_id <- obj.server_id,distributor_id <- obj.distributor_id, synced <- obj.synced)
             try db.run(insert)
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
         } catch {
@@ -386,6 +457,60 @@ class LocalService: NSObject,LocalServiceDelegate {
             return false
         }
     }
+    
+    func getNameGroupFromID(sql:String) -> String{
+        do {
+            if let string =  try db.scalar(sql) as? String {
+                return string
+            }
+            return ""
+        } catch {
+            print(error)
+            return ""
+        }
+    }
+    
+    // MARK: - interface city
+    func addCity(obj:City){
+        
+        let group = Table("city")
+        let id = Expression<Int64>("id")
+        let country_id = Expression<Int64>("country_id")
+        let name = Expression<String?>("name")
+        
+        do {
+            let insert = group.insert(name <- obj.name, country_id <- obj.country_id,id <- obj.id)
+            try db.run(insert)
+            // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
+        } catch {
+            print(error)
+        }
+    }
+    
+    func getAllCity(complete:([City])->Void){
+        
+        let group = Table("city")
+        let id = Expression<Int64>("id")
+        let country_id = Expression<Int64>("country_id")
+        let name = Expression<String?>("name")
+        
+        var list:Array<City> = []
+        
+        do {
+            for gr in try db.prepare(group) {
+                var customer = City()
+                customer.id = gr[id]
+                customer.country_id = gr[country_id]
+                if let name = gr[name] {
+                    customer.name = name
+                }
+                list.append(customer)
+            }
+            complete(list)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 }
 
 extension LocalService {
@@ -399,7 +524,7 @@ extension LocalService {
         print("start check/sync customer to server")
         let localService:LocalService = LocalService.init()
         localService.delegate_ = self as LocalServiceDelegate
-        let sql:String = "select * from `customer` where `server_id` = '0'" // customer not synced
+        let sql:String = "select * from `customer` where `synced` = '0'" // customer not synced
         localService.getCustomerWithCustom(sql: sql)
     }
     
@@ -415,6 +540,7 @@ extension LocalService {
 extension LocalService {
     func localService(localService: LocalService, didReceiveData: Any, type: LocalServiceType) {
         switch type {
+        // MARK: - SYNC CUSTOMER
         case .customer:
             let list:[Customer] = didReceiveData as! [Customer]
             if list.count > 0 {
@@ -423,9 +549,55 @@ extension LocalService {
                     listCustomer.append($0.toDictionary)
                 })
                 print("Get local customer done... send to server")
+                SyncService.shared().postAllCustomerToServer(list: listCustomer, completion: { result in
+                    switch result {
+                    case .success(let data):
+                        guard data.count > 0 else {
+                            print("Dont have new customer from server")
+                            return
+                        }
+                        
+                        print("start merge customer to local DB")
+                        
+                        let list:[Customer] = data
+                        _ = list.map({
+                            localService.customSQl(sql: "delete from `customer` where `email` = '\($0.email)'", onComplete: {
+                                print("remove customer synced")
+                            })
+                            _ = LocalService.shared().addCustomer(object: $0)
+                        })
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                    case.failure(_):
+                        print("Error: cant get group from server 1")
+                    }
+                })
             } else {
                 print("Dont have new local customer... get customer from server")
+                SyncService.shared().getCustomers(completion: { result in
+                    switch result {
+                    case .success(let data):
+                        guard data.count > 0 else {
+                            print("Dont have new customer from server")
+                            return
+                        }
+                        
+                        print("start merge customer to local DB 2")
+                        
+                        let list:[Customer] = data
+                        _ = list.map({
+                            localService.customSQl(sql: "delete from `customer` where `email` = '\($0.email)'", onComplete: {
+                                print("remove customer synced 2")
+                            })
+                            _ = LocalService.shared().addCustomer(object: $0)
+                        })
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                    case .failure(_):
+                        print("Error: cant get customer from server 2")
+                        break
+                    }
+                })
             }
+        // MARK: - SYNC GROUP
         case .group:
             let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
             if list.count > 0 {
@@ -435,19 +607,20 @@ extension LocalService {
                     switch result {
                     case .success(let data):
                         guard data.count > 0 else {
-                            print("Dont have new group from server")
+                            print("Dont have new group from server 1")
                             return
                         }
                         print("remove group synced")
-                        localService.customerSQl(sql: "delete from `group` where `synced` = '1'", onComplete: {
+                        localService.customSQl(sql: "delete from `group`", onComplete: {
                             print("start merge group to local DB")
                             let list:[GroupCustomer] = data
                             _ = list.map({
                                 LocalService.shared().addGroup(obj: $0)
                             })
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
                         })
                     case.failure(_):
-                        print("Error: cant get group from server")
+                        print("Error: cant get group from server 1")
                     }
                 })
             } else {
@@ -456,19 +629,20 @@ extension LocalService {
                     switch result {
                     case .success(let data):
                         guard data.count > 0 else {
-                            print("Dont have new group from server")
+                            print("Dont have new group from server 2")
                             return
                         }
                         print("remove group synced")
-                        localService.customerSQl(sql: "delete from `group` where `synced` = '1'", onComplete: {
+                        localService.customSQl(sql: "delete from `group`", onComplete: {
                             print("start merge group to local DB")
                             let list:[GroupCustomer] = data
                             _ = list.map({
                                 LocalService.shared().addGroup(obj: $0)
                             })
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
                         })
                     case .failure(_):
-                        print("Error: cant get group from server")
+                        print("Error: cant get group from server 2")
                         break
                     }
                 })

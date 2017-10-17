@@ -8,6 +8,9 @@
 
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 class GroupCustomerController: RootViewController,
 UICollectionViewDelegate,
 UICollectionViewDataSource,
@@ -19,6 +22,7 @@ LocalServiceDelegate {
     
     var onSelectGroup:((GroupCustomer)->Void)?
     var localService:LocalService!
+    var gotoFromCustomerList:Bool = false
     
     var listGroups:[GroupCustomer]!
     let defaultItem:GroupCustomer = {
@@ -41,6 +45,20 @@ LocalServiceDelegate {
         localService = LocalService.init()
         localService.delegate_ = self
         localService.getAllGroup()
+        
+        if gotoFromCustomerList {
+            let rightButtonMenu:UIButton = UIButton(type: .custom)
+            rightButtonMenu.setTitle("skip".localized(), for: .normal)
+            rightButtonMenu.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+            rightButtonMenu.setTitleColor(UIColor.white, for: .normal)
+            rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+            rightButtonMenu.rx.tap.subscribe(onNext: {[weak self] in
+                let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }).disposed(by: disposeBag)
+            let item2 = UIBarButtonItem(customView: rightButtonMenu)
+            self.navigationItem.rightBarButtonItem  = item2
+        }
     }
 
     override func configText() {
@@ -124,8 +142,16 @@ extension GroupCustomerController {
         if obj.id == 0 {
             showPopupGroup()
         } else {
-            onSelectGroup?(obj)
-            self.navigationController?.popViewController(animated: true)
+            if gotoFromCustomerList {
+                let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+                vc.onDidLoad = {
+                    vc.setGroupSelected(group: obj)
+                }
+                self.navigationController?.pushViewController(vc, animated: true)
+            } else {
+                onSelectGroup?(obj)
+                self.navigationController?.popViewController(animated: true)
+            }
         }
     }
     

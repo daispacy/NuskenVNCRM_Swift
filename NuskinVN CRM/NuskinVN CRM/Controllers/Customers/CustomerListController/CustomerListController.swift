@@ -25,13 +25,14 @@ UITabBarControllerDelegate{
     @IBOutlet var btnCheckOrDelete: UIButton!
     
     var isEdit: Bool = false
-    var listCustomer:[Customer] = []
-    var listGroup:[GroupCustomer] = []
+    var listCustomer:[Customer] = [] // list customer for tableview
+    var listGroup:[GroupCustomer] = [] // list group for combobox
     let localService:LocalService = LocalService.init()
-    var groupSelected:GroupCustomer! = GroupCustomer.init(id: 0, distributor_id: 0, store_id: 0)
-    var searchText:String! = ""
-    var expandRow:NSInteger = -1
-    var listCustomerSelected:[Customer] = []
+    var groupSelected:GroupCustomer! = GroupCustomer.init(id: 0, distributor_id: 0, store_id: 0) // group filter
+    var searchText:String! = "" // search text
+    var expandRow:NSInteger = -1 // row expand
+    var listCustomerSelected:[Customer] = [] //list customer select to remove
+    var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,17 @@ UITabBarControllerDelegate{
         
         localService.delegate_ = self
         searchBar.delegate = self
+        
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
+        tapGesture?.cancelsTouchesInView = false
+        self.tableView.addGestureRecognizer(tapGesture!)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
+    }
+    
+    deinit {
+        self.tableView.removeGestureRecognizer(tapGesture!)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -63,6 +75,15 @@ UITabBarControllerDelegate{
         searchBar.placeholder = "search".localized()
     }
     
+    func didSyncedData(notification:Notification) {
+        localService.getAllGroup()
+        refreshListCustomer()
+    }
+    
+    func hideKeyboard() {
+        self.searchBar.resignFirstResponder()
+    }
+    
     func refreshListCustomer() {
         
         self.listCustomer.removeAll()
@@ -72,7 +93,7 @@ UITabBarControllerDelegate{
         if groupSelected.id != 0 {
             if let gr = groupSelected {
                 if gr.server_id > 0 {
-                    sql.append("AND (`server_id` = '\(gr.server_id)')")
+                    sql.append("AND (`group_id` = '\(gr.server_id)')")
                 } else {
                     sql.append("AND (`group_id` = '\(gr.id)')")
                 }
@@ -122,7 +143,12 @@ UITabBarControllerDelegate{
     }
     
     @IBAction func addNewCustomer(_ sender: Any) {
-        let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+//        let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+//        self.navigationController?.pushViewController(vc, animated: true)
+        let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
+        vc.onDidLoad = {
+            vc.gotoFromCustomerList = true
+        }
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -136,7 +162,8 @@ UITabBarControllerDelegate{
                         _ = self.listCustomerSelected.map({
                             var cus = $0
                             cus.status = 0
-                            LocalService.shared().updateCustomer(object: cus)
+                            _ = LocalService.shared().updateCustomer(object: cus)
+                            LocalService.shared().startSyncData()
                         })
                         self.listCustomerSelected.removeAll()
                         self.configView()
@@ -158,14 +185,20 @@ extension CustomerListController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
         cell.removeFunctionView()
-        cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit, isSelect:expandRow == indexPath.row)
-        cell.onSelectCustomer = { customer, isAdd in
+        let isCheked = self.listCustomerSelected.filter({$0.email == listCustomer[indexPath.row].email}).count > 0
+        cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
+        cell.onSelectCustomer = {[weak self] customer, isAdd in
             if isAdd {
-                self.listCustomerSelected.append(customer)
+                self?.listCustomerSelected.append(customer)
             } else {
-                self.listCustomerSelected = self.listCustomerSelected.filter{ $0.id != customer.id }
+                self?.listCustomerSelected = (self?.listCustomerSelected.filter{ $0.id != customer.id })!
             }
-            print(self.listCustomerSelected)
+        }
+        cell.onEditCustomer = {[weak self]
+            customer in
+            let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+            vc.customer = customer
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
         
         return cell
@@ -176,7 +209,8 @@ extension CustomerListController {
             let cell = tableView.cellForRow(at: indexPath) as! CustomerListCell
             cell.setSelect()
         } else {
-            if expandRow == indexPath.row {
+            let customer:Customer = listCustomer[indexPath.row]
+            if expandRow == indexPath.row || !customer.isShouldOpenFunctionView {
                 // reset expand
                 expandRow = -1
             } else {

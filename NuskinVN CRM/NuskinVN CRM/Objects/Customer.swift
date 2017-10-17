@@ -36,6 +36,7 @@ struct Customer {
     var properties:JSON?
     var status:Int64 = 1
     var tempAvatar:String = ""
+    var synced:Int64 = 0
     
     init(id: Int64, distributor_id:Int64, store_id:Int64) {
         self.id = id
@@ -64,18 +65,44 @@ struct Customer {
             "zalo":zalo,
             "facebook":facebook,
             "city":city,
-            "country":country,
+            "county":country,
             "last_login":last_login,
             "date_created":date_created,
             "status":status,
-            "tempAvatar":tempAvatar
+            "tempAvatar":tempAvatar,
+            "synced":synced
         ]
     }
     
-    var getAvatar:UIImage {        
-        let dataDecoded:NSData = NSData(base64Encoded: tempAvatar, options: NSData.Base64DecodingOptions(rawValue: 0))!
-        let decodedimage:UIImage = UIImage(data: dataDecoded as Data)!
-        return decodedimage
+    var getAvatar:UIImage {
+        if tempAvatar.characters.count > 0 {
+            if let dataDecoded:NSData = NSData(base64Encoded: tempAvatar, options: NSData.Base64DecodingOptions(rawValue: 0)) {
+                let decodedimage:UIImage = UIImage(data: dataDecoded as Data)!
+                return decodedimage
+            }
+        }
+        return UIImage()
+    }
+    
+    var isExist: Bool {
+        if email.characters.count > 0 && id > 0{
+            return false
+        }
+        let sql:String = "SELECT count(*) FROM customer where `email` = '\(self.email)'"
+        let count:Int64 = LocalService.shared().countLocalData(sql: sql)
+        return count > 0
+    }
+    
+    var groupName:String {
+        let sql:String = "SELECT `name` FROM `group` where (`id` = '\(self.group_id)' AND `synced` = '0') OR (`server_id` = '\(self.group_id)' AND `synced` = '1')"
+        return LocalService.shared().getNameGroupFromID(sql:sql)
+    }
+    
+    var isShouldOpenFunctionView:Bool {
+        return self.viber.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 ||
+        self.facebook.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 ||
+        self.zalo.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 ||
+        self.skype.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0
     }
 }
 
@@ -86,6 +113,7 @@ extension Customer {
                 return nil
         }
         self.id = 0
+        self.synced = 1
         if let id = json["id"] as? Int64 {
             self.server_id = id
         } else if let id = json["id"] as? String {
@@ -122,6 +150,12 @@ extension Customer {
             self.type = id
         } else if let id = json["type"] as? String {
             self.type = Int64(id)!
+        }
+        
+        if let id = json["group_id"] as? Int64 {
+            self.group_id = id
+        } else if let id = json["group_id"] as? String {
+            self.group_id = Int64(id)!
         }
         
         if let id = json["status"] as? Int64 {
@@ -162,7 +196,7 @@ extension Customer {
         if let dt = json["city"] as? String {
             self.city = dt
         }
-        if let dt = json["country"] as? String {
+        if let dt = json["county"] as? String {
             self.country = dt
         }
         if let dt = json["skype"] as? String {

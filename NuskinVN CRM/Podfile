@@ -8,7 +8,7 @@ target 'NuskinVN CRM' do
   # Pods for NuskinVN CRM
   pod 'Alamofire', '= 4.5.1'
   pod 'Charts', '= 3.0.2'
-  pod 'SQLite.swift', '= 0.11.3'
+  pod 'SQLite.swift/SQLCipher', :git => 'https://github.com/stephencelis/SQLite.swift.git'
   pod 'Localize-Swift', '= 2.0'
   pod 'Reachability'
   pod 'FontAwesomeKit', '= 2.2.1'

@@ -26,7 +26,6 @@ struct GroupCustomer {
     var position: Int64 = 0
     var status: Int64 = 1
     var synced: Int64 = 0
-    var numberCustomer: Int = 0
     
     
     init(id: Int64, distributor_id:Int64,store_id:Int64) {
@@ -55,6 +54,14 @@ struct GroupCustomer {
             "status":status,
             "synced":synced
             ]
+    }
+    
+    var numberCustomer: Int64  {
+        var sql:String = "SELECT count(*) FROM customer where `status` = '1' and `group_id` = '\(self.id)'"
+        if self.server_id > 0 {
+            sql = "SELECT count(*) FROM customer where `status` = '1' and `group_id` = '\(self.server_id)'"
+        }
+        return LocalService.shared().countLocalData(sql: sql)
     }
 }
 

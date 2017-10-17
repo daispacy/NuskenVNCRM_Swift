@@ -11,6 +11,7 @@ extension String {
     func toDate()-> Date
     {
         let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)
+        calendar?.timeZone = .current
         let DateArray = self.components(separatedBy: "/")
         let components = NSDateComponents()
         components.year = Int(DateArray[2])!

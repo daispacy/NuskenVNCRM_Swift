@@ -28,6 +28,7 @@
 "unlisted_customer_list_for_30_days" = "Danh sách khách đặt hàng 30 ngày trước";
 
 //error
-"msg_err_email" = "Email không hợp lệ";
-"msg_err_pw" = "Mật khẩu phải lớn hơn 5 ký tự";
-"msg_err_vnid" = "VNID không hợp lệ";
+"msg_err_email" = "Email không hợp lệ.";
+"msg_err_pw" = "Mật khẩu phải lớn hơn 5 ký tự.";
+"msg_err_vnid" = "VNID không hợp lệ.";
+"msg_login_failed" = "Email hoặc mật khẩu không đúng.";

@@ -80,6 +80,12 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="cpk-0b-GIg"/>
+            <connections>
+                <outlet property="btnFacebook" destination="f3j-ow-Bo8" id="cIS-af-h9b"/>
+                <outlet property="btnSkype" destination="uTh-N0-rQl" id="ndG-EO-nZ2"/>
+                <outlet property="btnViber" destination="iWA-5K-NDP" id="wkb-5S-yWc"/>
+                <outlet property="btnZalo" destination="DF8-gO-lbf" id="6Bj-AC-sp3"/>
+            </connections>
             <point key="canvasLocation" x="59" y="-173"/>
         </view>
     </objects>

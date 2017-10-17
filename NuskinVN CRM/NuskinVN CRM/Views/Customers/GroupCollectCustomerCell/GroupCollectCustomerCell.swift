@@ -36,10 +36,11 @@ class GroupCollectCustomerCell: UICollectionViewCell {
             backgroundColor = UIColor.clear
             icon.image = Support.image.iconFont(code: "\u{f067}", size: icon.frame.size.width*30/100)
             btnOption.isHidden = true
+            lblSubtitle.isHidden = true
         }
         
         
-        lblSubtitle.text! = "\(object.numberCustomer)"
+        lblSubtitle.text! = "\(object.numberCustomer) \("member".localized())"
         
         
         if lblSubtitle.text?.characters.count == 0 {
@@ -51,6 +52,10 @@ class GroupCollectCustomerCell: UICollectionViewCell {
             icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
         } else {
             icon.backgroundColor = UIColor(hex:color)
+        }
+        
+        if object.server_id > 0 && object.distributor_id == 0 {
+            btnOption.isHidden = true
         }
         
     }
@@ -70,6 +75,7 @@ class GroupCollectCustomerCell: UICollectionViewCell {
         lblSubtitle.textColor = UIColor(hex:Theme.color.customer.subGroup)
         
         object = nil
+        btnOption.isHidden = false
         lblSubtitle.isHidden = false
         btnOption.isHidden = false
         lblSubtitle.text = ""

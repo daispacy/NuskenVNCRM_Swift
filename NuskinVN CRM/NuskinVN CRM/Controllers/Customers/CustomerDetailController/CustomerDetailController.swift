@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 class CustomerDetailController: RootViewController {
-
+    
     @IBOutlet var scrollView: UIScrollView!
     
     @IBOutlet var imvAvatar: CImageViewRoundGradient!
@@ -39,13 +39,15 @@ class CustomerDetailController: RootViewController {
     @IBOutlet var lblErrorEmail: UILabel!
     @IBOutlet var lblErrorName: UILabel!
     
+    var isEdit:Bool = false
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
     var customer:Customer = Customer(id: 0, distributor_id: User.currentUser().id!, store_id: User.currentUser().store_id!)
+    var listCountry:[City] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = "add_customer".uppercased().localized()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
@@ -54,13 +56,19 @@ class CustomerDetailController: RootViewController {
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         self.view.addGestureRecognizer(tapGesture!)
         
-        configView()
+        LocalService.shared().getAllCity(complete: {[weak self] list in
+            DispatchQueue.main.async {
+                self?.listCountry = list
+            }
+        })
+        
         configText()
+        configView()
         bindControl()
     }
     
     deinit {
-       self.view.removeGestureRecognizer(tapGesture!)
+        self.view.removeGestureRecognizer(tapGesture!)
     }
     
     // MARK: - custom
@@ -94,6 +102,21 @@ class CustomerDetailController: RootViewController {
         hideKeyboard()
     }
     
+    // MARK: - interface
+    func edit(customer:Customer) {
+        self.customer = customer
+        self.isEdit = true
+        configView()
+    }
+    
+    func setGroupSelected(group:GroupCustomer) {
+        if group.server_id == 0 {
+            self.customer.group_id = group.id
+        } else {
+            self.customer.group_id = group.server_id
+        }
+    }
+    
     // MARK: - private
     private func bindControl() {
         
@@ -104,7 +127,7 @@ class CustomerDetailController: RootViewController {
             .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
             .shareReplay(1)
         let emailIsValid = txtEmail.rx.text.orEmpty
-            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0)}
+            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0) && !self.customer.isExist}
             .shareReplay(1)
         
         nameIsValid.bind(to: lblErrorName.rx.isHidden).disposed(by: disposeBag)
@@ -125,6 +148,11 @@ class CustomerDetailController: RootViewController {
         
         txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             self?.customer.email = $0
+            if ((self?.customer.isExist)!) {
+                self?.lblErrorEmail.text = "email_has_exist".localized()
+            } else {
+                self?.lblErrorEmail.text = "invalid_email".localized()
+            }
         })
             .disposed(by: disposeBag)
         
@@ -221,12 +249,82 @@ class CustomerDetailController: RootViewController {
             })
             .disposed(by: disposeBag)
         
+        btnCity.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                DispatchQueue.main.async {
+                    var listData:[String] = []
+                    _ = self?.listCountry.filter{$0.country_id == 0}.map({
+                        listData.append($0.name)
+                    })
+                    
+                    let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                    vc.onDidLoad = {
+                        vc.showData(data: listData.sorted(by: {$0 < $1}))
+                    }                    
+                    vc.onSelectData = { name in
+                        self?.customer.city = name
+                        self?.btnCity.setTitle(name, for: .normal)
+                        self?.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                        if !(self?.btnDistrict.isEnabled)! {
+                            self?.btnDistrict.isEnabled = true
+                        }
+                    }
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        btnDistrict.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                if self?.customer.country == "placeholder_city".localized() {
+                    return
+                }
+                let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                self?.navigationController?.pushViewController(vc, animated: true)
+                
+                var listData:[String] = []
+                
+                _ = self?.listCountry.map({
+                    if $0.name == self?.customer.city {
+                        let country:City = $0
+                        let listFilter:[City] = (self?.listCountry.filter{
+                            $0.country_id == country.id
+                            })!
+                        
+                        _ = listFilter.map({
+                            listData.append($0.name)
+                        })
+                        
+                        vc.onDidLoad = {
+                            vc.showData(data: listData.sorted(by: {$0 < $1}))
+                        }
+                    }
+                })
+                
+                
+                vc.onSelectData = { name in
+                    self?.customer.city = name
+                    self?.btnDistrict.setTitle(name, for: .normal)
+                    self?.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                }
+                
+            })
+            .disposed(by: disposeBag)
+        
         // event process
         let localService = LocalService.shared()
         btnProcess.rx.tap
-            .subscribe(onNext:{ [weak self] in
-                if localService.addCustomer(object: (self?.customer)!) {
-                    self?.navigationController?.popToRootViewController(animated: true)
+            .subscribe(onNext:{
+                if self.customer.server_id == 0 && self.customer.id == 0{
+                    if localService.addCustomer(object: (self.customer)) {
+                        LocalService.shared().startSyncData()
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }
+                } else {
+                    if localService.updateCustomer(object: (self.customer)) {
+                        LocalService.shared().startSyncData()
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }
                 }
                 
             })
@@ -281,6 +379,7 @@ class CustomerDetailController: RootViewController {
         configButton(btnGender)
         configButton(btnBirthday)
         configButton(btnDistrict)
+        btnDistrict.isEnabled = false
         
         configTextfield(txtName)
         configTextfield(txtEmail)
@@ -308,13 +407,56 @@ class CustomerDetailController: RootViewController {
             $0.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
             $0.textColor = UIColor(hex: Theme.color.customer.subGroup)
         })
+        
+        if customer.groupName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+            btnGroup.setTitle(customer.groupName, for: .normal)
+            self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        }
+        
+        // set value when edit a customer
+        if self.customer.email.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+            
+            txtEmail.isEnabled = false
+            
+            txtName.text = customer.fullname
+            txtEmail.text = customer.email
+            txtZalo.text = customer.zalo
+            txtPhone.text = customer.tel
+            txtSkype.text = customer.skype
+            txtViber.text = customer.viber
+            txtFacebook.text = customer.facebook
+            txtAddress.text = customer.address
+            
+            if customer.gender == 0 {
+                btnGender.setTitle("male".localized(), for: .normal)
+            } else {
+                btnGender.setTitle("female".localized(), for: .normal)
+            }
+            if customer.birthday.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                btnBirthday.setTitle(customer.birthday, for: .normal)
+                self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+            }
+            
+            if customer.city.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                btnCity.setTitle(customer.city, for: .normal)
+                self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                btnDistrict.isEnabled = true
+            }
+            
+            if customer.country.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                btnDistrict.setTitle(customer.country, for: .normal)
+                self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+            }
+            
+            self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+            
+        }
     }
     
     override func configText() {
         
         txtName.placeholder = "placeholder_fullname".localized()
         txtEmail.placeholder = "placeholder_email".localized()
-        btnGender.setTitle("placeholder_gender".localized(), for: .normal)
         txtPhone.placeholder = "placeholder_phone".localized()
         txtFacebook.placeholder = "placeholder_facebook".localized()
         txtSkype.placeholder = "placeholder_skype".localized()
@@ -322,6 +464,7 @@ class CustomerDetailController: RootViewController {
         txtZalo.placeholder = "placeholder_zalo".localized()
         txtAddress.placeholder = "placeholder_address".localized()
         
+        btnGender.setTitle("placeholder_gender".localized(), for: .normal)
         btnBirthday.setTitle("placeholder_birthday".localized(), for: .normal)
         btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
         btnCity.setTitle("placeholder_city".localized(), for: .normal)
@@ -357,7 +500,7 @@ class CustomerDetailController: RootViewController {
 extension CustomerDetailController: UIImagePickerControllerDelegate {
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         // Whatever you want here
-        imvAvatar.image = image
+        imvAvatar.image = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
         picker.dismiss(animated: true, completion: nil)
         let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
         let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)

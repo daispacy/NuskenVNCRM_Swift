@@ -73,9 +73,9 @@ extension User {
                 return nil
         }
         
-        if let id = json["id"] as? Int64 {
+        if let id = json["id_card_no"] as? Int64 {
             self.id = id
-        } else if let id = json["id"] as? String {
+        } else if let id = json["id_card_no"] as? String {
             self.id = Int64(id)!
         } else {
             return nil
