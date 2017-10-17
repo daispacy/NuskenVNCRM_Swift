@@ -25,7 +25,7 @@ protocol SyncServiceDelegate:class {
     func syncService(localService:SyncService,didFailed:Any)
 }
 
-class SyncService: NSObject {
+final class SyncService: NSObject {
     
     enum GetDataFailureReason: Int, Error {
         case unAuthorized = 401
@@ -33,12 +33,9 @@ class SyncService: NSObject {
         case cantParseData = 501
     }
     
-    private static var sharedSyncService: SyncService = {
-        let networkManager = SyncService()
-        return networkManager
-    }()
+    static let shared = SyncService()
     
-    override init() {
+    private override init() {
         super.init()
     }
     
@@ -65,14 +62,20 @@ class SyncService: NSObject {
                             if let json:JSON = jsonArray["data"] as? JSON{
 
                                 if let jsonCountry:[JSON] = json["city"] as? [JSON] {
-                                    
-                                    LocalService.shared().customSQl(sql: "delete from `city`", onComplete: {
-                                        print("start merge CITY to local DB")
-                                        let listCountry:[City] = jsonCountry.flatMap({City(json:$0)})
-                                        _ = listCountry.map({
-                                            LocalService.shared().addCity(obj: $0)
+                                    do {
+                                    try LocalService.shared.db.transaction {
+                                        LocalService.shared.customSQl(sql: "delete from `city`", onComplete: {
+                                            print("start merge CITY to local DB")
+                                            let listCountry:[City] = jsonCountry.flatMap({City(json:$0)})
+                                            _ = listCountry.map({
+                                                LocalService.shared.addCity(obj: $0)
+                                            })
                                         })
-                                    })
+                                    }
+                                    } catch {
+                                        
+                                    }
+                                    
                                 }
                                 
                                 if let deeplink:String = json["zalo_deeplink"] as? String {
@@ -112,12 +115,6 @@ class SyncService: NSObject {
     func startService() {
         
     }
-    
-    // MARK: - Accessors
-    class func shared() -> SyncService {
-        return sharedSyncService
-    }
-    
     
     typealias GetUserResult = Result<User, GetDataFailureReason>
     typealias GetUserCompletion = (_ result: GetUserResult) -> Void

@@ -104,6 +104,12 @@ class Theme: NSObject {
                 return "0x323232"
             }
         }
+        
+        class order:color {
+            static var listCustomerName:String {
+                return "0x018AAF"
+            }
+        }
     }
     
     // MARK: - FONT

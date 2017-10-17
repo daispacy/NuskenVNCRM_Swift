@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1D431D9CD47FF8A9228248791EB3B6CE"
+               BlueprintIdentifier = "6A515D4169DDC3ADEAA85F7330475E40"
                BuildableName = "Pods_NuskinVN_CRM.framework"
                BlueprintName = "Pods-NuskinVN CRM"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -26,7 +26,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
@@ -37,7 +36,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -47,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1D431D9CD47FF8A9228248791EB3B6CE"
+            BlueprintIdentifier = "6A515D4169DDC3ADEAA85F7330475E40"
             BuildableName = "Pods_NuskinVN_CRM.framework"
             BlueprintName = "Pods-NuskinVN CRM"
             ReferencedContainer = "container:Pods.xcodeproj">

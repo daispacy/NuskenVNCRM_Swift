@@ -27,12 +27,13 @@ UITabBarControllerDelegate{
     var isEdit: Bool = false
     var listCustomer:[Customer] = [] // list customer for tableview
     var listGroup:[GroupCustomer] = [] // list group for combobox
-    let localService:LocalService = LocalService.init()
+    let localService:LocalService = LocalService.shared
     var groupSelected:GroupCustomer! = GroupCustomer.init(id: 0, distributor_id: 0, store_id: 0) // group filter
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
     var listCustomerSelected:[Customer] = [] //list customer select to remove
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
+    var onSelectCustomer:((Customer)->Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,11 +52,15 @@ UITabBarControllerDelegate{
         self.tableView.addGestureRecognizer(tapGesture!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 50
     }
     
     deinit {
-        self.tableView.removeGestureRecognizer(tapGesture!)
-        NotificationCenter.default.removeObserver(self)
+        if self.tableView != nil {
+            self.tableView.removeGestureRecognizer(tapGesture!)
+            NotificationCenter.default.removeObserver(self)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,7 +69,6 @@ UITabBarControllerDelegate{
         itemTabbar.tag = 9
         tabBarItem  = itemTabbar
         
-        localService.getAllGroup()
         refreshListCustomer()
     }
     
@@ -76,7 +80,7 @@ UITabBarControllerDelegate{
     }
     
     func didSyncedData(notification:Notification) {
-        localService.getAllGroup()
+        
         refreshListCustomer()
     }
     
@@ -85,6 +89,13 @@ UITabBarControllerDelegate{
     }
     
     func refreshListCustomer() {
+        
+        LocalService.shared.getAllGroup { [weak self] list in
+            self?.listGroup.removeAll()
+            if list.count > 0 {
+                self?.listGroup.append(contentsOf: list)
+            }
+        }
         
         self.listCustomer.removeAll()
         self.tableView.reloadData()
@@ -106,7 +117,13 @@ UITabBarControllerDelegate{
         }
         print(sql)
         showLoading(isShow: true, isShowMessage: false)
+        do {
+            try LocalService.shared.db.transaction {
         localService.getCustomerWithCustom(sql: sql)
+            }
+        } catch {
+            print("cant involke refresh list customer")
+        }
     }
     
     // MARK: - event button
@@ -162,8 +179,8 @@ UITabBarControllerDelegate{
                         _ = self.listCustomerSelected.map({
                             var cus = $0
                             cus.status = 0
-                            _ = LocalService.shared().updateCustomer(object: cus)
-                            LocalService.shared().startSyncData()
+                            _ = LocalService.shared.updateCustomer(object: cus)
+                            LocalService.shared.startSyncData()
                         })
                         self.listCustomerSelected.removeAll()
                         self.configView()
@@ -205,6 +222,11 @@ extension CustomerListController {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if onSelectCustomer != nil {
+            self.navigationController?.popViewController(animated: true)
+            onSelectCustomer?(listCustomer[indexPath.row])            
+            return
+        }
         if isEdit {
             let cell = tableView.cellForRow(at: indexPath) as! CustomerListCell
             cell.setSelect()
@@ -213,13 +235,13 @@ extension CustomerListController {
             if expandRow == indexPath.row || !customer.isShouldOpenFunctionView {
                 // reset expand
                 expandRow = -1
+                tableView.reloadData()
             } else {
                 expandRow = indexPath.row
+                self.tableView.beginUpdates()
+                self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
+                self.tableView.endUpdates()
             }
-            
-            self.tableView.beginUpdates()
-            self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
-            self.tableView.endUpdates()
         }
     }
     
@@ -257,6 +279,8 @@ extension CustomerListController {
                     self.listGroup.removeAll()
                     self.listGroup.append(contentsOf: list)
                 }
+            case .order:
+                break
             }
         }
     }

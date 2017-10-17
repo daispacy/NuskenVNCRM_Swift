@@ -11,6 +11,13 @@ import Localize_Swift
 
 class AppConfig: NSObject {
     
+    // MARK: - Database
+    class db:AppConfig {
+        static var name:String {
+            return "crm1.sqlite"
+        }
+    }
+    
     // MARK: - Other
     class setting: AppConfig {
         static func setRememerID(isRemember:Bool) {
@@ -112,12 +119,12 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             //start service if signin Success
-            LocalService.shared().startSyncData()
+            LocalService.shared.startSyncData()
             
             let vc:UITabBarController = UITabBarController.init()
             
             let uinaviVC1 = UINavigationController.init(rootViewController: DashboardViewController())
-            let uinaviVC2 = UINavigationController.init(rootViewController: OrderManagerViewController())
+            let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
             
             vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)
             

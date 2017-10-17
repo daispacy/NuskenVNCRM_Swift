@@ -5,7 +5,7 @@
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -41,7 +41,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fp9-Ey-zdP">
-                                    <rect key="frame" x="82" y="296.33333333333337" width="250" height="290.00000000000011"/>
+                                    <rect key="frame" x="82" y="296.33333333333331" width="250" height="289.99999999999994"/>
                                     <subviews>
                                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MKC-pV-HHc" userLabel="lblMessage" customClass="CMessageLabel" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="0.0"/>
@@ -56,13 +56,13 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="40" id="Ljr-D3-ROT"/>
+                                                        <constraint firstAttribute="width" priority="750" constant="40" id="Ljr-D3-ROT"/>
                                                     </constraints>
                                                 </imageView>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="xxxxxxxxxx" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F6e-vF-ERE" userLabel="txtVNID" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
                                                     <rect key="frame" x="50" y="0.0" width="200" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="eF5-6z-ncr"/>
+                                                        <constraint firstAttribute="height" priority="750" constant="40" id="eF5-6z-ncr"/>
                                                     </constraints>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -77,13 +77,13 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="40" id="Esq-C7-b2I"/>
+                                                        <constraint firstAttribute="width" priority="750" constant="40" id="Esq-C7-b2I"/>
                                                     </constraints>
                                                 </imageView>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="kOZ-0M-M0D" userLabel="txtEmail" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
                                                     <rect key="frame" x="50" y="0.0" width="200" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="WTs-Hk-qdl"/>
+                                                        <constraint firstAttribute="height" priority="750" constant="40" id="WTs-Hk-qdl"/>
                                                     </constraints>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -98,13 +98,13 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="40" id="iTA-Sa-ee9"/>
+                                                        <constraint firstAttribute="width" priority="750" constant="40" id="iTA-Sa-ee9"/>
                                                     </constraints>
                                                 </imageView>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Deo-aI-si8" userLabel="txtPassword" customClass="CInput" customModule="NuskinVN_CRM" customModuleProvider="target">
                                                     <rect key="frame" x="50" y="0.0" width="200" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="ae7-ze-UOm"/>
+                                                        <constraint firstAttribute="height" priority="750" constant="40" id="ae7-ze-UOm"/>
                                                     </constraints>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -116,7 +116,7 @@
                                             <rect key="frame" x="0.0" y="150" width="250" height="40"/>
                                             <color key="backgroundColor" red="0.1450980392" green="0.20392156859999999" blue="0.52941176469999995" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="LBb-ZS-NR6"/>
+                                                <constraint firstAttribute="height" priority="750" constant="40" id="LBb-ZS-NR6"/>
                                             </constraints>
                                             <state key="normal" title="Process">
                                                 <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -126,9 +126,9 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Qwa-iR-Fxo" userLabel="btnRemember" customClass="CButtonWithImage" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="200" width="250" height="40.000000000000057"/>
+                                            <rect key="frame" x="0.0" y="200" width="250" height="40"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="4Es-9P-wM9"/>
+                                                <constraint firstAttribute="height" priority="750" constant="40" id="4Es-9P-wM9"/>
                                             </constraints>
                                             <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             <state key="normal" title="Remember me" image="checkbox_uncheck">
@@ -141,7 +141,7 @@
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHd-p3-vFa" userLabel="btnResetPassword">
                                             <rect key="frame" x="0.0" y="250.00000000000006" width="250" height="40"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="bEq-gE-yyS"/>
+                                                <constraint firstAttribute="height" priority="750" constant="40" id="bEq-gE-yyS"/>
                                             </constraints>
                                             <state key="normal" title="Button"/>
                                             <connections>

@@ -5,7 +5,7 @@
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,17 +20,16 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Bpi-T2-Ees">
-                        <rect key="frame" x="15" y="20" width="290" height="64.5"/>
+                        <rect key="frame" x="15" y="10" width="290" height="84.5"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="38n-q2-gX3">
-                                <rect key="frame" x="0.0" y="0.0" width="290" height="64.5"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="38n-q2-gX3">
+                                <rect key="frame" x="0.0" y="0.0" width="290" height="84.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uyb-lS-zdr" userLabel="btn checked">
-                                        <rect key="frame" x="0.0" y="0.0" width="30" height="64.5"/>
+                                        <rect key="frame" x="0.0" y="25.5" width="115" height="34"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="30" id="hqm-jF-RVc"/>
+                                            <constraint firstAttribute="width" priority="750" constant="30" id="hqm-jF-RVc"/>
                                         </constraints>
-                                        <state key="normal" image="checkbox_check"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                 <integer key="value" value="7"/>
@@ -40,20 +39,21 @@
                                             <action selector="pressCheck:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="q2p-Ne-zJv"/>
                                         </connections>
                                     </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_group_gradient_75" translatesAutoresizingMaskIntoConstraints="NO" id="nqX-i5-E7b" customClass="CImageViewRoundGradient" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                        <rect key="frame" x="40" y="0.0" width="40" height="64.5"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nqX-i5-E7b" customClass="CImageViewRoundGradient" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                        <rect key="frame" x="125" y="10" width="40" height="64.5"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="4g8-Q3-0Ao"/>
+                                            <constraint firstAttribute="height" priority="350" constant="64.5" id="sit-L7-zEY"/>
                                         </constraints>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z2b-Em-2bi">
-                                        <rect key="frame" x="90" y="0.0" width="150" height="64.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="255" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z2b-Em-2bi">
+                                        <rect key="frame" x="175" y="0.0" width="65" height="84.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ra3-Mt-AoT">
-                                        <rect key="frame" x="250" y="0.0" width="40" height="64.5"/>
+                                        <rect key="frame" x="250" y="31.5" width="40" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="rZb-4i-hv3"/>
                                         </constraints>
@@ -74,11 +74,11 @@
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="Bpi-T2-Ees" secondAttribute="trailing" constant="15" id="0gQ-YA-Swf"/>
                     <constraint firstItem="Bpi-T2-Ees" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="8ZA-rN-VFy"/>
-                    <constraint firstAttribute="bottom" secondItem="Bpi-T2-Ees" secondAttribute="bottom" constant="20" id="NRU-cn-z6Y"/>
+                    <constraint firstAttribute="bottom" secondItem="Bpi-T2-Ees" secondAttribute="bottom" constant="10" id="NRU-cn-z6Y"/>
                     <constraint firstAttribute="trailing" secondItem="OAh-KJ-B3z" secondAttribute="trailing" id="ZS1-Pz-1h9"/>
                     <constraint firstAttribute="bottom" secondItem="OAh-KJ-B3z" secondAttribute="bottom" id="bQF-cq-lmT"/>
                     <constraint firstItem="OAh-KJ-B3z" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="40" id="cxf-Az-0w1"/>
-                    <constraint firstItem="Bpi-T2-Ees" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="d0G-1k-p2W"/>
+                    <constraint firstItem="Bpi-T2-Ees" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="d0G-1k-p2W"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
@@ -93,8 +93,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="checkbox_check" width="18" height="18"/>
         <image name="ic_edit_gradient_48" width="16" height="16"/>
-        <image name="ic_group_gradient_75" width="25" height="25"/>
     </resources>
 </document>

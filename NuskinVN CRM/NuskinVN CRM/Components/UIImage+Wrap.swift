@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SQLite
 
 public extension UIImage {
     public convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {

@@ -55,12 +55,18 @@ class CustomerDetailController: RootViewController {
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         self.view.addGestureRecognizer(tapGesture!)
-        
-        LocalService.shared().getAllCity(complete: {[weak self] list in
-            DispatchQueue.main.async {
-                self?.listCountry = list
+        do {
+            try LocalService.shared.db.transaction {
+                LocalService.shared.getAllCity(complete: {[weak self] list in
+                    DispatchQueue.main.async {
+                        self?.listCountry = list
+                    }
+                })
             }
-        })
+        } catch {
+            print("cante get all city")
+        }
+        
         
         configText()
         configView()
@@ -312,17 +318,15 @@ class CustomerDetailController: RootViewController {
             .disposed(by: disposeBag)
         
         // event process
-        let localService = LocalService.shared()
+        let localService = LocalService.shared
         btnProcess.rx.tap
             .subscribe(onNext:{
                 if self.customer.server_id == 0 && self.customer.id == 0{
                     if localService.addCustomer(object: (self.customer)) {
-                        LocalService.shared().startSyncData()
                         self.navigationController?.popToRootViewController(animated: true)
                     }
                 } else {
                     if localService.updateCustomer(object: (self.customer)) {
-                        LocalService.shared().startSyncData()
                         self.navigationController?.popToRootViewController(animated: true)
                     }
                 }

@@ -57,7 +57,7 @@ extension AuthenticViewController {
                 
             } else if(self.type_ == .AUTH_LOGIN){
                 // involke api login
-                SyncService.shared().login(email: authenticView.email, username: nil, password: authenticView.password!, completion: {
+                SyncService.shared.login(email: authenticView.email, username: nil, password: authenticView.password!, completion: {
                     [weak self] result in
                     switch result {
                     case .success(_):

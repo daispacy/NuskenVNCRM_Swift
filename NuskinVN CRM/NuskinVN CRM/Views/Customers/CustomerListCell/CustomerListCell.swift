@@ -15,8 +15,8 @@ class CustomerListCell: UITableViewCell {
     @IBOutlet var btnCheck: UIButton!
     @IBOutlet var imgAvatar: CImageViewRoundGradient!
     @IBOutlet var lblName: UILabel!
-    @IBOutlet var stackViewContainer: UIStackView!
     @IBOutlet var btnEdit: UIButton!
+    @IBOutlet var stackViewContainer: UIStackView!
     
     
     var onSelectCustomer:((Customer, Bool) -> Void)?

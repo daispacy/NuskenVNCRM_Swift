@@ -89,13 +89,13 @@ struct Customer {
             return false
         }
         let sql:String = "SELECT count(*) FROM customer where `email` = '\(self.email)'"
-        let count:Int64 = LocalService.shared().countLocalData(sql: sql)
+        let count:Int64 = LocalService.shared.countLocalData(sql: sql)
         return count > 0
     }
     
     var groupName:String {
         let sql:String = "SELECT `name` FROM `group` where (`id` = '\(self.group_id)' AND `synced` = '0') OR (`server_id` = '\(self.group_id)' AND `synced` = '1')"
-        return LocalService.shared().getNameGroupFromID(sql:sql)
+        return LocalService.shared.getNameGroupFromID(sql:sql)
     }
     
     var isShouldOpenFunctionView:Bool {

@@ -21,7 +21,6 @@ LocalServiceDelegate {
     @IBOutlet var collectView: UICollectionView!
     
     var onSelectGroup:((GroupCustomer)->Void)?
-    var localService:LocalService!
     var gotoFromCustomerList:Bool = false
     
     var listGroups:[GroupCustomer]!
@@ -42,9 +41,7 @@ LocalServiceDelegate {
         // Do any additional setup after loading the view.
         collectView.register(UINib(nibName: "GroupCollectCustomerCell", bundle: Bundle.main), forCellWithReuseIdentifier: "cell")
         
-        localService = LocalService.init()
-        localService.delegate_ = self
-        localService.getAllGroup()
+        refreshList()
         
         if gotoFromCustomerList {
             let rightButtonMenu:UIButton = UIButton(type: .custom)
@@ -61,6 +58,10 @@ LocalServiceDelegate {
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
     override func configText() {
         title = "group_customer".localized().uppercased()
     }
@@ -70,6 +71,15 @@ LocalServiceDelegate {
     }
     
     // MARK: - private
+    func refreshList() {
+        LocalService.shared.getAllGroup(onComplete: {
+            [weak self] list in
+            self?.listGroups.removeAll()
+            self?.listGroups = list
+            self?.collectView.reloadData()
+        })
+    }
+    
     func showPopupGroup(object:GroupCustomer? = nil) {
         let vc = AddGroupController(nibName: "AddGroupController", bundle: Bundle.main)
         
@@ -80,12 +90,11 @@ LocalServiceDelegate {
         })
         vc.onAddGroup = { group in
             if object != nil {
-                _ = self.localService.updateGroup(object: group)
+                _ = LocalService.shared.updateGroup(object: group)
             } else {
-                _ = self.localService.addGroup(obj: group)
+                _ = LocalService.shared.addGroup(obj: group)
             }
-            LocalService.shared().startSyncData()
-            self.localService.getAllGroup()
+            self.refreshList()
         }
     }
 }
@@ -108,9 +117,9 @@ extension GroupCustomerController {
                         if i == 1 {
                             var gr = group
                             gr.status = 0
-                            if self.localService.updateGroup(object: gr) {
-                                LocalService.shared().startSyncData()
-                                self.localService.getAllGroup()
+                            if LocalService.shared.updateGroup(object: gr) {
+                                LocalService.shared.startSyncData()
+                                self.refreshList()
                             }
                         }
                     })
@@ -184,11 +193,16 @@ extension GroupCustomerController {
     
     func localService(localService: LocalService, didReceiveData: Any, type:LocalServiceType) {
         DispatchQueue.main.async {
-            self.listGroups.removeAll()
-            let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
-            self.listGroups.append(contentsOf: list)
-            self.listGroups.append(self.defaultItem)
-            self.collectView.reloadData()
+            switch type {
+            case .group:
+                self.listGroups.removeAll()
+                let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
+                self.listGroups.append(contentsOf: list)
+                self.listGroups.append(self.defaultItem)
+                self.collectView.reloadData()
+            case .customer: break
+            case .order: break
+            }
         }
     }
 }
