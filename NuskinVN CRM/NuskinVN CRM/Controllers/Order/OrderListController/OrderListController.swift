@@ -10,21 +10,17 @@ import UIKit
 
 class OrderListController: RootViewController,
 UITableViewDelegate,
-UITableViewDataSource,
-LocalServiceDelegate{
+UITableViewDataSource{
 
     @IBOutlet var indicatorLoading: UIActivityIndicatorView!
     @IBOutlet var lblMessageData: UILabel!
     @IBOutlet var tableView: UITableView!
     
     var listOrder:[Order] = []
-    let localService:LocalService = LocalService.shared
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-
-        localService.delegate_ = self
+        super.viewDidLoad()        
         
         // Do any additional setup after loading the view.
         tableView.register(UINib(nibName: "OrderListCell", bundle: Bundle.main), forCellReuseIdentifier: "cell")
@@ -39,7 +35,7 @@ LocalServiceDelegate{
         
         // Do any additional setup after loading the view.
         let rightButtonMenu = UIButton(type: .custom)
-        rightButtonMenu.setImage(UIImage(named: "menu_white_icon"), for: .normal)
+        rightButtonMenu.setImage(Support.image.iconFont(code: "\u{f067}", size: 22), for: .normal)
         rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
         rightButtonMenu.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
         let item2 = UIBarButtonItem(customView: rightButtonMenu)
@@ -60,7 +56,7 @@ LocalServiceDelegate{
     }
     
     override func configText() {
-        title = "customer".localized().uppercased()
+        title = "order".localized().uppercased()
         lblMessageData.text = "order_not_found".localized()
     }
     
@@ -72,7 +68,17 @@ LocalServiceDelegate{
     // MARK: - private
     func refreshListOrder() {
         listOrder.removeAll()
-        localService.getAllOrder()
+        LocalService.shared.getAllOrder(onComplete: {[weak self] list in
+            if let _self = self {
+            if list.count > 0 {
+                _self.listOrder.append(contentsOf: list)
+                _self.tableView.reloadData()
+                _self.showLoading(isShow: false, isShowMessage: false)
+            } else {
+                _self.showLoading(isShow: false, isShowMessage: true)
+            }
+            }
+        })
     }
     
     func configView() {
@@ -104,43 +110,22 @@ LocalServiceDelegate{
 // MARK: - tableview delegate
 extension OrderListController {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        
-        return cell!
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return listOrder.count
-    }
-}
-
-// MARK: - LocalService delegate
-extension OrderListController {
-    func localService(localService: LocalService, didReceiveData: Any, type: LocalServiceType) {
-        DispatchQueue.main.async {
-            switch (type) {
-            case .customer:
-                break
-            case .group:
-                break
-            case .order:
-                let list:[Order] = didReceiveData as! [Order]
-                if list.count > 0 {
-                    self.listOrder.append(contentsOf: list)
-                    self.tableView.reloadData()
-                    self.showLoading(isShow: false, isShowMessage: false)
-                } else {
-                    self.showLoading(isShow: false, isShowMessage: true)
-                }
+        let vc = OrderDetailController(nibName: "OrderDetailController", bundle: Bundle.main)
+        self.navigationController?.pushViewController(vc, animated: true)
+        vc.onDidLoad = {[weak self] in
+            if let _self = self {
+                vc.edit(_self.listOrder[indexPath.row])
             }
         }
     }
     
-    func localService(localService: LocalService, didFailed: Any, type: LocalServiceType) {
-        
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! OrderListCell
+        cell.show(listOrder[indexPath.row], isEdit: false, isSelect: false, isChecked: false)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return listOrder.count
     }
 }

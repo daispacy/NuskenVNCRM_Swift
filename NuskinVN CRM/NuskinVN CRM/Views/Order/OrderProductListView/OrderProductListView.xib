@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB" customClass="OrderProductListView" customModule="NuskinVN_CRM" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="377" height="157"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="2t6-PV-Ipt">
+                    <rect key="frame" x="0.0" y="0.0" width="377" height="157"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Red-sD-xkT" customClass="CLabelGradient" customModule="NuskinVN_CRM" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="377" height="106"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="0c7-k4-mGa"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0uh-xQ-0SC">
+                            <rect key="frame" x="0.0" y="107" width="377" height="50"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="nIR-3Y-xld"/>
+                            </constraints>
+                            <state key="normal" title="Button">
+                                <color key="titleColor" red="0.89019607840000003" green="0.043137254899999998" blue="0.47843137250000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="2t6-PV-Ipt" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="Oqt-NK-7ea"/>
+                <constraint firstAttribute="trailing" secondItem="2t6-PV-Ipt" secondAttribute="trailing" id="lyg-fs-6xB"/>
+                <constraint firstItem="2t6-PV-Ipt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="tIb-eZ-0ml"/>
+                <constraint firstItem="2t6-PV-Ipt" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="zcw-uP-cPs"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="btnAddProduct" destination="0uh-xQ-0SC" id="enc-91-6il"/>
+                <outlet property="lbltitle" destination="Red-sD-xkT" id="VzC-Vg-7sb"/>
+                <outlet property="stackViewContainer" destination="2t6-PV-Ipt" id="jnK-eM-53E"/>
+            </connections>
+            <point key="canvasLocation" x="152.5" y="-55.5"/>
+        </view>
+    </objects>
+</document>

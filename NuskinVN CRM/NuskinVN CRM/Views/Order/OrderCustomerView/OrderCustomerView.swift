@@ -30,55 +30,114 @@ class OrderCustomerView: UIView {
     var orderCode:String = ""
     var disposeBag = DisposeBag()
     var navigationController:UINavigationController?
+    var listCustomer:[Customer] = []
+    var onUpdateData:((Customer,String)->Void)?
+    var order:Order?
     
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        LocalService.shared.getCustomerWithCustom(sql:"select * from `customer`", onComplete: {[weak self] list in
+            if let _self = self {
+                _self.listCustomer = list
+            }
+        })
+        
         configText()
         configView()
         binding()
     }
     
+    // MARK: - interface
+    func show(order:Order) {
+        self.order = order
+        self.customerSelected = order.customer
+        self.txtOrderCode.text = order.order_code
+        self.txtTel.text = self.customerSelected.tel
+        self.txtAddress.text = self.customerSelected.address
+        self.txtEmail.text = self.customerSelected.email
+        self.btnChooseCustomer.setTitle(order.customer.fullname, for: .normal)
+        self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+            self.vwTel.alpha = 1
+            self.vwEmail.alpha = 1
+            self.vwAddress.alpha = 1
+        }, completion: { _ in
+            self.vwTel.isHidden = false
+            self.vwEmail.isHidden = false
+            self.vwAddress.isHidden = false
+        })
+    }
+    
     // MARK: - private
     func binding() {
-        let nameIsValid = txtTel.rx.text.orEmpty
+        let nameIsValid = txtOrderCode.rx.text.orEmpty
             .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
             .shareReplay(1)
- 
+        
         nameIsValid.bind(to: lblErrorCode.rx.isHidden).disposed(by: disposeBag)
         
         btnChooseCustomer.rx.tap.subscribe(onNext:{ [weak self] in
-            let vc = CustomerListController(nibName: "CustomerListController", bundle: Bundle.main)
-            vc.onSelectCustomer = {[weak self]
-                customer in
-                self?.customerSelected = customer
-                self?.txtTel.text = customer.tel
-                self?.txtAddress.text = customer.address
-                self?.txtEmail.text = customer.email
-                UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
-                    self?.vwTel.alpha = 1
-                    self?.vwEmail.alpha = 1
-                    self?.vwAddress.alpha = 1
-                }, completion: { _ in
-                    self?.vwTel.isHidden = false
-                    self?.vwEmail.isHidden = false
-                    self?.vwAddress.isHidden = false
-                })
+            if let _self = self {
+                let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                _self.navigationController?.pushViewController(vc, animated: true)
+                
+                vc.onDidLoad = {
+                    vc.title = "choose_customer".localized().uppercased()
+                    var listData:[String] = []
+                    _ = _self.listCustomer.map({
+                        listData.append($0.fullname)
+                        
+                    })
+                    vc.showData(data: listData.sorted(by: {$0 < $1}))
+                }
+                
+                vc.onSelectData = {[weak self] name in
+                    if let _self = self {
+                        _ = _self.listCustomer.map({
+                            if $0.fullname == name {
+                                _self.customerSelected = $0
+                                _self.txtTel.text = _self.customerSelected.tel
+                                _self.txtAddress.text = _self.customerSelected.address
+                                _self.txtEmail.text = _self.customerSelected.email
+                                _self.btnChooseCustomer.setTitle(name, for: .normal)
+                                _self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                                _self.onUpdateData!(_self.customerSelected,_self.orderCode)
+                                UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+                                    _self.vwTel.alpha = 1
+                                    _self.vwEmail.alpha = 1
+                                    _self.vwAddress.alpha = 1
+                                }, completion: { _ in
+                                    _self.vwTel.isHidden = false
+                                    _self.vwEmail.isHidden = false
+                                    _self.vwAddress.isHidden = false
+                                })
+                            }
+                        })
+                    }
+                }
             }
-            self?.navigationController?.pushViewController(vc, animated: true)
-            
         }).disposed(by: disposeBag)
         
         txtTel.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customerSelected.tel = $0
+            if let _self = self {
+                _self.customerSelected.tel = $0
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode)
+            }
         }).disposed(by: disposeBag)
         txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customerSelected.address = $0
+            if let _self = self {
+                _self.customerSelected.address = $0
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode)
+            }
         }).disposed(by: disposeBag)
         txtOrderCode.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.orderCode = $0
+            if let _self = self {
+                _self.orderCode = $0
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode)
+            }
         }).disposed(by: disposeBag)
         
     }
@@ -96,6 +155,11 @@ class OrderCustomerView: UIView {
         
         configButton(btnChooseCustomer)
         txtEmail.isEnabled = false
+        
+        lblErrorCode.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
+        lblErrorChooseCustomer.font = lblErrorCode.font
+        lblErrorCode.textColor = UIColor.red
+        lblErrorChooseCustomer.textColor = lblErrorCode.textColor
     }
     
     func configText() {
@@ -103,7 +167,7 @@ class OrderCustomerView: UIView {
             $0.text = $0.accessibilityIdentifier?.localized()
         })
         
-        txtOrderCode.placeholder = "placeholder_fullname".localized()
+        txtOrderCode.placeholder = "placeholder_order_code".localized()
         txtEmail.placeholder = "placeholder_email".localized()
         txtTel.placeholder = "placeholder_phone".localized()
         txtAddress.placeholder = "placeholder_address".localized()

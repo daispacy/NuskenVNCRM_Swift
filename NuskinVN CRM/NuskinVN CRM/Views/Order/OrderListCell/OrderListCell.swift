@@ -22,7 +22,7 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var lblCode: UILabel!
     @IBOutlet var lblGoal: UILabel!
     @IBOutlet var lblTotalPrice: UILabel!
-    @IBOutlet var lblStatus: CLabelGradient!
+    @IBOutlet var lblStatus: UILabel!
     
     var isEdit:Bool = false
     var object:Order!
@@ -36,6 +36,10 @@ class OrderListCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        lblStatus.text = "loading".localized()
+        self.layoutIfNeeded()
+        self.setNeedsDisplay()
         
         isSelect = false
         isEdit = false
@@ -53,14 +57,28 @@ class OrderListCell: UITableViewCell {
         selectedBackgroundView = bgColorView
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    
     // MARK: - interface
-    func show(customer:Order, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
-        object = customer
+    func show(_ order:Order, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+        object = order
         self.isEdit = isEdit
         self.isSelect = isSelect
         self.isChecked = isChecked
+        configText()
         configView()
         
+        if order.customer.fullname.characters.count > 0 {
+            lblNameCustomer.text = order.customer.fullname
+        } else {
+            lblNameCustomer.text = "unknown".localized()
+        }
+        lblTotalPrice.text = "\(order.total) \("price_unit".localized())"
+        lblDateCreated.text = order.date_created
+        lblCode.text = order.order_code
+        lblStatus.text = AppConfig.order.listStatus[Int(order.status)]
     }
     
     func setSelect() {
@@ -83,10 +101,10 @@ class OrderListCell: UITableViewCell {
 
         configLabel(lbl: lblCode)
         configLabel(lbl: lblGoal)
-        configLabel(lbl: lblStatus)
         configLabel(lbl: lblNameCustomer, isTitle: true)
         configLabel(lbl: lblTotalPrice)
         configLabel(lbl: lblDateCreated)
+        configLabel(lbl: lblStatus)
     }
     
     func configText() {

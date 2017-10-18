@@ -13,7 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB" customClass="OrderCustomerView" customModule="NuskinVN_CRM" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="376" height="227"/>
+            <rect key="frame" x="0.0" y="0.0" width="376" height="161"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="e93-MF-UxM">
@@ -136,7 +136,7 @@
                             <rect key="frame" x="0.0" y="161" width="376" height="0.0"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="elN-2h-ZO8">
-                                    <rect key="frame" x="15" y="-65.5" width="376" height="60.5"/>
+                                    <rect key="frame" x="15" y="5" width="376" height="60.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V9O-A8-E2o">
                                             <rect key="frame" x="0.0" y="0.0" width="376" height="20.5"/>
@@ -161,8 +161,8 @@
                             <constraints>
                                 <constraint firstItem="elN-2h-ZO8" firstAttribute="leading" secondItem="TVk-Db-I4X" secondAttribute="leading" constant="15" id="1hv-WC-Hlt"/>
                                 <constraint firstAttribute="height" priority="250" constant="80" id="D3V-zX-15c"/>
-                                <constraint firstItem="elN-2h-ZO8" firstAttribute="top" secondItem="TVk-Db-I4X" secondAttribute="top" priority="250" constant="5" id="PQB-aM-5th"/>
-                                <constraint firstAttribute="bottom" secondItem="elN-2h-ZO8" secondAttribute="bottom" constant="5" id="ape-an-MYP"/>
+                                <constraint firstItem="elN-2h-ZO8" firstAttribute="top" secondItem="TVk-Db-I4X" secondAttribute="top" constant="5" id="PQB-aM-5th"/>
+                                <constraint firstAttribute="bottom" secondItem="elN-2h-ZO8" secondAttribute="bottom" priority="250" constant="5" id="ape-an-MYP"/>
                                 <constraint firstAttribute="trailing" secondItem="elN-2h-ZO8" secondAttribute="trailing" constant="15" id="kyH-UB-1OU"/>
                             </constraints>
                         </view>
@@ -205,10 +205,10 @@
                     <viewLayoutGuide key="safeArea" id="Rmp-xt-rBE"/>
                 </stackView>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="e93-MF-UxM" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Bju-ul-9VE"/>
-                <constraint firstAttribute="bottom" secondItem="e93-MF-UxM" secondAttribute="bottom" priority="750" id="Kji-aB-9dy"/>
+                <constraint firstAttribute="bottom" secondItem="e93-MF-UxM" secondAttribute="bottom" id="Kji-aB-9dy"/>
                 <constraint firstItem="e93-MF-UxM" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Kop-fS-ZuC"/>
                 <constraint firstAttribute="trailing" secondItem="e93-MF-UxM" secondAttribute="trailing" id="ODE-AU-O91"/>
             </constraints>
@@ -230,7 +230,7 @@
                 <outletCollection property="collectsLabelBrands" destination="V9O-A8-E2o" collectionClass="NSMutableArray" id="Q8r-H9-o9c"/>
                 <outletCollection property="collectsLabelBrands" destination="Y9M-Pi-QKP" collectionClass="NSMutableArray" id="MTH-yR-tFb"/>
             </connections>
-            <point key="canvasLocation" x="55" y="-90.5"/>
+            <point key="canvasLocation" x="55" y="-123.5"/>
         </view>
     </objects>
     <resources>

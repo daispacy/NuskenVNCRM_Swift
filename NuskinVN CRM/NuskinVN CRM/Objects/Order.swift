@@ -23,8 +23,12 @@ struct Order {
     var status:Int64 = 0
     var payment_status:Int64 = 0
     var payment_method:String = ""
-    var shipping_unit:String = ""
+    var shipping_unit:String = "" // transporter
+    var transporter_id:String = ""
+    var note:String = ""
     var synced:Int64 = 0
+    
+    var tempProducts:[Product] = []
     
     
     var customer:Customer {
@@ -33,6 +37,17 @@ struct Order {
     
     var products: [Product] {
         return LocalService.shared.getAllProduct(orderID: id)
+    }
+    
+    var total:Int64 {
+        if products.count > 0 {
+            var t:Int64 = 0
+            _ = products.map({
+                t += $0.price
+            })
+            return t
+        }
+        return 0
     }
 }
 
@@ -107,6 +122,12 @@ extension Order {
         }
         if let id = json["shipping_unit"] as? String {
             self.shipping_unit = id
+        }
+        if let id = json["transporter_id"] as? String {
+            self.transporter_id = id
+        }
+        if let id = json["note"] as? String {
+            self.note = id
         }
     }
 }

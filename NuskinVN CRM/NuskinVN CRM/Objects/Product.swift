@@ -12,7 +12,19 @@ struct Product {
     var id:Int64 = 0
     var server_id:Int64 = 0
     var name:String = ""
+    var tempName:String = ""
     var synced:Int64 = 0
+    var price:Int64 = 0
+    var quantity:Int64 = 0
+    
+    func isValid(exceptMe:Bool = false) ->Bool{
+        var sql:String = "SELECT count(*) FROM `product` where `name` = '\(self.name)'"
+        if exceptMe {
+            sql.append(" AND id <> '\(id)'")
+        }
+        let count:Int64 = LocalService.shared.countLocalData(sql: sql)
+        return count <= 0
+    }
 }
 
 extension Product {

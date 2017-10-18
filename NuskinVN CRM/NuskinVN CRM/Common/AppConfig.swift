@@ -14,7 +14,11 @@ class AppConfig: NSObject {
     // MARK: - Database
     class db:AppConfig {
         static var name:String {
-            return "crm1.sqlite"
+            if let id = User.currentUser().id {
+                return "crm\(id).sqlite"
+            } else {
+                return "crm999999.sqlite"
+            }
         }
     }
     
@@ -159,5 +163,22 @@ class AppConfig: NSObject {
                 }
             }
         }
+    }
+    
+    // MARK: - order
+    class order: AppConfig {
+        static let listStatus:[String] = ["invalid".localized(),
+                                   "processing".localized(),
+                                   "delivering".localized(),
+                                   "delivered".localized()]
+        static let listPaymentStatus:[String] = ["no_charge".localized(),
+                                          "money_collected".localized()]
+        static let listPaymentMethod:[String] = ["cod".localized(),
+                                          "online".localized(),
+                                          "credit_card".localized(),
+                                          "paypal".localized()]
+        static let listTranspoter:[String] = ["Vnpost - EMS".localized(),
+                                       "Viettel post".localized(),
+                                       "fast_delivery".localized()]
     }
 }

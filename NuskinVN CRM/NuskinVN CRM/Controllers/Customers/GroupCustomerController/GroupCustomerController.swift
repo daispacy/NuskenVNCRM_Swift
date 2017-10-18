@@ -12,10 +12,9 @@ import RxSwift
 import RxCocoa
 
 class GroupCustomerController: RootViewController,
-UICollectionViewDelegate,
-UICollectionViewDataSource,
-UICollectionViewDelegateFlowLayout,
-LocalServiceDelegate {
+    UICollectionViewDelegate,
+    UICollectionViewDataSource,
+UICollectionViewDelegateFlowLayout {
     
     @IBOutlet var vwOverlay: UIView!
     @IBOutlet var collectView: UICollectionView!
@@ -30,11 +29,11 @@ LocalServiceDelegate {
         group.color = "0xbec2c5"
         return group
     }()
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-         configText()
+        configText()
         
         listGroups = []
         
@@ -50,14 +49,16 @@ LocalServiceDelegate {
             rightButtonMenu.setTitleColor(UIColor.white, for: .normal)
             rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
             rightButtonMenu.rx.tap.subscribe(onNext: {[weak self] in
-                let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-                self?.navigationController?.pushViewController(vc, animated: true)
+                if let _self = self {
+                    let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+                    _self.navigationController?.pushViewController(vc, animated: true)
+                }
             }).disposed(by: disposeBag)
             let item2 = UIBarButtonItem(customView: rightButtonMenu)
             self.navigationItem.rightBarButtonItem  = item2
         }
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
@@ -74,9 +75,11 @@ LocalServiceDelegate {
     func refreshList() {
         LocalService.shared.getAllGroup(onComplete: {
             [weak self] list in
-            self?.listGroups.removeAll()
-            self?.listGroups = list
-            self?.collectView.reloadData()
+            if let _self = self {
+                _self.listGroups.removeAll()
+                _self.listGroups = list
+                _self.collectView.reloadData()
+            }
         })
     }
     
@@ -168,7 +171,7 @@ extension GroupCustomerController {
         let widthCollect = self.collectView.frame.size.width
         var width = round(((widthCollect-2) / 2))
         if(self.collectView.frame.size.height < self.collectView.frame.size.width) {
-//            widthCollect = self.collectView.frame.size.height
+            //            widthCollect = self.collectView.frame.size.height
             width = round(((widthCollect-4) / 4))
         }
         

@@ -48,7 +48,7 @@ class CustomerDetailController: RootViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "add_customer".uppercased().localized()
+        title = "add_customer".localized().uppercased()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -58,8 +58,10 @@ class CustomerDetailController: RootViewController {
         do {
             try LocalService.shared.db.transaction {
                 LocalService.shared.getAllCity(complete: {[weak self] list in
-                    DispatchQueue.main.async {
-                        self?.listCountry = list
+                    if let _self = self {
+                        DispatchQueue.main.async {
+                            _self.listCountry = list
+                        }
                     }
                 })
             }
@@ -148,195 +150,225 @@ class CustomerDetailController: RootViewController {
         
         //listern data
         txtName.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.fullname = $0
+            if let _self = self {
+                _self.customer.fullname = $0
+            }
         })
             .disposed(by: disposeBag)
         
         txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.email = $0
-            if ((self?.customer.isExist)!) {
-                self?.lblErrorEmail.text = "email_has_exist".localized()
-            } else {
-                self?.lblErrorEmail.text = "invalid_email".localized()
+            if let _self = self {
+                _self.customer.email = $0
+                if _self.customer.isExist {
+                    _self.lblErrorEmail.text = "email_has_exist".localized()
+                } else {
+                    _self.lblErrorEmail.text = "invalid_email".localized()
+                }
             }
         })
             .disposed(by: disposeBag)
         
         txtZalo.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.zalo = $0
+            if let _self = self {
+                _self.customer.zalo = $0
+            }
         })
             .disposed(by: disposeBag)
         
         txtPhone.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.tel = $0
+            if let _self = self {
+                _self.customer.tel = $0
+            }
         })
             .disposed(by: disposeBag)
         txtSkype.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.skype = $0
+            if let _self = self {
+                _self.customer.skype = $0
+            }
         })
             .disposed(by: disposeBag)
         txtViber.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.viber = $0
+            if let _self = self {
+                _self.customer.viber = $0
+            }
         })
             .disposed(by: disposeBag)
         txtFacebook.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.facebook = $0
+            if let _self = self {
+                _self.customer.facebook = $0
+            }
         })
             .disposed(by: disposeBag)
         txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            self?.customer.address = $0
+            if let _self = self {
+                _self.customer.address = $0
+            }
         })
             .disposed(by: disposeBag)
         
         btnBirthday.rx.tap
             .subscribe(onNext:{ [weak self] in
-                
-                let datePicker = DatePickerController(nibName: "DatePickerController", bundle: Bundle.main)
-                datePicker.onSelectDate = { date in
-                    self?.customer.birthday = date
-                    self?.btnBirthday.setTitle(date, for: .normal)
-                    self?.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                }
-                self?.present(datePicker, animated: false, completion: {
-                    datePicker.setTitle(title: "select_date".localized())
-                    if let dateStr = self?.customer.birthday {
+                if let _self = self {
+                    let datePicker = DatePickerController(nibName: "DatePickerController", bundle: Bundle.main)
+                    datePicker.onSelectDate = { date in
+                        _self.customer.birthday = date
+                        _self.btnBirthday.setTitle(date, for: .normal)
+                        _self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    }
+                    _self.present(datePicker, animated: false, completion: {
+                        datePicker.setTitle(title: "select_date".localized())
+                        let dateStr = _self.customer.birthday
                         if dateStr.characters.count > 0 {
                             datePicker.setDate(date: dateStr.toDate())
                         }
-                    }
-                })
+                        
+                    })
+                }
             })
             .disposed(by: disposeBag)
         
         btnGroup.rx.tap
             .subscribe(onNext:{ [weak self] in
-                
-                let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
-                vc.onSelectGroup = {group in
-                    if group.server_id == 0 {
-                        self?.customer.group_id = group.id
-                    } else {
-                        self?.customer.group_id = group.server_id
+                if let _self = self {
+                    let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
+                    vc.onSelectGroup = {group in
+                        if group.server_id == 0 {
+                            _self.customer.group_id = group.id
+                        } else {
+                            _self.customer.group_id = group.server_id
+                        }
+                        _self.btnGroup.setTitle(group.name, for: .normal)
+                        _self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
-                    self?.btnGroup.setTitle(group.name, for: .normal)
-                    self?.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    _self.navigationController?.pushViewController(vc, animated: true)
                 }
-                self?.navigationController?.pushViewController(vc, animated: true)
             })
             .disposed(by: disposeBag)
         
         btnChoosePhotos.rx.tap
             .subscribe(onNext:{ [weak self] in
-                self?.showSelectGetPhotos()
+                if let _self = self {
+                    _self.showSelectGetPhotos()
+                }
             })
             .disposed(by: disposeBag)
         
         btnGender.rx.tap
             .subscribe(onNext:{ [weak self] in
-                let popupC = PopupController(nibName: "PopupController", bundle: Bundle.main)
-                popupC.onSelect = {
-                    item, index in
-                    print("\(item) \(index)")
-                    self?.btnGender.setTitle(item, for: .normal)
-                    self?.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                    self?.customer.gender = Int64(index)
+                if let _self = self {
+                    let popupC = PopupController(nibName: "PopupController", bundle: Bundle.main)
+                    popupC.onSelect = {
+                        item, index in
+                        print("\(item) \(index)")
+                        _self.btnGender.setTitle(item, for: .normal)
+                        _self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                        _self.customer.gender = Int64(index)
+                    }
+                    popupC.onDismiss = {
+                        _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
+                    }
+                    var topVC = UIApplication.shared.keyWindow?.rootViewController
+                    while((topVC!.presentedViewController) != nil){
+                        topVC = topVC!.presentedViewController
+                    }
+                    topVC?.present(popupC, animated: false, completion: {isDone in
+                        _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
+                    })
+                    popupC.show(data: ["male".localized(),"female".localized()], fromView: _self.btnGender.superview!)
                 }
-                popupC.onDismiss = {
-                    self?.btnGender.imageView!.transform = (self?.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi)))!
-                }
-                var topVC = UIApplication.shared.keyWindow?.rootViewController
-                while((topVC!.presentedViewController) != nil){
-                    topVC = topVC!.presentedViewController
-                }
-                topVC?.present(popupC, animated: false, completion: {isDone in
-                    self?.btnGender.imageView!.transform = (self?.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi)))!
-                })
-                popupC.show(data: ["male".localized(),"female".localized()], fromView: (self?.btnGender.superview)!)
             })
             .disposed(by: disposeBag)
         
         btnCity.rx.tap
             .subscribe(onNext:{ [weak self] in
-                DispatchQueue.main.async {
-                    var listData:[String] = []
-                    _ = self?.listCountry.filter{$0.country_id == 0}.map({
-                        listData.append($0.name)
-                    })
-                    
-                    let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
-                    vc.onDidLoad = {
-                        vc.showData(data: listData.sorted(by: {$0 < $1}))
-                    }                    
-                    vc.onSelectData = { name in
-                        self?.customer.city = name
-                        self?.btnCity.setTitle(name, for: .normal)
-                        self?.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                        if !(self?.btnDistrict.isEnabled)! {
-                            self?.btnDistrict.isEnabled = true
+                if let _self = self {
+                    DispatchQueue.main.async {
+                        var listData:[String] = []
+                        _ = _self.listCountry.filter{$0.country_id == 0}.map({
+                            listData.append($0.name)
+                        })
+                        
+                        let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                        vc.onDidLoad = {
+                            vc.title = "choose_city".localized().uppercased()
+                            vc.showData(data: listData.sorted(by: {$0 < $1}))
                         }
+                        vc.onSelectData = { name in
+                            _self.customer.city = name
+                            _self.btnCity.setTitle(name, for: .normal)
+                            _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                            if !_self.btnDistrict.isEnabled {
+                                _self.btnDistrict.isEnabled = true
+                            }
+                        }
+                        _self.navigationController?.pushViewController(vc, animated: true)
                     }
-                    self?.navigationController?.pushViewController(vc, animated: true)
                 }
             })
             .disposed(by: disposeBag)
         
         btnDistrict.rx.tap
             .subscribe(onNext:{ [weak self] in
-                if self?.customer.country == "placeholder_city".localized() {
-                    return
-                }
-                let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
-                self?.navigationController?.pushViewController(vc, animated: true)
-                
-                var listData:[String] = []
-                
-                _ = self?.listCountry.map({
-                    if $0.name == self?.customer.city {
-                        let country:City = $0
-                        let listFilter:[City] = (self?.listCountry.filter{
-                            $0.country_id == country.id
-                            })!
-                        
-                        _ = listFilter.map({
-                            listData.append($0.name)
-                        })
-                        
-                        vc.onDidLoad = {
-                            vc.showData(data: listData.sorted(by: {$0 < $1}))
-                        }
+                if let _self = self {
+                    if _self.customer.country == "placeholder_city".localized() {
+                        return
                     }
-                })
-                
-                
-                vc.onSelectData = { name in
-                    self?.customer.city = name
-                    self?.btnDistrict.setTitle(name, for: .normal)
-                    self?.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                    _self.navigationController?.pushViewController(vc, animated: true)
+                    
+                    var listData:[String] = []
+                    
+                    _ = _self.listCountry.map({
+                        if $0.name == _self.customer.city {
+                            let country:City = $0
+                            let listFilter:[City] = _self.listCountry.filter{
+                                $0.country_id == country.id
+                            }
+                            
+                            _ = listFilter.map({
+                                listData.append($0.name)
+                            })
+                            
+                            vc.onDidLoad = {
+                                vc.title = "choose_district".localized().uppercased()
+                                vc.showData(data: listData.sorted(by: {$0 < $1}))
+                            }
+                        }
+                    })
+                    
+                    
+                    vc.onSelectData = { name in
+                        _self.customer.city = name
+                        _self.btnDistrict.setTitle(name, for: .normal)
+                        _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    }
                 }
-                
             })
             .disposed(by: disposeBag)
         
         // event process
         let localService = LocalService.shared
         btnProcess.rx.tap
-            .subscribe(onNext:{
-                if self.customer.server_id == 0 && self.customer.id == 0{
-                    if localService.addCustomer(object: (self.customer)) {
-                        self.navigationController?.popToRootViewController(animated: true)
-                    }
-                } else {
-                    if localService.updateCustomer(object: (self.customer)) {
-                        self.navigationController?.popToRootViewController(animated: true)
+            .subscribe(onNext:{ [weak self] in
+                if let _self = self {
+                    if _self.customer.server_id == 0 && _self.customer.id == 0{
+                        if localService.addCustomer(object: _self.customer) {
+                            _self.navigationController?.popToRootViewController(animated: true)
+                        }
+                    } else {
+                        if localService.updateCustomer(object: _self.customer) {
+                            _self.navigationController?.popToRootViewController(animated: true)
+                        }
                     }
                 }
-                
             })
             .disposed(by: disposeBag)
         
         btnCancel.rx.tap
             .subscribe(onNext:{ [weak self] in
-                self?.navigationController?.popViewController(animated: true)
+                if let _self = self {
+                    _self.navigationController?.popViewController(animated: true)
+                }
                 
             })
             .disposed(by: disposeBag)

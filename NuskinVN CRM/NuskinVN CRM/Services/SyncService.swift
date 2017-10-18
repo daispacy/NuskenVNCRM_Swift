@@ -62,19 +62,22 @@ final class SyncService: NSObject {
                             if let json:JSON = jsonArray["data"] as? JSON{
 
                                 if let jsonCountry:[JSON] = json["city"] as? [JSON] {
-                                    do {
-                                    try LocalService.shared.db.transaction {
-                                        LocalService.shared.customSQl(sql: "delete from `city`", onComplete: {
-                                            print("start merge CITY to local DB")
-                                            let listCountry:[City] = jsonCountry.flatMap({City(json:$0)})
-                                            _ = listCountry.map({
-                                                LocalService.shared.addCity(obj: $0)
-                                            })
-                                        })
-                                    }
-                                    } catch {
-                                        
-                                    }
+//                                    let listCountry:[City] = jsonCountry.flatMap({City(json:$0)})
+                                    UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject:jsonCountry), forKey: "App:ListCity")
+                                    UserDefaults.standard.synchronize()
+//                                    do {
+//                                    try LocalService.shared.db.transaction {
+//                                        LocalService.shared.customSQl(sql: "delete from `city`", onComplete: {
+//                                            print("start merge CITY to local DB")
+//                                            let listCountry:[City] = jsonCountry.flatMap({City(json:$0)})
+//                                            _ = listCountry.map({
+//                                                LocalService.shared.addCity(obj: $0)
+//                                            })
+//                                        })
+//                                    }
+//                                    } catch {
+//
+//                                    }
                                     
                                 }
                                 

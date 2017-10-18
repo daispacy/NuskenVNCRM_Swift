@@ -47,7 +47,9 @@ class CustomerListCell: UITableViewCell {
         selectedBackgroundView = bgColorView
         
         btnEdit.rx.tap.subscribe(onNext:{ [weak self] in
-            self?.onEditCustomer?((self?.object)!)
+            if let _self = self {
+                _self.onEditCustomer?(_self.object)
+            }
         }).disposed(by: disposeBag)
     }
     
@@ -161,18 +163,26 @@ class FunctionStackViewCustomer: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
+        
         btnFacebook.rx.tap.subscribe(onNext: { [weak self] in
-            self?.onSelectFunction?("facebook")
-            }).disposed(by: disposeBag)
+            if let _self = self {
+                _self.onSelectFunction?("facebook")
+            }
+        }).disposed(by: disposeBag)
         btnZalo.rx.tap.subscribe(onNext: {[weak self] in
-            self?.onSelectFunction?("zalo")
+            if let _self = self {
+                _self.onSelectFunction?("zalo")
+            }
         }).disposed(by: disposeBag)
         btnSkype.rx.tap.subscribe(onNext: {[weak self] in
-            self?.onSelectFunction?("skype")
+            if let _self = self {
+                _self.onSelectFunction?("skype")
+            }
         }).disposed(by: disposeBag)
         btnViber.rx.tap.subscribe(onNext: {[weak self] in
-            self?.onSelectFunction?("viber")
+            if let _self = self {
+                _self.onSelectFunction?("viber")
+            }
         }).disposed(by: disposeBag)
     }
 }

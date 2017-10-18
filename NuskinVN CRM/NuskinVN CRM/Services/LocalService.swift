@@ -15,21 +15,15 @@ enum LocalServiceType: Int {
     case order
 }
 
-protocol LocalServiceDelegate:class {
-    func localService(localService:LocalService,didReceiveData:Any, type:LocalServiceType)
-    func localService(localService:LocalService,didFailed:Any, type:LocalServiceType)
-}
-
 let path = NSSearchPathForDirectoriesInDomains(
     .documentDirectory, .userDomainMask, true
     ).first!
 
-final class LocalService: NSObject,LocalServiceDelegate {
+final class LocalService: NSObject {
     
     static let shared = LocalService()
     
     // MARK: -
-    weak var delegate_:LocalServiceDelegate?
     var db: Connection!
     
     var isMoveDB:Bool = false
@@ -61,12 +55,11 @@ final class LocalService: NSObject,LocalServiceDelegate {
         let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         let documentUrl = directory.appendingPathComponent(fileName)
-        let bundleUrl = Bundle.main.resourceURL?.appendingPathComponent(fileName)
+        let bundleUrl = Bundle.main.resourceURL?.appendingPathComponent("crm.sqlite")
         
         // here check if file already exists on simulator
         if fileManager.fileExists(atPath: (documentUrl.path)) {
-                print("DB exists!")
-                print(documentUrl.path)
+                print("DB exists! \(documentUrl.path)")
             return documentUrl.path
         } else if fileManager.fileExists(atPath: (bundleUrl?.path)!) {
             print("document file does not exist, copy from bundle!")
@@ -111,13 +104,11 @@ final class LocalService: NSObject,LocalServiceDelegate {
     }
     
     // MARK: - INTERFACE - Customer
-    public func getCustomerWithCustom(sql:String? = nil) {
-        guard sql != nil else {
-            return
-        }
+    public func getCustomerWithCustom(sql:String, onComplete:(([Customer]) -> Void)) {
+       
         do {
             var list:Array<Customer> = []
-            for user in try db.prepare(sql!) {
+            for user in try db.prepare(sql) {
                 var customer = Customer(id: user[0] as! Int64, distributor_id:user[14] as! Int64, store_id:user[13] as! Int64)
                 customer.group_id = user[1] as! Int64
                 customer.status = user[11] as! Int64
@@ -144,11 +135,10 @@ final class LocalService: NSObject,LocalServiceDelegate {
                 customer.synced = user[25] as! Int64
                 list.append(customer)
             }
-            
-            delegate_?.localService(localService: self, didReceiveData: list, type:.customer)
+            onComplete(list)
         } catch {
             print(error.localizedDescription)
-            delegate_?.localService(localService: self, didFailed: error, type:.customer)
+            onComplete([])
         }
     }
     
@@ -313,7 +303,7 @@ final class LocalService: NSObject,LocalServiceDelegate {
     func getCustomerFromID(customerID:Int64 = 0) -> Customer{
         do {
             var list:Array<Customer> = []
-            for user in try db.prepare("select * from `customer` where `id` == '\(customerID)'") {
+            for user in try db.prepare("select * from `customer` where `id` = '\(customerID)' OR `server_id` = '\(customerID)'") {
                 var customer = Customer(id: user[0] as! Int64, distributor_id:user[14] as! Int64, store_id:user[13] as! Int64)
                 customer.group_id = user[1] as! Int64
                 customer.status = user[11] as! Int64
@@ -352,7 +342,7 @@ final class LocalService: NSObject,LocalServiceDelegate {
     }
     
     // MARK: - INTERFACE - Group
-    public func getGroupCustomerWithCustom(sql:String? = nil) {
+    public func getGroupCustomerWithCustom(sql:String? = nil, onComplete:(([GroupCustomer])->Void)) {
         guard sql != nil else {
             return
         }
@@ -368,10 +358,10 @@ final class LocalService: NSObject,LocalServiceDelegate {
                 customer.synced = user[8] as! Int64
                 list.append(customer)
             }
-            delegate_?.localService(localService: self, didReceiveData: list, type:.group)
+            onComplete(list)
         } catch {
             print(error.localizedDescription)
-            delegate_?.localService(localService: self, didFailed: error, type:.group)
+            onComplete([])
         }
     }
     
@@ -487,27 +477,45 @@ final class LocalService: NSObject,LocalServiceDelegate {
     }
     
     // MARK: - product
-    func addProduct(obj:Product){
+    func addProduct(obj:Product, onComplete:((Int64)->Void)){
         
         let group = Table("product")
-        let id = Expression<Int64>("id")
         let country_id = Expression<Int64>("server_id")
         let name = Expression<String?>("name")
         
         do {
-            let insert = group.insert(name <- obj.name, country_id <- obj.server_id,id <- obj.id)
-            try db.run(insert)
+            let insert = group.insert(name <- obj.name, country_id <- obj.server_id)
+            let rowID = try db.run(insert)
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
+            onComplete(rowID)
         } catch {
             print(error)
+            onComplete(0)
+        }
+    }
+    
+    func updateProduct (object:Product) -> Bool{
+        let group = Table("product")
+        let id = Expression<Int64>("id")
+        let country_id = Expression<Int64>("server_id")
+        let name = Expression<String?>("name")
+        let synced = Expression<Int64>("synced")
+        
+        let alice = group.filter(id == object.id)
+        
+        do {
+            try db.run(alice.update(name <- object.name, country_id <- object.server_id, synced <- 0))
+            return true
+        } catch {
+            print(error)
+            return false
         }
     }
     
     func getAllProduct(complete:([Product])->Void){
         
         var list:Array<Product> = []
-        var stringSQL = "select * from `product`"
-        
+        let stringSQL = "select * from `product`"
         do {
             for gr in try db.prepare(stringSQL) {
                 
@@ -529,18 +537,20 @@ final class LocalService: NSObject,LocalServiceDelegate {
     func getAllProduct(orderID:Int64 = 0) -> [Product]{
         
         var list:Array<Product> = []
-        var stringSQL = "select * from `product`"
-        if orderID > 0 {
-            stringSQL.append(" where `id` in (select product_id from `order_product` where `order_id` = '\(orderID)')")
-        }
+        let stringSQL = "select `product`.id, `product`.name, `product`.server_id, `product`.synced, `order_product`.price, `order_product`.`quantity` from `product`  join `order_product` on `order_product`.product_id = `product`.id where `order_product`.order_id = \(orderID)"
+//        if orderID > 0 {
+//            stringSQL.append(" where `id` in (select product_id from `order_product` where `order_id` = '\(orderID)')")
+//        }
         do {
             for gr in try db.prepare(stringSQL) {
                 
                 var customer = Product()
                 customer.id = gr[0] as! Int64
-                customer.server_id = gr[1] as! Int64
+                customer.server_id = gr[2] as! Int64
                 customer.synced = gr[3] as! Int64
-                customer.name = gr[2] as! String
+                customer.name = gr[1] as! String
+                customer.price = gr[4] as! Int64
+                customer.quantity = gr[5] as! Int64
                 
                 list.append(customer)
             }
@@ -552,7 +562,7 @@ final class LocalService: NSObject,LocalServiceDelegate {
     }
     
     // MARK: - order
-    func addOrder(obj:Order) -> Bool{
+    func addOrder(obj:Order,onComplete:(()->Void)){
         
         let group = Table("order")
         let server_id = Expression<Int64>("server_id")
@@ -569,34 +579,158 @@ final class LocalService: NSObject,LocalServiceDelegate {
         let payment_status = Expression<Int64>("payment_status")
         let payment_method = Expression<String?>("payment_method")
         let shipping_unit = Expression<String?>("shipping_unit")
+        let transporter_id = Expression<String?>("transporter_id")
+        let note = Expression<String?>("note")
+        let synced = Expression<Int64>("synced")
         
+        //order_product table
+        let order_product = Table("order_product")
+        let order_id = Expression<Int64>("order_id")
+        let product_id = Expression<Int64>("product_id")
+        let price = Expression<Int64>("price")
+        let quantity = Expression<Int64>("quantity")
         
         do {
-            let insert = group.insert(server_id <- obj.server_id,
-                                      store_id <- obj.store_id,
-                                      user_id <- obj.user_id,
-                                      customer_id <- obj.customer_id,
-                                      order_code <- obj.order_code,
-                                      email <- obj.email,
-                                      tel <- obj.tel,
-                                      address <- obj.address,
-                                      date_created <- obj.date_created,
-                                      last_updated <- obj.last_updated,
-                                      status <- obj.status,
-                                      payment_status <- obj.payment_status,
-                                      payment_method <- obj.payment_method,
-                                      shipping_unit <- obj.shipping_unit
-            )
-            try db.run(insert)
+            try db.transaction {
+                let insert = group.insert(server_id <- obj.server_id,
+                                          store_id <- obj.store_id,
+                                          user_id <- obj.user_id,
+                                          customer_id <- obj.customer_id,
+                                          order_code <- obj.order_code,
+                                          email <- obj.email,
+                                          tel <- obj.tel,
+                                          address <- obj.address,
+                                          date_created <- obj.date_created,
+                                          last_updated <- obj.last_updated,
+                                          status <- obj.status,
+                                          payment_status <- obj.payment_status,
+                                          payment_method <- obj.payment_method,
+                                          shipping_unit <- obj.shipping_unit,
+                                          transporter_id <- obj.transporter_id,
+                                          note <- obj.note,
+                                          synced <- 0
+                )
+                let orderID = try db.run(insert)
+                _ = obj.tempProducts.map({
+                    let product = $0
+                    if $0.id > 0 {
+                        if LocalService.shared.updateProduct(object: $0) {
+                            do {
+                                try db.run(order_product.insert(product_id <- $0.id, order_id <- orderID, price <- $0.price, quantity <- $0.quantity))
+                            } catch {
+                                onComplete()
+                            }
+                        }
+                    } else {
+                        LocalService.shared.addProduct(obj: $0, onComplete: {
+                            productID in
+                            if productID > 0 {
+                                do {
+                                    try db.run(order_product.insert(product_id <- productID, order_id <- orderID, price <- product.price, quantity <- product.quantity))
+                                } catch {
+                                    onComplete()
+                                }
+                            }
+                        })
+                        
+                    }
+                })
+            }
+            onComplete()
             // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
         } catch {
             print(error)
-            return false
+            onComplete()
         }
-        return true
     }
     
-    func getAllOrder(_ customerID:Int64 = 0) {
+    func updateOrder(obj:Order,onComplete:(()->Void)){
+        
+        let group = Table("order")
+        let id = Expression<Int64>("id")
+        let server_id = Expression<Int64>("server_id")
+        let store_id = Expression<Int64>("store_id")
+        let user_id = Expression<Int64>("user_id")
+        let customer_id = Expression<Int64>("customer_id")
+        let order_code = Expression<String?>("order_code")
+        let email = Expression<String?>("address")
+        let tel = Expression<String?>("tel")
+        let address = Expression<String?>("address")
+        let date_created = Expression<String?>("date_created")
+        let last_updated = Expression<String?>("last_updated")
+        let status = Expression<Int64>("status")
+        let payment_status = Expression<Int64>("payment_status")
+        let payment_method = Expression<String?>("payment_method")
+        let shipping_unit = Expression<String?>("shipping_unit")
+        let transporter_id = Expression<String?>("transporter_id")
+        let note = Expression<String?>("note")
+        let synced = Expression<Int64>("synced")
+        
+        //order_product table
+        let order_product = Table("order_product")
+        let order_id = Expression<Int64>("order_id")
+        let product_id = Expression<Int64>("product_id")
+        let price = Expression<Int64>("price")
+        let quantity = Expression<Int64>("quantity")
+        
+        let alice = group.filter(id == obj.id)
+        do {
+            try db.transaction {
+                let insert = alice.update(server_id <- obj.server_id,
+                                          store_id <- obj.store_id,
+                                          user_id <- obj.user_id,
+                                          customer_id <- obj.customer_id,
+                                          order_code <- obj.order_code,
+                                          email <- obj.email,
+                                          tel <- obj.tel,
+                                          address <- obj.address,
+                                          date_created <- obj.date_created,
+                                          last_updated <- obj.last_updated,
+                                          status <- obj.status,
+                                          payment_status <- obj.payment_status,
+                                          payment_method <- obj.payment_method,
+                                          shipping_unit <- obj.shipping_unit,
+                                          transporter_id <- obj.transporter_id,
+                                          note <- obj.note,
+                                          synced <- 0
+                )
+                try db.run(insert)
+                LocalService.shared.customSQl(sql: "delete from `order_product` where order_id = \(obj.id)", onComplete: {
+                    _ = obj.tempProducts.map({
+                        let product = $0
+                        if $0.id > 0 {
+                            if LocalService.shared.updateProduct(object: $0) {
+                                do {
+                                    try db.run(order_product.insert(product_id <- $0.id, order_id <- obj.id, price <- $0.price, quantity <- $0.quantity))
+                                } catch {
+                                    onComplete()
+                                }
+                            }
+                        } else {
+                            LocalService.shared.addProduct(obj: $0, onComplete: {
+                                productID in
+                                if productID > 0 {
+                                    do {
+                                        try db.run(order_product.insert(product_id <- productID, order_id <- obj.id, price <- product.price, quantity <- product.quantity))
+                                    } catch {
+                                        onComplete()
+                                    }
+                                }
+                            })
+                            
+                        }
+                    })
+                })
+            }
+            onComplete()
+            // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
+        } catch {
+            print(error)
+            onComplete()
+        }
+    }
+    
+    func getAllOrder(_ customerID:Int64 = 0, onComplete:(([Order])->Void)) {
         let group = Table("order")
         let id = Expression<Int64>("id")
         let server_id = Expression<Int64>("server_id")
@@ -614,12 +748,12 @@ final class LocalService: NSObject,LocalServiceDelegate {
         let payment_method = Expression<String?>("payment_method")
         let shipping_unit = Expression<String?>("shipping_unit")
         let synced = Expression<Int64>("synced")
-        let statusFilter:Int64 = 1
+        let transporter_id = Expression<String?>("transporter_id")
+        let note = Expression<String?>("note")
         var list:Array<Order> = []
         
         // Start with "true" expression (matches all records):
         var myFilter = Expression<Bool>(value: true)
-        myFilter = myFilter && (status == statusFilter)
         if customerID > 0 {
             myFilter = myFilter && (customer_id == customerID)
         }
@@ -674,14 +808,19 @@ final class LocalService: NSObject,LocalServiceDelegate {
                 if let data = gr[shipping_unit] {
                     customer.shipping_unit = data
                 }
+                if let data = gr[transporter_id] {
+                    customer.transporter_id = data
+                }
+                if let data = gr[note] {
+                    customer.note = data
+                }
                 
                 list.append(customer)
             }
-            
-            delegate_?.localService(localService: self, didReceiveData: list, type:.order)
+            onComplete(list)
         } catch {
             print(error.localizedDescription)
-            delegate_?.localService(localService: self, didFailed: error, type:.order)
+            onComplete([])
         }
     }
     
@@ -703,6 +842,13 @@ final class LocalService: NSObject,LocalServiceDelegate {
     }
     
     func getAllCity(complete:([City])->Void){
+        
+        let listT = NSKeyedUnarchiver.unarchiveObject(with:UserDefaults.standard.value(forKey: "App:ListCity") as! Data) as! [JSON]
+        let listCountry:[City] = listT.flatMap({City(json:$0)})
+        if listCountry.count > 0 {
+            complete(listCountry)
+            return
+        }
         
         let group = Table("city")
         let id = Expression<Int64>("id")
@@ -737,27 +883,9 @@ extension LocalService {
     
     private func syncCustomerToServer() {
         print("start check/sync customer to server")
-        let localService:LocalService = LocalService.shared
-        localService.delegate_ = self as LocalServiceDelegate
         let sql:String = "select * from `customer` where `synced` = '0'" // customer not synced
-        localService.getCustomerWithCustom(sql: sql)
-    }
-    
-    private func syncGroupCustomerToServer() {
-        print("start check/sync group to server")
-        let localService:LocalService = LocalService.shared
-        localService.delegate_ = self as LocalServiceDelegate
-        let sql:String = "select * from `group` where `synced` = '0'" // group not synced
-        localService.getGroupCustomerWithCustom(sql: sql)
-    }
-}
-
-extension LocalService {
-    func localService(localService: LocalService, didReceiveData: Any, type: LocalServiceType) {
-        switch type {
-        // MARK: - SYNC CUSTOMER
-        case .customer:
-            let list:[Customer] = didReceiveData as! [Customer]
+        LocalService.shared.getCustomerWithCustom(sql: sql, onComplete: {
+            list in
             if list.count > 0 {
                 var listCustomer:[[String:Any]] = []
                 _ = list.map({
@@ -774,10 +902,10 @@ extension LocalService {
                         
                         print("start merge customer to local DB")
                         do {
-                            try localService.db.transaction {
+                            try LocalService.shared.db.transaction {
                                 let list:[Customer] = data
                                 _ = list.map({
-                                    localService.customSQl(sql: "delete from `customer` where `email` = '\($0.email)'", onComplete: {
+                                    LocalService.shared.customSQl(sql: "delete from `customer` where `email` = '\($0.email)'", onComplete: {
                                         print("remove customer synced")
                                     })
                                     _ = LocalService.shared.addCustomer(object: $0)
@@ -803,13 +931,13 @@ extension LocalService {
                         
                         print("start merge customer to local DB 2")
                         do{
-                            try localService.db.transaction {
+                            try LocalService.shared.db.transaction {
                                 let list:[Customer] = data
                                 _ = list.map({
-                                    localService.customSQl(sql: "delete from `customer` where `email` = '\($0.email)'", onComplete: {
+                                    LocalService.shared.customSQl(sql: "delete from `customer` where `email` = '\($0.email)'", onComplete: {
                                         print("remove customer synced 2")
                                     })
-                                    _ = localService.addCustomer(object: $0)
+                                    _ = LocalService.shared.addCustomer(object: $0)
                                 })
                             }
                         } catch {
@@ -822,9 +950,14 @@ extension LocalService {
                     }
                 })
             }
-        // MARK: - SYNC GROUP
-        case .group:
-            let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
+        })
+    }
+    
+    private func syncGroupCustomerToServer() {
+        print("start check/sync group to server")
+        let sql:String = "select * from `group` where `synced` = '0'" // group not synced
+        LocalService.shared.getGroupCustomerWithCustom(sql: sql, onComplete: {
+            list in
             if list.count > 0 {
                 let listCustomer:[[String:Any]] = list.flatMap({$0.toDictionary})
                 print("Get local group done... send to server")
@@ -837,8 +970,8 @@ extension LocalService {
                         }
                         print("remove group synced")
                         do{
-                            try localService.db.transaction {
-                                localService.customSQl(sql: "delete from `group`", onComplete: {
+                            try LocalService.shared.db.transaction {
+                                LocalService.shared.customSQl(sql: "delete from `group`", onComplete: {
                                     print("start merge group to local DB")
                                     let list:[GroupCustomer] = data
                                     _ = list.map({
@@ -864,28 +997,21 @@ extension LocalService {
                             return
                         }
                         print("remove group synced")
-                        _ = Timer.init(timeInterval: 0.5, repeats: true, block: {timer in
-                            if localService.isSync == true {
-                                return;
-                            
-                            } else {
-                                timer.invalidate();
-                            do{
-                                try localService.db.transaction {
-                                    localService.customSQl(sql: "delete from `group`", onComplete: {
-                                        print("start merge group to local DB")
-                                        let list:[GroupCustomer] = data
-                                        _ = list.map({
-                                            LocalService.shared.addGroup(obj: $0)
-                                        })
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                       
+                        do{
+                            try LocalService.shared.db.transaction {
+                                LocalService.shared.customSQl(sql: "delete from `group`", onComplete: {
+                                    print("start merge group to local DB")
+                                    let list:[GroupCustomer] = data
+                                    _ = list.map({
+                                        LocalService.shared.addGroup(obj: $0)
                                     })
-                                }
-                            }catch {
-                                
+                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                                })
                             }
-                            }
-                        })
+                        }catch {
+                            
+                        }
                         
                     case .failure(_):
                         print("Error: cant get group from server 2")
@@ -893,13 +1019,6 @@ extension LocalService {
                     }
                 })
             }
-        case .order:
-            
-            break
-        }
-    }
-    
-    func localService(localService: LocalService, didFailed: Any, type: LocalServiceType) {
-        
+        })
     }
 }

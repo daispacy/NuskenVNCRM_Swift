@@ -12,7 +12,6 @@ class CustomerListController: RootViewController,
     UISearchBarDelegate,
     UITableViewDelegate,
     UITableViewDataSource,
-    LocalServiceDelegate,
 UITabBarControllerDelegate{
     
     
@@ -27,7 +26,6 @@ UITabBarControllerDelegate{
     var isEdit: Bool = false
     var listCustomer:[Customer] = [] // list customer for tableview
     var listGroup:[GroupCustomer] = [] // list group for combobox
-    let localService:LocalService = LocalService.shared
     var groupSelected:GroupCustomer! = GroupCustomer.init(id: 0, distributor_id: 0, store_id: 0) // group filter
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
@@ -44,7 +42,6 @@ UITabBarControllerDelegate{
         configView()
         configText()
         
-        localService.delegate_ = self
         searchBar.delegate = self
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
@@ -91,9 +88,13 @@ UITabBarControllerDelegate{
     func refreshListCustomer() {
         
         LocalService.shared.getAllGroup { [weak self] list in
-            self?.listGroup.removeAll()
-            if list.count > 0 {
-                self?.listGroup.append(contentsOf: list)
+            if let _self = self {
+                DispatchQueue.main.async {
+                    _self.listGroup.removeAll()
+                    if list.count > 0 {
+                        _self.listGroup.append(contentsOf: list)
+                    }
+                }
             }
         }
         
@@ -119,7 +120,20 @@ UITabBarControllerDelegate{
         showLoading(isShow: true, isShowMessage: false)
         do {
             try LocalService.shared.db.transaction {
-        localService.getCustomerWithCustom(sql: sql)
+                LocalService.shared.getCustomerWithCustom(sql: sql,onComplete: {[weak self] list in
+                    if let _self = self {
+                        DispatchQueue.main.async {
+                            if list.count > 0 {
+                                _self.listCustomer.removeAll()
+                                _self.listCustomer.append(contentsOf: list)
+                                _self.tableView.reloadData()
+                                _self.showLoading(isShow: false, isShowMessage: false)
+                            } else {
+                                _self.showLoading(isShow: false, isShowMessage: true)
+                            }
+                        }
+                    }
+                })
             }
         } catch {
             print("cant involke refresh list customer")
@@ -160,8 +174,8 @@ UITabBarControllerDelegate{
     }
     
     @IBAction func addNewCustomer(_ sender: Any) {
-//        let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-//        self.navigationController?.pushViewController(vc, animated: true)
+        //        let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+        //        self.navigationController?.pushViewController(vc, animated: true)
         let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
         vc.onDidLoad = {
             vc.gotoFromCustomerList = true
@@ -205,17 +219,21 @@ extension CustomerListController {
         let isCheked = self.listCustomerSelected.filter({$0.email == listCustomer[indexPath.row].email}).count > 0
         cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
         cell.onSelectCustomer = {[weak self] customer, isAdd in
-            if isAdd {
-                self?.listCustomerSelected.append(customer)
-            } else {
-                self?.listCustomerSelected = (self?.listCustomerSelected.filter{ $0.id != customer.id })!
+            if let _self = self {
+                if isAdd {
+                    _self.listCustomerSelected.append(customer)
+                } else {
+                    _self.listCustomerSelected = _self.listCustomerSelected.filter{ $0.id != customer.id }
+                }
             }
         }
         cell.onEditCustomer = {[weak self]
             customer in
-            let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-            vc.customer = customer
-            self?.navigationController?.pushViewController(vc, animated: true)
+            if let _self = self {
+                let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+                vc.customer = customer
+                _self.navigationController?.pushViewController(vc, animated: true)
+            }
         }
         
         return cell
@@ -255,38 +273,6 @@ extension CustomerListController {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
         refreshListCustomer()
-    }
-}
-
-// MARK: - LocalService delegate
-extension CustomerListController {
-    func localService(localService: LocalService, didReceiveData: Any, type:LocalServiceType) {
-        DispatchQueue.main.async {
-            switch (type) {
-            case .customer:
-                let list:[Customer] = didReceiveData as! [Customer]
-                if list.count > 0 {
-                    self.listCustomer.removeAll()
-                    self.listCustomer.append(contentsOf: list)
-                    self.tableView.reloadData()
-                    self.showLoading(isShow: false, isShowMessage: false)
-                } else {
-                    self.showLoading(isShow: false, isShowMessage: true)
-                }
-            case .group:
-                let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
-                if list.count > 0 {
-                    self.listGroup.removeAll()
-                    self.listGroup.append(contentsOf: list)
-                }
-            case .order:
-                break
-            }
-        }
-    }
-    
-    func localService(localService: LocalService, didFailed: Any, type:LocalServiceType) {
-        
     }
 }
 

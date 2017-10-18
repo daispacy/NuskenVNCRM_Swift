@@ -59,19 +59,21 @@ extension AuthenticViewController {
                 // involke api login
                 SyncService.shared.login(email: authenticView.email, username: nil, password: authenticView.password!, completion: {
                     [weak self] result in
-                    switch result {
-                    case .success(_):
-                        self?.authenticView.btnProcess.stopAnimation()
-                        AppConfig.navigation.gotoDashboardAfterSigninSuccess()
-                    case .failure(_):
-                        self?.authenticView.btnProcess.stopAnimation()
-                        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
-                        self?.present(test, animated: false, completion: {done in
-                            test.message(message: "msg_login_failed".localized(), buttons: ["ok".localized().uppercased()], select: {
-                                i in
-                                print("item select \(i)")
+                    if let _self = self {
+                        switch result {
+                        case .success(_):
+                            _self.authenticView.btnProcess.stopAnimation()
+                            AppConfig.navigation.gotoDashboardAfterSigninSuccess()
+                        case .failure(_):
+                            _self.authenticView.btnProcess.stopAnimation()
+                            let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+                            _self.present(test, animated: false, completion: {done in
+                                test.message(message: "msg_login_failed".localized(), buttons: ["ok".localized().uppercased()], select: {
+                                    i in
+                                    print("item select \(i)")
+                                })
                             })
-                        })
+                        }
                     }
                 })
             }
@@ -87,34 +89,34 @@ extension AuthenticViewController {
         
         
         
-//        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
-//        present(test, animated: false, completion: nil)
+        //        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
+        //        present(test, animated: false, completion: nil)
         
         
-//        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
-//        self.present(test, animated: false, completion: {done in
-//            //            test.message(message: "msg_test".localized(), buttons: ["ok".localized().uppercased()], select: {
-//            //                i in
-//            //                print("item select \(i)")
-//            //            })
-//            let paragraph = NSMutableParagraphStyle()
-//            paragraph.lineSpacing = 7
-//            paragraph.alignment = .center
-//
-//            //total ones
-//            let attributedFirst = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
-//            let attributedMain = NSMutableAttributedString(string: "phamdaiit@gmail.com\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)!,NSForegroundColorAttributeName:UIColor.darkGray,NSParagraphStyleAttributeName:paragraph])
-//            let attributeLast = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
-//            attributedFirst.append(attributedMain)
-//            attributedFirst.append(attributeLast)
-//            test.message(attribute: attributedFirst, buttons: ["cancel".localized().uppercased(),"goto_dashboard".localized().uppercased()], select: { i in
-//                if i > 0 {
-//                    AppConfig.navigation.gotoDashboardAfterSigninSuccess()
-//                }
-//
-//            })
-//        })
- 
+        //        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+        //        self.present(test, animated: false, completion: {done in
+        //            //            test.message(message: "msg_test".localized(), buttons: ["ok".localized().uppercased()], select: {
+        //            //                i in
+        //            //                print("item select \(i)")
+        //            //            })
+        //            let paragraph = NSMutableParagraphStyle()
+        //            paragraph.lineSpacing = 7
+        //            paragraph.alignment = .center
+        //
+        //            //total ones
+        //            let attributedFirst = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
+        //            let attributedMain = NSMutableAttributedString(string: "phamdaiit@gmail.com\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)!,NSForegroundColorAttributeName:UIColor.darkGray,NSParagraphStyleAttributeName:paragraph])
+        //            let attributeLast = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
+        //            attributedFirst.append(attributedMain)
+        //            attributedFirst.append(attributeLast)
+        //            test.message(attribute: attributedFirst, buttons: ["cancel".localized().uppercased(),"goto_dashboard".localized().uppercased()], select: { i in
+        //                if i > 0 {
+        //                    AppConfig.navigation.gotoDashboardAfterSigninSuccess()
+        //                }
+        //
+        //            })
+        //        })
+        
     }
     
     func test(object:KxMenuItem){
