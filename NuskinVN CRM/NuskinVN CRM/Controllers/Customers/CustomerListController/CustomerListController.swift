@@ -7,13 +7,13 @@
 //
 
 import UIKit
+import CoreData
 
 class CustomerListController: RootViewController,
     UISearchBarDelegate,
     UITableViewDelegate,
     UITableViewDataSource,
-UITabBarControllerDelegate{
-    
+UITabBarControllerDelegate {
     
     @IBOutlet var indicatorLoading: UIActivityIndicatorView!
     @IBOutlet var lblMessageData: UILabel!
@@ -24,14 +24,14 @@ UITabBarControllerDelegate{
     @IBOutlet var btnCheckOrDelete: UIButton!
     
     var isEdit: Bool = false
-    var listCustomer:[Customer] = [] // list customer for tableview
-    var listGroup:[GroupCustomer] = [] // list group for combobox
-    var groupSelected:GroupCustomer! = GroupCustomer.init(id: 0, distributor_id: 0, store_id: 0) // group filter
+    var listCustomer:[CustomerDO] = [] // list customer for tableview
+    var listGroup:[GroupDO] = [] // list group for combobox
+    var groupSelected:GroupDO?// group filter
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
-    var listCustomerSelected:[Customer] = [] //list customer select to remove
+    var listCustomerSelected:[CustomerDO] = [] //list customer select to remove
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
-    var onSelectCustomer:((Customer)->Void)?
+    var onSelectCustomer:((NSManagedObject)->Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,11 +62,51 @@ UITabBarControllerDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let itemTabbar = UITabBarItem(title: "title_tabbar_button_dashboard".localized(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
+        let itemTabbar = UITabBarItem(title: "title_tabbar_button_dashboard".localized().uppercased(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
         itemTabbar.tag = 9
         tabBarItem  = itemTabbar
         
-        refreshListCustomer()
+        updateTableContent()
+    }
+    
+    func updateTableContent() {
+        self.listCustomer.removeAll()
+        if !self.isEdit {
+            self.listCustomerSelected.removeAll()
+        }
+        self.tableView.reloadData()
+        
+        GroupManager.syncGroups {[weak self] list in
+            if let _self = self {
+                _self.listGroup = list
+            }
+        }
+        
+        showLoading(isShow: true, isShowMessage: false)
+//        SyncService.shared.getAllCustomers(completion: {[weak self] result in
+//            if let _ = self {
+//                switch result {
+//                case .success(let list):
+//                    CustomerManager.saveCustomerWith(array: list)
+//                    
+//                case .failure(let error):
+//                    print(error.debugDescription)
+//                }
+//            }
+//        })
+        CustomerManager.getAllCustomers(search: self.searchText, group: self.groupSelected) {[weak self] list in
+            if let _self = self {
+                DispatchQueue.main.async {
+                    _self.listCustomer.append(contentsOf: list)
+                    if list.count > 0 {
+                        _self.showLoading(isShow: false, isShowMessage: false)
+                    } else {
+                        _self.showLoading(isShow: false, isShowMessage: true)
+                    }
+                    _self.tableView.reloadData()
+                }
+            }
+        }
     }
     
     override func configText() {
@@ -78,66 +118,12 @@ UITabBarControllerDelegate{
     
     func didSyncedData(notification:Notification) {
         
-        refreshListCustomer()
+//        refreshListCustomer()
+        updateTableContent()
     }
     
     func hideKeyboard() {
         self.searchBar.resignFirstResponder()
-    }
-    
-    func refreshListCustomer() {
-        
-        LocalService.shared.getAllGroup { [weak self] list in
-            if let _self = self {
-                DispatchQueue.main.async {
-                    _self.listGroup.removeAll()
-                    if list.count > 0 {
-                        _self.listGroup.append(contentsOf: list)
-                    }
-                }
-            }
-        }
-        
-        self.listCustomer.removeAll()
-        self.tableView.reloadData()
-        
-        var sql:String = "select * from `customer` where (`status` = '1') "
-        if groupSelected.id != 0 {
-            if let gr = groupSelected {
-                if gr.server_id > 0 {
-                    sql.append("AND (`group_id` = '\(gr.server_id)')")
-                } else {
-                    sql.append("AND (`group_id` = '\(gr.id)')")
-                }
-            }
-        }
-        if searchText.characters.count > 0 {
-            if let text = searchText {
-                sql.append(" AND (`fullname` like '\(text)%' OR `tel` like '\(text)%' OR `email` like '\(text)%')")
-            }
-        }
-        print(sql)
-        showLoading(isShow: true, isShowMessage: false)
-        do {
-            try LocalService.shared.db.transaction {
-                LocalService.shared.getCustomerWithCustom(sql: sql,onComplete: {[weak self] list in
-                    if let _self = self {
-                        DispatchQueue.main.async {
-                            if list.count > 0 {
-                                _self.listCustomer.removeAll()
-                                _self.listCustomer.append(contentsOf: list)
-                                _self.tableView.reloadData()
-                                _self.showLoading(isShow: false, isShowMessage: false)
-                            } else {
-                                _self.showLoading(isShow: false, isShowMessage: true)
-                            }
-                        }
-                    }
-                })
-            }
-        } catch {
-            print("cant involke refresh list customer")
-        }
     }
     
     // MARK: - event button
@@ -149,10 +135,11 @@ UITabBarControllerDelegate{
             if index > 0 {
                 self.groupSelected = self.listGroup[index-1]
             } else {
-                self.groupSelected = GroupCustomer(id: 0, distributor_id: 0, store_id: 0)
+                self.groupSelected = nil
             }
             self.btnFilterGroup.setTitle(item, for: .normal)
-            self.refreshListCustomer()
+            self.updateTableContent()
+//            self.refreshListCustomer()
         }
         popupC.onDismiss = {
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
@@ -167,7 +154,9 @@ UITabBarControllerDelegate{
         var listData:[String] = ["all".localized()]
         if listGroup.count > 0 {
             _ = listGroup.map({
-                listData.append($0.name)
+                if let name = $0.group_name {
+                    listData.append(name)
+                }
             })
         }
         popupC.show(data: listData, fromView: sender)
@@ -191,14 +180,14 @@ UITabBarControllerDelegate{
                     i in
                     if i == 1 {
                         _ = self.listCustomerSelected.map({
-                            var cus = $0
+                            
+                            let cus = $0
                             cus.status = 0
-                            _ = LocalService.shared.updateCustomer(object: cus)
-                            LocalService.shared.startSyncData()
+                            CustomerManager.updateCustomerEntity(cus, onComplete: {})
                         })
                         self.listCustomerSelected.removeAll()
                         self.configView()
-                        self.refreshListCustomer()
+                        self.updateTableContent()
                     } else {
                         self.listCustomerSelected.removeAll()
                     }
@@ -206,7 +195,7 @@ UITabBarControllerDelegate{
             }
         }
         configView()
-        refreshListCustomer()
+        updateTableContent()
     }
     
 }
@@ -215,15 +204,18 @@ UITabBarControllerDelegate{
 extension CustomerListController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
-        cell.removeFunctionView()
-        let isCheked = self.listCustomerSelected.filter({$0.email == listCustomer[indexPath.row].email}).count > 0
-        cell.show(customer: listCustomer[indexPath.row], isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
+        let customer = listCustomer[indexPath.row]
+        
+        let isCheked = self.listCustomerSelected.filter({($0).email == (listCustomer[indexPath.row]).email}).count > 0
+        
+        cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
         cell.onSelectCustomer = {[weak self] customer, isAdd in
             if let _self = self {
                 if isAdd {
                     _self.listCustomerSelected.append(customer)
                 } else {
-                    _self.listCustomerSelected = _self.listCustomerSelected.filter{ $0.id != customer.id }
+                    let obj = customer
+                    _self.listCustomerSelected = _self.listCustomerSelected.filter{ ($0).id != obj.id }
                 }
             }
         }
@@ -242,18 +234,18 @@ extension CustomerListController {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if onSelectCustomer != nil {
             self.navigationController?.popViewController(animated: true)
-            onSelectCustomer?(listCustomer[indexPath.row])            
+            onSelectCustomer?(listCustomer[indexPath.row])
             return
         }
         if isEdit {
             let cell = tableView.cellForRow(at: indexPath) as! CustomerListCell
             cell.setSelect()
         } else {
-            let customer:Customer = listCustomer[indexPath.row]
+            let customer = listCustomer[indexPath.row]
             if expandRow == indexPath.row || !customer.isShouldOpenFunctionView {
                 // reset expand
                 expandRow = -1
-                tableView.reloadData()
+                self.tableView.reloadData()
             } else {
                 expandRow = indexPath.row
                 self.tableView.beginUpdates()
@@ -272,7 +264,7 @@ extension CustomerListController {
 extension CustomerListController {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
-        refreshListCustomer()
+        updateTableContent()
     }
 }
 
@@ -332,7 +324,7 @@ extension CustomerListController {
         }
         
         if tabBarController.tabBar.selectedItem?.tag == 1 {
-            let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
+            let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 10
             tabBarItem  = itemTabbar
         } else {

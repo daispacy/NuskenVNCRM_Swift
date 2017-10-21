@@ -218,7 +218,7 @@ class OrderDetailController: RootViewController {
                     if let or = _self.order {
                         // update
                         ord = or
-                        ord.store_id = User.currentUser().store_id!
+                        ord.store_id = UserManager.currentUser().id_card_no
                         ord.customer_id = _self.customerSelected.server_id
                         ord.address = _self.address_order
                         ord.date_created = Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
@@ -237,7 +237,7 @@ class OrderDetailController: RootViewController {
                     } else {
                         // add
                         
-                        ord.store_id = User.currentUser().store_id!
+                        ord.store_id = UserManager.currentUser().id_card_no
                         ord.customer_id = _self.customerSelected.server_id
                         ord.address = _self.address_order
                         ord.date_created = Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
@@ -276,7 +276,7 @@ class OrderDetailController: RootViewController {
         self.btnStatus.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
         
         if self.order == nil {
-            btnProcess.setTitle("add".localized(), for: .normal)
+            btnProcess.setTitle("add".localized().uppercased(), for: .normal)
             title = "add_order".localized().uppercased()
         } else {
             btnProcess.setTitle("update".localized(), for: .normal)

@@ -16,6 +16,7 @@ enum AuthenticType: Int {
 
 protocol AuthenticViewDelegate: class {
     func AuthenticViewDidProcessEvent(view:AuthenticView, isGotoReset:Bool)
+    func AuthenticViewDidBackLogin(view:AuthenticView)
 }
 
 class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
@@ -60,6 +61,9 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
         txtVNID.delegate = self
         
         txtPassword.isSecureTextEntry = true
+        
+        txtEmail.text = ""
+        txtPassword.text = ""        
         
         configView()
         configColor()
@@ -133,10 +137,15 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
         if(sender.isEqual(btnProcess) == true) {
 
             var stringMessage:String = ""
-            if(Support.validate.isValidEmailAddress(emailAddressString: txtEmail.text!)) {
-                email = txtEmail.text
+            
+            if(Support.validate.isValidVNID(vnid: txtVNID.text!)) {
+                vnid = txtVNID.text
             } else {
-                stringMessage.append("msg_err_email".localized())
+                if stringMessage.characters.count > 0 {
+                    stringMessage.append("\n\("msg_err_vnid".localized())")
+                } else {
+                    stringMessage.append("msg_err_vnid".localized())
+                }
             }
             
             if type_ == .AUTH_LOGIN {
@@ -150,14 +159,10 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
                     }
                 }
             } else {
-                if(Support.validate.isValidVNID(vnid: txtVNID.text!)) {
-                    vnid = txtVNID.text
+                if(Support.validate.isValidEmailAddress(emailAddressString: txtEmail.text!)) {
+                    email = txtEmail.text
                 } else {
-                    if stringMessage.characters.count > 0 {
-                        stringMessage.append("\n\("msg_err_vnid".localized())")
-                    } else {
-                        stringMessage.append("msg_err_vnid".localized())
-                    }
+                    stringMessage.append("msg_err_email".localized())
                 }
             }
             
@@ -168,7 +173,11 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
                 delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:false)
             }
         } else if (sender.isEqual(btnGoToResetPassword) == true){
-            delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:true)
+            if type_ == .AUTH_RESETPW {
+                delegate_?.AuthenticViewDidBackLogin(view: self)
+            } else {
+                delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:true)
+            }
         }else {
             btnRemember.isSelected = !btnRemember.isSelected
             AppConfig.setting.setRememerID(isRemember: btnRemember.isSelected)
@@ -211,7 +220,7 @@ extension AuthenticView {
         txtPassword.alpha = 0
         btnRemember.alpha = 0
         btnGoToResetPassword.alpha = 0
-        txtVNID.alpha = 0
+        stackEmail.alpha = 0
         
         setupControl()
         configText()
@@ -241,25 +250,29 @@ extension AuthenticView {
     private func loadViewLogin() {
         stackPassword.isHidden = false
         btnRemember.isHidden = false
-        btnGoToResetPassword.isHidden = false
-        stackVNID.isHidden = true
+        stackVNID.isHidden = false
+        stackEmail.isHidden = true
         
         self.txtPassword.alpha = 1
         self.btnRemember.alpha = 1
         self.btnGoToResetPassword.alpha = 1
-        self.txtVNID.alpha = 0
+        stackEmail.alpha = 0
+        
+        btnGoToResetPassword.setTitle("reset_pw".localized().uppercased(), for: .normal)
     }
     
     private func loadViewReset() {
         stackPassword.isHidden = true
         btnRemember.isHidden = true
-        btnGoToResetPassword.isHidden = true
         stackVNID.isHidden = false
+        stackEmail.isHidden = false
         
         self.txtPassword.alpha = 0
         self.btnRemember.alpha = 0
         self.btnGoToResetPassword.alpha = 0
-        txtVNID.alpha = 1
+        stackEmail.alpha = 1
+        
+        btnGoToResetPassword.setTitle("login".localized().uppercased(), for: .normal)
     }
     
     private func setupControl() {

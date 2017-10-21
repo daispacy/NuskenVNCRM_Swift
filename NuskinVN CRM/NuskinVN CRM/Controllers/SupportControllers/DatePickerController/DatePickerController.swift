@@ -14,7 +14,7 @@ class DatePickerController: UIViewController {
     @IBOutlet var vwOveray: UIView!
     @IBOutlet var lblTitle: CLabelGradient!
     
-    var onSelectDate:((String)->Void)?
+    var onSelectDate:((String,Date)->Void)?
     var tapGesture:UITapGestureRecognizer?
     
     // MARK: - INIT
@@ -58,7 +58,7 @@ class DatePickerController: UIViewController {
     @IBAction func selectDate(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/YYYY"
-        onSelectDate?("\(formatter.string(from: sender.date))")
+        onSelectDate?("\(formatter.string(from: sender.date))",sender.date)
     }
     
     func dissmissView() {

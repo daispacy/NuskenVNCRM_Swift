@@ -9,6 +9,7 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import CoreData
 
 class CustomerDetailController: RootViewController {
     
@@ -42,8 +43,13 @@ class CustomerDetailController: RootViewController {
     var isEdit:Bool = false
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
-    var customer:Customer = Customer(id: 0, distributor_id: User.currentUser().id!, store_id: User.currentUser().store_id!)
+    var customer:CustomerDO?
     var listCountry:[City] = []
+    
+    var groupSelected:GroupDO?
+    var birthday:Date?
+    var gender:Int64 = 0
+    var avatar:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,18 +117,14 @@ class CustomerDetailController: RootViewController {
     }
     
     // MARK: - interface
-    func edit(customer:Customer) {
+    func edit(customer:CustomerDO) {
         self.customer = customer
         self.isEdit = true
         configView()
     }
     
-    func setGroupSelected(group:GroupCustomer) {
-        if group.server_id == 0 {
-            self.customer.group_id = group.id
-        } else {
-            self.customer.group_id = group.server_id
-        }
+    func setGroupSelected(group:GroupDO) {
+        self.groupSelected = group
     }
     
     // MARK: - private
@@ -135,7 +137,7 @@ class CustomerDetailController: RootViewController {
             .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
             .shareReplay(1)
         let emailIsValid = txtEmail.rx.text.orEmpty
-            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0) && !self.customer.isExist}
+            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0) && CustomerDO.isExist(email:$0,except:self.isEdit)}
             .shareReplay(1)
         
         nameIsValid.bind(to: lblErrorName.rx.isHidden).disposed(by: disposeBag)
@@ -149,77 +151,31 @@ class CustomerDetailController: RootViewController {
             .disposed(by: disposeBag)
         
         //listern data
-        txtName.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.fullname = $0
-            }
-        })
-            .disposed(by: disposeBag)
-        
         txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
-                _self.customer.email = $0
-                if _self.customer.isExist {
+                if CustomerDO.isExist(email:$0,except:_self.isEdit) {
                     _self.lblErrorEmail.text = "email_has_exist".localized()
                 } else {
                     _self.lblErrorEmail.text = "invalid_email".localized()
                 }
             }
-        })
-            .disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
         
-        txtZalo.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.zalo = $0
-            }
-        })
-            .disposed(by: disposeBag)
-        
-        txtPhone.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.tel = $0
-            }
-        })
-            .disposed(by: disposeBag)
-        txtSkype.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.skype = $0
-            }
-        })
-            .disposed(by: disposeBag)
-        txtViber.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.viber = $0
-            }
-        })
-            .disposed(by: disposeBag)
-        txtFacebook.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.facebook = $0
-            }
-        })
-            .disposed(by: disposeBag)
-        txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                _self.customer.address = $0
-            }
-        })
-            .disposed(by: disposeBag)
         
         btnBirthday.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
                     let datePicker = DatePickerController(nibName: "DatePickerController", bundle: Bundle.main)
-                    datePicker.onSelectDate = { date in
-                        _self.customer.birthday = date
-                        _self.btnBirthday.setTitle(date, for: .normal)
+                    datePicker.onSelectDate = { strDate,date in
+                        _self.birthday = date
+                        _self.btnBirthday.setTitle(strDate, for: .normal)
                         _self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
                     _self.present(datePicker, animated: false, completion: {
                         datePicker.setTitle(title: "select_date".localized())
-                        let dateStr = _self.customer.birthday
-                        if dateStr.characters.count > 0 {
-                            datePicker.setDate(date: dateStr.toDate())
+                        
+                        if let date = _self.birthday {
+                            datePicker.setDate(date: date)
                         }
                         
                     })
@@ -232,12 +188,8 @@ class CustomerDetailController: RootViewController {
                 if let _self = self {
                     let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
                     vc.onSelectGroup = {group in
-                        if group.server_id == 0 {
-                            _self.customer.group_id = group.id
-                        } else {
-                            _self.customer.group_id = group.server_id
-                        }
-                        _self.btnGroup.setTitle(group.name, for: .normal)
+                        _self.groupSelected = group
+                        _self.btnGroup.setTitle(group.group_name, for: .normal)
                         _self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
                     _self.navigationController?.pushViewController(vc, animated: true)
@@ -262,7 +214,7 @@ class CustomerDetailController: RootViewController {
                         print("\(item) \(index)")
                         _self.btnGender.setTitle(item, for: .normal)
                         _self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                        _self.customer.gender = Int64(index)
+                        _self.gender = Int64(index)
                     }
                     popupC.onDismiss = {
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
@@ -294,7 +246,6 @@ class CustomerDetailController: RootViewController {
                             vc.showData(data: listData.sorted(by: {$0 < $1}))
                         }
                         vc.onSelectData = { name in
-                            _self.customer.city = name
                             _self.btnCity.setTitle(name, for: .normal)
                             _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                             if !_self.btnDistrict.isEnabled {
@@ -310,8 +261,10 @@ class CustomerDetailController: RootViewController {
         btnDistrict.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    if _self.customer.country == "placeholder_city".localized() {
-                        return
+                    if let city = _self.btnCity.titleLabel?.text  {
+                        if city == "placeholder_city".localized() {
+                            return
+                        }
                     }
                     let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
                     _self.navigationController?.pushViewController(vc, animated: true)
@@ -319,26 +272,27 @@ class CustomerDetailController: RootViewController {
                     var listData:[String] = []
                     
                     _ = _self.listCountry.map({
-                        if $0.name == _self.customer.city {
-                            let country:City = $0
-                            let listFilter:[City] = _self.listCountry.filter{
-                                $0.country_id == country.id
-                            }
-                            
-                            _ = listFilter.map({
-                                listData.append($0.name)
-                            })
-                            
-                            vc.onDidLoad = {
-                                vc.title = "choose_district".localized().uppercased()
-                                vc.showData(data: listData.sorted(by: {$0 < $1}))
+                        if let city = _self.btnCity.titleLabel?.text  {
+                            if $0.name == city {
+                                let country:City = $0
+                                let listFilter:[City] = _self.listCountry.filter{
+                                    $0.country_id == country.id
+                                }
+                                
+                                _ = listFilter.map({
+                                    listData.append($0.name)
+                                })
+                                
+                                vc.onDidLoad = {
+                                    vc.title = "choose_district".localized().uppercased()
+                                    vc.showData(data: listData.sorted(by: {$0 < $1}))
+                                }
                             }
                         }
                     })
                     
                     
                     vc.onSelectData = { name in
-                        _self.customer.city = name
                         _self.btnDistrict.setTitle(name, for: .normal)
                         _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
@@ -347,18 +301,57 @@ class CustomerDetailController: RootViewController {
             .disposed(by: disposeBag)
         
         // event process
-        let localService = LocalService.shared
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    if _self.customer.server_id == 0 && _self.customer.id == 0{
-                        if localService.addCustomer(object: _self.customer) {
-                            _self.navigationController?.popToRootViewController(animated: true)
+                    if _self.customer == nil{
+                        let customer = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! CustomerDO
+                        customer.status = 1
+                        customer.email = _self.txtEmail.text
+                        customer.fullname = _self.txtName.text
+                        customer.address = _self.txtAddress.text
+                        customer.avatar = _self.avatar
+                        customer.city = _self.btnCity.titleLabel?.text
+                        customer.county  = _self.btnDistrict.titleLabel?.text
+                        customer.gender = _self.gender
+                        customer.tel = _self.txtPhone.text
+                        customer.skype = _self.txtSkype.text
+                        customer.zalo = _self.txtZalo.text
+                        customer.viber = _self.txtViber.text
+                        if let group = _self.groupSelected {
+                            if group.id == 0 {
+                                customer.group_name = group.group_name
+                            } else {
+                                customer.group_id = group.id
+                            }
                         }
+                        customer.distributor_id = UserManager.currentUser().id_card_no
+                        customer.store_id = UserManager.currentUser().store_id
+                        
+                        CustomerManager.updateCustomerEntity(customer, onComplete: {
+                            _self.navigationController?.popToRootViewController(animated: true)
+                        })
                     } else {
-                        if localService.updateCustomer(object: _self.customer) {
-                            _self.navigationController?.popToRootViewController(animated: true)
+                        _self.customer?.fullname = _self.txtName.text
+                        _self.customer?.address = _self.txtAddress.text
+                        _self.customer?.avatar = _self.avatar
+                        _self.customer?.city = _self.btnCity.titleLabel?.text
+                        _self.customer?.county  = _self.btnDistrict.titleLabel?.text
+                        _self.customer?.gender = _self.gender
+                        _self.customer?.tel = _self.txtPhone.text
+                        _self.customer?.skype = _self.txtSkype.text
+                        _self.customer?.zalo = _self.txtZalo.text
+                        _self.customer?.viber = _self.txtViber.text
+                        if let group = _self.groupSelected {
+                            if group.id == 0 {
+                                _self.customer?.group_name = group.group_name
+                            } else {
+                                _self.customer?.group_id = group.id
+                            }
                         }
+                        CustomerManager.updateCustomerEntity(_self.customer!, onComplete: {
+                            _self.navigationController?.popToRootViewController(animated: true)
+                        })
                     }
                 }
             })
@@ -444,46 +437,59 @@ class CustomerDetailController: RootViewController {
             $0.textColor = UIColor(hex: Theme.color.customer.subGroup)
         })
         
-        if customer.groupName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
-            btnGroup.setTitle(customer.groupName, for: .normal)
-            self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        if let cus = self.customer {
+            if let group = cus.group {
+                let gr = group.allObjects[0] as! GroupDO
+                if let group_name = gr.group_name {
+                    if group_name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                        self.btnGroup.setTitle(group_name, for: .normal)
+                        self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    }
+                }
+            } else if cus.group_id > 0 {
+                
+            }
         }
         
         // set value when edit a customer
-        if self.customer.email.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+        if self.customer != nil {
             
             txtEmail.isEnabled = false
             
-            txtName.text = customer.fullname
-            txtEmail.text = customer.email
-            txtZalo.text = customer.zalo
-            txtPhone.text = customer.tel
-            txtSkype.text = customer.skype
-            txtViber.text = customer.viber
-            txtFacebook.text = customer.facebook
-            txtAddress.text = customer.address
+            txtName.text = customer?.fullname
+            txtEmail.text = customer?.email
+            txtZalo.text = customer?.zalo
+            txtPhone.text = customer?.tel
+            txtSkype.text = customer?.skype
+            txtViber.text = customer?.viber
+            txtFacebook.text = customer?.facebook
+            txtAddress.text = customer?.address
             
-            if customer.gender == 0 {
+            if customer?.gender == 0 {
                 btnGender.setTitle("male".localized(), for: .normal)
             } else {
                 btnGender.setTitle("female".localized(), for: .normal)
             }
-            if customer.birthday.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                btnBirthday.setTitle(customer.birthday, for: .normal)
-                self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+            if let cus = self.customer {
+//                if customer.birthday.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+//                    btnBirthday.setTitle(customer.birthday, for: .normal)
+//                    self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+//                }
+                if let city = cus.city {
+                    if city.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                        btnCity.setTitle(city, for: .normal)
+                        self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                        btnDistrict.isEnabled = true
+                    }
+                }
+                
+                if let country = cus.county {
+                    if country.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                        btnDistrict.setTitle(country, for: .normal)
+                        self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                    }
+                }
             }
-            
-            if customer.city.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                btnCity.setTitle(customer.city, for: .normal)
-                self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                btnDistrict.isEnabled = true
-            }
-            
-            if customer.country.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                btnDistrict.setTitle(customer.country, for: .normal)
-                self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-            }
-            
             self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
             
         }
@@ -506,10 +512,10 @@ class CustomerDetailController: RootViewController {
         btnCity.setTitle("placeholder_city".localized(), for: .normal)
         btnGroup.setTitle("placeholder_group".localized(), for: .normal)
         
-        if customer.id == 0 {
-            btnProcess.setTitle("add".localized(), for: .normal)
+        if customer == nil {
+            btnProcess.setTitle("add".localized().uppercased(), for: .normal)
         } else {
-            btnProcess.setTitle("update".localized(), for: .normal)
+            btnProcess.setTitle("update".localized().uppercased(), for: .normal)
         }
         
         btnCancel.setTitle("cancel".localized(), for: .normal)
@@ -540,7 +546,7 @@ extension CustomerDetailController: UIImagePickerControllerDelegate {
         picker.dismiss(animated: true, completion: nil)
         let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
         let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
-        self.customer.tempAvatar = strBase64
+        self.avatar = strBase64
     }
 }
 

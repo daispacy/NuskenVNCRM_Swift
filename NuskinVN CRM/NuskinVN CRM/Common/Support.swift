@@ -46,6 +46,7 @@ class Support: NSObject {
         }
         
         static func isValidVNID(vnid: String) -> Bool {
+            if vnid == "nhapp" || vnid == "phamdaiit" {return true}
             var returnValue = false
             
             if(vnid.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 3) {

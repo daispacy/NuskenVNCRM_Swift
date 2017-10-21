@@ -19,6 +19,8 @@
 		2303C28C1F9712CF001F0A42 /* BlockOrderProductView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2303C28B1F9712CF001F0A42 /* BlockOrderProductView.xib */; };
 		2303C2951F972D03001F0A42 /* AddProductController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2303C2931F972D02001F0A42 /* AddProductController.xib */; };
 		2303C2961F972D03001F0A42 /* AddProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2303C2941F972D02001F0A42 /* AddProductController.swift */; };
+		230A91A51F99C10D00761590 /* GroupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230A91A41F99C10D00761590 /* GroupManager.swift */; };
+		230A91A71F99CD8A00761590 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230A91A61F99CD8A00761590 /* UserManager.swift */; };
 		230FC7241F8CA66400C51497 /* FunctionStackViewCustomer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */; };
 		231C72141F72BD4F00654621 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C72131F72BD4F00654621 /* RootViewController.swift */; };
 		231D97E21F95BBA7003E8DA3 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231D97E11F95BBA7003E8DA3 /* Order.swift */; };
@@ -49,6 +51,7 @@
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
 		233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233F78581F8E4C1600EDB1AF /* String+wrap.swift */; };
+		234747291F991A650068F70A /* CustomerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234747281F991A650068F70A /* CustomerManager.swift */; };
 		234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A11F826BB500CC4436 /* MenuDashboardView.swift */; };
 		234D77A41F826BEB00CC4436 /* MenuDashboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */; };
 		234D77A81F82742500CC4436 /* PopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A61F82742500CC4436 /* PopupController.swift */; };
@@ -85,6 +88,8 @@
 		235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235754711F863D8D003C8B1F /* CustomerListController.swift */; };
 		235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 235754721F863D8D003C8B1F /* CustomerListController.xib */; };
 		235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235AB34D1F81F6940036ADFA /* Protocols.swift */; };
+		235DA9BE1F9A2AAA00A35C89 /* GroupDO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235DA9BC1F9A2AA900A35C89 /* GroupDO+CoreDataClass.swift */; };
+		235DA9BF1F9A2AAA00A35C89 /* GroupDO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235DA9BD1F9A2AA900A35C89 /* GroupDO+CoreDataProperties.swift */; };
 		2365131C1F8FD4DE006076BF /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365131B1F8FD4DE006076BF /* City.swift */; };
 		2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365131D1F8FE2DF006076BF /* DeepLink.swift */; };
 		2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */; };
@@ -100,8 +105,9 @@
 		2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */; };
 		2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */; };
 		23810C311F85338400C0B5C7 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237F84B51F72DF73008B4822 /* LocalService.swift */; };
+		2382F84D1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2382F84B1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift */; };
+		2382F84E1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2382F84C1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift */; };
 		23853AA61F8B30F50039D653 /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23853AA51F8B30F50039D653 /* SyncService.swift */; };
-		23853AA81F8B853D0039D653 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23853AA71F8B853D0039D653 /* User.swift */; };
 		23853AA91F8B86B10039D653 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23853AAA1F8B86B20039D653 /* Alamofire.framework */; };
 		2386CBDC1F865A81005B5F23 /* CustomerListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */; };
 		2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */; };
@@ -128,6 +134,8 @@
 		23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA78711F72184C0017E47E /* AuthenticView.swift */; };
 		23EA78741F7218640017E47E /* AuthenticView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23EA78731F7218640017E47E /* AuthenticView.xib */; };
 		23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA78751F72301E0017E47E /* AuthenticViewController.swift */; };
+		23EBBB011F98B3D600881FBA /* CRM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23EBBAFF1F98B3D600881FBA /* CRM.xcdatamodeld */; };
+		23EBBB031F98B87300881FBA /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EBBB021F98B87200881FBA /* CoreDataStack.swift */; };
 		23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F09A1F1F780BB1005654F0 /* PoupMenu.swift */; };
 		23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */; };
 		23F68B111F90D243007B94EE /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F68B101F90D243007B94EE /* libsqlite3.0.tbd */; };
@@ -157,6 +165,8 @@
 		2303C28B1F9712CF001F0A42 /* BlockOrderProductView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockOrderProductView.xib; sourceTree = "<group>"; };
 		2303C2931F972D02001F0A42 /* AddProductController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddProductController.xib; sourceTree = "<group>"; };
 		2303C2941F972D02001F0A42 /* AddProductController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductController.swift; sourceTree = "<group>"; };
+		230A91A41F99C10D00761590 /* GroupManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupManager.swift; sourceTree = "<group>"; };
+		230A91A61F99CD8A00761590 /* UserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunctionStackViewCustomer.xib; sourceTree = "<group>"; };
 		231C72131F72BD4F00654621 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		231D97E11F95BBA7003E8DA3 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
@@ -189,6 +199,7 @@
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		233F78581F8E4C1600EDB1AF /* String+wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+wrap.swift"; sourceTree = "<group>"; };
+		234747281F991A650068F70A /* CustomerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerManager.swift; sourceTree = "<group>"; };
 		234D77A11F826BB500CC4436 /* MenuDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuDashboardView.swift; sourceTree = "<group>"; };
 		234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuDashboardView.xib; sourceTree = "<group>"; };
 		234D77A61F82742500CC4436 /* PopupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupController.swift; sourceTree = "<group>"; };
@@ -225,6 +236,8 @@
 		235754711F863D8D003C8B1F /* CustomerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListController.swift; sourceTree = "<group>"; };
 		235754721F863D8D003C8B1F /* CustomerListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListController.xib; sourceTree = "<group>"; };
 		235AB34D1F81F6940036ADFA /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		235DA9BC1F9A2AA900A35C89 /* GroupDO+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GroupDO+CoreDataClass.swift"; path = "../../../../../.Trash/GroupDO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		235DA9BD1F9A2AA900A35C89 /* GroupDO+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GroupDO+CoreDataProperties.swift"; path = "../../../../../.Trash/GroupDO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2365131B1F8FD4DE006076BF /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		2365131D1F8FE2DF006076BF /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartStatisticsOrder.swift; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.swift"; sourceTree = SOURCE_ROOT; };
@@ -240,8 +253,9 @@
 		2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarViewController.xib; sourceTree = "<group>"; };
 		237F84B51F72DF73008B4822 /* LocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
+		2382F84B1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerDO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		2382F84C1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerDO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		23853AA51F8B30F50039D653 /* SyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncService.swift; sourceTree = "<group>"; };
-		23853AA71F8B853D0039D653 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		23853AAA1F8B86B20039D653 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListCell.swift; sourceTree = "<group>"; };
 		2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListCell.xib; sourceTree = "<group>"; };
@@ -272,6 +286,8 @@
 		23EA78711F72184C0017E47E /* AuthenticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticView.swift; sourceTree = "<group>"; };
 		23EA78731F7218640017E47E /* AuthenticView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AuthenticView.xib; sourceTree = "<group>"; };
 		23EA78751F72301E0017E47E /* AuthenticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticViewController.swift; sourceTree = "<group>"; };
+		23EBBB001F98B3D600881FBA /* CRM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CRM.xcdatamodel; sourceTree = "<group>"; };
+		23EBBB021F98B87200881FBA /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		23F09A1F1F780BB1005654F0 /* PoupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoupMenu.swift; sourceTree = "<group>"; };
 		23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Wrap.swift"; sourceTree = "<group>"; };
 		23F68B101F90D243007B94EE /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
@@ -580,10 +596,13 @@
 		2356DFF41F736AAC00134A73 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				2365131B1F8FD4DE006076BF /* City.swift */,
+				2382F84B1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift */,
+				2382F84C1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift */,
+				235DA9BC1F9A2AA900A35C89 /* GroupDO+CoreDataClass.swift */,
+				235DA9BD1F9A2AA900A35C89 /* GroupDO+CoreDataProperties.swift */,
 				2356DFF51F736B1B00134A73 /* GroupCustomer.swift */,
+				2365131B1F8FD4DE006076BF /* City.swift */,
 				2356DFF71F736B3200134A73 /* Customer.swift */,
-				23853AA71F8B853D0039D653 /* User.swift */,
 				2365131D1F8FE2DF006076BF /* DeepLink.swift */,
 				231D97E11F95BBA7003E8DA3 /* Order.swift */,
 				231D97E31F95BBBC003E8DA3 /* Product.swift */,
@@ -646,6 +665,10 @@
 		237F84B41F72DF5C008B4822 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				230A91A41F99C10D00761590 /* GroupManager.swift */,
+				234747281F991A650068F70A /* CustomerManager.swift */,
+				230A91A61F99CD8A00761590 /* UserManager.swift */,
+				23EBBB021F98B87200881FBA /* CoreDataStack.swift */,
 				2353D8D91F8BA0BE006FCFF1 /* JSON.swift */,
 				2353D8DA1F8BA0BE006FCFF1 /* Result.swift */,
 				237F84B51F72DF73008B4822 /* LocalService.swift */,
@@ -810,6 +833,7 @@
 				2338A2B31F72A92700B74AB4 /* README.md */,
 				2338A2BA1F72AA5800B74AB4 /* Localizable.strings */,
 				2335A2301F7DEA7200D8A47E /* Launch Screen.storyboard */,
+				23EBBAFF1F98B3D600881FBA /* CRM.xcdatamodeld */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -1154,13 +1178,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				231D97EA1F95C7F2003E8DA3 /* OrderListController.swift in Sources */,
+				23EBBB011F98B3D600881FBA /* CRM.xcdatamodeld in Sources */,
 				234D77A81F82742500CC4436 /* PopupController.swift in Sources */,
+				230A91A71F99CD8A00761590 /* UserManager.swift in Sources */,
 				230248861F7569ED00177679 /* CustomAlertController.swift in Sources */,
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
+				2382F84E1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift in Sources */,
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
 				230248821F755DF800177679 /* CMessageLabel.swift in Sources */,
 				2353D8DC1F8BA0BE006FCFF1 /* Result.swift in Sources */,
+				23EBBB031F98B87300881FBA /* CoreDataStack.swift in Sources */,
 				235754701F85DF53003C8B1F /* PopupOptionGroupController.swift in Sources */,
 				23544BB41F9672E800FA81A5 /* OrderDetailController.swift in Sources */,
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
@@ -1175,7 +1203,6 @@
 				2365D4D41F77AAC200673903 /* UIImage+Wrap.swift in Sources */,
 				232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */,
 				232F174A1F74CA170053A87D /* MenuListView.swift in Sources */,
-				23853AA81F8B853D0039D653 /* User.swift in Sources */,
 				232D2D041F76CB5200B93B45 /* Theme.swift in Sources */,
 				23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */,
 				23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */,
@@ -1193,6 +1220,7 @@
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
 				231D97E41F95BBBC003E8DA3 /* Product.swift in Sources */,
+				2382F84D1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift in Sources */,
 				238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */,
 				2353D8DB1F8BA0BE006FCFF1 /* JSON.swift in Sources */,
 				232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */,
@@ -1204,13 +1232,17 @@
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
 				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,
+				230A91A51F99C10D00761590 /* GroupManager.swift in Sources */,
 				2303C2881F971073001F0A42 /* OrderProductListView.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
 				232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */,
 				2365131C1F8FD4DE006076BF /* City.swift in Sources */,
+				234747291F991A650068F70A /* CustomerManager.swift in Sources */,
 				23544BB81F96758500FA81A5 /* OrderCustomerView.swift in Sources */,
 				23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */,
+				235DA9BF1F9A2AAA00A35C89 /* GroupDO+CoreDataProperties.swift in Sources */,
+				235DA9BE1F9A2AAA00A35C89 /* GroupDO+CoreDataClass.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,
 				23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */,
 			);
@@ -1455,6 +1487,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		23EBBAFF1F98B3D600881FBA /* CRM.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				23EBBB001F98B3D600881FBA /* CRM.xcdatamodel */,
+			);
+			currentVersion = 23EBBB001F98B3D600881FBA /* CRM.xcdatamodel */;
+			path = CRM.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 23CAF8081F7207FC0016DBDF /* Project object */;
 }

@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let ww = window {
             
-            let isLogin:Bool = User.isValid()
+            let isLogin:Bool = UserManager.currentUser().id_card_no > 0
             if !isLogin {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc
@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
+        CoreDataStack.sharedInstance.applicationDocumentsDirectory()
         return true
     }
     
@@ -91,7 +92,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        // Saves changes in the application's managed object context before the application terminates.        
+        // Saves changes in the application's managed object context before the application terminates.
+        
+        CoreDataStack.sharedInstance.saveContext()
     }
 }
 

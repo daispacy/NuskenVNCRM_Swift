@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import CoreData
 
 class CustomerListCell: UITableViewCell {
     
@@ -19,11 +20,11 @@ class CustomerListCell: UITableViewCell {
     @IBOutlet var stackViewContainer: UIStackView!
     
     
-    var onSelectCustomer:((Customer, Bool) -> Void)?
-    var onEditCustomer:((Customer) -> Void)?
+    var onSelectCustomer:((CustomerDO, Bool) -> Void)?
+    var onEditCustomer:((CustomerDO) -> Void)?
     
     var isEdit:Bool = false
-    var object:Customer!
+    var object:CustomerDO?
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
@@ -48,7 +49,9 @@ class CustomerListCell: UITableViewCell {
         
         btnEdit.rx.tap.subscribe(onNext:{ [weak self] in
             if let _self = self {
-                _self.onEditCustomer?(_self.object)
+                if let obj = _self.object {
+                    _self.onEditCustomer?(obj)
+                }
             }
         }).disposed(by: disposeBag)
     }
@@ -75,10 +78,12 @@ class CustomerListCell: UITableViewCell {
         if isSelect {
             
             let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
-            functionView.btnViber.isHidden = self.object.viber.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
-            functionView.btnSkype.isHidden = self.object.skype.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
-            functionView.btnZalo.isHidden = self.object.zalo.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
-            functionView.btnFacebook.isHidden = self.object.facebook.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0
+            let obj = self.object
+            
+            functionView.btnViber.isHidden = obj?.viber == nil
+            functionView.btnSkype.isHidden = obj?.skype == nil
+            functionView.btnZalo.isHidden = obj?.zalo == nil
+            functionView.btnFacebook.isHidden = obj?.facebook == nil
             
             functionView.onSelectFunction = {[weak self]
                 identifier in
@@ -111,28 +116,26 @@ class CustomerListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(customer:Customer, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+    func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = customer
         self.isEdit = isEdit
         self.isSelect = isSelect
         self.isChecked = isChecked
         configView()
-        lblName.text = object.fullname
-        if object.getAvatar != UIImage() {
-            imgAvatar.image = object.getAvatar
-        }
+        
+        lblName.text = customer.fullname
     }
     
     func setSelect() {
         btnCheck.isSelected = !btnCheck.isSelected
         self.isChecked = btnCheck.isSelected
-        onSelectCustomer?(object,btnCheck.isSelected)
+        onSelectCustomer?(object!,btnCheck.isSelected)
     }
     
     // MARK: - check event
     @IBAction func pressCheck(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        onSelectCustomer?(object,sender.isSelected)
+        onSelectCustomer?(object!,sender.isSelected)
     }
     
     
@@ -140,7 +143,6 @@ class CustomerListCell: UITableViewCell {
     override func prepareForReuse() {
         removeFunctionView()
         btnCheck.isSelected = false
-        object = nil
         isChecked = false
         isSelect = false
         isEdit = false

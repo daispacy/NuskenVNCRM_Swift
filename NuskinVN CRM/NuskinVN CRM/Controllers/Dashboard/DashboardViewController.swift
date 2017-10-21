@@ -26,7 +26,7 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         leftButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
         leftButtonMenu.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
         let item1 = UIBarButtonItem(customView: leftButtonMenu)
-        self.navigationItem.leftBarButtonItem  = item1
+//        self.navigationItem.leftBarButtonItem  = item1
         
         // Do any additional setup after loading the view.
         rightButtonMenu = UIButton(type: .custom)
@@ -42,9 +42,24 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
+        let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
         itemTabbar.tag = 10
         tabBarItem  = itemTabbar
+        
+        SyncService.shared.getDashboard(completion: {[weak self] resut in
+            if let _self = self {
+                switch resut {
+                case .success(let resut):
+                    _self.reloadData(resut)
+                case .failure(_):
+                    print("failed get data for dashboard")
+                }
+            }
+        })
+    }
+    
+    func reloadData(_ data:JSON) {
+        dashboardView.reload(data)
     }
     
     override func loadView() {
@@ -74,9 +89,7 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
                                       view: leftButtonMenu,
                                       selector: #selector(self.menuItemLeftPress(menuItem:)))
             } else {
-                Support.popup.showMenu(items: ["popup_menu_right_item".localized(),
-                                              "popup_menu_right_item".localized(),
-                                              "popup_menu_right_item".localized()],
+                Support.popup.showMenu(items: ["logout".localized()],
                                       sender: self,
                                       view: rightButtonMenu,
                                       selector: #selector(self.menuItemRightPress(menuItem:)))
@@ -97,9 +110,7 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
                                   view: leftButtonMenu,
                                   selector: #selector(self.menuItemLeftPress(menuItem:)))
         } else {
-            Support.popup.showMenu(items: ["popup_menu_right_item".localized(),
-                                          "popup_menu_right_item".localized(),
-                                          "popup_menu_right_item".localized()],
+            Support.popup.showMenu(items: ["logout".localized()],
                                   sender: self,
                                   view: rightButtonMenu,
                                   selector: #selector(self.menuItemRightPress(menuItem:)))
@@ -113,7 +124,11 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     }
     
     @objc fileprivate func menuItemRightPress(menuItem:KxMenuItem) {
-        
+        if menuItem.title == "logout".localized() {
+            UserManager.reset()
+            let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
+            AppConfig.navigation.changeRootControllerTo(viewcontroller: vc, animated: false)
+        }
     }
 }
 
@@ -122,7 +137,7 @@ extension DashboardViewController {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         
         if tabBarController.tabBar.selectedItem?.tag == 1 {
-            let itemTabbar = UITabBarItem(title: "Dashboard".localized(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
+            let itemTabbar = UITabBarItem(title: "dashboard".localized().uppercased(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 9
             tabBarItem  = itemTabbar
         } else {

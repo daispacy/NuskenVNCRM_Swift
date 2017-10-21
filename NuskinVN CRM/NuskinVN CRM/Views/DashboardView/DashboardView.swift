@@ -45,37 +45,70 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
     func configView () {
         
         // block menu
-        menuDashboard = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
+//        menuDashboard = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
         
         // block summary
         totalSummaryView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)?.first as! TotalSummaryView
-        totalSummaryView.configSummary(totalCustomer: "100", totalOrderComplete: "50", totalOrderUnComplete: "30")
         
         // block total
         totalSalesView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
-        totalSalesView.loadTotalSales(total: "550.000.000")
         
         //block chart summary customer
         totalSummaryCustomerView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
-        totalSummaryCustomerView.loadChartCustomer(dataChart: ["test"], totalOrdered: "100.000.000", totalNotOrderd: "50.000.000")
         
         //block chart order
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
 
         //block top product
-        topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
+//        topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
         
         //block customer ordered before 30 days
-        birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
+//        birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
         
         // insert custom view into stack
-        stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
-        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
+//        stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
+        
+//        stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
+//        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
+    }
+    
+    override func reload(_ data:JSON) {
+        if let totalCustomer = data["total_customers"],
+            let totalOrderComplete = data["total_orders_processed"],
+            let totalOrderUncomplete = data["total_orders_not_processed"] {
+            stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
+            totalSummaryView.configSummary(totalCustomer: "\(totalCustomer)", totalOrderComplete: "\(totalOrderComplete)", totalOrderUnComplete: "\(totalOrderUncomplete)")
+        } else {
+            totalSummaryView.removeFromSuperview()
+        }
+        
+        if let data = data["total_orders_amount"] {
+            stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
+            totalSalesView.loadTotalSales(total: "\(data)")
+        } else {
+            totalSalesView.removeFromSuperview()
+        }
+        
+        if let data2 = data["total_customers_ordered"],
+            let data3 = data["total_customers_not_ordered"],
+            let listGroupCustomers = data["customers"] as? [JSON]{
+            if listGroupCustomers.count > 0 {
+                totalSummaryCustomerView.reload(data)
+                stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
+                totalSummaryCustomerView.loadChartCustomer(totalOrdered: "\(data2)", totalNotOrderd: "\(data3)")
+            }
+        } else {
+            totalSummaryCustomerView.removeFromSuperview()
+        }
+        
+        if let data2 = data["total_orders_processed"],
+            let data3 = data["total_orders_not_processed"]{
+                chartStatisticsOrder.reload(data)
+                stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
+            chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! Double),Double(data3 as! Double)])
+        } else {
+            chartStatisticsOrder.removeFromSuperview()
+        }
     }
     
     override func reloadTexts() {

@@ -20,7 +20,9 @@ UITableViewDataSource{
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
+        
+        title = "order".localized().uppercased()
         
         // Do any additional setup after loading the view.
         tableView.register(UINib(nibName: "OrderListCell", bundle: Bundle.main), forCellReuseIdentifier: "cell")
@@ -56,12 +58,13 @@ UITableViewDataSource{
     }
     
     override func configText() {
-        title = "order".localized().uppercased()
         lblMessageData.text = "order_not_found".localized()
     }
     
     deinit {
-        self.tableView.removeGestureRecognizer(tapGesture!)
+        if self.tableView != nil {
+            self.tableView.removeGestureRecognizer(tapGesture!)
+        }
         NotificationCenter.default.removeObserver(self)
     }
     

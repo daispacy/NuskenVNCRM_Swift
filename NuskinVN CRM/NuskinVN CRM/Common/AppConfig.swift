@@ -14,11 +14,11 @@ class AppConfig: NSObject {
     // MARK: - Database
     class db:AppConfig {
         static var name:String {
-            if let id = User.currentUser().id {
+            let id = UserManager.currentUser().id_card_no
                 return "crm\(id).sqlite"
-            } else {
-                return "crm999999.sqlite"
-            }
+            
+//                return "crm999999.sqlite"
+            
         }
     }
     
@@ -26,7 +26,7 @@ class AppConfig: NSObject {
     class setting: AppConfig {
         static func setRememerID(isRemember:Bool) {
             UserDefaults.standard.setValue(isRemember, forKey: "App:RememberUser")
-            UserDefaults.standard.synchronize()
+            
         }
         static func isRememberUser() -> Bool {
             if let remember =  UserDefaults.standard.value(forKey: "App:RememberUser") as? Bool {
@@ -40,7 +40,7 @@ class AppConfig: NSObject {
     class deeplink:AppConfig {
         static func setZalo(str:String) {
             UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Zalo")
-            UserDefaults.standard.synchronize()
+            
         }
         static func zalo() -> String {
             if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Zalo") {
@@ -51,7 +51,7 @@ class AppConfig: NSObject {
         
         static func setViber(str:String) {
             UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Viber")
-            UserDefaults.standard.synchronize()
+            
         }
         static func viber() -> String {
             if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Viber") {
@@ -62,7 +62,7 @@ class AppConfig: NSObject {
         
         static func setSkype(str:String) {
             UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Skype")
-            UserDefaults.standard.synchronize()
+            
         }
         static func skype() -> String {
             if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Skype") {
@@ -73,7 +73,7 @@ class AppConfig: NSObject {
         
         static func setFacebook(str:String) {
             UserDefaults.standard.setValue(str, forKey: "AppDeepLink:Facebook")
-            UserDefaults.standard.synchronize()
+            
         }
         static func facebook() -> String {
             if let str = UserDefaults.standard.value(forKey: "AppDeepLink:Facebook") {
@@ -84,7 +84,7 @@ class AppConfig: NSObject {
         
         static func setFacebookGroup(str:String) {
             UserDefaults.standard.setValue(str, forKey: "AppDeepLink:FacebookGroup")
-            UserDefaults.standard.synchronize()
+            
         }
         static func facebookGroup() -> String {
             if let str = UserDefaults.standard.value(forKey: "AppDeepLink:FacebookGroup") {
@@ -113,7 +113,7 @@ class AppConfig: NSObject {
             if(currentLanguage != language) {
                 Localize.setCurrentLanguage(language)
                 UserDefaults.standard.set(language, forKey: "AppConfig:Language")
-                UserDefaults.standard.synchronize()
+                
             }
         }
     }
@@ -123,7 +123,7 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             //start service if signin Success
-            LocalService.shared.startSyncData()
+//            LocalService.shared.startSyncData()
             
             let vc:UITabBarController = UITabBarController.init()
             
@@ -132,7 +132,7 @@ class AppConfig: NSObject {
             
             vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)
             
-            let itemTabbar2 = UITabBarItem(title: "title_tabbar_button_order".localized(), image: UIImage(named: "tabbar_order"), selectedImage: nil)
+            let itemTabbar2 = UITabBarItem(title: "title_tabbar_button_order".localized().uppercased(), image: UIImage(named: "tabbar_order"), selectedImage: nil)
             itemTabbar2.tag = 1
             
             uinaviVC2.tabBarItem  = itemTabbar2
@@ -147,7 +147,7 @@ class AppConfig: NSObject {
             if let animate = animated {
                 if animate {duration = 0.3}
             }
-            
+        
             if let window = appdelegate.window {
                 UIView.transition(with: window, duration: duration, options: .transitionCrossDissolve, animations: {
                     window.rootViewController = viewcontroller
@@ -173,10 +173,10 @@ class AppConfig: NSObject {
                                    "delivered".localized()]
         static let listPaymentStatus:[String] = ["no_charge".localized(),
                                           "money_collected".localized()]
-        static let listPaymentMethod:[String] = ["cod".localized(),
+        static let listPaymentMethod:[String] = ["cod".localized()/*,
                                           "online".localized(),
                                           "credit_card".localized(),
-                                          "paypal".localized()]
+                                          "paypal".localized()*/]
         static let listTranspoter:[String] = ["Vnpost - EMS".localized(),
                                        "Viettel post".localized(),
                                        "fast_delivery".localized()]

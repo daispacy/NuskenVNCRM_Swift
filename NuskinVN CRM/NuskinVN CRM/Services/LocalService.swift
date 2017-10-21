@@ -878,7 +878,7 @@ extension LocalService {
     // MARK: - Start sync with Server
     @objc fileprivate func syncToServer() {
         self.syncCustomerToServer()
-        self.syncGroupCustomerToServer()
+//        self.syncGroupCustomerToServer()
     }
     
     private func syncCustomerToServer() {
@@ -953,72 +953,72 @@ extension LocalService {
         })
     }
     
-    private func syncGroupCustomerToServer() {
-        print("start check/sync group to server")
-        let sql:String = "select * from `group` where `synced` = '0'" // group not synced
-        LocalService.shared.getGroupCustomerWithCustom(sql: sql, onComplete: {
-            list in
-            if list.count > 0 {
-                let listCustomer:[[String:Any]] = list.flatMap({$0.toDictionary})
-                print("Get local group done... send to server")
-                SyncService.shared.postAllGroupToServer(list: listCustomer, completion: { result in
-                    switch result {
-                    case .success(let data):
-                        guard data.count > 0 else {
-                            print("Dont have new group from server 1")
-                            return
-                        }
-                        print("remove group synced")
-                        do{
-                            try LocalService.shared.db.transaction {
-                                LocalService.shared.customSQl(sql: "delete from `group`", onComplete: {
-                                    print("start merge group to local DB")
-                                    let list:[GroupCustomer] = data
-                                    _ = list.map({
-                                        LocalService.shared.addGroup(obj: $0)
-                                    })
-                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
-                                })
-                            }
-                        } catch {
-                            
-                        }
-                    case.failure(_):
-                        print("Error: cant get group from server 1")
-                    }
-                })
-            } else {
-                print("Dont have new local group... get group from server")
-                SyncService.shared.getAllGroup(completion: { result in
-                    switch result {
-                    case .success(let data):
-                        guard data.count > 0 else {
-                            print("Dont have new group from server 2")
-                            return
-                        }
-                        print("remove group synced")
-                       
-                        do{
-                            try LocalService.shared.db.transaction {
-                                LocalService.shared.customSQl(sql: "delete from `group`", onComplete: {
-                                    print("start merge group to local DB")
-                                    let list:[GroupCustomer] = data
-                                    _ = list.map({
-                                        LocalService.shared.addGroup(obj: $0)
-                                    })
-                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
-                                })
-                            }
-                        }catch {
-                            
-                        }
-                        
-                    case .failure(_):
-                        print("Error: cant get group from server 2")
-                        break
-                    }
-                })
-            }
-        })
-    }
+//    private func syncGroupCustomerToServer() {
+//        print("start check/sync group to server")
+//        let sql:String = "select * from `group` where `synced` = '0'" // group not synced
+//        LocalService.shared.getGroupCustomerWithCustom(sql: sql, onComplete: {
+//            list in
+//            if list.count > 0 {
+//                let listCustomer:[[String:Any]] = list.flatMap({$0.toDictionary})
+//                print("Get local group done... send to server")
+//                SyncService.shared.postAllGroupToServer(list: listCustomer, completion: { result in
+//                    switch result {
+//                    case .success(let data):
+//                        guard data.count > 0 else {
+//                            print("Dont have new group from server 1")
+//                            return
+//                        }
+//                        print("remove group synced")
+//                        do{
+//                            try LocalService.shared.db.transaction {
+//                                LocalService.shared.customSQl(sql: "delete from `group`", onComplete: {
+//                                    print("start merge group to local DB")
+//                                    let list:[GroupCustomer] = data
+//                                    _ = list.map({
+//                                        LocalService.shared.addGroup(obj: $0)
+//                                    })
+//                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+//                                })
+//                            }
+//                        } catch {
+//
+//                        }
+//                    case.failure(_):
+//                        print("Error: cant get group from server 1")
+//                    }
+//                })
+//            } else {
+//                print("Dont have new local group... get group from server")
+//                SyncService.shared.getAllGroup(completion: { result in
+//                    switch result {
+//                    case .success(let data):
+//                        guard data.count > 0 else {
+//                            print("Dont have new group from server 2")
+//                            return
+//                        }
+//                        print("remove group synced")
+//
+//                        do{
+//                            try LocalService.shared.db.transaction {
+//                                LocalService.shared.customSQl(sql: "delete from `group`", onComplete: {
+//                                    print("start merge group to local DB")
+//                                    let list:[GroupCustomer] = data
+//                                    _ = list.map({
+//                                        LocalService.shared.addGroup(obj: $0)
+//                                    })
+//                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+//                                })
+//                            }
+//                        }catch {
+//
+//                        }
+//
+//                    case .failure(_):
+//                        print("Error: cant get group from server 2")
+//                        break
+//                    }
+//                })
+//            }
+//        })
+//    }
 }

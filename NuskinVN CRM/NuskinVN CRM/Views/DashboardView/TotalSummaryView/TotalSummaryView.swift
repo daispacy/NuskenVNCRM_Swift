@@ -63,6 +63,10 @@ class TotalSummaryView: CViewSwitchLanguage {
         
     }
     
+    override func reload(_ data: JSON) {
+        super.reload(data)
+    }
+    
     override func reloadTexts() {
         // set text here
     }
@@ -94,7 +98,7 @@ class TotalSummaryView: CViewSwitchLanguage {
         lblNumberOrderUncomplete.text = totalOrderUnComplete
     }
     
-    func loadChartCustomer(dataChart:Any, totalOrdered:String, totalNotOrderd:String) {
+    func loadChartCustomer(totalOrdered:String, totalNotOrderd:String) {
         
         lblTotalSales.removeFromSuperview()
         
@@ -126,7 +130,12 @@ class TotalSummaryView: CViewSwitchLanguage {
             chartStatisticsCustomer.heightAnchor.constraint(equalToConstant: 300).isActive = true
             
             if lblTotalCustomer == nil {
-                let test:String = "798 584"
+                var test:String = "0"
+                if let dt = self.data {
+                    if let totalCustomers = dt["total_customers"] {
+                        test = "\(totalCustomers)"
+                    }
+                }
                 lblTotalCustomer = UILabel(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 10, height: 10)))
                 lblTotalCustomer.numberOfLines = 0
                 lblTotalCustomer.lineBreakMode = .byWordWrapping
@@ -157,14 +166,58 @@ class TotalSummaryView: CViewSwitchLanguage {
             lblNumberPotentialDistributors.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
             lblNumberPotentialDistributors.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
-            lblCustomerRegister.text = "customer_register".localized()
-            lblNumberCustomerRegister.text = "239 793"
-            
-            lblPotentialDistributors.text = "potential_distributors".localized()
-            lblNumberPotentialDistributors.text = "76 962"
-            
             lblOther.text = "other".localized()
-            lblNumberOther.text = "502 833"
+            
+            
+            if let dt = self.data {
+                if let customers = dt["customers"] as? [JSON]{
+                    var listGroup:[String] = []
+                    var listValue:[Double] = []
+                    var totalOther:Double = 0
+                    var totalcustomerregister: Double = 0
+                    var totaldistributor:Double = 0
+                    _ = customers.map({
+                        if let id = $0["id"] as? String{
+                            if Int64(id) == 1 {
+                                if let name = $0["name"] as? String{
+                                    lblCustomerRegister.text = name
+                                    listGroup.append(name)
+                                }
+                                if let total = $0["total"] as? String{
+                                    lblNumberCustomerRegister.text = "\(total)"
+                                    totalcustomerregister = Double(total)!
+                                }
+                            } else if Int64(id) == 2 {
+                                if let name = $0["name"] as? String{
+                                    lblPotentialDistributors.text = name
+                                    listGroup.append(name)
+                                }
+                                if let total = $0["total"] as? String{
+                                    lblNumberPotentialDistributors.text = "\(total)"
+                                    totaldistributor = Double(total)!
+                                }
+                            } else {
+                                if let total = $0["total"] as? String{
+                                    totalOther += Double(total)!
+                                }
+                            }
+                            
+                        }
+                    })
+                    
+                    listValue.append(totalcustomerregister)
+                    listValue.append(totaldistributor)
+                    listValue.append(totalOther)
+                    
+                    lblNumberOther.text = "\(totalOther)"
+                    if listValue.count > 0 {
+                        listGroup.append("other".localized())
+                        
+                        chartStatisticsCustomer.setChart(listGroup, values: listValue)
+                    }
+                }
+            }
+            
         }
     }
     
@@ -184,7 +237,7 @@ class TotalSummaryView: CViewSwitchLanguage {
         let attributedStringNumberTotalSales = NSMutableAttributedString(
             string: "\(total)\n",
             attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.larger)!,
-                         NSForegroundColorAttributeName:UIColor(_gradient: Theme.colorGradient, frame: CGRect(x: 0, y: 0, width: size.width, height: size.height), isReverse: false),
+                         NSForegroundColorAttributeName:UIColor(_gradient: Theme.colorGradient, frame: CGRect(x: 0, y: 0, width: size.width + 5, height: size.height), isReverse: false),
                          NSParagraphStyleAttributeName:paragraph])
         
         let attributeStringForTotalSales = NSMutableAttributedString(attributedString: attributedStringTotalSales)
