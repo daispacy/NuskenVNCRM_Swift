@@ -13,6 +13,7 @@ import CoreData
 @objc(CustomerDO)
 public class CustomerDO: NSManagedObject {
 
+    var isTemp = false
     let fetchRequestGroupDO = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
     var listGroupsManager:[GroupDO]?
     var listlistOrdersManager:[OrderDO]?
@@ -25,6 +26,7 @@ public class CustomerDO: NSManagedObject {
         
         if(!needSave) {
             self.init(entity: entity!, insertInto: nil)
+            isTemp = true
         } else {
             self.init(entity: entity!, insertInto: context)
         }
@@ -60,10 +62,11 @@ public class CustomerDO: NSManagedObject {
             "city": city ?? "",
             "county": county ?? "",
             "tel": tel ?? "",
-            "skype": skype ?? "",
-            "facebook": facebook ?? "",
-            "viber": viber ?? "",
-            "zalo": zalo ?? "",
+            "skype": skype,
+            "facebook": facebook,
+            "viber": viber,
+            "zalo": zalo,
+            "avatar": avatar ?? "",
             "group_id": group_id,
             "properties": proper,
             "date_created": date_created ?? "",

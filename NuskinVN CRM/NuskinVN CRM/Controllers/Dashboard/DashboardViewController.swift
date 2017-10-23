@@ -18,6 +18,8 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
+        
         configText()
         
         // Do any additional setup after loading the view.
@@ -40,6 +42,18 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         tabBarController?.delegate = self
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func reloadAfterSynced(notification:Notification) {
+        UserManager.getDataDashboard {[weak self] data in
+            if let _self = self {
+                _self.reloadData(data)
+            }
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))

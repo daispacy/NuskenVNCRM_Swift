@@ -49,11 +49,11 @@ UISearchBarDelegate{
     func refreshList() {
         ProductManager.getAllProducts(search: self.searchText) {[weak self] list in
             if let _self = self {
-                DispatchQueue.main.async {
+//                DispatchQueue.main.async {
                     _self.listData.removeAll()
                     _self.listData.append(contentsOf: list)
                     _self.tableView.reloadData()
-                }
+//                }
             }
         }
     }

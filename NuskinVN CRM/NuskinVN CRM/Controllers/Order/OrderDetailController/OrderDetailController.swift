@@ -82,6 +82,7 @@ class OrderDetailController: RootViewController {
         self.status = order.status
        self.payment_method = order.payment_option
         
+        
         self.payment_status = order.payment_status
         self.transporter = order.shipping_unit
         
@@ -91,6 +92,13 @@ class OrderDetailController: RootViewController {
         
         if let code = order.code {
             self.order_code = code
+        }
+        
+        orderCustomerView.onUpdateData = {[weak self] customer, order_code in
+            if let _self = self {
+                _self.customerSelected = customer
+                _self.order_code = order_code
+            }
         }
         
         orderProductView.onUpdateProducts = {[weak self] list in
@@ -370,12 +378,7 @@ class OrderDetailController: RootViewController {
         
         // block order customer view
         orderCustomerView.navigationController = self.navigationController
-        orderCustomerView.onUpdateData = {[weak self] customer, order_code in
-            if let _self = self {
-                _self.customerSelected = customer
-                _self.order_code = order_code
-            }
-        }
+        
         
         // block product view
         orderProductView.navigationController = self.navigationController
@@ -387,6 +390,12 @@ class OrderDetailController: RootViewController {
             orderProductView.onUpdateProducts = {[weak self] list in
                 if let _self = self {
                     _self.listProducts = list
+                }
+            }
+            orderCustomerView.onUpdateData = {[weak self] customer, order_code in
+                if let _self = self {
+                    _self.customerSelected = customer
+                    _self.order_code = order_code
                 }
             }
         }

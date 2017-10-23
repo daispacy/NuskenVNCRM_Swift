@@ -54,12 +54,22 @@ class OrderCustomerView: UIView {
     func show(order:OrderDO) {
         self.order = order
         self.customerSelected = order.customer()
-        self.txtOrderCode.text = order.code!
-        self.txtTel.text = order.tel!
-        self.txtAddress.text = order.address!
-        self.txtEmail.text = order.email!
-        self.btnChooseCustomer.setTitle(order.customer().fullname, for: .normal)
-        self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        if let code = order.code {
+            self.txtOrderCode.text = code
+        }
+        if let tel = order.tel {
+            self.txtTel.text = tel
+        }
+        if let address = order.address {
+            self.txtAddress.text = address
+        }
+        if let email = order.email {
+            self.txtEmail.text = email
+        }
+        if let customer = order.customer() {
+            self.btnChooseCustomer.setTitle(customer.fullname, for: .normal)
+            self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        }
         UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
             self.vwTel.alpha = 1
             self.vwEmail.alpha = 1
@@ -88,7 +98,9 @@ class OrderCustomerView: UIView {
                     vc.title = "choose_customer".localized().uppercased()
                     var listData:[String] = []
                     _ = _self.listCustomer.map({
-                        listData.append($0.fullname!)
+                        if let fullname = $0.fullname {
+                            listData.append(fullname)
+                        }
                         
                     })
                     vc.showData(data: listData.sorted(by: {$0 < $1}))

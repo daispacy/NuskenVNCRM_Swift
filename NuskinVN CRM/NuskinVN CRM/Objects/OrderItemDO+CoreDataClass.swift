@@ -15,7 +15,7 @@ public class OrderItemDO: NSManagedObject {
 
     var productManage:ProductDO?
     
-    func product() -> ProductDO {
+    func product() -> ProductDO? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ProductDO")
         fetchRequest.predicate = NSPredicate(format: "id IN %@", [product_id])
@@ -35,6 +35,6 @@ public class OrderItemDO: NSManagedObject {
             print(fetchError)
         }
         
-        return ProductDO(needSave:false, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+        return nil
     }
 }

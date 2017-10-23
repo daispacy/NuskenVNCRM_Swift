@@ -74,45 +74,45 @@ class OrderProductListView: UIView {
         if self.listOrderItem.count == 0 {
             if let order = self.order {
                 if order.orderItems().count == 0 {
-                        return
+                    return
                 }
-                        self.listOrderItem.append(contentsOf: order.orderItems().flatMap({
-                            ["price":$0.price,"total":$0.quantity,"product":$0.product()]
-                        }))
-                        
-                        if self.listOrderItem.count > 0 {
-                            _ = self.listOrderItem.map({
-                                let blockProduct = Bundle.main.loadNibNamed("BlockOrderProductView", owner: self, options: [:])?.first as! BlockOrderProductView
-                                self.stackViewContainer.insertArrangedSubview(blockProduct, at: self.stackViewContainer.arrangedSubviews.count-1)
-                                blockProduct.show(json:$0)
-                                blockProduct.onSelectEditJSON = {[weak self]
-                                    orderitem in
-                                    if let _self = self {
-                                        _self.handleProduct(json: orderitem)
-                                    }
-                                }
-                                blockProduct.onSelectDeleteJSON = {[weak self]
-                                    data in
-                                    if let _self = self {
-                                        Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: _self.navigationController!, onAction: {index in
-                                            if index == 1 {
-                                                if let index = _self.listOrderItem.index(where: {
-                                                    if let pro = $0["product"] as? ProductDO,
-                                                        let pro1 = data["product"] as? ProductDO{
-                                                        return pro.name == pro1.name
-                                                    }
-                                                    return false
-                                                })
-                                                {
-                                                    _self.listOrderItem.remove(at: index)
-                                                    _self.refreshData()
-                                                }
-                                            }
-                                        })
-                                    }
-                                }
-                            })
+                self.listOrderItem.append(contentsOf: order.orderItems().flatMap({
+                    ["price":$0.price,"total":$0.quantity,"product":$0.product()]
+                }))
+                
+                if self.listOrderItem.count > 0 {
+                    _ = self.listOrderItem.map({
+                        let blockProduct = Bundle.main.loadNibNamed("BlockOrderProductView", owner: self, options: [:])?.first as! BlockOrderProductView
+                        self.stackViewContainer.insertArrangedSubview(blockProduct, at: self.stackViewContainer.arrangedSubviews.count-1)
+                        blockProduct.show(json:$0)
+                        blockProduct.onSelectEditJSON = {[weak self]
+                            orderitem in
+                            if let _self = self {
+                                _self.handleProduct(json: orderitem)
+                            }
                         }
+                        blockProduct.onSelectDeleteJSON = {[weak self]
+                            data in
+                            if let _self = self {
+                                Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: _self.navigationController!, onAction: {index in
+                                    if index == 1 {
+                                        if let index = _self.listOrderItem.index(where: {
+                                            if let pro = $0["product"] as? ProductDO,
+                                                let pro1 = data["product"] as? ProductDO{
+                                                return pro.name == pro1.name
+                                            }
+                                            return false
+                                        })
+                                        {
+                                            _self.listOrderItem.remove(at: index)
+                                            _self.refreshData()
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
             }
         } else {
             if self.listOrderItem.count > 0 {

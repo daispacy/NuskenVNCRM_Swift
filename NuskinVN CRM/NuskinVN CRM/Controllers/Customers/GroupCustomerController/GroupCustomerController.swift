@@ -35,6 +35,10 @@ UICollectionViewDelegateFlowLayout {
         return group
     }()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

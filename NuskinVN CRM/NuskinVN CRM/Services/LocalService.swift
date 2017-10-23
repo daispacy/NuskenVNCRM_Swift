@@ -103,7 +103,7 @@ final class LocalService: NSObject {
                                 CustomerManager.saveCustomerWith(array: data)
                             }
                             
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
                         }
                     case .failure(_):
                         print("Error: cant get group from server 2")

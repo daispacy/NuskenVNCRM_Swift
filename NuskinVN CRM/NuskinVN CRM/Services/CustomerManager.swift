@@ -165,7 +165,7 @@ class CustomerManager: NSObject {
             if let data = dictionary["city"] as? String {
                 object.city = data
             }
-            if let data = dictionary["country"] as? String {
+            if let data = dictionary["county"] as? String {
                 object.county = data
             }
             if let data = dictionary["tel"] as? String {
@@ -195,6 +195,9 @@ class CustomerManager: NSObject {
                 let jsonData = try! JSONSerialization.data(withJSONObject: properties)
                 if let pro = String(data: jsonData, encoding: .utf8) {
                     object.properties = pro
+                }
+                if let avatar = properties["avatar"] as? String {
+                    object.avatar = avatar
                 }
             }
             

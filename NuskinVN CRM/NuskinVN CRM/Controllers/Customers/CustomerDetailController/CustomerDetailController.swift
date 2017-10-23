@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import CoreData
 
-class CustomerDetailController: RootViewController {
+class CustomerDetailController: RootViewController, UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     
     @IBOutlet var scrollView: UIScrollView!
     
@@ -61,7 +61,7 @@ class CustomerDetailController: RootViewController {
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         self.view.addGestureRecognizer(tapGesture!)
-        
+        self.navigationController?.delegate = self
         LocalService.shared.getAllCity(complete: {[weak self] list in
             if let _self = self {
                 DispatchQueue.main.async {
@@ -378,7 +378,7 @@ class CustomerDetailController: RootViewController {
             
             imagePickerController.sourceType = .camera
             imagePickerController.modalPresentationStyle = .fullScreen
-            imagePickerController.delegate = self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate
+            imagePickerController.delegate = self
             self.present(imagePickerController, animated: true, completion: nil)
             
         }
@@ -387,8 +387,8 @@ class CustomerDetailController: RootViewController {
             
             imagePickerController.sourceType = .photoLibrary
             imagePickerController.modalPresentationStyle = .popover
-            imagePickerController.delegate = self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate
-            self.present(imagePickerController, animated: true, completion: nil)
+            imagePickerController.delegate = self
+            self.present(imagePickerController, animated: true, completion:nil)
             
         }
         alertController.addAction(cancelAction)
@@ -535,6 +535,16 @@ class CustomerDetailController: RootViewController {
         _ = collectBrand.map({
             $0.text = $0.accessibilityIdentifier?.localized()
         })
+        
+        if let cus = customer {
+            if let avaStr = cus.avatar {
+                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                    let decodedimage = UIImage(data: dataDecoded)
+                    imvAvatar.image = decodedimage
+                    self.avatar = avaStr
+                }
+            }
+        }
     }
     
     private func configButton(_ button:UIButton, isHolder:Bool = false) {
@@ -548,14 +558,19 @@ class CustomerDetailController: RootViewController {
     }
 }
 
-extension CustomerDetailController: UIImagePickerControllerDelegate {
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+extension CustomerDetailController {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            imvAvatar.image = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
+            picker.dismiss(animated: true, completion: nil)
+            let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
+            let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
+            self.avatar = strBase64            
+        }
+    }
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : Any]?) {
         // Whatever you want here
-        imvAvatar.image = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
-        picker.dismiss(animated: true, completion: nil)
-        let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
-        let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
-        self.avatar = strBase64
+        
     }
 }
 

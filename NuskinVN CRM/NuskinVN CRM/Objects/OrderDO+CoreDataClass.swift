@@ -26,7 +26,9 @@ public class OrderDO: NSManagedObject {
     var totalPV:Int64  {
         var total:Int64 = 0
         _ = orderItems().map({
-            total += ($0.product().pv * $0.quantity)
+            if let product = $0.product() {
+                total += (product.pv * $0.quantity)
+            }
         })
         return total
     }
@@ -44,7 +46,7 @@ public class OrderDO: NSManagedObject {
         }
     }
     
-    func customer() -> CustomerDO {
+    func customer() -> CustomerDO? {
         
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
 //            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
@@ -65,7 +67,7 @@ public class OrderDO: NSManagedObject {
                 print(fetchError)
             }
         
-        return CustomerDO(needSave:false, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+        return nil
     }
     
     func orderItems() -> [OrderItemDO] {

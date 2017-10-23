@@ -70,15 +70,14 @@ class OrderListCell: UITableViewCell {
         configText()
         configView()
         
-        if order.customer().id != 0 {
-            if let fullname = order.customer().fullname {
+        if let customer = order.customer() {
+            if let fullname = customer.fullname {
                 lblNameCustomer.text = fullname
             }
-            
-        } else {
+        }else {
             lblNameCustomer.text = "unknown".localized()
         }
-        lblTotalPrice.text = "\(order.totalPrice) \("price_unit".localized())"
+            lblTotalPrice.text = "\(order.totalPrice) \("price_unit".localized())"
         lblGoal.text = "\(order.totalPV) \("pv".localized().uppercased())"
         
         if let date = order.date_created {
