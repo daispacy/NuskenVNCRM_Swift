@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import CoreData
 
 class GroupCollectCustomerCell: UICollectionViewCell {
     
-    var object:GroupCustomer!
+    var object:GroupDO!
     
-    var onSelectOption: ((Any,GroupCustomer) -> Void)?
+    var onSelectOption: ((Any,GroupDO) -> Void)?
     
     @IBOutlet var icon: CImageViewRoundGradient!
     @IBOutlet var lblTitle: UILabel!
@@ -26,38 +27,50 @@ class GroupCollectCustomerCell: UICollectionViewCell {
     }
     
     // MARK: - INTERFACE
-    func show(data:GroupCustomer) {
+    func show(data:GroupDO) {
         
         object = data
         
-        
-        lblTitle.text = object.name.uppercased()
-        if object.name == "add_group".localized() {
+        if let name = object.group_name {
+        lblTitle.text = name.uppercased()
+        if name == "add_group".localized() {
             backgroundColor = UIColor.clear
             icon.image = Support.image.iconFont(code: "\u{f067}", size: icon.frame.size.width*30/100)
             btnOption.isHidden = true
             lblSubtitle.isHidden = true
         }
+        } else {
+            lblTitle.text = ""
+        }
         
         
-        lblSubtitle.text! = "\(object.numberCustomer) \("member".localized())"
-        
-        
+        lblSubtitle.text = "\(data.customers().count) \("member".localized())"
+
         if lblSubtitle.text?.characters.count == 0 {
             lblSubtitle.isHidden = true
         }
         
-        let color = object.color
-        if color == "gradient" {
-            icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
-        } else {
-            icon.backgroundColor = UIColor(hex:color)
+        if let properties = object.properties {
+            if let data = properties.data(using: String.Encoding.utf8) {
+                do {
+                    if let pro:JSON = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {
+                        if let color = pro["color"] as? String {
+                            if color == "gradient" {
+                                icon.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: icon.frame, isReverse: true)
+                            } else {
+                                icon.backgroundColor = UIColor(hex:color)
+                            }
+                        }
+                    }
+                } catch {
+                    print("warning parse properties GROUP: \(properties)")
+                }
+            }
         }
         
-        if object.server_id > 0 && object.distributor_id == 0 {
+        if ((object.distributor_id == 0 && object.id > 0) || object.isTemp) {
             btnOption.isHidden = true
-        }
-        
+        }        
     }
     
     // MARK: - event

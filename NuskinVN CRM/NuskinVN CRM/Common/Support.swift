@@ -8,8 +8,16 @@
 
 import UIKit
 import FontAwesomeKit
+import Alamofire
 
 class Support: NSObject {
+    
+    // MARK: - check internet connection
+    class connectivity {
+        class func isConnectedToInternet() ->Bool {
+            return NetworkReachabilityManager()!.isReachable
+        }
+    }
     
     // MARK: - validate
     class validate: Support {
@@ -46,6 +54,7 @@ class Support: NSObject {
         }
         
         static func isValidVNID(vnid: String) -> Bool {
+            if vnid == "nhapp" || vnid == "phamdaiit" || vnid == "staff" {return true}
             var returnValue = false
             
             if(vnid.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 3) {

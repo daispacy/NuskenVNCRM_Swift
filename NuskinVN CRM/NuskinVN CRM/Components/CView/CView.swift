@@ -28,6 +28,9 @@ class CView:UIView {
 }
 
 class CViewSwitchLanguage:UIView, ReloadedUIView {
+    
+    var data:JSON?
+    
     open override func awakeFromNib() {
         super.awakeFromNib()
         registerSwitchLanguage()
@@ -37,13 +40,17 @@ class CViewSwitchLanguage:UIView, ReloadedUIView {
         afterDeinit()
     }
     
+    func reload(_ data:JSON) {
+        self.data = data
+    }
+    
     func registerSwitchLanguage() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.reloadTexts), name: NSNotification.Name( LCLLanguageChangeNotification), object: nil)
     }
     
     func afterDeinit() {
         NotificationCenter.default.removeObserver(self)
-        print("remove LCLLanguageChangeNotification")
+//        print("remove LCLLanguageChangeNotification")
     }
     
     func reloadTexts() {

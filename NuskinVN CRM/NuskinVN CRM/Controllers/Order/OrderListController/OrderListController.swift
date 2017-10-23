@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class OrderListController: RootViewController,
 UITableViewDelegate,
@@ -16,11 +17,13 @@ UITableViewDataSource{
     @IBOutlet var lblMessageData: UILabel!
     @IBOutlet var tableView: UITableView!
     
-    var listOrder:[Order] = []
+    var listOrder:[OrderDO] = []
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
+        
+        title = "order".localized().uppercased()
         
         // Do any additional setup after loading the view.
         tableView.register(UINib(nibName: "OrderListCell", bundle: Bundle.main), forCellReuseIdentifier: "cell")
@@ -56,29 +59,30 @@ UITableViewDataSource{
     }
     
     override func configText() {
-        title = "order".localized().uppercased()
         lblMessageData.text = "order_not_found".localized()
     }
     
     deinit {
-        self.tableView.removeGestureRecognizer(tapGesture!)
+        if self.tableView != nil {
+            self.tableView.removeGestureRecognizer(tapGesture!)
+        }
         NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - private
     func refreshListOrder() {
         listOrder.removeAll()
-        LocalService.shared.getAllOrder(onComplete: {[weak self] list in
+        OrderManager.getAllOrders(search: nil) {[weak self] list in
             if let _self = self {
-            if list.count > 0 {
-                _self.listOrder.append(contentsOf: list)
-                _self.tableView.reloadData()
-                _self.showLoading(isShow: false, isShowMessage: false)
-            } else {
-                _self.showLoading(isShow: false, isShowMessage: true)
+                if list.count > 0 {
+                    _self.listOrder.append(contentsOf: list)
+                    _self.tableView.reloadData()
+                    _self.showLoading(isShow: false, isShowMessage: false)
+                } else {
+                    _self.showLoading(isShow: false, isShowMessage: true)
+                }
             }
-            }
-        })
+        }
     }
     
     func configView() {

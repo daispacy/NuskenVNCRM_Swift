@@ -31,24 +31,24 @@ struct Order {
     var tempProducts:[Product] = []
     
     
-    var customer:Customer {
-        return LocalService.shared.getCustomerFromID(customerID: customer_id)
-    }
+//    var customer:Customer {
+//        return LocalService.shared.getCustomerFromID(customerID: customer_id)
+//    }
+//    
+//    var products: [Product] {
+//        return LocalService.shared.getAllProduct(orderID: id)
+//    }
     
-    var products: [Product] {
-        return LocalService.shared.getAllProduct(orderID: id)
-    }
-    
-    var total:Int64 {
-        if products.count > 0 {
-            var t:Int64 = 0
-            _ = products.map({
-                t += $0.price
-            })
-            return t
-        }
-        return 0
-    }
+//    var total:Int64 {
+//        if products.count > 0 {
+//            var t:Int64 = 0
+//            _ = products.map({
+//                t += $0.price
+//            })
+//            return t
+//        }
+//        return 0
+//    }
 }
 
 extension Order {

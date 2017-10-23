@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import Localize_Swift
 import RxSwift
 import RxCocoa

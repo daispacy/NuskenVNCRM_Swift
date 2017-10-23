@@ -10,14 +10,18 @@ import UIKit
 import Alamofire
 
 enum Server:String {
+    case app_key = "D3raCMSver30"
     case domain = "https://nuskinvncrm.com/mobile.php"
+    case domainImage = "https://nuskinvncrm.com"
     case op = "mobile"
     case ver = "1.0"
     case act_authentic = "authentic"
+    case act_resetpw = "resetpw"
     case act_customers = "customers"
     case act_group = "groupcustomers"
-    case act_topproduct = "topproduct"
+    case act_product = "product"
     case act_config = "config"
+    case act_dashboard = "dashboard"
 }
 
 protocol SyncServiceDelegate:class {
@@ -46,7 +50,8 @@ final class SyncService: NSObject {
     func getConfig() {
         let parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_config.rawValue)",
-            "ver":"\(Server.ver.rawValue)"]
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -64,7 +69,7 @@ final class SyncService: NSObject {
                                 if let jsonCountry:[JSON] = json["city"] as? [JSON] {
 //                                    let listCountry:[City] = jsonCountry.flatMap({City(json:$0)})
                                     UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject:jsonCountry), forKey: "App:ListCity")
-                                    UserDefaults.standard.synchronize()
+                                    
 //                                    do {
 //                                    try LocalService.shared.db.transaction {
 //                                        LocalService.shared.customSQl(sql: "delete from `city`", onComplete: {
@@ -119,7 +124,7 @@ final class SyncService: NSObject {
         
     }
     
-    typealias GetUserResult = Result<User, GetDataFailureReason>
+    typealias GetUserResult = Result<UserDO, GetDataFailureReason>
     typealias GetUserCompletion = (_ result: GetUserResult) -> Void
     
     // MARK: - STATIC INTERFACE
@@ -128,7 +133,8 @@ final class SyncService: NSObject {
         
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_authentic.rawValue)",
-            "ver":"\(Server.ver.rawValue)"]
+            "ver":"\(Server.ver.rawValue)",
+        "app_key":"\(Server.app_key.rawValue)"]
         
         if let user = username {
             parameters["username"] = user
@@ -150,9 +156,8 @@ final class SyncService: NSObject {
                     }
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
-                            if let json:JSON = jsonArray["data"] as? JSON{
-                                if let user:User = User(json:json) {
-                                    User.setCurrentUser(user: json)
+                            if let json:JSON = jsonArray["data"] as? JSON{                                
+                                if let user:UserDO = UserManager.saveUserWith(dictionary: json) {
                                     completion(.success(user))
                                 }
                             }
@@ -172,23 +177,54 @@ final class SyncService: NSObject {
         }
     }
     
-    func reset(email:String, username:String, onDone:((Any)->Void)?, onFail:((Any)->Void)?) {
+    func reset(email:String, username:String, onDone:(()->Void)?, onFail:((String)->Void)?) {
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_resetpw.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
         
+            parameters["username"] = username
+            parameters["email"] = email
+        
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        onFail?("")
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            onDone?()
+                        } else {
+                            if let msg:String = jsonArray["message"] as? String{
+                                onFail?(msg)
+                            }
+                        }
+                    }
+                case .failure(_):
+                    onFail?("")
+                }
+        }
     }
     
     // MARK: - CUSTOMER
-    typealias GetCustomerResult = Result<[Customer], GetDataFailureReason>
-    typealias GetCustomerCompletion = (_ result: GetCustomerResult) -> Void
-    func getCustomers(completion: @escaping GetCustomerCompletion) {
+    typealias GetCustomerDOResult = Result<[JSON], GetDataFailureReason>
+    typealias GetCustomerDOCompletion = (_ result: GetCustomerDOResult) -> Void
+    func getAllCustomers(completion: @escaping GetCustomerDOCompletion) {
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_customers.rawValue)",
-            "ver":"\(Server.ver.rawValue)"]
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
         
-        parameters["store_id"] = User.currentUser().store_id
+        parameters["store_id"] = UserManager.currentUser().store_id
         parameters["page"] = 1
         parameters["number_item"] = 99999
         parameters["type"] = "all"
-        parameters["distributor_id"] = User.currentUser().id
+        parameters["distributor_id"] = UserManager.currentUser().id_card_no
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -204,7 +240,9 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
-                                completion(.success(jsonArray.flatMap({Customer(json:$0)})))
+                                completion(.success(jsonArray))
+                            } else {
+                                completion(.success([]))
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {
@@ -220,15 +258,16 @@ final class SyncService: NSObject {
         }
     }
     
-    func postAllCustomerToServer(list:[[String:Any]],completion: @escaping GetCustomerCompletion) {
+    func postAllCustomerToServer(list:[[String:Any]],completion: @escaping GetCustomerDOCompletion) {
         
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_customers.rawValue)",
-            "ver":"\(Server.ver.rawValue)"]
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
         
-        parameters["store_id"] = User.currentUser().store_id
+        parameters["store_id"] = UserManager.currentUser().store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = User.currentUser().id
+        parameters["distributor_id"] = UserManager.currentUser().id_card_no
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -251,7 +290,7 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
-                                completion(.success(jsonArray.flatMap({Customer(json:$0)})))
+                                completion(.success(jsonArray))
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {
@@ -268,17 +307,18 @@ final class SyncService: NSObject {
     }
     
     // MARK: - group customer
-    typealias GetGroupResult = Result<[GroupCustomer], GetDataFailureReason>
+    typealias GetGroupResult = Result<[JSON], GetDataFailureReason>
     typealias GetGroupCompletion = (_ result: GetGroupResult) -> Void
     func getAllGroup(completion: @escaping GetGroupCompletion) {
         
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_group.rawValue)",
-            "ver":"\(Server.ver.rawValue)"]
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
         
-        parameters["store_id"] = User.currentUser().store_id
+        parameters["store_id"] = UserManager.currentUser().store_id
         parameters["type"] = "all"
-        parameters["distributor_id"] = User.currentUser().id
+        parameters["distributor_id"] = UserManager.currentUser().id_card_no
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -294,7 +334,7 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
-                                completion(.success(jsonArray.flatMap({GroupCustomer(json:$0)})))
+                                completion(.success(jsonArray))
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {
@@ -312,13 +352,19 @@ final class SyncService: NSObject {
     
     func postAllGroupToServer(list:[[String:Any]],completion: @escaping GetGroupCompletion) {
         
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        configuration.timeoutIntervalForResource = 10
+        _ = Alamofire.SessionManager(configuration: configuration)
+        
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_group.rawValue)",
-            "ver":"\(Server.ver.rawValue)"]
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
         
-        parameters["store_id"] = User.currentUser().store_id
+        parameters["store_id"] = UserManager.currentUser().store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = User.currentUser().id
+        parameters["distributor_id"] = UserManager.currentUser().id_card_no
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -342,7 +388,96 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
-                                completion(.success(jsonArray.flatMap({GroupCustomer(json:$0)})))
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        print("\(reason)")
+//                        completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
+    // MARK: - Dashboard
+    typealias GetDashboardResult = Result<JSON, GetDataFailureReason>
+    typealias GetDashboardCompletion = (_ result: GetDashboardResult) -> Void
+    func getDashboard(completion: @escaping GetDashboardCompletion) {
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_dashboard.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        
+        parameters["store_id"] = UserManager.currentUser().store_id
+        parameters["type"] = "all"
+        parameters["distributor_id"] = UserManager.currentUser().id_card_no
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:JSON = jsonArray["data"] as? JSON{
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
+    // MARK: - Product
+    typealias GetProductResult = Result<[JSON], GetDataFailureReason>
+    typealias GetProductCompletion = (_ result: GetProductResult) -> Void
+    func syncProducts(completion: @escaping GetProductCompletion) {
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_product.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        
+        parameters["store_id"] = UserManager.currentUser().store_id
+        parameters["type"] = "all"
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
+                                ProductManager.saveProducctWith(array: jsonArray)
+                                completion(.success(jsonArray))
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {

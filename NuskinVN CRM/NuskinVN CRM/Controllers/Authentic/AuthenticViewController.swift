@@ -45,6 +45,11 @@ class AuthenticViewController:RootViewController, AuthenticViewDelegate {
 
 extension AuthenticViewController {
     
+    func AuthenticViewDidBackLogin(view: AuthenticView) {
+        self.type_ = .AUTH_LOGIN
+        changeStateView()
+    }
+    
     func AuthenticViewDidProcessEvent(view: AuthenticView, isGotoReset: Bool) {
         
         if(isGotoReset) {
@@ -54,10 +59,43 @@ extension AuthenticViewController {
             authenticView.btnProcess.startAnimation(activityIndicatorStyle: .gray)
             if(self.type_ == .AUTH_RESETPW) {
                 // involke api reset password
+                SyncService.shared.reset(email: authenticView.email!, username: authenticView.vnid!, onDone: { [weak self] in
+                    if let _self = self {
+                        _self.authenticView.btnProcess.stopAnimation()
+                        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+                        _self.present(test, animated: false, completion: {done in
+                            let paragraph = NSMutableParagraphStyle()
+                            paragraph.lineSpacing = 7
+                            paragraph.alignment = .center
+                            
+                            //total ones
+                            let attributedFirst = NSMutableAttributedString(string:"\("link_password_has_send_to_email".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
+                            let attributedMain = NSMutableAttributedString(string: "\(_self.authenticView.email!)\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)!,NSForegroundColorAttributeName:UIColor.darkGray,NSParagraphStyleAttributeName:paragraph])
+                            let attributeLast = NSMutableAttributedString(string:"\("plese_check_email_and_change_password".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
+                            attributedFirst.append(attributedMain)
+                            attributedFirst.append(attributeLast)
+                            test.message(attribute: attributedFirst, buttons: ["ok".localized().uppercased()], select: { i in
+                                _self.type_ = .AUTH_LOGIN
+                                _self.changeStateView()
+                            })
+                        })
+                    }
+                }, onFail: {[weak self] msg in
+                    if let _self = self {
+                        _self.authenticView.btnProcess.stopAnimation()
+                        let test = CustomAlertController(nibName: "CustomAlertController", bundle: Bundle.main)
+                        _self.present(test, animated: false, completion: {done in
+                            test.message(message: msg, buttons: ["ok".localized().uppercased()], select: {
+                                i in
+                                print("item select \(i)")
+                            })
+                        })
+                    }
+                })
                 
             } else if(self.type_ == .AUTH_LOGIN){
                 // involke api login
-                SyncService.shared.login(email: authenticView.email, username: nil, password: authenticView.password!, completion: {
+                SyncService.shared.login(email: nil, username: authenticView.vnid, password: authenticView.password!, completion: {
                     [weak self] result in
                     if let _self = self {
                         switch result {
@@ -91,31 +129,6 @@ extension AuthenticViewController {
         
         //        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
         //        present(test, animated: false, completion: nil)
-        
-        
-        //        let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
-        //        self.present(test, animated: false, completion: {done in
-        //            //            test.message(message: "msg_test".localized(), buttons: ["ok".localized().uppercased()], select: {
-        //            //                i in
-        //            //                print("item select \(i)")
-        //            //            })
-        //            let paragraph = NSMutableParagraphStyle()
-        //            paragraph.lineSpacing = 7
-        //            paragraph.alignment = .center
-        //
-        //            //total ones
-        //            let attributedFirst = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
-        //            let attributedMain = NSMutableAttributedString(string: "phamdaiit@gmail.com\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)!,NSForegroundColorAttributeName:UIColor.darkGray,NSParagraphStyleAttributeName:paragraph])
-        //            let attributeLast = NSMutableAttributedString(string:"\("sales_month".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSParagraphStyleAttributeName:paragraph])
-        //            attributedFirst.append(attributedMain)
-        //            attributedFirst.append(attributeLast)
-        //            test.message(attribute: attributedFirst, buttons: ["cancel".localized().uppercased(),"goto_dashboard".localized().uppercased()], select: { i in
-        //                if i > 0 {
-        //                    AppConfig.navigation.gotoDashboardAfterSigninSuccess()
-        //                }
-        //
-        //            })
-        //        })
         
     }
     

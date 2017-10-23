@@ -26,24 +26,24 @@ class OrderCustomerView: UIView {
     @IBOutlet var vwAddress: UIView!
     
     
-    var customerSelected:Customer = Customer(id: 0, distributor_id: 0, store_id: 0)
+    var customerSelected:CustomerDO?
     var orderCode:String = ""
     var disposeBag = DisposeBag()
     var navigationController:UINavigationController?
-    var listCustomer:[Customer] = []
-    var onUpdateData:((Customer,String)->Void)?
-    var order:Order?
+    var listCustomer:[CustomerDO] = []
+    var onUpdateData:((CustomerDO?,String)->Void)?
+    var order:OrderDO?
     
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        LocalService.shared.getCustomerWithCustom(sql:"select * from `customer`", onComplete: {[weak self] list in
+        CustomerManager.getAllCustomers {[weak self] list in
             if let _self = self {
                 _self.listCustomer = list
             }
-        })
+        }
         
         configText()
         configView()
@@ -51,15 +51,25 @@ class OrderCustomerView: UIView {
     }
     
     // MARK: - interface
-    func show(order:Order) {
+    func show(order:OrderDO) {
         self.order = order
-        self.customerSelected = order.customer
-        self.txtOrderCode.text = order.order_code
-        self.txtTel.text = self.customerSelected.tel
-        self.txtAddress.text = self.customerSelected.address
-        self.txtEmail.text = self.customerSelected.email
-        self.btnChooseCustomer.setTitle(order.customer.fullname, for: .normal)
-        self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        self.customerSelected = order.customer()
+        if let code = order.code {
+            self.txtOrderCode.text = code
+        }
+        if let tel = order.tel {
+            self.txtTel.text = tel
+        }
+        if let address = order.address {
+            self.txtAddress.text = address
+        }
+        if let email = order.email {
+            self.txtEmail.text = email
+        }
+        if let customer = order.customer() {
+            self.btnChooseCustomer.setTitle(customer.fullname, for: .normal)
+            self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        }
         UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
             self.vwTel.alpha = 1
             self.vwEmail.alpha = 1
@@ -88,7 +98,9 @@ class OrderCustomerView: UIView {
                     vc.title = "choose_customer".localized().uppercased()
                     var listData:[String] = []
                     _ = _self.listCustomer.map({
-                        listData.append($0.fullname)
+                        if let fullname = $0.fullname {
+                            listData.append(fullname)
+                        }
                         
                     })
                     vc.showData(data: listData.sorted(by: {$0 < $1}))
@@ -99,12 +111,12 @@ class OrderCustomerView: UIView {
                         _ = _self.listCustomer.map({
                             if $0.fullname == name {
                                 _self.customerSelected = $0
-                                _self.txtTel.text = _self.customerSelected.tel
-                                _self.txtAddress.text = _self.customerSelected.address
-                                _self.txtEmail.text = _self.customerSelected.email
+                                _self.txtTel.text = _self.customerSelected?.tel
+                                _self.txtAddress.text = _self.customerSelected?.address
+                                _self.txtEmail.text = _self.customerSelected?.email
                                 _self.btnChooseCustomer.setTitle(name, for: .normal)
                                 _self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                                _self.onUpdateData!(_self.customerSelected,_self.orderCode)
+                                _self.onUpdateData!(_self.customerSelected!,_self.orderCode)
                                 UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                                     _self.vwTel.alpha = 1
                                     _self.vwEmail.alpha = 1
@@ -123,13 +135,13 @@ class OrderCustomerView: UIView {
         
         txtTel.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
-                _self.customerSelected.tel = $0
+                _self.customerSelected?.tel = $0
                 _self.onUpdateData?(_self.customerSelected,_self.orderCode)
             }
         }).disposed(by: disposeBag)
         txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
-                _self.customerSelected.address = $0
+                _self.customerSelected?.address = $0
                 _self.onUpdateData?(_self.customerSelected,_self.orderCode)
             }
         }).disposed(by: disposeBag)

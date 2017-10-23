@@ -56,13 +56,13 @@ struct GroupCustomer {
             ]
     }
     
-    var numberCustomer: Int64  {
-        var sql:String = "SELECT count(*) FROM customer where `status` = '1' and `group_id` = '\(self.id)'"
-        if self.server_id > 0 {
-            sql = "SELECT count(*) FROM customer where `status` = '1' and `group_id` = '\(self.server_id)'"
-        }
-        return LocalService.shared.countLocalData(sql: sql)
-    }
+//    var numberCustomer: Int64  {
+//        var sql:String = "SELECT count(*) FROM customer where `status` = '1' and `group_id` = '\(self.id)'"
+//        if self.server_id > 0 {
+//            sql = "SELECT count(*) FROM customer where `status` = '1' and `group_id` = '\(self.server_id)'"
+//        }
+//        return LocalService.shared.countLocalData(sql: sql)
+//    }
 }
 
 extension GroupCustomer {

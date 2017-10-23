@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import CoreData
 import RxSwift
 import RxCocoa
 
@@ -19,19 +19,30 @@ UICollectionViewDelegateFlowLayout {
     @IBOutlet var vwOverlay: UIView!
     @IBOutlet var collectView: UICollectionView!
     
-    var onSelectGroup:((GroupCustomer)->Void)?
+    var onSelectGroup:((GroupDO)->Void)?
     var gotoFromCustomerList:Bool = false
     
-    var listGroups:[GroupCustomer]!
-    let defaultItem:GroupCustomer = {
-        var group = GroupCustomer(id: 0, distributor_id: 0, store_id: 0)
-        group.name = "add_group".localized()
-        group.color = "0xbec2c5"
+    var listGroups:[GroupDO]!
+    let defaultItem:GroupDO = {
+        let group = GroupDO(needSave: false, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+        group.group_name = "add_group".localized()
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: ["color":"0xbec2c5"])
+            if let pro = String(data: jsonData, encoding: .utf8) {
+                group.properties = pro
+            }
+        }catch{}
         return group
     }()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedGroup(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
         
         configText()
         
@@ -71,33 +82,37 @@ UICollectionViewDelegateFlowLayout {
         collectView.reloadData()
     }
     
+    func didSyncedGroup(notification:Notification) {
+        refreshList()
+    }
+    
     // MARK: - private
     func refreshList() {
-        LocalService.shared.getAllGroup(onComplete: {
-            [weak self] list in
+        GroupManager.getAllGroup(onComplete: {[weak self] list in
             if let _self = self {
                 _self.listGroups.removeAll()
                 _self.listGroups = list
+                _self.listGroups.append(_self.defaultItem)
                 _self.collectView.reloadData()
             }
         })
     }
     
-    func showPopupGroup(object:GroupCustomer? = nil) {
+    func showPopupGroup(object:GroupDO? = nil) {
         let vc = AddGroupController(nibName: "AddGroupController", bundle: Bundle.main)
         
         present(vc, animated: false, completion: {done in
-            if object != nil {
-                vc.setEditGroup(gr: object!)
+            if let obj = object {
+                vc.setEditGroup(gr: obj)
             }
         })
-        vc.onAddGroup = { group in
-            if object != nil {
-                _ = LocalService.shared.updateGroup(object: group)
-            } else {
-                _ = LocalService.shared.addGroup(obj: group)
+        vc.onAddGroup = {[weak self] group in
+            if let _self = self {
+                group.synced = false
+                GroupManager.updateGroupEntity(group, onComplete: {
+                    _self.refreshList()
+                })
             }
-            self.refreshList()
         }
     }
 }
@@ -115,20 +130,30 @@ extension GroupCustomerController {
                 option in
                 switch option.tag {
                 case 2:
-                    Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {
+                    Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: { [weak self]
                         i in
-                        if i == 1 {
-                            var gr = group
-                            gr.status = 0
-                            if LocalService.shared.updateGroup(object: gr) {
-                                LocalService.shared.startSyncData()
-                                self.refreshList()
+                        if let _self = self {
+                            if i == 1 {
+                                let gr = group
+                                gr.status = 0
+                                gr.synced = false
+                                // delete if group not synced
+                                if gr.id == 0 {
+                                    GroupManager.deleteGroupEntity(gr, onComplete: {
+                                        _self.refreshList()
+                                    })
+                                } else {
+                                    GroupManager.updateGroupEntity(gr, onComplete: {
+                                        _self.refreshList()
+                                    })
+                                }
                             }
                         }
                     })
                     
                 default:
                     self.showPopupGroup(object: group)
+                    break
                 }
             }
             popup.show(data: [OptionGroup(name: "edit_group".localized(),
@@ -150,8 +175,8 @@ extension GroupCustomerController {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let obj:GroupCustomer = listGroups![indexPath.row]
-        if obj.id == 0 {
+        let obj:GroupDO = listGroups[indexPath.row]
+        if obj.isTemp == true {
             showPopupGroup()
         } else {
             if gotoFromCustomerList {
@@ -184,28 +209,5 @@ extension GroupCustomerController {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1.0
-    }
-}
-
-// MARK: - Local Services
-extension GroupCustomerController {
-    
-    func localService(localService: LocalService, didFailed: Any, type:LocalServiceType) {
-        print("Cant get Group Customer")
-    }
-    
-    func localService(localService: LocalService, didReceiveData: Any, type:LocalServiceType) {
-        DispatchQueue.main.async {
-            switch type {
-            case .group:
-                self.listGroups.removeAll()
-                let list:[GroupCustomer] = didReceiveData as! [GroupCustomer]
-                self.listGroups.append(contentsOf: list)
-                self.listGroups.append(self.defaultItem)
-                self.collectView.reloadData()
-            case .customer: break
-            case .order: break
-            }
-        }
     }
 }
