@@ -124,6 +124,8 @@ class AddGroupController: UIViewController {
                 if !isEdit {
                     group = GroupDO(needSave: true, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
                     group?.status = 1
+                    group?.synced = false
+                    group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                 }
                     group?.synced = false
                     group?.setColor(group_color)

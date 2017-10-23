@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import RxCocoa
 import RxSwift
 
@@ -15,10 +16,12 @@ class OrderProductListView: UIView {
     @IBOutlet var stackViewContainer: UIStackView!
     @IBOutlet var lbltitle: CLabelGradient!
     @IBOutlet var btnAddProduct: UIButton!
-    var order:Order?
+    var order:OrderDO?
     var disposeBage = DisposeBag()
-    var listEditProduct:[Product] = []
-    var onUpdateProducts:(([Product])->Void)?
+//    var listOrderItem:[OrderItemDO] = []
+//    var listEditProduct:[OrderItemDO] = []
+    var listOrderItem:[JSON] = []
+    var onUpdateProducts:(([JSON])->Void)?
     
     var navigationController:UINavigationController?
     
@@ -32,24 +35,26 @@ class OrderProductListView: UIView {
     }
     
     // MARK: - interface
-    func show(order:Order) {
+    func show(order:OrderDO) {
         self.order = order
-        let or = order
-            let listProduct = LocalService.shared.getAllProduct(orderID: or.id)
-            if listProduct.count > 0 {
-                self.listEditProduct.append(contentsOf: listProduct)
-            }
-        
         refreshData()
     }
     
     // MARK: - private
     func binding() {
+        // MARK: - Select Product
         btnAddProduct.rx.tap.subscribe(onNext:{[weak self] in
             guard let _self = self else {
                 return
             }
-            _self.handleProduct()
+            let vc = ProductListController(nibName: "ProductListController", bundle: Bundle.main) 
+            _self.navigationController?.pushViewController(vc, animated: true)
+            vc.onSelectData = {[weak self] product in
+                if let _self = self {
+                    _self.navigationController?.popViewController(animated: true)
+                    _self.handleProduct(product: product)
+                }
+            }
             
         }).disposed(by: disposeBage)
     }
@@ -65,61 +70,137 @@ class OrderProductListView: UIView {
             }
         })
         
-        var listData:[Product] = []
         
-        if self.listEditProduct.count > 0 {
-            _ = self.listEditProduct.map({
-                let blockProduct = Bundle.main.loadNibNamed("BlockOrderProductView", owner: self, options: [:])?.first as! BlockOrderProductView
-                self.stackViewContainer.insertArrangedSubview(blockProduct, at: self.stackViewContainer.arrangedSubviews.count-1)
-                blockProduct.show(product:$0)
-                blockProduct.onSelectDelete = { product in
-                    Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self.navigationController!, onAction: {index in
+        if self.listOrderItem.count == 0 {
+            if let order = self.order {
+                if order.orderItems().count == 0 {
+                        return
+                }
+                        self.listOrderItem.append(contentsOf: order.orderItems().flatMap({
+                            ["price":$0.price,"total":$0.quantity,"product":$0.product()]
+                        }))
                         
-                    })
-                }
-                blockProduct.onSelectEdit = { product in
-                    self.handleProduct(product: product)
-                }
-            })
-            listData.append(contentsOf: self.listEditProduct)
+                        if self.listOrderItem.count > 0 {
+                            _ = self.listOrderItem.map({
+                                let blockProduct = Bundle.main.loadNibNamed("BlockOrderProductView", owner: self, options: [:])?.first as! BlockOrderProductView
+                                self.stackViewContainer.insertArrangedSubview(blockProduct, at: self.stackViewContainer.arrangedSubviews.count-1)
+                                blockProduct.show(json:$0)
+                                blockProduct.onSelectEditJSON = {[weak self]
+                                    orderitem in
+                                    if let _self = self {
+                                        _self.handleProduct(json: orderitem)
+                                    }
+                                }
+                                blockProduct.onSelectDeleteJSON = {[weak self]
+                                    data in
+                                    if let _self = self {
+                                        Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: _self.navigationController!, onAction: {index in
+                                            if index == 1 {
+                                                if let index = _self.listOrderItem.index(where: {
+                                                    if let pro = $0["product"] as? ProductDO,
+                                                        let pro1 = data["product"] as? ProductDO{
+                                                        return pro.name == pro1.name
+                                                    }
+                                                    return false
+                                                })
+                                                {
+                                                    _self.listOrderItem.remove(at: index)
+                                                    _self.refreshData()
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                            })
+                        }
+            }
+        } else {
+            if self.listOrderItem.count > 0 {
+                _ = self.listOrderItem.map({
+                    let blockProduct = Bundle.main.loadNibNamed("BlockOrderProductView", owner: self, options: [:])?.first as! BlockOrderProductView
+                    self.stackViewContainer.insertArrangedSubview(blockProduct, at: self.stackViewContainer.arrangedSubviews.count-1)
+                    blockProduct.show(json:$0)
+                    blockProduct.onSelectEditJSON = {
+                        orderitem in
+                        self.handleProduct(json: orderitem)
+                    }
+                    blockProduct.onSelectDeleteJSON = {
+                        data in
+                        Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self.navigationController!, onAction: {index in
+                            if index == 1 {
+                                if let index = self.listOrderItem.index(where: {
+                                    if let pro = $0["product"] as? ProductDO,
+                                        let pro1 = data["product"] as? ProductDO{
+                                        return pro.name == pro1.name
+                                    }
+                                    return false
+                                })
+                                {
+                                    self.listOrderItem.remove(at: index)
+                                    self.refreshData()
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+            
         }
-        onUpdateProducts?(listData)
+        
+        
+        self.onUpdateProducts?(listOrderItem)
     }
     
-    func handleProduct(product:Product? = nil) {
+    func handleProduct(product:ProductDO? = nil, json:JSON? = nil, order:OrderItemDO? = nil) {
+       
         let vc = AddProductController(nibName: "AddProductController", bundle: Bundle.main)
         self.navigationController?.present(vc, animated: false, completion: {
             if let pro = product {
-                vc.edit(product: pro)
+                vc.showProduct(pro)
+            }
+            if let orderItem = json {
+                vc.edit(json: orderItem)
+            }            
+            if let orderItem = order {
+                vc.edit(orderItem: orderItem)
             }
         })
-        vc.onChangeProduct = {
-            product, except in
-            
-            if self.validateProduct(name: product.name, except: false) && !except{
-                self.listEditProduct.append(product)
-            } else {
-                let index = self.listEditProduct.index(where: { (item) -> Bool in
-                    item.name == product.tempName
-                })
-                self.listEditProduct[index!] = product
+        vc.onCheckProductExist = {
+            product in
+            if let index = self.listOrderItem.index(where: {
+                if let pro = $0["product"] as? ProductDO {
+                   return pro.name == product.name
+                }
+                
+                return false
+            })
+            {
+                return index >= 0
             }
-            self.refreshData()
-        }
-        vc.onValidateProduct = { name,except in
-            return self.validateProduct(name: name, except: except)
-        }
-    }
-    
-    func validateProduct(name:String,except:Bool) -> Bool {
-        let filter =  self.listEditProduct.filter{ $0.name == name}
-        if filter.count == 0 {
-            return true
-        } else if except && filter.count == 1 {
-            return true
-        } else {
             return false
         }
+        vc.onAddData = {
+            data, isEdit in
+            if isEdit {
+                if let index = self.listOrderItem.index(where: {
+                    if let pro = $0["product"] as? ProductDO,
+                        let pro1 = data["product"] as? ProductDO{
+                        return pro.name == pro1.name
+                    }
+                    return false
+                })
+                {
+                    self.listOrderItem.remove(at: index)
+                }
+            }
+            self.listOrderItem.append(data)
+            self.refreshData()
+        }
+        
+//        vc.onChangeOrderItem = { orderItem in
+//            self.listEditProduct.append(orderItem)
+//            self.refreshData()
+//        }
     }
     
     func configView() {
@@ -148,9 +229,12 @@ class BlockOrderProductView: UIView {
     @IBOutlet var lblTotal: UILabel!
     @IBOutlet var lblPrice: UILabel!
     
-    var onSelectEdit:((Product)->Void)?
-    var onSelectDelete:((Product)->Void)?
-    var product:Product?
+   var onSelectEdit:((OrderItemDO)->Void)?
+    var onSelectDelete:((OrderItemDO)->Void)?
+    var onSelectEditJSON:((JSON)->Void)?
+    var onSelectDeleteJSON:((JSON)->Void)?
+    var product:OrderItemDO?
+    var json:JSON?
     
     // MARK: - init
     override func awakeFromNib() {
@@ -160,7 +244,7 @@ class BlockOrderProductView: UIView {
     }
     
     // MARK: - interface
-    func show(product:Product) {
+    func show(product:OrderItemDO) {
         self.product = product
         
         lblName.text = product.name
@@ -169,17 +253,43 @@ class BlockOrderProductView: UIView {
         
     }
     
+    func show(json:JSON) {
+        self.json = json
+        if let pro = json["product"] as? ProductDO{
+            lblName.text = pro.name
+        }
+        if let quantity = Int64("\(json["total"] ?? 0)") {
+            lblTotal.text = "\(quantity) \("unit".localized())"
+        }
+        
+        if let price = Int64("\(json["price"] ?? 0)") {
+           lblPrice.text = "\(price) \("price_unit".localized().uppercased())"
+        }
+        
+    }
+    
     // MARK: - event process
     @IBAction func processEdit(_ sender: Any) {
-        if let pro = self.product {
-            onSelectEdit?(pro)
+        
+        if self.json != nil {
+            onSelectEditJSON?(self.json!)
+        } else {
+            if let pro = self.product {
+                onSelectEdit?(pro)
+            }
         }
     }
     
     @IBAction func processRemove(_ sender: Any) {
-        if let pro = self.product {
-            onSelectDelete?(pro)
+        
+        if self.json != nil {
+            onSelectDeleteJSON?(self.json!)
+        } else {
+            if let pro = self.product {
+                onSelectDelete?(pro)
+            }
         }
+        
     }
     
     // MARK: - private

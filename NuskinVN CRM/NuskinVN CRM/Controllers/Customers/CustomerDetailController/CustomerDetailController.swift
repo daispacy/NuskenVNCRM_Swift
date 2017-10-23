@@ -52,7 +52,7 @@ class CustomerDetailController: RootViewController {
     var avatar:String?
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+           super.viewDidLoad()
         
         title = "add_customer".localized().uppercased()
         
@@ -61,20 +61,14 @@ class CustomerDetailController: RootViewController {
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         self.view.addGestureRecognizer(tapGesture!)
-        do {
-            try LocalService.shared.db.transaction {
-                LocalService.shared.getAllCity(complete: {[weak self] list in
-                    if let _self = self {
-                        DispatchQueue.main.async {
-                            _self.listCountry = list
-                        }
-                    }
-                })
-            }
-        } catch {
-            print("cante get all city")
-        }
         
+        LocalService.shared.getAllCity(complete: {[weak self] list in
+            if let _self = self {
+                DispatchQueue.main.async {
+                    _self.listCountry = list
+                }
+            }
+        })
         
         configText()
         configView()
@@ -120,11 +114,17 @@ class CustomerDetailController: RootViewController {
     func edit(customer:CustomerDO) {
         self.customer = customer
         self.isEdit = true
-        configView()
+        let listGroups = customer.listGroups()
+        if listGroups.count > 0 {
+            self.groupSelected = listGroups.first
+        }
+        
     }
     
     func setGroupSelected(group:GroupDO) {
         self.groupSelected = group
+        self.btnGroup.setTitle(group.group_name, for: .normal)
+        self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
     }
     
     // MARK: - private
@@ -306,6 +306,7 @@ class CustomerDetailController: RootViewController {
                 if let _self = self {
                     if _self.customer == nil{
                         let customer = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! CustomerDO
+                        customer.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                         customer.status = 1
                         customer.email = _self.txtEmail.text
                         customer.fullname = _self.txtName.text
@@ -315,15 +316,13 @@ class CustomerDetailController: RootViewController {
                         customer.county  = _self.btnDistrict.titleLabel?.text
                         customer.gender = _self.gender
                         customer.tel = _self.txtPhone.text
-                        customer.skype = _self.txtSkype.text
-                        customer.zalo = _self.txtZalo.text
-                        customer.viber = _self.txtViber.text
+                        customer.setSkype(_self.txtSkype.text ?? "")
+                        customer.setFacebook(_self.txtFacebook.text ?? "")
+                        customer.setZalo(_self.txtZalo.text ?? "")
+                        customer.setViber(_self.txtViber.text ?? "")
+                        customer.synced = false
                         if let group = _self.groupSelected {
-                            if group.id == 0 {
-                                customer.group_name = group.group_name
-                            } else {
                                 customer.group_id = group.id
-                            }
                         }
                         customer.distributor_id = UserManager.currentUser().id_card_no
                         customer.store_id = UserManager.currentUser().store_id
@@ -332,26 +331,28 @@ class CustomerDetailController: RootViewController {
                             _self.navigationController?.popToRootViewController(animated: true)
                         })
                     } else {
-                        _self.customer?.fullname = _self.txtName.text
-                        _self.customer?.address = _self.txtAddress.text
-                        _self.customer?.avatar = _self.avatar
-                        _self.customer?.city = _self.btnCity.titleLabel?.text
-                        _self.customer?.county  = _self.btnDistrict.titleLabel?.text
-                        _self.customer?.gender = _self.gender
-                        _self.customer?.tel = _self.txtPhone.text
-                        _self.customer?.skype = _self.txtSkype.text
-                        _self.customer?.zalo = _self.txtZalo.text
-                        _self.customer?.viber = _self.txtViber.text
-                        if let group = _self.groupSelected {
-                            if group.id == 0 {
-                                _self.customer?.group_name = group.group_name
-                            } else {
-                                _self.customer?.group_id = group.id
+                        if let customerUpdate = _self.customer {
+                            customerUpdate.fullname = _self.txtName.text
+                            customerUpdate.address = _self.txtAddress.text
+                            customerUpdate.avatar = _self.avatar
+                            customerUpdate.city = _self.btnCity.titleLabel?.text
+                            customerUpdate.county  = _self.btnDistrict.titleLabel?.text
+                            customerUpdate.gender = _self.gender
+                            customerUpdate.tel = _self.txtPhone.text
+                            customerUpdate.setSkype(_self.txtSkype.text ?? "")
+                            customerUpdate.setFacebook(_self.txtFacebook.text ?? "")
+                            customerUpdate.setZalo(_self.txtZalo.text ?? "")
+                            customerUpdate.setViber(_self.txtViber.text ?? "")
+                            customerUpdate.distributor_id = UserManager.currentUser().id_card_no
+                            customerUpdate.store_id = UserManager.currentUser().store_id
+                            customerUpdate.synced = false
+                            if let group = _self.groupSelected {
+                                customerUpdate.group_id = group.id
                             }
+                            CustomerManager.updateCustomerEntity(customerUpdate, onComplete: {
+                                _self.navigationController?.popToRootViewController(animated: true)
+                            })
                         }
-                        CustomerManager.updateCustomerEntity(_self.customer!, onComplete: {
-                            _self.navigationController?.popToRootViewController(animated: true)
-                        })
                     }
                 }
             })
@@ -437,19 +438,16 @@ class CustomerDetailController: RootViewController {
             $0.textColor = UIColor(hex: Theme.color.customer.subGroup)
         })
         
-        if let cus = self.customer {
-            if let group = cus.group {
-                let gr = group.allObjects[0] as! GroupDO
-                if let group_name = gr.group_name {
+        
+            if let group = self.groupSelected {
+                if let group_name = group.group_name {
                     if group_name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         self.btnGroup.setTitle(group_name, for: .normal)
                         self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
                 }
-            } else if cus.group_id > 0 {
-                
             }
-        }
+        
         
         // set value when edit a customer
         if self.customer != nil {
@@ -510,7 +508,18 @@ class CustomerDetailController: RootViewController {
         btnBirthday.setTitle("placeholder_birthday".localized(), for: .normal)
         btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
         btnCity.setTitle("placeholder_city".localized(), for: .normal)
-        btnGroup.setTitle("placeholder_group".localized(), for: .normal)
+        if let group = self.groupSelected {
+            if let group_name = group.group_name {
+                self.btnGroup.setTitle(group_name, for: .normal)
+                self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+            } else {
+                btnGroup.setTitle("placeholder_group".localized(), for: .normal)
+                self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
+            }
+        } else {
+             btnGroup.setTitle("placeholder_group".localized(), for: .normal)
+            self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
+        }
         
         if customer == nil {
             btnProcess.setTitle("add".localized().uppercased(), for: .normal)

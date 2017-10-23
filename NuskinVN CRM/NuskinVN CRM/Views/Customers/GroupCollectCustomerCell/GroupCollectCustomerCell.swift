@@ -43,11 +43,8 @@ class GroupCollectCustomerCell: UICollectionViewCell {
             lblTitle.text = ""
         }
         
-        if let customers = object.customers{
-            lblSubtitle.text = "\(customers.count) \("member".localized())"
-        } else {
-            lblSubtitle.text = "0 \("member".localized())"
-        }
+        
+        lblSubtitle.text = "\(data.customers().count) \("member".localized())"
 
         if lblSubtitle.text?.characters.count == 0 {
             lblSubtitle.isHidden = true

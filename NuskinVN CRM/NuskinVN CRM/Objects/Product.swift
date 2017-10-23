@@ -22,7 +22,7 @@ struct Product {
         if exceptMe {
             sql.append(" AND id <> '\(id)'")
         }
-        let count:Int64 = LocalService.shared.countLocalData(sql: sql)
+        let count:Int64 = 0//LocalService.shared.countLocalData(sql: sql)
         return count <= 0
     }
 }

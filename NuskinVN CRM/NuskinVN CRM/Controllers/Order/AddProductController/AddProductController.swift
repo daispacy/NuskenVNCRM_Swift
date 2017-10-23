@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import CoreData
+import RxSwift
+import RxCocoa
 
 class AddProductController: UIViewController {
-
+    
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var lblMessage: UILabel!
     @IBOutlet var lblError: CMessageLabel!
@@ -19,12 +22,18 @@ class AddProductController: UIViewController {
     @IBOutlet var txtName: UITextField!
     @IBOutlet var txtTotal: UITextField!
     @IBOutlet var txtPrice: UITextField!
+    @IBOutlet var txtPV: UITextField!
+    @IBOutlet var txtSugguestPrice: UITextField!
     @IBOutlet var collectLabelAddProruct: [UILabel]!
     
-    var onChangeProduct:((Product,Bool)->Void)?
-    var onValidateProduct:((String,Bool)->Bool)!
+    var onAddData:((JSON,Bool)->Void)?
+    var onCheckProductExist:((ProductDO)->Bool)?
+    var onChangeOrderItem:((OrderItemDO)->Void)?
     var tapGesture:UITapGestureRecognizer!
-    var product:Product?
+    var product:ProductDO?
+    var orderItem:OrderItemDO?
+    var disposeBag = DisposeBag()
+    var isEdit:Bool = false
     
     // MARK: - INIT
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -41,6 +50,7 @@ class AddProductController: UIViewController {
     }
     
     override func viewDidLoad() {
+        bindControl()
         super.viewDidLoad()
         configView()
         configText()
@@ -84,7 +94,7 @@ class AddProductController: UIViewController {
     }
     
     func keyboardWillHide(notification: NSNotification) {
-
+        
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
         let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
@@ -101,65 +111,110 @@ class AddProductController: UIViewController {
     }
     
     // MARK: - INTERFACE
-    func edit(product:Product) {
+    func showProduct(_ product:ProductDO) {
         self.product = product
-        self.product?.tempName = product.name
         txtName.text = product.name
-        txtPrice.text = "\(product.quantity)"
-        txtTotal.text = "\(product.price)"
+        txtSugguestPrice.text = "\(product.price)"
+        txtPrice.text = "\(product.price)"
+        txtTotal.text = "\(1)"
+        txtPV.text = "\(product.pv)"
         configText()
         configView()
+    }
+    
+    func edit(json:JSON) {
+        self.isEdit = true
+        if let pro = json["product"] as? ProductDO {
+            self.product = pro
+            txtName.text = pro.name
+            txtSugguestPrice.text = "\(pro.price)"
+            txtPV.text = "\(pro.pv)"
+        }
+        if let quantity = Int64("\(json["total"] ?? 0)") {
+            txtTotal.text = "\(quantity)"
+        }
+        
+        if let price = Int64("\(json["price"] ?? 0)") {
+            txtPrice.text = "\(price)"
+        }
+    }
+    
+    func edit(orderItem:OrderItemDO) {
+        self.isEdit = true
+        self.orderItem = orderItem
+        //        txtName.text = product.name
+        //        txtPrice.text = "\(product.price)"
+        //        txtTotal.text = "\(product.price)"
+        configText()
+        configView()
+    }
+    
+    // MARK: - BIND CONTROL
+    func bindControl() {
+                txtTotal.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+                    if let _self = self,
+                        let product = self?.product {
+                        let text = $0
+                        if text.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                            _self.txtPV.text = "\(Int64(text)! * product.pv)"
+                        }
+                    }
+                }).disposed(by: disposeBag)
     }
     
     // MARK: - BUTTON EVENT
     @IBAction private func buttonPress(_ sender: UIButton) {
         
         if(sender.isEqual(btnFirst) == true) {
-            if var pro = self.product{
-                if !validateData() {
-                    lblError.text = "please_provide_full_information".localized()
-                    lblError.isHidden = false
-                } else {
-                    if pro.isValid(exceptMe: true) && self.onValidateProduct(txtName.text!,true){
-                         lblError.isHidden = true
-                        pro.name = txtName.text!
-                        if let price = txtPrice.text {
-                            pro.price = Int64(price)!
-                        }
-                        if let quantity = txtTotal.text {
-                            pro.quantity = Int64(quantity)!
-                        }
-                        onChangeProduct?(pro,true)
-                        self.dismiss(animated: false, completion: nil)
-                    } else{
+            
+            if !validateData() {
+                lblError.text = "please_provide_price_and_quantity".localized()
+                lblError.isHidden = false
+                return
+            }
+            if let strprice = self.txtPrice.text,
+                let strrecommendPrice = self.txtSugguestPrice.text,
+                let strtotal = self.txtTotal.text {
+                
+                if let price = Int64(strprice),
+                    let recommendPrice = Int64(strrecommendPrice),
+                    let total = Int64(strtotal){
+                    if price < recommendPrice {
+                        lblError.text = "price_not_lower_sugguest_price".localized()
                         lblError.isHidden = false
-                        lblError.text = "product_is_exist".localized()
+                        return
                     }
-                }
-            } else {
-                if validateData() == false {
-                    lblError.text = "please_provide_full_information".localized()
-                    lblError.isHidden = false
-                } else {
-                    var product = Product()
-                    product.name = txtName.text!
-                    if let price = txtPrice.text {
-                        product.price = Int64(price)!
-                    }
-                    if let quantity = txtTotal.text {
-                        product.quantity = Int64(quantity)!
-                    }
-                    if product.isValid() && self.onValidateProduct(txtName.text!,false){
-                        lblError.isHidden = true
-                        onChangeProduct?(product,false)
+                    
+                    if let orderItem = self.orderItem {
+                        orderItem.price = price
+                        orderItem.quantity = total
+                        self.onChangeOrderItem?(orderItem)
                         self.dismiss(animated: false, completion: nil)
-                        
-                    } else{
-                        lblError.isHidden = false
-                        lblError.text = "product_is_exist".localized()
+                    } else {
+                        if let pro = self.product {
+                            if self.isEdit == false {
+                                if let checkProduct = self.onCheckProductExist {
+                                    let bool = checkProduct(pro)
+                                    if bool {
+                                        Support.popup.showAlert(message: "product_exist_in_order".localized(), buttons: ["ok".localized()], vc: self, onAction: {index in
+                                                                                     
+                                        })
+                                        return
+                                    }
+                                }
+                            }
+                            self.onAddData?(["total":total,"price":price,"product":pro],self.isEdit)
+                            self.dismiss(animated: false, completion: nil)
+                        }
                     }
+                    
+                } else {
+                    lblError.text = "price_or_quantity_invalid".localized()
+                    lblError.isHidden = false
+                    return
                 }
             }
+            
         } else {
             dismiss(animated: false, completion: nil)
         }
@@ -198,6 +253,8 @@ class AddProductController: UIViewController {
         configTextfield(txtName)
         configTextfield(txtTotal)
         configTextfield(txtPrice)
+        configTextfield(txtSugguestPrice)
+        configTextfield(txtPV)
         
         _ = collectLabelAddProruct.map({
             $0.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
@@ -210,7 +267,7 @@ class AddProductController: UIViewController {
     }
     
     func configText() {
-        if self.product != nil {
+        if self.isEdit {
             lblMessage.text = "edit_product".localized().uppercased()
             btnFirst.setTitle("update".localized().uppercased(), for: .normal)
         } else {
@@ -221,6 +278,8 @@ class AddProductController: UIViewController {
         btnSecond.setTitle("cancel".localized().uppercased(), for: .normal)
         
         txtName.placeholder = "placeholder_product_name".localized()
+        txtSugguestPrice.placeholder = "recommend_price".localized()
+        txtPV.placeholder = "pv".localized()
         txtPrice.placeholder = "placeholder_price".localized()
         txtTotal.placeholder = "placeholder_quantity".localized()
         
@@ -234,5 +293,5 @@ class AddProductController: UIViewController {
         textfield.textColor = UIColor(hex: Theme.color.customer.subGroup)
         textfield.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
     }
-
+    
 }

@@ -38,6 +38,8 @@ UICollectionViewDelegateFlowLayout {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedGroup(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
+        
         configText()
         
         listGroups = []
@@ -76,16 +78,20 @@ UICollectionViewDelegateFlowLayout {
         collectView.reloadData()
     }
     
+    func didSyncedGroup(notification:Notification) {
+        refreshList()
+    }
+    
     // MARK: - private
     func refreshList() {
-        GroupManager.syncGroups {[weak self] list in
+        GroupManager.getAllGroup(onComplete: {[weak self] list in
             if let _self = self {
                 _self.listGroups.removeAll()
                 _self.listGroups = list
                 _self.listGroups.append(_self.defaultItem)
                 _self.collectView.reloadData()
             }
-        }
+        })
     }
     
     func showPopupGroup(object:GroupDO? = nil) {
@@ -165,14 +171,14 @@ extension GroupCustomerController {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let obj:GroupDO = listGroups![indexPath.row]
+        let obj:GroupDO = listGroups[indexPath.row]
         if obj.isTemp == true {
             showPopupGroup()
         } else {
             if gotoFromCustomerList {
                 let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
                 vc.onDidLoad = {
-//                    vc.setGroupSelected(group: obj)
+                    vc.setGroupSelected(group: obj)
                 }
                 self.navigationController?.pushViewController(vc, animated: true)
             } else {

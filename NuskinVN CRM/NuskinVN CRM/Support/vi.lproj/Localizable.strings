@@ -12,6 +12,10 @@
 "link_password_has_send_to_email" = "Link reset mật khẩu đã được gửi vào email";
 "plese_check_email_and_change_password" = "Vui lòng kiểm tra email và thực hiện đổi mật khẩu.";
 "title_tabbar_button_order" = "Đơn hàng";
+"recommend_price" = "Giá bán lẻ đề xuất";
+"product_exist_in_order" = "Sản phẩm này đã có trong đơn hàng!";
+"edit_group" = "Chỉnh sửa";
+"delete_group" = "Xoá";
 
 "placeholder_vnid" = "VNID";
 "placeholder_email" = "Địa chỉ email";
@@ -113,14 +117,14 @@
 "add_product" = "Thêm sản phẩm";
 "product" = "Sản phẩm";
 "order_code" = "Số hóa đơn";
-"choose_customer" = "KKhách hàng";
+"choose_customer" = "Khách hàng";
 "placeholder_order_code" = "Nhập số hóa đơn";
 "placeholder_choose_customer" = "Chọn khách hàng";
 "invalid_order_code" = "Số hóa đơn không hợp lệ";
 "order_status" = "Trạng thái đơn hàng";
 "payment_status" = "Trạng thái thanh toán";
 "transporter_id" = "Số vận đơn";
-"transporter" = "Nhập vào số vận đơn";
+"transporter" = "Đơn vị giao hàng";
 "payment_method" = "Phương thức thanh toán";
 "address_order" = "Địa chỉ giao hàng";
 "address_order" = "Địa chỉ giao hàng";

@@ -78,13 +78,12 @@ class CustomerListCell: UITableViewCell {
         if isSelect {
             
             let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
-            let obj = self.object
-            
-            functionView.btnViber.isHidden = obj?.viber == nil
-            functionView.btnSkype.isHidden = obj?.skype == nil
-            functionView.btnZalo.isHidden = obj?.zalo == nil
-            functionView.btnFacebook.isHidden = obj?.facebook == nil
-            
+            if let obj = self.object {
+                functionView.btnViber.isHidden = obj.viber.characters.count > 0
+                functionView.btnSkype.isHidden = obj.skype.characters.count > 0
+                functionView.btnZalo.isHidden = obj.zalo.characters.count > 0
+                functionView.btnFacebook.isHidden = obj.facebook.characters.count > 0
+            }
             functionView.onSelectFunction = {[weak self]
                 identifier in
                 print("open \(identifier)")

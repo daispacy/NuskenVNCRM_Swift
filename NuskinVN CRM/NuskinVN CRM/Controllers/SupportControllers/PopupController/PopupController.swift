@@ -32,7 +32,7 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        restoresFocusAfterTransition = true
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -24,7 +24,7 @@ extension CustomerDO {
     @NSManaged public var date_created: NSDate?
     @NSManaged public var distributor_id: Int64
     @NSManaged public var email: String?
-    @NSManaged public var facebook: String?
+//    @NSManaged public var facebook: String?
     @NSManaged public var fullname: String?
     @NSManaged public var gender: Int64
     @NSManaged public var group_id: Int64
@@ -32,17 +32,15 @@ extension CustomerDO {
     @NSManaged public var last_login: NSDate?
     @NSManaged public var password: String?
     @NSManaged public var properties: String?
-    @NSManaged public var skype: String?
+//    @NSManaged public var skype: String?
     @NSManaged public var status: Int64
     @NSManaged public var store_id: Int64
     @NSManaged public var tel: String?
     @NSManaged public var type: Int64
     @NSManaged public var username: String?
-    @NSManaged public var viber: String?
-    @NSManaged public var zalo: String?
+//    @NSManaged public var viber: String?
+//    @NSManaged public var zalo: String?
     @NSManaged public var group_name: String?
     @NSManaged public var synced: Bool
     @NSManaged public var avatar: String?
-    @NSManaged public var group: NSSet?
-
 }

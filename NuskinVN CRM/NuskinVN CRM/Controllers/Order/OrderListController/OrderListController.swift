@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class OrderListController: RootViewController,
 UITableViewDelegate,
@@ -16,7 +17,7 @@ UITableViewDataSource{
     @IBOutlet var lblMessageData: UILabel!
     @IBOutlet var tableView: UITableView!
     
-    var listOrder:[Order] = []
+    var listOrder:[OrderDO] = []
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     
     override func viewDidLoad() {
@@ -71,17 +72,17 @@ UITableViewDataSource{
     // MARK: - private
     func refreshListOrder() {
         listOrder.removeAll()
-        LocalService.shared.getAllOrder(onComplete: {[weak self] list in
+        OrderManager.getAllOrders(search: nil) {[weak self] list in
             if let _self = self {
-            if list.count > 0 {
-                _self.listOrder.append(contentsOf: list)
-                _self.tableView.reloadData()
-                _self.showLoading(isShow: false, isShowMessage: false)
-            } else {
-                _self.showLoading(isShow: false, isShowMessage: true)
+                if list.count > 0 {
+                    _self.listOrder.append(contentsOf: list)
+                    _self.tableView.reloadData()
+                    _self.showLoading(isShow: false, isShowMessage: false)
+                } else {
+                    _self.showLoading(isShow: false, isShowMessage: true)
+                }
             }
-            }
-        })
+        }
     }
     
     func configView() {

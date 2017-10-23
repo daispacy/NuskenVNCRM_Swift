@@ -177,28 +177,28 @@ class TotalSummaryView: CViewSwitchLanguage {
                     var totalcustomerregister: Double = 0
                     var totaldistributor:Double = 0
                     _ = customers.map({
-                        if let id = $0["id"] as? String{
+                        if let id = $0["id"] as? Int64{
                             if Int64(id) == 1 {
                                 if let name = $0["name"] as? String{
                                     lblCustomerRegister.text = name
                                     listGroup.append(name)
                                 }
-                                if let total = $0["total"] as? String{
+                                if let total = $0["total"] as? Double{
                                     lblNumberCustomerRegister.text = "\(total)"
-                                    totalcustomerregister = Double(total)!
+                                    totalcustomerregister = total
                                 }
                             } else if Int64(id) == 2 {
                                 if let name = $0["name"] as? String{
                                     lblPotentialDistributors.text = name
                                     listGroup.append(name)
                                 }
-                                if let total = $0["total"] as? String{
+                                if let total = $0["total"] as? Double{
                                     lblNumberPotentialDistributors.text = "\(total)"
-                                    totaldistributor = Double(total)!
+                                    totaldistributor = total
                                 }
                             } else {
-                                if let total = $0["total"] as? String{
-                                    totalOther += Double(total)!
+                                if let total = $0["total"] as? Double{
+                                    totalOther += total
                                 }
                             }
                             
@@ -222,9 +222,12 @@ class TotalSummaryView: CViewSwitchLanguage {
     }
     
     func loadTotalSales(total:String) {
-        
-        stackViewSub.removeFromSuperview()
-        vwStoreChart.removeFromSuperview()
+        if stackViewSub != nil {
+            stackViewSub.removeFromSuperview()
+        }
+        if vwStoreChart != nil {
+            vwStoreChart.removeFromSuperview()
+        }
         self.layoutIfNeeded()
         self.setNeedsDisplay()
         

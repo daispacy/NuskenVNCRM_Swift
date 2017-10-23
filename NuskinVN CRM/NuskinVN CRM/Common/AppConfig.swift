@@ -123,7 +123,7 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             //start service if signin Success
-//            LocalService.shared.startSyncData()
+            LocalService.shared.startSyncData()            
             
             let vc:UITabBarController = UITabBarController.init()
             
@@ -167,18 +167,17 @@ class AppConfig: NSObject {
     
     // MARK: - order
     class order: AppConfig {
-        static let listStatus:[String] = ["invalid".localized(),
-                                   "processing".localized(),
-                                   "delivering".localized(),
-                                   "delivered".localized()]
-        static let listPaymentStatus:[String] = ["no_charge".localized(),
-                                          "money_collected".localized()]
-        static let listPaymentMethod:[String] = ["cod".localized()/*,
+        static let listStatus:[JSON] = [["id":Int64(0),"name":"invalid".localized()],
+                                   ["id":Int64(1),"name":"process".localized()],
+                                   ["id":Int64(3),"name":"unprocess".localized()]]
+        static let listPaymentStatus:[JSON] = [["id":Int64(2),"name":"no_charge".localized()],
+                                          ["id":Int64(1),"name":"money_collected".localized()]]
+        static let listPaymentMethod:[JSON] = [["id":Int64(1),"name":"cod".localized()]/*,
                                           "online".localized(),
                                           "credit_card".localized(),
                                           "paypal".localized()*/]
-        static let listTranspoter:[String] = ["Vnpost - EMS".localized(),
-                                       "Viettel post".localized(),
-                                       "fast_delivery".localized()]
+        static let listTranspoter:[JSON] = [["id":Int64(1),"name":"Vnpost - EMS".localized()],
+                                       ["id":Int64(2),"name":"Viettel post".localized()],
+                                       ["id":Int64(3),"name":"fast_delivery".localized()]]
     }
 }

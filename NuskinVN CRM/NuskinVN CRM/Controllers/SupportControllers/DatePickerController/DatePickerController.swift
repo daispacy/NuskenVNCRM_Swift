@@ -24,7 +24,7 @@ class DatePickerController: UIViewController {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        restoresFocusAfterTransition = true
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

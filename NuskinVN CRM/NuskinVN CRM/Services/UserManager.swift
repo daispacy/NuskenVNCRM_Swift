@@ -11,15 +11,62 @@ import CoreData
 
 class UserManager: NSObject {
     
+    static func getDataDashboard(onComplete:((JSON)->Void)) {
+        CustomerManager.getAllCustomers { list in
+            var dict:JSON = [:]
+            dict["total_customers"] = list.count
+            var ordered:Int64 = 0
+            var notorderd:Int64 = 0
+            var totalAmountOrders:Int64 = 0
+            var totaOrdersprocess:Double = 0
+            var totalOrdersunprocess:Double = 0
+            _ = list.map({
+                if $0.listOrders().count == 0 {
+                    notorderd += 1
+                } else {
+                    ordered += 1
+                }
+            })
+            dict["total_customers_ordered"] = ordered
+            dict["total_customers_not_ordered"] = notorderd
+            GroupManager.getAllGroup(onComplete: { listGroup in
+                var listCustomer:[JSON] = []
+                _ = listGroup.map({
+                    listCustomer.append(["id":$0.id,"name":$0.group_name ?? "","total":Double($0.customers().count)])
+                })
+                dict["customers"] = listCustomer
+                
+                //total_orders_amount
+                OrderManager.getAllOrders(onComplete: { listOrder in
+                    _ = listOrder.map({
+                        if $0.status != 0 {
+                            totalAmountOrders += $0.totalPrice
+                            if $0.status == 1 {
+                                totaOrdersprocess += 1
+                            } else if $0.status == 3 {
+                                totalOrdersunprocess += 1
+                            }
+                        }
+                    })
+                    dict["total_orders_processed"] = totaOrdersprocess
+                    dict["total_orders_not_processed"] = totalOrdersunprocess
+                    dict["total_orders_amount"] = totalAmountOrders
+                                        
+                    // return result
+                    onComplete(dict)
+                })
+                
+                
+            })
+            
+        }
+    }
+    
     static func currentUser() -> UserDO {
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
         
-        // Create Entity Description
-        let entityDescription = NSEntityDescription.entity(forEntityName: "UserDO", in: CoreDataStack.sharedInstance.persistentContainer.viewContext)
-        
-        // Configure Fetch Request
-        fetchRequest.entity = entityDescription
+        fetchRequest.returnsObjectsAsFaults = false
         
         do {
             let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
@@ -41,6 +88,7 @@ class UserManager: NSObject {
     static func reset() {
         let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
+        fetchRequest.returnsObjectsAsFaults = false
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {
@@ -91,6 +139,7 @@ class UserManager: NSObject {
             
             let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
+            fetchRequest.returnsObjectsAsFaults = false
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {

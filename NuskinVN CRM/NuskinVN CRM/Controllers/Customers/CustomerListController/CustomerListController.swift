@@ -48,7 +48,8 @@ UITabBarControllerDelegate {
         tapGesture?.cancelsTouchesInView = false
         self.tableView.addGestureRecognizer(tapGesture!)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedCustomer(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedGroup(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 50
     }
@@ -76,35 +77,35 @@ UITabBarControllerDelegate {
         }
         self.tableView.reloadData()
         
-        GroupManager.syncGroups {[weak self] list in
+        GroupManager.getAllGroup(onComplete: {[weak self] list in
             if let _self = self {
                 _self.listGroup = list
             }
-        }
+        })
         
         showLoading(isShow: true, isShowMessage: false)
-//        SyncService.shared.getAllCustomers(completion: {[weak self] result in
-//            if let _ = self {
-//                switch result {
-//                case .success(let list):
-//                    CustomerManager.saveCustomerWith(array: list)
-//                    
-//                case .failure(let error):
-//                    print(error.debugDescription)
-//                }
-//            }
-//        })
+        //        SyncService.shared.getAllCustomers(completion: {[weak self] result in
+        //            if let _ = self {
+        //                switch result {
+        //                case .success(let list):
+        //                    CustomerManager.saveCustomerWith(array: list)
+        //
+        //                case .failure(let error):
+        //                    print(error.debugDescription)
+        //                }
+        //            }
+        //        })
         CustomerManager.getAllCustomers(search: self.searchText, group: self.groupSelected) {[weak self] list in
             if let _self = self {
-                DispatchQueue.main.async {
-                    _self.listCustomer.append(contentsOf: list)
-                    if list.count > 0 {
-                        _self.showLoading(isShow: false, isShowMessage: false)
-                    } else {
-                        _self.showLoading(isShow: false, isShowMessage: true)
-                    }
-                    _self.tableView.reloadData()
+                
+                _self.listCustomer.append(contentsOf: list)
+                if list.count > 0 {
+                    _self.showLoading(isShow: false, isShowMessage: false)
+                } else {
+                    _self.showLoading(isShow: false, isShowMessage: true)
                 }
+                _self.tableView.reloadData()
+                
             }
         }
     }
@@ -116,9 +117,14 @@ UITabBarControllerDelegate {
         searchBar.placeholder = "search".localized()
     }
     
-    func didSyncedData(notification:Notification) {
-        
-//        refreshListCustomer()
+    func didSyncedGroup(notification:Notification) {
+        GroupManager.getAllGroup(onComplete: {[weak self] list in
+            if let _self = self {
+                _self.listGroup = list
+            }
+        })
+    }
+    func didSyncedCustomer(notification:Notification) {
         updateTableContent()
     }
     
@@ -139,7 +145,7 @@ UITabBarControllerDelegate {
             }
             self.btnFilterGroup.setTitle(item, for: .normal)
             self.updateTableContent()
-//            self.refreshListCustomer()
+            //            self.refreshListCustomer()
         }
         popupC.onDismiss = {
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
@@ -223,8 +229,10 @@ extension CustomerListController {
             customer in
             if let _self = self {
                 let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-                vc.customer = customer
                 _self.navigationController?.pushViewController(vc, animated: true)
+                vc.onDidLoad = {
+                    vc.edit(customer: customer)
+                }
             }
         }
         

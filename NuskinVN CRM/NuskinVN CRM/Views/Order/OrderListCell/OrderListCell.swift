@@ -25,13 +25,13 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var lblStatus: UILabel!
     
     var isEdit:Bool = false
-    var object:Order!
+    var object:OrderDO!
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
     
-    var onSelectOrder:((Order, Bool) -> Void)?
-    var onEditOrder:((Order) -> Void)?
+    var onSelectOrder:((OrderDO, Bool) -> Void)?
+    var onEditOrder:((OrderDO) -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -62,7 +62,7 @@ class OrderListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(_ order:Order, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+    func show(_ order:OrderDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = order
         self.isEdit = isEdit
         self.isSelect = isSelect
@@ -70,15 +70,29 @@ class OrderListCell: UITableViewCell {
         configText()
         configView()
         
-        if order.customer.fullname.characters.count > 0 {
-            lblNameCustomer.text = order.customer.fullname
+        if order.customer().id != 0 {
+            if let fullname = order.customer().fullname {
+                lblNameCustomer.text = fullname
+            }
+            
         } else {
             lblNameCustomer.text = "unknown".localized()
         }
-        lblTotalPrice.text = "\(order.total) \("price_unit".localized())"
-        lblDateCreated.text = order.date_created
-        lblCode.text = order.order_code
-        lblStatus.text = AppConfig.order.listStatus[Int(order.status)]
+        lblTotalPrice.text = "\(order.totalPrice) \("price_unit".localized())"
+        lblGoal.text = "\(order.totalPV) \("pv".localized().uppercased())"
+        
+        if let date = order.date_created {
+            let date_created = date as Date
+            lblDateCreated.text = date_created.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
+        lblCode.text = order.code
+        _ = AppConfig.order.listStatus.map({
+            if $0["id"] as! Int64 == order.status {
+                lblStatus.text = $0["name"] as? String
+            }
+        })
+        
     }
     
     func setSelect() {

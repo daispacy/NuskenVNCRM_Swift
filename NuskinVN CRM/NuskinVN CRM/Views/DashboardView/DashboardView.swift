@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol DashboardViewDelegate: class {
     
@@ -73,6 +74,7 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
     }
     
     override func reload(_ data:JSON) {
+        
         if let totalCustomer = data["total_customers"],
             let totalOrderComplete = data["total_orders_processed"],
             let totalOrderUncomplete = data["total_orders_not_processed"] {
@@ -89,6 +91,7 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
             totalSalesView.removeFromSuperview()
         }
         
+        
         if let data2 = data["total_customers_ordered"],
             let data3 = data["total_customers_not_ordered"],
             let listGroupCustomers = data["customers"] as? [JSON]{
@@ -101,14 +104,16 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
             totalSummaryCustomerView.removeFromSuperview()
         }
         
+        
         if let data2 = data["total_orders_processed"],
             let data3 = data["total_orders_not_processed"]{
-                chartStatisticsOrder.reload(data)
-                stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
+            chartStatisticsOrder.reload(data)
+            stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
             chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! Double),Double(data3 as! Double)])
         } else {
             chartStatisticsOrder.removeFromSuperview()
         }
+        
     }
     
     override func reloadTexts() {
