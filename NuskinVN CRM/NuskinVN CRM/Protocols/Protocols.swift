@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SQLite
 
 @objc protocol ReloadedUIView {
     @objc optional func registerSwitchLanguage()

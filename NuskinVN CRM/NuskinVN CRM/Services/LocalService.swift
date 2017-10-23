@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SQLite
 import SystemConfiguration
 
 enum LocalServiceType: Int {
@@ -23,9 +22,6 @@ let path = NSSearchPathForDirectoriesInDomains(
 final class LocalService: NSObject {
     
     static let shared = LocalService()
-    
-    // MARK: -
-    var db: Connection!
     
     var isMoveDB:Bool = false
     var isSync:Bool = false
