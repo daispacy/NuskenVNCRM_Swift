@@ -62,7 +62,7 @@ class UserManager: NSObject {
         }
     }
     
-    static func currentUser() -> UserDO {
+    static func currentUser() -> UserDO? {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
         
@@ -81,7 +81,7 @@ class UserManager: NSObject {
         } catch {
             let fetchError = error as NSError
             print(fetchError)
-            return NSEntityDescription.insertNewObject(forEntityName: "UserDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! UserDO
+            return nil
         }
     }
     

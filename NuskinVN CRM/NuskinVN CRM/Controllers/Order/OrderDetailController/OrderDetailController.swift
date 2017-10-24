@@ -251,11 +251,16 @@ class OrderDetailController: RootViewController {
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    
+                    guard let user = UserManager.currentUser() else {
+                        Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        })
+                        return
+                    }
                     if let ord = _self.order {
                         // update
+                        
                         ord.customer_id = (_self.customerSelected?.id)!
-                        ord.distributor_id = UserManager.currentUser().id_card_no
                         ord.address = _self.address_order
                         ord.last_updated = Date.init(timeIntervalSinceNow: 0) as NSDate
                         ord.status = _self.status
@@ -289,8 +294,13 @@ class OrderDetailController: RootViewController {
                         // add
                         let ord = NSEntityDescription.insertNewObject(forEntityName: "OrderDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! OrderDO
                         ord.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                        ord.customer_id = (_self.customerSelected?.id)!
-                        ord.distributor_id = UserManager.currentUser().id_card_no
+                        if let customer = _self.customerSelected {
+                            ord.customer_id = customer.id
+                            ord.tel = customer.tel
+                            ord.email = customer.email
+                        }
+                        ord.synced = false
+                        ord.distributor_id = user.id_card_no
                         ord.address = _self.address_order
                         ord.date_created = Date.init(timeIntervalSinceNow: 0) as NSDate
                         ord.status = _self.status
@@ -300,8 +310,6 @@ class OrderDetailController: RootViewController {
                         ord.svd = _self.transporter_id
                         ord.code = _self.order_code
 //                        ord.tempProducts = _self.listProducts
-                        ord.tel = _self.customerSelected?.tel
-                        ord.email = _self.customerSelected?.email
                         OrderManager.updateOrderEntity(ord, onComplete: {
                             OrderItemManager.clearData(from:ord.id, onComplete: {
                                 _ = _self.listProducts.map({

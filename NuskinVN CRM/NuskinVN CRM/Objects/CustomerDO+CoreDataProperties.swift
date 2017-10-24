@@ -18,6 +18,7 @@ extension CustomerDO {
     }
 
     @NSManaged public var address: String?
+    @NSManaged public var local_id: Int64
     @NSManaged public var area_id: Int64
     @NSManaged public var city: String?
     @NSManaged public var county: String?

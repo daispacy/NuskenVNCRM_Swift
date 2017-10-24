@@ -55,6 +55,7 @@ class OrderCustomerView: UIView {
         self.order = order
         self.customerSelected = order.customer()
         if let code = order.code {
+            self.orderCode = code
             self.txtOrderCode.text = code
         }
         if let tel = order.tel {

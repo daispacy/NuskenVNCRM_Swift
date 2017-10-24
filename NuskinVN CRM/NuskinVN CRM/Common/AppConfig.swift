@@ -11,17 +11,6 @@ import Localize_Swift
 
 class AppConfig: NSObject {
     
-    // MARK: - Database
-    class db:AppConfig {
-        static var name:String {
-            let id = UserManager.currentUser().id_card_no
-                return "crm\(id).sqlite"
-            
-//                return "crm999999.sqlite"
-            
-        }
-    }
-    
     // MARK: - Other
     class setting: AppConfig {
         static func setRememerID(isRemember:Bool) {

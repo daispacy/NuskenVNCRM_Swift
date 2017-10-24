@@ -19,6 +19,7 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         super.viewDidLoad()
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
         
         configText()
         

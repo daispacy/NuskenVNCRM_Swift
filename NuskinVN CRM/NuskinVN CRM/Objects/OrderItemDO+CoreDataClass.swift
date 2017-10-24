@@ -15,6 +15,17 @@ public class OrderItemDO: NSManagedObject {
 
     var productManage:ProductDO?
     
+    var toDictionary:[String:Any] {
+        return [
+            "id":id,
+            "name":name ?? "",
+            "order_id":order_id,
+            "product_id":product_id,
+            "price":price,
+            "quantity":quantity
+        ]
+    }
+    
     func product() -> ProductDO? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ProductDO")

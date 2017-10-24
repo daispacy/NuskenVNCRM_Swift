@@ -119,19 +119,19 @@ class AddGroupController: UIViewController {
         
         if let na = txtName.text {
             name = na
-            if GroupDO.validAddNewGroup(name: name, except: isEdit) {
-                dismissView()
-                if !isEdit {
-                    group = GroupDO(needSave: true, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
-                    group?.status = 1
-                    group?.synced = false
-                    group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                }
-                    group?.synced = false
-                    group?.setColor(group_color)
-                    group?.group_name = name
-                 onAddGroup?(group!)
+            
+            dismissView()
+            if !isEdit {
+                group = GroupDO(needSave: true, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+                group?.status = 1
+                group?.synced = false
+                group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
             }
+            group?.synced = false
+            group?.setColor(group_color)
+            group?.group_name = name
+            onAddGroup?(group!)
+            
         }
     }
     

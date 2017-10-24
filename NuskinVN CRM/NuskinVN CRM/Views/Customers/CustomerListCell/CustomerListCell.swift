@@ -123,6 +123,20 @@ class CustomerListCell: UITableViewCell {
         configView()
         
         lblName.text = customer.fullname
+       
+        if let avaStr = customer.avatar {
+            if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                if avaStr.contains(".jpg") {
+                    imgAvatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/customers/\(avaStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)", placeHolder: nil)
+                } else {
+                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                        let decodedimage = UIImage(data: dataDecoded)
+                        imgAvatar.image = decodedimage
+                    }
+                }
+            }
+        }
+        
     }
     
     func setSelect() {
@@ -141,6 +155,7 @@ class CustomerListCell: UITableViewCell {
     // MARK: - reuse
     override func prepareForReuse() {
         removeFunctionView()
+        imgAvatar.image = nil
         btnCheck.isSelected = false
         isChecked = false
         isSelect = false

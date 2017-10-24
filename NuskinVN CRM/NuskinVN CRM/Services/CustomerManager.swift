@@ -15,7 +15,10 @@ class CustomerManager: NSObject {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
                 fetchRequest.returnsObjectsAsFaults = false
-        let predicate1 = NSPredicate(format: "distributor_id == %d", UserManager.currentUser().id_card_no)
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
+        }
         var predicate2 = NSPredicate(format: "1 > 0")
         var predicate4 = NSPredicate(format: "1 > 0")
         let predicate3 = NSPredicate(format: "status == 1")
@@ -30,7 +33,7 @@ class CustomerManager: NSObject {
                     predicate4 = NSPredicate(format: "group_name = %@",group_name)
                 }
             } else {
-                predicate4 = NSPredicate(format: "group_id = %d",gr.id)
+                predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
             }
         }
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
@@ -54,7 +57,10 @@ class CustomerManager: NSObject {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
         fetchRequest.returnsObjectsAsFaults = false
-        let predicate1 = NSPredicate(format: "distributor_id == %d", UserManager.currentUser().id_card_no)
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
+        }
         let predicate3 = NSPredicate(format: "synced == false")
     
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate3])
@@ -107,6 +113,12 @@ class CustomerManager: NSObject {
                 object.id = Int64(data)!
             } else if let data = dictionary["id"] as? Int64 {
                 object.id = data
+            }
+            
+            if let data = dictionary["local_id"] as? String {
+                object.local_id = Int64(data)!
+            } else if let data = dictionary["local_id"] as? Int64 {
+                object.local_id = data
             }
             
             if let data = dictionary["store_id"] as? String {
@@ -211,7 +223,7 @@ class CustomerManager: NSObject {
             let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
             fetchRequest.returnsObjectsAsFaults = false
-            fetchRequest.predicate = NSPredicate(format: "1 > 0")
+            fetchRequest.predicate = NSPredicate(format: "synced == true")
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}

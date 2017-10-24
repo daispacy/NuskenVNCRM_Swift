@@ -14,7 +14,6 @@ import CoreData
 public class CustomerDO: NSManagedObject {
 
     var isTemp = false
-    let fetchRequestGroupDO = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
     var listGroupsManager:[GroupDO]?
     var listlistOrdersManager:[OrderDO]?
     
@@ -293,7 +292,10 @@ public class CustomerDO: NSManagedObject {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
         fetchRequest.returnsObjectsAsFaults = false
-        let predicate = NSPredicate(format: "customer_id in %@ AND distributor_id IN %@", [id],[UserManager.currentUser().id_card_no])
+        var predicate = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@", [id],[local_id],[user.id_card_no])
+        }
         
         fetchRequest.predicate = predicate
         
@@ -316,9 +318,9 @@ public class CustomerDO: NSManagedObject {
 //        if let group = listGroupsManager {
 //            return group
 //        }
-        
+            let fetchRequestGroupDO = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
             fetchRequestGroupDO.returnsObjectsAsFaults = false
-            let predicate = NSPredicate(format: "id in %@", [group_id])
+            let predicate = NSPredicate(format: "(id in %@ OR local_id in %@)", [group_id],[group_id])
             
             fetchRequestGroupDO.predicate = predicate
             

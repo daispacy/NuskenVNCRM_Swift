@@ -22,6 +22,7 @@ enum Server:String {
     case act_product = "product"
     case act_config = "config"
     case act_dashboard = "dashboard"
+    case act_order = "order"
 }
 
 protocol SyncServiceDelegate:class {
@@ -219,12 +220,12 @@ final class SyncService: NSObject {
             "act":"\(Server.act_customers.rawValue)",
             "ver":"\(Server.ver.rawValue)",
             "app_key":"\(Server.app_key.rawValue)"]
-        
-        parameters["store_id"] = UserManager.currentUser().store_id
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
         parameters["page"] = 1
         parameters["number_item"] = 99999
         parameters["type"] = "all"
-        parameters["distributor_id"] = UserManager.currentUser().id_card_no
+        parameters["distributor_id"] = user.id_card_no
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -264,10 +265,10 @@ final class SyncService: NSObject {
             "act":"\(Server.act_customers.rawValue)",
             "ver":"\(Server.ver.rawValue)",
             "app_key":"\(Server.app_key.rawValue)"]
-        
-        parameters["store_id"] = UserManager.currentUser().store_id
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = UserManager.currentUser().id_card_no
+        parameters["distributor_id"] = user.id_card_no
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -315,10 +316,10 @@ final class SyncService: NSObject {
             "act":"\(Server.act_group.rawValue)",
             "ver":"\(Server.ver.rawValue)",
             "app_key":"\(Server.app_key.rawValue)"]
-        
-        parameters["store_id"] = UserManager.currentUser().store_id
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
         parameters["type"] = "all"
-        parameters["distributor_id"] = UserManager.currentUser().id_card_no
+        parameters["distributor_id"] = user.id_card_no
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -361,10 +362,10 @@ final class SyncService: NSObject {
             "act":"\(Server.act_group.rawValue)",
             "ver":"\(Server.ver.rawValue)",
             "app_key":"\(Server.app_key.rawValue)"]
-        
-        parameters["store_id"] = UserManager.currentUser().store_id
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = UserManager.currentUser().id_card_no
+        parameters["distributor_id"] = user.id_card_no
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -405,19 +406,122 @@ final class SyncService: NSObject {
         }
     }
     
+    // MARK: - ORDER
+    func postAllOrdersToServer(list:[[String:Any]],completion: @escaping GetGroupCompletion) {
+        
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        configuration.timeoutIntervalForResource = 10
+        _ = Alamofire.SessionManager(configuration: configuration)
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_order.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
+        parameters["type"] = "sync"
+        parameters["distributor_id"] = user.id_card_no
+        if let theJSONData = try? JSONSerialization.data(
+            withJSONObject: list,
+            options: []) {
+            let theJSONText = String(data: theJSONData,
+                                     encoding: .utf8)
+            parameters["list_items"] = theJSONText
+        }
+        
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        print("\(reason)")
+                        //                        completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
+    func getOrderItems(completion: @escaping GetGroupCompletion) {
+        
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        configuration.timeoutIntervalForResource = 10
+        _ = Alamofire.SessionManager(configuration: configuration)
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_order.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
+        parameters["type"] = "getorderitems"
+        parameters["distributor_id"] = user.id_card_no
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        print("\(reason)")
+                        //                        completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
     // MARK: - Dashboard
     typealias GetDashboardResult = Result<JSON, GetDataFailureReason>
     typealias GetDashboardCompletion = (_ result: GetDashboardResult) -> Void
     func getDashboard(completion: @escaping GetDashboardCompletion) {
-        
+        guard let user = UserManager.currentUser() else { return }
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_dashboard.rawValue)",
             "ver":"\(Server.ver.rawValue)",
             "app_key":"\(Server.app_key.rawValue)"]
         
-        parameters["store_id"] = UserManager.currentUser().store_id
+        parameters["store_id"] = user.store_id
         parameters["type"] = "all"
-        parameters["distributor_id"] = UserManager.currentUser().id_card_no
+        parameters["distributor_id"] = user.id_card_no
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -453,13 +557,13 @@ final class SyncService: NSObject {
     typealias GetProductResult = Result<[JSON], GetDataFailureReason>
     typealias GetProductCompletion = (_ result: GetProductResult) -> Void
     func syncProducts(completion: @escaping GetProductCompletion) {
-        
+        guard let user = UserManager.currentUser() else { return}
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_product.rawValue)",
             "ver":"\(Server.ver.rawValue)",
             "app_key":"\(Server.app_key.rawValue)"]
         
-        parameters["store_id"] = UserManager.currentUser().store_id
+        parameters["store_id"] = user.store_id
         parameters["type"] = "all"
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])

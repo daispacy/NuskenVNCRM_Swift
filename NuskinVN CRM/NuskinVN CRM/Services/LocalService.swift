@@ -35,7 +35,7 @@ final class LocalService: NSObject {
     //start service
     func startSyncData() {
         
-        if UserManager.currentUser().id_card_no == 0 {
+        if UserManager.currentUser() == nil {
             print("Please login before use SYNC")
             return
         }
@@ -65,9 +65,87 @@ final class LocalService: NSObject {
         // customers
         self.syncCustomers()
         
-        //products
+        // products
         SyncService.shared.syncProducts(completion: {_ in })
         
+        // orders
+        self.syncOrders()
+        
+        // order items
+        self.syncOrdersItems()
+    }
+    
+    private func syncOrdersItems() {
+            print("*******\nSTART SYNC ORDERITEMS\n*******")
+    
+        SyncService.shared.getOrderItems(completion: { (result) in
+            switch result {
+            case .success(let data):
+                guard data.count > 0 else {
+                    print("Dont have new orderitems from server")
+                    return
+                }
+                
+                switch result {
+                case .success(let data):
+                    if data.count > 0 {
+                        print("SAVE ORDERITEM TO CORE DATA")
+                        OrderItemManager.resetData {
+                            OrderItemManager.saveOrderItemWith(array:data)
+                        }
+                        
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                    }
+                case .failure(_):
+                    print("Error: cant get orderitem from server 2")
+                    break
+                }
+            case.failure(_):
+                print("Error: cant get orderitem from server 1")
+            }
+        })
+    }
+    
+    private func syncOrders() {
+        OrderManager.getAllOrdersNotSynced { list in
+            let listDictionaryOrders:[JSON] = list.flatMap({$0.toDictionary})
+            print("*******\nSTART SYNC ORDERS: \(listDictionaryOrders.count)\n*******")
+            
+            print(listDictionaryOrders)
+            SyncService.shared.postAllOrdersToServer(list: listDictionaryOrders, completion: { (result) in
+                switch result {
+                case .success(let data):
+                    guard data.count > 0 else {
+                        print("Dont have new orders from server")
+                        return
+                    }
+                    
+                    switch result {
+                    case .success(let data):
+                        // change state to synced true
+                        _ = list.map({
+                            let group = $0
+                            group.synced = true
+                            do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
+                            
+                        })
+                        if data.count > 0 {
+                            print("SAVE ORDER TO CORE DATA")
+                            OrderManager.clearAllDataSynced {
+                                OrderManager.saveOrderWith(array:data)
+                            }
+                            
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                        }
+                    case .failure(_):
+                        print("Error: cant get order from server 2")
+                        break
+                    }
+                case.failure(_):
+                    print("Error: cant get order from server 1")
+                }
+            })
+        }
     }
     
     private func syncCustomers() {

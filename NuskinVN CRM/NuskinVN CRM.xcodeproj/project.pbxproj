@@ -93,8 +93,6 @@
 		235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235754711F863D8D003C8B1F /* CustomerListController.swift */; };
 		235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 235754721F863D8D003C8B1F /* CustomerListController.xib */; };
 		235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235AB34D1F81F6940036ADFA /* Protocols.swift */; };
-		235DA9BE1F9A2AAA00A35C89 /* GroupDO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235DA9BC1F9A2AA900A35C89 /* GroupDO+CoreDataClass.swift */; };
-		235DA9BF1F9A2AAA00A35C89 /* GroupDO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235DA9BD1F9A2AA900A35C89 /* GroupDO+CoreDataProperties.swift */; };
 		2365131C1F8FD4DE006076BF /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365131B1F8FD4DE006076BF /* City.swift */; };
 		2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365131D1F8FE2DF006076BF /* DeepLink.swift */; };
 		2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */; };
@@ -106,6 +104,8 @@
 		2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */; };
 		2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */; };
 		2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */; };
+		236650001F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23664FFE1F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift */; };
+		236650011F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23664FFF1F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift */; };
 		2372E9851F7FD7E600B4F0AB /* Daysquare.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2372E9861F7FD7E600B4F0AB /* Daysquare.framework */; };
 		2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */; };
 		2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */; };
@@ -254,8 +254,6 @@
 		235754711F863D8D003C8B1F /* CustomerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListController.swift; sourceTree = "<group>"; };
 		235754721F863D8D003C8B1F /* CustomerListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListController.xib; sourceTree = "<group>"; };
 		235AB34D1F81F6940036ADFA /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
-		235DA9BC1F9A2AA900A35C89 /* GroupDO+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GroupDO+CoreDataClass.swift"; path = "../../../../../.Trash/GroupDO+CoreDataClass.swift"; sourceTree = "<group>"; };
-		235DA9BD1F9A2AA900A35C89 /* GroupDO+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GroupDO+CoreDataProperties.swift"; path = "../../../../../.Trash/GroupDO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2365131B1F8FD4DE006076BF /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		2365131D1F8FE2DF006076BF /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		2365D4CC1F77A0A100673903 /* ChartStatisticsOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartStatisticsOrder.swift; path = "NuskinVN CRM/Views/DashboardView/ChartStatisticsOrder/ChartStatisticsOrder.swift"; sourceTree = SOURCE_ROOT; };
@@ -267,6 +265,8 @@
 		2365D4DA1F77C83500673903 /* BirthdayCustomerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayCustomerListView.swift; sourceTree = "<group>"; };
 		2365D4DC1F77C84000673903 /* BirthdayCustomerListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BirthdayCustomerListView.xib; sourceTree = "<group>"; };
 		2365D4DE1F77D50E00673903 /* CustomerBlockView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerBlockView.xib; sourceTree = "<group>"; };
+		23664FFE1F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroupDO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		23664FFF1F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroupDO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2372E9861F7FD7E600B4F0AB /* Daysquare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Daysquare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2372E9881F7FD90300B4F0AB /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		2372E9891F7FD90300B4F0AB /* CalendarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarViewController.xib; sourceTree = "<group>"; };
@@ -623,6 +623,8 @@
 		2356DFF41F736AAC00134A73 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				23664FFE1F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift */,
+				23664FFF1F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift */,
 				232818E31F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift */,
 				232818E41F9C8EDA00D57799 /* ProductDO+CoreDataProperties.swift */,
 				232818DF1F9C8D5300D57799 /* OrderItemDO+CoreDataClass.swift */,
@@ -631,8 +633,6 @@
 				23776B1A1F9BEDB3003EE5BF /* OrderDO+CoreDataProperties.swift */,
 				2382F84B1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift */,
 				2382F84C1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift */,
-				235DA9BC1F9A2AA900A35C89 /* GroupDO+CoreDataClass.swift */,
-				235DA9BD1F9A2AA900A35C89 /* GroupDO+CoreDataProperties.swift */,
 				2356DFF51F736B1B00134A73 /* GroupCustomer.swift */,
 				2365131B1F8FD4DE006076BF /* City.swift */,
 				2356DFF71F736B3200134A73 /* Customer.swift */,
@@ -1260,6 +1260,7 @@
 				23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */,
 				23776B091F9BC880003EE5BF /* ProductManager.swift in Sources */,
 				23776B111F9BCD55003EE5BF /* ProductListCell.swift in Sources */,
+				236650001F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift in Sources */,
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
 				2356DFF61F736B1B00134A73 /* GroupCustomer.swift in Sources */,
@@ -1296,9 +1297,8 @@
 				2365131C1F8FD4DE006076BF /* City.swift in Sources */,
 				234747291F991A650068F70A /* CustomerManager.swift in Sources */,
 				23544BB81F96758500FA81A5 /* OrderCustomerView.swift in Sources */,
+				236650011F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift in Sources */,
 				23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */,
-				235DA9BF1F9A2AAA00A35C89 /* GroupDO+CoreDataProperties.swift in Sources */,
-				235DA9BE1F9A2AAA00A35C89 /* GroupDO+CoreDataClass.swift in Sources */,
 				232818E21F9C8D5300D57799 /* OrderItemDO+CoreDataProperties.swift in Sources */,
 				23776B1B1F9BEDB3003EE5BF /* OrderDO+CoreDataClass.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,

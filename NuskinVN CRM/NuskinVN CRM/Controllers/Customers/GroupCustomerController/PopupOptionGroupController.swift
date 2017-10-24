@@ -127,7 +127,7 @@ class PopupOptionGroupController: UIViewController{
                 btn.addTarget(self, action: #selector(self.optionPress(_:)), for: .touchUpInside)
                 tableView.insertArrangedSubview(btn, at: tableView.arrangedSubviews.count)
                 btn.translatesAutoresizingMaskIntoConstraints = false
-                btn.heightAnchor.constraint(equalToConstant: 40)
+                btn.heightAnchor.constraint(equalToConstant: 50)
             })
             
             var newframe:CGRect = fromView.frame
@@ -138,10 +138,10 @@ class PopupOptionGroupController: UIViewController{
             containerTable.frame = newframe
             var oldframe = newframe
             oldframe.size.width = fromView.superview!.frame.size.width
-            if CGFloat(listData!.count*40) + 20 + CGFloat((listData!.count-1)*5) > maxHeight {
+            if CGFloat(listData!.count*50) + 20 + CGFloat((listData!.count-1)*5) > maxHeight {
                 oldframe.size.height = maxHeight
             } else {
-                oldframe.size.height = CGFloat(listData!.count*40) + 20 + CGFloat((listData!.count-1)*5)
+                oldframe.size.height = CGFloat(listData!.count*50) + 15 + CGFloat((listData!.count-1)*5)
             }
  
             self.view.layoutIfNeeded()

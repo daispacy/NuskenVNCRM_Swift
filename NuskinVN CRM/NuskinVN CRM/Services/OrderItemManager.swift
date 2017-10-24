@@ -24,13 +24,13 @@ class OrderItemManager: NSObject {
         })
     }
     
-    static func getAllOrderItem(_ orderID:Int64 = 0, onComplete:(([OrderItemDO])->Void)) {
+    static func getAllOrderItem(_ orderID:Int64 = 0, localID:Int64 = 0, onComplete:(([OrderItemDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
         fetchRequest.returnsObjectsAsFaults = false
         var predicate3 = NSPredicate(format: "(1 > 0)")
-        if orderID != 0 {
-            predicate3 = NSPredicate(format: "order_id IN %@",[orderID])
+        if orderID != 0 && localID != 0{
+            predicate3 = NSPredicate(format: "(order_id IN %@ OR order_id IN %@)",[orderID],[localID])
         }
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate3])
 //        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "group_name", ascending: true)]
@@ -142,6 +142,23 @@ class OrderItemManager: NSObject {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.predicate = NSPredicate(format: "order_id IN %@",[from])
+            do {
+                let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
+                _ = objects.map {_ = $0.map({context.delete($0)})}
+                
+                onComplete()
+                
+            } catch let error {
+                print("ERROR DELETING : \(error)")
+            }
+        }
+    }
+    
+    static func resetData(onComplete:(()->Void)) {
+        do {
+            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
+            fetchRequest.returnsObjectsAsFaults = false
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}

@@ -41,15 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let ww = window {
             
-            let isLogin:Bool = UserManager.currentUser().id_card_no > 0
-            if !isLogin {
+            if UserManager.currentUser() != nil && AppConfig.setting.isRememberUser(){
+                AppConfig.navigation.gotoDashboardAfterSigninSuccess()
+            } else {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc
                 ww.makeKeyAndVisible()
-            } else {
-                
-                // start service                
-                AppConfig.navigation.gotoDashboardAfterSigninSuccess()
             }
         }
         

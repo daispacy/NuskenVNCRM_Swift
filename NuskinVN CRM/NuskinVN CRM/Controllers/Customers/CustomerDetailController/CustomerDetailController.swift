@@ -304,7 +304,15 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    if _self.customer == nil{
+                    guard let user = UserManager.currentUser() else {
+                        Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        })
+                        return
+                    }
+                    
+                    if _self.customer == nil {
+                        
                         let customer = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! CustomerDO
                         customer.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                         customer.status = 1
@@ -324,8 +332,8 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         if let group = _self.groupSelected {
                                 customer.group_id = group.id
                         }
-                        customer.distributor_id = UserManager.currentUser().id_card_no
-                        customer.store_id = UserManager.currentUser().store_id
+                        customer.distributor_id = user.id_card_no
+                        customer.store_id = user.store_id
                         
                         CustomerManager.updateCustomerEntity(customer, onComplete: {
                             _self.navigationController?.popToRootViewController(animated: true)
@@ -343,8 +351,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                             customerUpdate.setFacebook(_self.txtFacebook.text ?? "")
                             customerUpdate.setZalo(_self.txtZalo.text ?? "")
                             customerUpdate.setViber(_self.txtViber.text ?? "")
-                            customerUpdate.distributor_id = UserManager.currentUser().id_card_no
-                            customerUpdate.store_id = UserManager.currentUser().store_id
+                            
+                            customerUpdate.distributor_id = user.id_card_no
+                            customerUpdate.store_id = user.store_id
+                            
                             customerUpdate.synced = false
                             if let group = _self.groupSelected {
                                 customerUpdate.group_id = group.id
@@ -538,10 +548,16 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         
         if let cus = customer {
             if let avaStr = cus.avatar {
-                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                    let decodedimage = UIImage(data: dataDecoded)
-                    imvAvatar.image = decodedimage
-                    self.avatar = avaStr
+                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                    if avaStr.contains(".jpg") {
+                        imvAvatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/customers/\(avaStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)", placeHolder: UIImage(named:"avatar_holder_gradient_256"))
+                    } else {
+                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                            let decodedimage = UIImage(data: dataDecoded)
+                            imvAvatar.image = decodedimage
+                            self.avatar = avaStr
+                        }
+                    }
                 }
             }
         }
@@ -561,9 +577,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
 extension CustomerDetailController {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imvAvatar.image = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
+            let imgScale = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
+            imvAvatar.image = imgScale
             picker.dismiss(animated: true, completion: nil)
-            let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
+            let imageData:NSData = UIImagePNGRepresentation(imgScale)! as NSData
             let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
             self.avatar = strBase64            
         }

@@ -28,7 +28,10 @@ class GroupManager: NSObject {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
         fetchRequest.returnsObjectsAsFaults = false
-        let predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [UserManager.currentUser().id_card_no])
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id_card_no])
+        }
         let predicate3 = NSPredicate(format: "status == 1")
 //        let predicate2 = NSPredicate(format: "SUBQUERY(customers,$x, ANY $x == customers).@count >= 0")
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate3])
@@ -52,7 +55,10 @@ class GroupManager: NSObject {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
         fetchRequest.returnsObjectsAsFaults = false
-        let predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [UserManager.currentUser().id_card_no])
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id_card_no])
+        }
         let predicate3 = NSPredicate(format: "synced == false")
         //        let predicate2 = NSPredicate(format: "SUBQUERY(customers,$x, ANY $x == customers).@count >= 0")
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate3])
@@ -111,6 +117,13 @@ class GroupManager: NSObject {
             } else if let data = dictionary["id"] as? Int64 {
                 object.id = data
             }
+            
+            if let data = dictionary["local_id"] as? String {
+                object.local_id = Int64(data)!
+            } else if let data = dictionary["local_id"] as? Int64 {
+                object.local_id = data
+            }
+            
             if let data = dictionary["store_id"] as? String {
                 object.store_id = Int64(data)!
             } else if let data = dictionary["store_id"] as? Int64 {
