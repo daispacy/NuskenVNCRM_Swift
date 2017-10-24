@@ -22,6 +22,7 @@ class OrderProductListView: UIView {
 //    var listEditProduct:[OrderItemDO] = []
     var listOrderItem:[JSON] = []
     var onUpdateProducts:(([JSON])->Void)?
+    var isFirstLoaded:Bool = false
     
     var navigationController:UINavigationController?
     
@@ -71,7 +72,8 @@ class OrderProductListView: UIView {
         })
         
         
-        if self.listOrderItem.count == 0 {
+        if self.listOrderItem.count == 0 && !isFirstLoaded{
+            isFirstLoaded = true
             if let order = self.order {
                 if order.orderItems().count == 0 {
                     return
