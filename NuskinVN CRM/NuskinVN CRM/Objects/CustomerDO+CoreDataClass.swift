@@ -94,7 +94,7 @@ public class CustomerDO: NSManagedObject {
             
             let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
             
-            return results.count == 0
+            return results.count != 0
             
         } catch let error as NSError {
             

@@ -24,7 +24,7 @@ class ProductManager: NSObject {
         }
         
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate3])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "price", ascending: true),NSSortDescriptor(key: "retail_price", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
         do {
@@ -107,6 +107,11 @@ class ProductManager: NSObject {
                 object.price = Int64(data)!
             } else if let data = dictionary["price"] as? Int64 {
                 object.price = data
+            }
+            if let data = dictionary["retail_price"] as? String {
+                object.retail_price = Int64(data)!
+            } else if let data = dictionary["retail_price"] as? Int64 {
+                object.retail_price = data
             }
             if let data = dictionary["status"] as? String {
                 object.status = Int64(data)!

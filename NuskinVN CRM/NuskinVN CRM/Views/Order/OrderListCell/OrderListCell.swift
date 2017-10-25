@@ -77,8 +77,8 @@ class OrderListCell: UITableViewCell {
         }else {
             lblNameCustomer.text = "unknown".localized()
         }
-            lblTotalPrice.text = "\(order.totalPrice) \("price_unit".localized())"
-        lblGoal.text = "\(order.totalPV) \("pv".localized().uppercased())"
+            lblTotalPrice.text = "\(order.totalPrice.toTextPrice()) \("price_unit".localized())"
+        lblGoal.text = "\(order.totalPV.toTextPrice()) \("pv".localized().uppercased())"
         
         if let date = order.date_created {
             let date_created = date as Date

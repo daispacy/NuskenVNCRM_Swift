@@ -71,6 +71,13 @@ class ChartStatisticsOrder: CViewSwitchLanguage {
         
         let chartData = BarChartData(dataSet: chartDataSet)
         chartData.barWidth = 0.4
+        
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.locale = Locale.current
+        let valuesNumberFormatter = ChartValueFormatter(numberFormatter: numberFormatter)
+        chartData.setValueFormatter(valuesNumberFormatter)
+        
         chartData.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
         chartData.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
         

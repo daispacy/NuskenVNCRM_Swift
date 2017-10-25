@@ -84,12 +84,6 @@ class OrderCustomerView: UIView {
     
     // MARK: - private
     func binding() {
-        let nameIsValid = txtOrderCode.rx.text.orEmpty
-            .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
-            .shareReplay(1)
-        
-        nameIsValid.bind(to: lblErrorCode.rx.isHidden).disposed(by: disposeBag)
-        
         btnChooseCustomer.rx.tap.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
@@ -173,6 +167,7 @@ class OrderCustomerView: UIView {
         lblErrorChooseCustomer.font = lblErrorCode.font
         lblErrorCode.textColor = UIColor.red
         lblErrorChooseCustomer.textColor = lblErrorCode.textColor
+        lblErrorCode.isHidden = true
     }
     
     func configText() {

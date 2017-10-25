@@ -127,6 +127,9 @@
 		238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E5A1F8E5767006C55BF /* DatePickerController.swift */; };
 		238F5E5D1F8E5767006C55BF /* DatePickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 238F5E5B1F8E5767006C55BF /* DatePickerController.xib */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
+		23B9064C1FA0495300FF24C2 /* YAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B9064B1FA0495300FF24C2 /* YAxisValueFormatter.swift */; };
+		23B9064E1FA07BB000FF24C2 /* CustomerSelectedListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23B9064D1FA07BAF00FF24C2 /* CustomerSelectedListCell.xib */; };
+		23B906501FA07BE500FF24C2 /* CustomerSelectedListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B9064F1FA07BE500FF24C2 /* CustomerSelectedListCell.swift */; };
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
 		23C85B941F9790F4004F0DCE /* Date+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C85B931F9790F4004F0DCE /* Date+Wrap.swift */; };
@@ -288,6 +291,9 @@
 		238F5E5A1F8E5767006C55BF /* DatePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerController.swift; sourceTree = "<group>"; };
 		238F5E5B1F8E5767006C55BF /* DatePickerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerController.xib; sourceTree = "<group>"; };
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
+		23B9064B1FA0495300FF24C2 /* YAxisValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAxisValueFormatter.swift; sourceTree = "<group>"; };
+		23B9064D1FA07BAF00FF24C2 /* CustomerSelectedListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerSelectedListCell.xib; sourceTree = "<group>"; };
+		23B9064F1FA07BE500FF24C2 /* CustomerSelectedListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerSelectedListCell.swift; sourceTree = "<group>"; };
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
 		23C85B931F9790F4004F0DCE /* Date+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Wrap.swift"; sourceTree = "<group>"; };
@@ -375,6 +381,7 @@
 				2302487B1F7547A100177679 /* CButton */,
 				230248781F753C4A00177679 /* CInput */,
 				23C85B931F9790F4004F0DCE /* Date+Wrap.swift */,
+				23B9064B1FA0495300FF24C2 /* YAxisValueFormatter.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -736,6 +743,8 @@
 		2386CBD91F865A5A005B5F23 /* CustomerListCell */ = {
 			isa = PBXGroup;
 			children = (
+				23B9064F1FA07BE500FF24C2 /* CustomerSelectedListCell.swift */,
+				23B9064D1FA07BAF00FF24C2 /* CustomerSelectedListCell.xib */,
 				2386CBDA1F865A81005B5F23 /* CustomerListCell.swift */,
 				2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */,
 				230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */,
@@ -1062,6 +1071,7 @@
 				230FC7241F8CA66400C51497 /* FunctionStackViewCustomer.xib in Resources */,
 				2303C28C1F9712CF001F0A42 /* BlockOrderProductView.xib in Resources */,
 				23CAF81E1F7207FC0016DBDF /* Assets.xcassets in Resources */,
+				23B9064E1FA07BB000FF24C2 /* CustomerSelectedListCell.xib in Resources */,
 				23EA78741F7218640017E47E /* AuthenticView.xib in Resources */,
 				235754741F863D8D003C8B1F /* CustomerListController.xib in Resources */,
 				235722211F7D58170096A636 /* RobotoCondensed-Light.ttf in Resources */,
@@ -1259,6 +1269,7 @@
 				2323238D1F83452A00290926 /* GroupCustomerController.swift in Sources */,
 				23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */,
 				23776B091F9BC880003EE5BF /* ProductManager.swift in Sources */,
+				23B9064C1FA0495300FF24C2 /* YAxisValueFormatter.swift in Sources */,
 				23776B111F9BCD55003EE5BF /* ProductListCell.swift in Sources */,
 				236650001F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift in Sources */,
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
@@ -1272,6 +1283,7 @@
 				231D97E21F95BBA7003E8DA3 /* Order.swift in Sources */,
 				2356DFF81F736B3200134A73 /* Customer.swift in Sources */,
 				232818E51F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift in Sources */,
+				23B906501FA07BE500FF24C2 /* CustomerSelectedListCell.swift in Sources */,
 				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
 				231D97E41F95BBBC003E8DA3 /* Product.swift in Sources */,
 				2382F84D1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift in Sources */,

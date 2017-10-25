@@ -14,7 +14,7 @@ class CustomerManager: NSObject {
     static func getAllCustomers(search:String? = nil,group:GroupDO? = nil,onComplete:(([CustomerDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-                fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
             predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
@@ -104,6 +104,33 @@ class CustomerManager: NSObject {
             
         }
         onComplete()
+    }
+    
+    static func invalidCustomerEntity(_ ids:[Int64]? = nil, onComplete:(()->Void)) {
+        guard let listIDS = ids else { return }
+        guard listIDS.count > 0 else { return }
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        let predicate1 = NSPredicate(format: "id IN %@",[listIDS])
+        fetchRequest.predicate = predicate1
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            var list:[CustomerDO] = []
+            list = result.flatMap({$0 as? CustomerDO})
+            _ = list.map({
+                $0.status = 0
+                $0.synced = false
+            })
+            try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
+            onComplete()
+            
+        } catch {
+            let fetchError = error as NSError
+            onComplete()
+            print(fetchError)
+        }
     }
     
     static func createCustomerEntityFrom(dictionary: JSON) -> NSManagedObject? {

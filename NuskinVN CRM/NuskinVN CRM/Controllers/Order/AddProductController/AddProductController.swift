@@ -114,10 +114,10 @@ class AddProductController: UIViewController {
     func showProduct(_ product:ProductDO) {
         self.product = product
         txtName.text = product.name
-        txtSugguestPrice.text = "\(product.price)"
+        txtSugguestPrice.text = "\(product.price.toTextPrice())"
         txtPrice.text = "\(product.price)"
         txtTotal.text = "\(1)"
-        txtPV.text = "\(product.pv)"
+        txtPV.text = "\(product.pv.toTextPrice())"
         configText()
         configView()
     }
@@ -127,8 +127,8 @@ class AddProductController: UIViewController {
         if let pro = json["product"] as? ProductDO {
             self.product = pro
             txtName.text = pro.name
-            txtSugguestPrice.text = "\(pro.price)"
-            txtPV.text = "\(pro.pv)"
+            txtSugguestPrice.text = "\(pro.price.toTextPrice())"
+            txtPV.text = "\(pro.pv.toTextPrice())"
         }
         if let quantity = Int64("\(json["total"] ?? 0)") {
             txtTotal.text = "\(quantity)"
@@ -173,13 +173,12 @@ class AddProductController: UIViewController {
                 return
             }
             if let strprice = self.txtPrice.text,
-                let strrecommendPrice = self.txtSugguestPrice.text,
+                let pro = self.product,
                 let strtotal = self.txtTotal.text {
                 
                 if let price = Int64(strprice),
-                    let recommendPrice = Int64(strrecommendPrice),
                     let total = Int64(strtotal){
-                    if price < recommendPrice {
+                    if price < pro.price {
                         lblError.text = "price_not_lower_sugguest_price".localized()
                         lblError.isHidden = false
                         return

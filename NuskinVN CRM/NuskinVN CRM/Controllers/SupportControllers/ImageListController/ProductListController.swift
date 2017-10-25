@@ -23,6 +23,9 @@ UISearchBarDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = "product".localized().uppercased()
+        
         searchBar.delegate = self
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dissmissKeyboard(_:)))
         tapGesture?.cancelsTouchesInView = false

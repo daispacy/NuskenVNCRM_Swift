@@ -98,6 +98,7 @@
         <attribute name="price" optional="YES" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="properties" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pv" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="retail_price" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="series" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sku" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="slug" optional="YES" attributeType="String" syncable="YES"/>
@@ -117,7 +118,7 @@
         <element name="GroupDO" positionX="-1179" positionY="-0" width="128" height="225"/>
         <element name="OrderDO" positionX="-1143" positionY="27" width="128" height="525"/>
         <element name="OrderItemDO" positionX="-1035" positionY="-126" width="126" height="150"/>
-        <element name="ProductDO" positionX="-875" positionY="-126" width="128" height="375"/>
+        <element name="ProductDO" positionX="-875" positionY="-126" width="128" height="390"/>
         <element name="UserDO" positionX="-1037" positionY="48" width="128" height="105"/>
     </elements>
 </model>

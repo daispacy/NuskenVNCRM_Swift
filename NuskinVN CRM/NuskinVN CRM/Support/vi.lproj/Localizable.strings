@@ -16,6 +16,10 @@
 "product_exist_in_order" = "Sản phẩm này đã có trong đơn hàng!";
 "edit_group" = "Chỉnh sửa";
 "delete_group" = "Xoá";
+"would_you_like_delete_customers" = "Bạn thật sự muốn xóa các khách hàng này?";
+"email_has_exist" = "Email này đã được sử dụng.";
+"photo_library" = "Thư viện ảnh";
+"take_a_photo" = "Chụp ảnh";
 
 "placeholder_vnid" = "VNID";
 "placeholder_email" = "Địa chỉ email";

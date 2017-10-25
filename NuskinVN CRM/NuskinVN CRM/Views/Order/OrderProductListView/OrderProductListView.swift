@@ -260,14 +260,12 @@ class BlockOrderProductView: UIView {
         if let pro = json["product"] as? ProductDO{
             lblName.text = pro.name
         }
-        if let quantity = Int64("\(json["total"] ?? 0)") {
-            lblTotal.text = "\(quantity) \("unit".localized())"
+        if let quantity = Int64("\(json["total"] ?? 0)"),
+            let price = Int64("\(json["price"] ?? 0)")
+            {
+            lblPrice.text = "\((price*quantity).toTextPrice()) \("price_unit".localized().uppercased())"
+            lblTotal.text = "\(quantity.toTextPrice()) \("unit".localized())"
         }
-        
-        if let price = Int64("\(json["price"] ?? 0)") {
-           lblPrice.text = "\(price) \("price_unit".localized().uppercased())"
-        }
-        
     }
     
     // MARK: - event process

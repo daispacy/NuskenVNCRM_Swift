@@ -27,6 +27,12 @@ class CustomAlertController: UIViewController {
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
         
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -73,6 +73,13 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         configText()
         configView()
         bindControl()
+        
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
     }
     
     deinit {
@@ -131,13 +138,14 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     private func bindControl() {
         
         // validate
-        let funcValidateEmail = Support.validate.self
         
         let nameIsValid = txtName.rx.text.orEmpty
             .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
             .shareReplay(1)
         let emailIsValid = txtEmail.rx.text.orEmpty
-            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0) && CustomerDO.isExist(email:$0,except:self.isEdit)}
+            .map {
+                    Support.validate.isValidEmailAddress(emailAddressString: $0) && !CustomerDO.isExist(email:$0,except:self.isEdit)
+            }
             .shareReplay(1)
         
         nameIsValid.bind(to: lblErrorName.rx.isHidden).disposed(by: disposeBag)
@@ -243,7 +251,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
                         vc.onDidLoad = {
                             vc.title = "choose_city".localized().uppercased()
-                            vc.showData(data: listData.sorted(by: {$0 < $1}))
+                            vc.showData(data: listData)
                         }
                         vc.onSelectData = { name in
                             _self.btnCity.setTitle(name, for: .normal)
@@ -285,7 +293,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                                 
                                 vc.onDidLoad = {
                                     vc.title = "choose_district".localized().uppercased()
-                                    vc.showData(data: listData.sorted(by: {$0 < $1}))
+                                    vc.showData(data: listData)
                                 }
                             }
                         }
@@ -383,7 +391,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
             alertController.dismiss(animated: true, completion: nil)
         }
-        let okAction = UIAlertAction(title: "camera".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+        let okAction = UIAlertAction(title: "take_a_photo".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
             let imagePickerController = UIImagePickerController()
             
             imagePickerController.sourceType = .camera

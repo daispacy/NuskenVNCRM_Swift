@@ -31,11 +31,13 @@ class ProductListCell: UITableViewCell {
         }
        
         if let imgStr = product.avatar {
-            avatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/a_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+            if imgStr.characters.count > 0 {
+                avatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/a_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+            }
         }
         
         lblOther.text = "PV: \(product.pv)"
-        lblPrice.text = "\(product.price) \("price_unit".localized())"
+        lblPrice.text = "\(product.price.toTextPrice()) \("price_unit".localized())"
     }
     
     override func prepareForReuse() {

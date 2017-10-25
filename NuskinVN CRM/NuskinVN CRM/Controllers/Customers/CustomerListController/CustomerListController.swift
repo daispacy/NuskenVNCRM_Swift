@@ -37,10 +37,12 @@ UITabBarControllerDelegate {
         super.viewDidLoad()
         
         tabBarController?.delegate = self
-        // Do any additional setup after loading the view.
         
-        configView()
-        configText()
+        // Do any additional setup after loading the view.
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = UITableViewAutomaticDimension
+        tableView.register(UINib(nibName: "CustomerListCell", bundle: Bundle.main), forCellReuseIdentifier: "cell")
+        tableView.register(UINib(nibName: "CustomerSelectedListCell", bundle: Bundle.main), forCellReuseIdentifier: "cellSelected")
         
         searchBar.delegate = self
         
@@ -52,6 +54,16 @@ UITabBarControllerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedGroup(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 50
+        
+        configView()
+        configText()
+        
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _self = self {
+                return !_self.isEdit
+            }
+            return true
+        }
     }
     
     deinit {
@@ -75,7 +87,7 @@ UITabBarControllerDelegate {
         if !self.isEdit {
             self.listCustomerSelected.removeAll()
         }
-        self.tableView.reloadData()
+        reload()
         
         GroupManager.getAllGroup(onComplete: {[weak self] list in
             if let _self = self {
@@ -84,29 +96,25 @@ UITabBarControllerDelegate {
         })
         
         showLoading(isShow: true, isShowMessage: false)
-        //        SyncService.shared.getAllCustomers(completion: {[weak self] result in
-        //            if let _ = self {
-        //                switch result {
-        //                case .success(let list):
-        //                    CustomerManager.saveCustomerWith(array: list)
-        //
-        //                case .failure(let error):
-        //                    print(error.debugDescription)
-        //                }
-        //            }
-        //        })
+        
         CustomerManager.getAllCustomers(search: self.searchText, group: self.groupSelected) {[weak self] list in
             if let _self = self {
-                
+            
                 _self.listCustomer.append(contentsOf: list)
                 if list.count > 0 {
                     _self.showLoading(isShow: false, isShowMessage: false)
                 } else {
                     _self.showLoading(isShow: false, isShowMessage: true)
                 }
-                _self.tableView.reloadData()
-                
+            
+                _self.reload()
             }
+        }
+    }
+    
+    func reload() {
+        if let tableview = self.tableView {
+            tableview.reloadData()
         }
     }
     
@@ -182,26 +190,33 @@ UITabBarControllerDelegate {
         isEdit = !isEdit
         if !isEdit {
             if self.listCustomerSelected.count > 0 {
-                Support.popup.showAlert(message: "would_you_like_delete_customers?".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {
-                    i in
+                Support.popup.showAlert(message: "would_you_like_delete_customers".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {i in
+                    
                     if i == 1 {
                         _ = self.listCustomerSelected.map({
                             
                             let cus = $0
                             cus.status = 0
+                            cus.synced = false
                             CustomerManager.updateCustomerEntity(cus, onComplete: {})
                         })
                         self.listCustomerSelected.removeAll()
                         self.configView()
                         self.updateTableContent()
+                        return
                     } else {
-                        self.listCustomerSelected.removeAll()
+                        self.configView()
+                        self.updateTableContent()
                     }
                 })
+            } else {
+                configView()
+                updateTableContent()
             }
+        } else {
+            configView()
+            updateTableContent()
         }
-        configView()
-        updateTableContent()
     }
     
 }
@@ -209,34 +224,51 @@ UITabBarControllerDelegate {
 // MARK: - tableview delegate
 extension CustomerListController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
+        
         let customer = listCustomer[indexPath.row]
         
-        let isCheked = self.listCustomerSelected.filter({($0).email == (listCustomer[indexPath.row]).email}).count > 0
-        
-        cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
-        cell.onSelectCustomer = {[weak self] customer, isAdd in
-            if let _self = self {
-                if isAdd {
-                    _self.listCustomerSelected.append(customer)
-                } else {
-                    let obj = customer
-                    _self.listCustomerSelected = _self.listCustomerSelected.filter{ ($0).id != obj.id }
+        if self.isEdit {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cellSelected") as! CustomerSelectedListCell
+            let isCheked = self.listCustomerSelected.filter({($0).email == (listCustomer[indexPath.row]).email}).count > 0
+            
+            cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
+            cell.onSelectCustomer = {[weak self] customer, isAdd in
+                if let _self = self {
+                    if isAdd {
+                        _self.listCustomerSelected.append(customer)
+                    } else {
+                        let obj = customer
+                        _self.listCustomerSelected = _self.listCustomerSelected.filter{ ($0).id != obj.id }
+                    }
                 }
             }
-        }
-        cell.onEditCustomer = {[weak self]
-            customer in
-            if let _self = self {
-                let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-                _self.navigationController?.pushViewController(vc, animated: true)
-                vc.onDidLoad = {
-                    vc.edit(customer: customer)
+            cell.onEditCustomer = {[weak self]
+                customer in
+                if let _self = self {
+                    let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+                    _self.navigationController?.pushViewController(vc, animated: true)
+                    vc.onDidLoad = {
+                        vc.edit(customer: customer)
+                    }
                 }
             }
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
+            cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: false)
+            
+            cell.onEditCustomer = {[weak self]
+                customer in
+                if let _self = self {
+                    let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+                    _self.navigationController?.pushViewController(vc, animated: true)
+                    vc.onDidLoad = {
+                        vc.edit(customer: customer)
+                    }
+                }
+            }
+            return cell
         }
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -246,7 +278,7 @@ extension CustomerListController {
             return
         }
         if isEdit {
-            let cell = tableView.cellForRow(at: indexPath) as! CustomerListCell
+            let cell = tableView.cellForRow(at: indexPath) as! CustomerSelectedListCell
             cell.setSelect()
         } else {
             let customer = listCustomer[indexPath.row]
@@ -279,10 +311,6 @@ extension CustomerListController {
 // MARK: - private
 extension CustomerListController {
     func configView() {
-        
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = UITableViewAutomaticDimension
-        tableView.register(UINib(nibName: "CustomerListCell", bundle: Bundle.main), forCellReuseIdentifier: "cell")
         
         btnFilterGroup.layer.borderWidth = 1.0
         btnFilterGroup.layer.masksToBounds = true

@@ -57,6 +57,14 @@ class OrderDetailController: RootViewController {
         configText()
         binding()
         
+        // prevent sync data while working with order
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
+        
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
@@ -257,6 +265,27 @@ class OrderDetailController: RootViewController {
                         })
                         return
                     }
+                    
+                    if _self.order_code.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0 {
+                        _self.orderCustomerView.lblErrorCode.isHidden = false
+                    } else {
+                        _self.orderCustomerView.lblErrorCode.isHidden = true
+                    }
+                    guard let customer = _self.customerSelected else {
+                        _self.orderCustomerView.lblErrorChooseCustomer.isHidden = false
+                        Support.popup.showAlert(message: "sorry_please_select_a_customer".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        })
+                        return
+                    }
+                    _self.orderCustomerView.lblErrorChooseCustomer.isHidden = true
+                    if _self.orderCustomerView.lblErrorCode.isHidden == false {
+                        Support.popup.showAlert(message: "sorry_please_provide_order_code".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        })
+                        return
+                    }
+                    
                     if let ord = _self.order {
                         // update
                         
@@ -270,8 +299,8 @@ class OrderDetailController: RootViewController {
                         ord.svd = _self.transporter_id
                         ord.code = _self.order_code
 //                        ord.tempProducts = _self.listProducts
-                        ord.tel = _self.customerSelected?.tel
-                        ord.email = _self.customerSelected?.email
+                        ord.tel = customer.tel
+                        ord.email = customer.email
                         ord.synced = false
                         OrderManager.updateOrderEntity(ord, onComplete: {
                             OrderItemManager.clearData(from:ord.id, onComplete: {

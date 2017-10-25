@@ -11,8 +11,9 @@ import RxSwift
 import RxCocoa
 import CoreData
 
-class CustomerListCell: UITableViewCell {
+class CustomerSelectedListCell: UITableViewCell {
     
+    @IBOutlet var btnCheck: UIButton!
     @IBOutlet var imgAvatar: CImageViewRoundGradient!
     @IBOutlet var lblName: UILabel!
     @IBOutlet var btnEdit: UIButton!
@@ -64,30 +65,11 @@ class CustomerListCell: UITableViewCell {
         lblName.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         lblName.textColor = UIColor(hex:Theme.color.customer.titleGroup)
         
-        if isSelect {
-            
-            let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
-            if let obj = self.object {
-                functionView.btnViber.isHidden = obj.viber.characters.count > 0
-                functionView.btnSkype.isHidden = obj.skype.characters.count > 0
-                functionView.btnZalo.isHidden = obj.zalo.characters.count > 0
-                functionView.btnFacebook.isHidden = obj.facebook.characters.count > 0
-            }
-            functionView.onSelectFunction = {[weak self]
-                identifier in
-                print("open \(identifier)")
-                if identifier == "facebook" {
-                    
-                } else if identifier == "skype" {
-                    
-                } else if identifier == "viber" {
-                    
-                } else if identifier == "zalo" {
-                    
-                }
-            }
-            stackViewContainer.insertArrangedSubview(functionView, at: stackViewContainer.arrangedSubviews.count)
-            
+        if let imageCheck = Support.image.iconFont(code: "\u{f14a}", size: 24, color:"0x71757A") {
+            btnCheck.setImage(imageCheck, for: .selected)
+        }
+        if let imageUnCheck = Support.image.iconFont(code: "\u{f096}", size: 24, color:"0x71757A") {
+            btnCheck.setImage(imageUnCheck, for: .normal)
         }
     }
     
@@ -128,6 +110,12 @@ class CustomerListCell: UITableViewCell {
         
     }
     
+    func setSelect() {
+        btnCheck.isSelected = !btnCheck.isSelected
+        self.isChecked = btnCheck.isSelected
+        onSelectCustomer?(object!,btnCheck.isSelected)
+    }
+    
     // MARK: - check event
     @IBAction func pressCheck(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
@@ -139,48 +127,12 @@ class CustomerListCell: UITableViewCell {
     override func prepareForReuse() {
         removeFunctionView()
         imgAvatar.image = nil
+        btnCheck.isSelected = false
         isChecked = false
         isSelect = false
         isEdit = false
         configView()
         configText()
         super.prepareForReuse()
-    }
-}
-
-class FunctionStackViewCustomer: UIView {
-    
-    @IBOutlet var btnFacebook: UIButton!
-    @IBOutlet var btnZalo: UIButton!
-    @IBOutlet var btnSkype: UIButton!
-    @IBOutlet var btnViber: UIButton!
-    
-    var onSelectFunction:((String)->Void)?
-    
-    var disposeBag = DisposeBag()
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        btnFacebook.rx.tap.subscribe(onNext: { [weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("facebook")
-            }
-        }).disposed(by: disposeBag)
-        btnZalo.rx.tap.subscribe(onNext: {[weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("zalo")
-            }
-        }).disposed(by: disposeBag)
-        btnSkype.rx.tap.subscribe(onNext: {[weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("skype")
-            }
-        }).disposed(by: disposeBag)
-        btnViber.rx.tap.subscribe(onNext: {[weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("viber")
-            }
-        }).disposed(by: disposeBag)
     }
 }

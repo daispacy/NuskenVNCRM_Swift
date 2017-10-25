@@ -46,6 +46,13 @@ class AddGroupController: UIViewController {
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
         isEdit = false
+        
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
     }
     
     deinit {

@@ -93,9 +93,9 @@ class TotalSummaryView: CViewSwitchLanguage {
         lblNumberOrdercomplete.textColor = UIColor(hex:Theme.colorDBTotalChartNormal)
         lblNumberOrderUncomplete.textColor = UIColor(hex:Theme.colorDBTotalChartNormal)
         
-        lblNumberCustomer.text = totalCustomer
-        lblNumberOrdercomplete.text = totalOrderComplete
-        lblNumberOrderUncomplete.text = totalOrderUnComplete
+        lblNumberCustomer.text = totalCustomer?.toPrice()
+        lblNumberOrdercomplete.text = totalOrderComplete?.toPrice()
+        lblNumberOrderUncomplete.text = totalOrderUnComplete?.toPrice()
     }
     
     func loadChartCustomer(totalOrdered:String, totalNotOrderd:String) {
@@ -106,7 +106,7 @@ class TotalSummaryView: CViewSwitchLanguage {
         
         //total ones
         let attributedStringTotalOne = NSMutableAttributedString(string:"\("customer_has_order".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTextNormal),NSParagraphStyleAttributeName:paragraph])
-        let attributedStringNumberTotalOne = NSMutableAttributedString(string: "\(totalOrdered)\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTotalChartNormal),NSParagraphStyleAttributeName:paragraph])
+        let attributedStringNumberTotalOne = NSMutableAttributedString(string: "\(totalOrdered.toPrice())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTotalChartNormal),NSParagraphStyleAttributeName:paragraph])
         let attributeStringForTotalOne = NSMutableAttributedString(attributedString: attributedStringTotalOne)
         attributeStringForTotalOne.append(attributedStringNumberTotalOne)
         attributeStringForTotalOne.append(attributedStringUnitCustomer)
@@ -114,7 +114,7 @@ class TotalSummaryView: CViewSwitchLanguage {
         
         //total two
         let attributedStringTotalTwo = NSMutableAttributedString(string:"\("customer_not_order_yet".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTextNormal),NSParagraphStyleAttributeName:paragraph])
-        let attributedStringNumberTotalTwo = NSMutableAttributedString(string: "\(totalNotOrderd)\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTotalChartNormal),NSParagraphStyleAttributeName:paragraph])
+        let attributedStringNumberTotalTwo = NSMutableAttributedString(string: "\(totalNotOrderd.toPrice())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTotalChartNormal),NSParagraphStyleAttributeName:paragraph])
         let attributeStringForTotalTwo = NSMutableAttributedString(attributedString: attributedStringTotalTwo)
         attributeStringForTotalTwo.append(attributedStringNumberTotalTwo)
         attributeStringForTotalTwo.append(attributedStringUnitCustomer)
@@ -132,8 +132,8 @@ class TotalSummaryView: CViewSwitchLanguage {
             if lblTotalCustomer == nil {
                 var test:String = "0"
                 if let dt = self.data {
-                    if let totalCustomers = dt["total_customers"] {
-                        test = "\(totalCustomers)"
+                    if let totalCustomers = dt["total_customers"] as? Int64{
+                        test = "\(totalCustomers.toTextPrice())"
                     }
                 }
                 lblTotalCustomer = UILabel(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 10, height: 10)))
@@ -184,7 +184,7 @@ class TotalSummaryView: CViewSwitchLanguage {
                                     listGroup.append(name)
                                 }
                                 if let total = $0["total"] as? Double{
-                                    lblNumberCustomerRegister.text = "\(total)"
+                                    lblNumberCustomerRegister.text = "\(total.cleanValue)"
                                     totalcustomerregister = total
                                 }
                             } else if Int64(id) == 2 {
@@ -193,7 +193,7 @@ class TotalSummaryView: CViewSwitchLanguage {
                                     listGroup.append(name)
                                 }
                                 if let total = $0["total"] as? Double{
-                                    lblNumberPotentialDistributors.text = "\(total)"
+                                    lblNumberPotentialDistributors.text = "\(total.cleanValue)"
                                     totaldistributor = total
                                 }
                             } else {
@@ -209,7 +209,7 @@ class TotalSummaryView: CViewSwitchLanguage {
                     listValue.append(totaldistributor)
                     listValue.append(totalOther)
                     
-                    lblNumberOther.text = "\(totalOther)"
+                    lblNumberOther.text = "\(totalOther.cleanValue)"
                     if listValue.count > 0 {
                         listGroup.append("other".localized())
                         

@@ -14,7 +14,7 @@ class UserManager: NSObject {
     static func getDataDashboard(onComplete:((JSON)->Void)) {
         CustomerManager.getAllCustomers { list in
             var dict:JSON = [:]
-            dict["total_customers"] = list.count
+            dict["total_customers"] = Int64(list.count)
             var ordered:Int64 = 0
             var notorderd:Int64 = 0
             var totalAmountOrders:Int64 = 0
@@ -48,8 +48,8 @@ class UserManager: NSObject {
                             }
                         }
                     })
-                    dict["total_orders_processed"] = totaOrdersprocess
-                    dict["total_orders_not_processed"] = totalOrdersunprocess
+                    dict["total_orders_processed"] = totaOrdersprocess.cleanValue
+                    dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
                     dict["total_orders_amount"] = totalAmountOrders
                                         
                     // return result

@@ -30,6 +30,7 @@ extension ProductDO {
     @NSManaged public var name: String?
     @NSManaged public var position: Int64
     @NSManaged public var price: Int64
+    @NSManaged public var retail_price: Int64
     @NSManaged public var properties: String?
     @NSManaged public var pv: Int64
     @NSManaged public var series: Int64

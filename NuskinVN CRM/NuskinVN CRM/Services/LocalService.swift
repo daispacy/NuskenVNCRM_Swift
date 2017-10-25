@@ -24,7 +24,7 @@ final class LocalService: NSObject {
     static let shared = LocalService()
     
     var isMoveDB:Bool = false
-    var isSync:Bool = false
+    var isShouldSyncData:(()->Bool)?
     var timerSyncToServer:Timer?
     
     // Initialization
@@ -52,6 +52,13 @@ final class LocalService: NSObject {
     }
     
     @objc private func syncToServer() {
+        
+        if let bool = self.isShouldSyncData?() {
+            if bool == false {
+                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                return
+            }
+        }
         
         if !Support.connectivity.isConnectedToInternet() {
             // Device doesn't have internet connection
@@ -233,8 +240,11 @@ final class LocalService: NSObject {
         
         let listT = NSKeyedUnarchiver.unarchiveObject(with:UserDefaults.standard.value(forKey: "App:ListCity") as! Data) as! [JSON]
         let listCountry:[City] = listT.flatMap({City(json:$0)})
+        let list = listCountry.sorted { (item1, item2) -> Bool in
+            return item1.name.localizedCaseInsensitiveCompare(item2.name) == ComparisonResult.orderedAscending
+        }
         if listCountry.count > 0 {
-            complete(listCountry)
+            complete(list)
             return
         }
     }

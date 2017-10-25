@@ -84,9 +84,9 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
             totalSummaryView.removeFromSuperview()
         }
         
-        if let data = data["total_orders_amount"] {
+        if let data = data["total_orders_amount"] as? Int64{
             stackView.insertArrangedSubview(totalSalesView, at: stackView.arrangedSubviews.count)
-            totalSalesView.loadTotalSales(total: "\(data)")
+            totalSalesView.loadTotalSales(total: "\(data.toTextPrice())")
         } else {
             totalSalesView.removeFromSuperview()
         }
@@ -109,7 +109,7 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
             let data3 = data["total_orders_not_processed"]{
             chartStatisticsOrder.reload(data)
             stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
-            chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! Double),Double(data3 as! Double)])
+            chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! String)!,Double(data3 as! String)!])
         } else {
             chartStatisticsOrder.removeFromSuperview()
         }
