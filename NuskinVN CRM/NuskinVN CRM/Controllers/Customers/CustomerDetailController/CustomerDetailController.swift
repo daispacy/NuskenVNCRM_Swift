@@ -266,6 +266,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                             return true
                         }
                         vc.onSelectData = { name in
+                            if name != _self.btnCity.titleLabel?.text {
+                                _self.btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
+                                _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
+                            }
                             _self.btnCity.setTitle(name, for: .normal)
                             _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                             if !_self.btnDistrict.isEnabled {
@@ -494,7 +498,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             txtFacebook.text = customer?.facebook
             txtAddress.text = customer?.address
             
-            if customer?.gender == 0 {
+            if customer?.gender == 1 {
                 btnGender.setTitle("male".localized(), for: .normal)
             } else {
                 btnGender.setTitle("female".localized(), for: .normal)

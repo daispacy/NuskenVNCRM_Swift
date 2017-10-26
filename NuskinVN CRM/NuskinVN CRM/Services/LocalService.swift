@@ -51,12 +51,25 @@ final class LocalService: NSObject {
         self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*1, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
     }
     
+    func startSyncDataBackground(onComplete:(()->Void)? = nil) {
+        self.syncGroups {
+            self.syncCustomers {
+                self.syncOrders {
+                    self.syncOrdersItems {
+                        onComplete?()
+                    }
+                }
+            }
+        }
+    }
+    
     @objc private func syncToServer() {
         
         if let bool = self.isShouldSyncData?() {
             if bool == false {
                 print("APP IN STATE BUSY, SO WILL SYNCED LATER")
                 NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                 return
             }
         }
@@ -64,6 +77,7 @@ final class LocalService: NSObject {
         if !Support.connectivity.isConnectedToInternet() {
             // Device doesn't have internet connection
             print("Internet Offline")
+            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
             return
         }
             
@@ -83,7 +97,7 @@ final class LocalService: NSObject {
         self.syncOrdersItems()
     }
     
-    private func syncOrdersItems() {
+    private func syncOrdersItems(_ onComplete:(()->Void)? = nil) {
             print("*******\nSTART SYNC ORDERITEMS\n*******")
         
         NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrderItem"),object:nil)
@@ -103,20 +117,22 @@ final class LocalService: NSObject {
                         OrderItemManager.resetData {
                             OrderItemManager.saveOrderItemWith(array:data)
                         }
-                        
+                        onComplete?()
                         NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
                     }
                 case .failure(_):
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     print("Error: cant get orderitem from server 2")
                     break
                 }
             case.failure(_):
+                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                 print("Error: cant get orderitem from server 1")
             }
         })
     }
     
-    private func syncOrders() {
+    private func syncOrders(_ onComplete:(()->Void)? = nil) {
         
         OrderManager.getAllOrdersNotSynced { list in
             let listDictionaryOrders:[JSON] = list.flatMap({$0.toDictionary})
@@ -146,21 +162,23 @@ final class LocalService: NSObject {
                             OrderManager.clearAllDataSynced {
                                 OrderManager.saveOrderWith(array:data)
                             }
-                            
+                            onComplete?()
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
                         }
                     case .failure(_):
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         print("Error: cant get order from server 2")
                         break
                     }
                 case.failure(_):
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     print("Error: cant get order from server 1")
                 }
             })
         }
     }
     
-    private func syncCustomers() {
+    private func syncCustomers(_ onComplete:(()->Void)? = nil) {
         CustomerManager.getAllCustomersNotSynced { list in
             let listDictionaryCustomer:[JSON] = list.flatMap({$0.toDictionary})
             NotificationCenter.default.post(name:Notification.Name("SyncData:StartCustomer"),object:nil)
@@ -188,21 +206,23 @@ final class LocalService: NSObject {
                             CustomerManager.clearAllDataSynced {
                                 CustomerManager.saveCustomerWith(array: data)
                             }
-                            
+                            onComplete?()
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
                         }
                     case .failure(_):
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         print("Error: cant get group from server 2")
                         break
                     }
                 case.failure(_):
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     print("Error: cant get group from server 1")
                 }
             })
         }
     }
     
-    private func syncGroups() {
+    private func syncGroups(_ onComplete:(()->Void)? = nil) {
         GroupManager.getAllGroupSynced(onComplete: { (list) in
             let listDictionaryGroup:[JSON] = list.flatMap({$0.toDictionary})
             NotificationCenter.default.post(name:Notification.Name("SyncData:StartGroup"),object:nil)
@@ -227,14 +247,16 @@ final class LocalService: NSObject {
                             GroupManager.clearAllDataSynced {
                                 GroupManager.saveGroupWith(array: data)
                             }
-
+                            onComplete?()
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
                         }
                     case .failure(_):
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         print("Error: cant get group from server 2")
                         break
                     }
                 case.failure(_):
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     print("Error: cant get group from server 1")
                 }
             })

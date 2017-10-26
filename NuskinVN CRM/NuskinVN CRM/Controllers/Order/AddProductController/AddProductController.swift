@@ -144,6 +144,14 @@ class AddProductController: UIViewController {
         if let price = Int64("\(json["price"] ?? 0)") {
             txtPrice.text = "\(price)"
         }
+        
+        if self.isEdit {
+            lblMessage.text = "edit_product".localized().uppercased()
+            btnFirst.setTitle("update".localized().uppercased(), for: .normal)
+        } else {
+            lblMessage.text = "add_product".localized().uppercased()
+            btnFirst.setTitle("add".localized().uppercased(), for: .normal)
+        }
     }
     
     func edit(orderItem:OrderItemDO) {

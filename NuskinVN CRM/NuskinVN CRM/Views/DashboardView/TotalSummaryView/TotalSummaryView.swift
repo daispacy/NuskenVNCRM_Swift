@@ -73,7 +73,7 @@ class TotalSummaryView: CViewSwitchLanguage {
     
     // MARK: - INTERFACE
     func configSummary(totalCustomer:String? = nil, totalOrderComplete:String? = nil, totalOrderUnComplete:String? = nil) {
-        lblCustomer.text = "number_customer".localized()
+        lblCustomer.text = "order_invalid".localized()
         lblOrderComplete.text = "order_completed".localized()
         lblUnComplete.text = "order_uncompleted".localized()
         
@@ -151,19 +151,19 @@ class TotalSummaryView: CViewSwitchLanguage {
             lblCustomerRegister.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
             lblCustomerRegister.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
-            lblNumberCustomerRegister.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
+            lblNumberCustomerRegister.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.small)!
             lblNumberCustomerRegister.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
             lblOther.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
             lblOther.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
-            lblNumberOther.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
+            lblNumberOther.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.small)!
             lblNumberOther.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
             lblPotentialDistributors.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
             lblPotentialDistributors.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
-            lblNumberPotentialDistributors.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
+            lblNumberPotentialDistributors.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.small)!
             lblNumberPotentialDistributors.textColor = UIColor(hex:Theme.colorDBTextNormal)
             
             lblOther.text = "other".localized()

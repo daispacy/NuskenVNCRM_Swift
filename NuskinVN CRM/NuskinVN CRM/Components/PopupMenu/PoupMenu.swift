@@ -319,8 +319,8 @@ class KxMenuView: UIView {
         
         if self.menuItems.count == 0 { return nil }
         
-        let kMinMenuItemHeight: CGFloat = 32
-        let kMinMenuItemWidth: CGFloat = 32
+        let kMinMenuItemHeight: CGFloat = 50
+        let kMinMenuItemWidth: CGFloat = 50
         
         let kMarginX = self.kxMenuViewOptions.marginXSpacing
         let kMarginY = self.kxMenuViewOptions.marginYSpacing
@@ -328,7 +328,7 @@ class KxMenuView: UIView {
         if kxMenuViewOptions.font == nil { self.kxMenuViewOptions.font = UIFont.boldSystemFont(ofSize: 16) }
         
         var maxImageWidth: CGFloat = 0
-        var maxItemHeight: CGFloat = 0
+        var maxItemHeight: CGFloat = 50
         var maxItemWidth: CGFloat = 0
         
         for menuItem in self.menuItems {
@@ -345,15 +345,15 @@ class KxMenuView: UIView {
             let title = menuItem.title as NSString
             let titleSize: CGSize = title.size(attributes: [NSFontAttributeName: self.kxMenuViewOptions.font!])
             
-            var imageSize: CGSize = CGSize.zero
-            if(menuItem.image != nil) {
-                imageSize = menuItem.image!.size
-            }
+//            var imageSize: CGSize = CGSize.zero
+//            if(menuItem.image != nil) {
+//                imageSize = menuItem.image!.size
+//            }
             
-            let itemHeight: CGFloat = max(titleSize.height, imageSize.height) + kMarginY * 2
+//            let itemHeight: CGFloat = max(titleSize.height, imageSize.height) + kMarginY * 2
             
             let itemWidth: CGFloat = ((!menuItem.enabled && (menuItem.image == nil)) ? titleSize.width : maxImageWidth + titleSize.width) + kMarginX * 2 + self.kxMenuViewOptions.intervalSpacing
-            if itemHeight > maxItemHeight { maxItemHeight = itemHeight }
+//            if itemHeight > maxItemHeight { maxItemHeight = itemHeight }
             if itemWidth > maxItemWidth { maxItemWidth = itemWidth }
         }
         
@@ -428,15 +428,13 @@ class KxMenuView: UIView {
                     itemView.addSubview(gradientView)
                     itemY += 2
                 }
-                itemY += maxItemHeight
-                
             }
-            
+            itemY += maxItemHeight
             itemNum = itemNum+1
         }
         
-        itemY += self.kxMenuViewOptions.menuCornerRadius
-        contentView.frame = CGRect(x: 0, y: 0, width: maxItemWidth, height: itemY + kMarginY * 2 + 5.5 + self.kxMenuViewOptions.menuCornerRadius)
+//        itemY += self.kxMenuViewOptions.menuCornerRadius
+        contentView.frame = CGRect(x: 0, y: 0, width: maxItemWidth, height: (maxItemHeight * CGFloat(self.menuItems.count)) + (kMarginY * CGFloat(self.menuItems.count-1)) + self.kxMenuViewOptions.menuCornerRadius)
         return contentView
         
     }

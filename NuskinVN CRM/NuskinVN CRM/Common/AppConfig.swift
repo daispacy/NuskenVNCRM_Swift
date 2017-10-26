@@ -115,8 +115,9 @@ class AppConfig: NSObject {
 //            LocalService.shared.startSyncData()            
             
             let vc:UITabBarController = UITabBarController.init()
-            
-            let uinaviVC1 = UINavigationController.init(rootViewController: DashboardViewController())
+            let dashboardC:DashboardViewController =  DashboardViewController()
+            dashboardC.isSyncWithLoading = true
+            let uinaviVC1 = UINavigationController.init(rootViewController:dashboardC)
             let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
             
             vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)

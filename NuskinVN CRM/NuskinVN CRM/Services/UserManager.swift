@@ -20,6 +20,9 @@ class UserManager: NSObject {
             var totalAmountOrders:Int64 = 0
             var totaOrdersprocess:Double = 0
             var totalOrdersunprocess:Double = 0
+            var totalOrdersinvalid:Double = 0
+            var totalOrdersPaid:Double = 0
+            var totalOrdersUnpaid:Double = 0
             _ = list.map({
                 if $0.listOrders().count == 0 {
                     notorderd += 1
@@ -46,11 +49,21 @@ class UserManager: NSObject {
                             } else if $0.status == 3 {
                                 totalOrdersunprocess += 1
                             }
+                        } else {
+                            totalOrdersinvalid += 1
+                        }
+                        if $0.payment_status == 1 {
+                            totalOrdersPaid += 1
+                        } else if $0.payment_status == 2 {
+                            totalOrdersUnpaid += 1
                         }
                     })
                     dict["total_orders_processed"] = totaOrdersprocess.cleanValue
                     dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
+                    dict["total_orders_invalid"] = totalOrdersinvalid.cleanValue
                     dict["total_orders_amount"] = totalAmountOrders
+                    dict["total_orders_no_charge"] = totalOrdersUnpaid.cleanValue
+                    dict["total_orders_money_collected"] = totalOrdersPaid.cleanValue
                                         
                     // return result
                     onComplete(dict)

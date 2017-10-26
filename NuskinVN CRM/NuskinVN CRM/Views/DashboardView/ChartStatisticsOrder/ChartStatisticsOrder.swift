@@ -85,12 +85,14 @@ class ChartStatisticsOrder: CViewSwitchLanguage {
         chartView.animate(yAxisDuration: 1.5)
     }
     
+    func setTitleOption(one:String,two:String) {
+        lblProcess.text = one
+        lblUnprocess.text = two
+    }
     // MARK: - PRIVATE
     private func configChart() {
         
         lblTitle.text = "title_chart_order".localized()
-        lblProcess.text = "process".localized()
-        lblUnprocess.text = "unprocess".localized()
         
         lblTitleChart.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
         lblTitleChart.textColor = UIColor(hex:Theme.colorDBTextNormal)

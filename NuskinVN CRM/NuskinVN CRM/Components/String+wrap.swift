@@ -30,7 +30,7 @@ extension String {
         if !self.isNumber() { return self }
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        return  formatter.string(from: NSNumber(value: Int64(self)!))!
+        return  formatter.string(from: NSNumber(value: Int64(self)!))!.replacingOccurrences(of: ",", with: ".")
     }
     
     func isNumber() -> Bool {
@@ -44,7 +44,7 @@ extension Int64 {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         if let result =  formatter.string(from: NSNumber(value: self)) {
-            return result
+            return result.replacingOccurrences(of: ",", with: ".")
         } else {
             return "\(self)"
         }
@@ -57,7 +57,7 @@ extension Double {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         if let result =  formatter.string(from: NSNumber(value: self)) {
-            return result
+            return result.replacingOccurrences(of: ",", with: ".")
         } else {
             return "\(self)"
         }

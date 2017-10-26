@@ -28,7 +28,7 @@ class OrderManager: NSObject {
         }
         
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1])
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false)]
         fetchRequest.predicate = predicateCompound
         
         do {

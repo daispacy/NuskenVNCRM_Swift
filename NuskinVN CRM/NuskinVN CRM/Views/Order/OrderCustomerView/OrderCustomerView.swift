@@ -32,6 +32,7 @@ class OrderCustomerView: UIView {
     var navigationController:UINavigationController?
     var listCustomer:[CustomerDO] = []
     var onUpdateData:((CustomerDO?,String)->Void)?
+    var onSelectCustomer:((CustomerDO?)->Void)?
     var order:OrderDO?
     
     
@@ -88,20 +89,15 @@ class OrderCustomerView: UIView {
             if let _self = self {
                 let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
                 _self.navigationController?.pushViewController(vc, animated: true)
+                vc.title = "choose_customer".localized().uppercased()
+                var listData:[String] = []
+                _ = _self.listCustomer.map({
+                    if let fullname = $0.fullname {
+                        listData.append(fullname)
+                    }
+                })
+                vc.showData(data: listData.sorted(by: {$0 < $1}))                
                 
-                vc.onDidLoad = {
-                    vc.title = "choose_customer".localized().uppercased()
-                    var listData:[String] = []
-                    _ = _self.listCustomer.map({
-                        if let fullname = $0.fullname {
-                            listData.append(fullname)
-                        }
-                        
-                    })
-                    vc.showData(data: listData.sorted(by: {$0 < $1}))
-                    return true
-                }
-            
                 vc.onSelectData = {[weak self] name in
                     if let _self = self {
                         _ = _self.listCustomer.map({
@@ -121,6 +117,7 @@ class OrderCustomerView: UIView {
                                     _self.vwTel.isHidden = false
                                     _self.vwEmail.isHidden = false
                                     _self.vwAddress.isHidden = false
+                                    _self.onSelectCustomer?(_self.customerSelected!)
                                 })
                             }
                         })

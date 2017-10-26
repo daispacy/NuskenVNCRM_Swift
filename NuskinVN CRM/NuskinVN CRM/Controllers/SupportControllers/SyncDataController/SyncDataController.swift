@@ -9,12 +9,15 @@
 import UIKit
 import CoreData
 
-class SyncDataController: UIViewController {
+class SyncDataController: RootViewController {
 
     @IBOutlet var sccrollView: UIScrollView!
     @IBOutlet var indicator: UIActivityIndicatorView!
     @IBOutlet var lblStatus: UILabel!
     @IBOutlet var btnQuit: UIButton!
+    @IBOutlet var lblLoading: UILabel!
+    @IBOutlet var indicatorLoading: UIActivityIndicatorView!
+    
     
     var timer:Timer?
     var didAppBusy:Bool = false
@@ -23,20 +26,31 @@ class SyncDataController: UIViewController {
     var didSyncedCustomer:Bool = false
     var didSyncedGroup:Bool = false
     var isRoot = false
+    var isLoading:Bool = false
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.providesPresentationContextTransitionStyle = true
+        self.definesPresentationContext = true
+        self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if self.isModalInPopover {
-            self.providesPresentationContextTransitionStyle = true
-            self.definesPresentationContext = true
-            self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        }
+//        if self.isModalInPopover{
+        
+//        }
         
         LocalService.shared.isShouldSyncData = {
             return true
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.appBusy(notification:)), name: Notification.Name("SyncData:APPBUSY"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.forceQuit(notification:)), name: Notification.Name("SyncData:FOREOUTSYNC"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.willSyncedCustomer(notification:)), name: Notification.Name("SyncData:StartCustomer"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willSyncedGroup(notification:)), name: Notification.Name("SyncData:StartGroup"), object: nil)
@@ -53,7 +67,11 @@ class SyncDataController: UIViewController {
         lblStatus.text = "syncing".localized() + "\n"
         lblStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         lblStatus.textColor = UIColor.white
+        lblLoading.text = "syncing".localized()
+        lblLoading.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblLoading.textColor = UIColor(hex:Theme.colorDBTextNormal)
         indicator.startAnimating()
+        indicatorLoading.startAnimating()
         
         let appdelegate = UIApplication.shared.delegate as! AppDelegate
         if let window = appdelegate.window {
@@ -67,8 +85,16 @@ class SyncDataController: UIViewController {
     }
     
     // MARK: - interface
-    func startSync() {
+    func startSync(_ isLoading:Bool? = false) {
         LocalService.shared.startSyncData()
+        if let bool = isLoading {
+            self.isLoading = bool
+            if bool {
+                
+                btnQuit.isHidden = true
+                self.sccrollView.isHidden = true
+            }
+        }
     }
     
     // MARK: - private
@@ -117,7 +143,21 @@ class SyncDataController: UIViewController {
         didAppBusy = true
         updateStatus()
     }
+    func forceQuit(notification:Notification) {
+        dismiss(animated: false, completion: nil)
+    }
     private func updateStatus() {
+        
+        if self.isLoading {
+            if didSyncedOrder &&
+                didSyncedCustomer &&
+                didSyncedGroup &&
+                didSyncedOrderItem {
+                dismiss(animated: false, completion: nil)
+            }
+            return
+        }
+        
         var y:CGFloat = 0
         if self.sccrollView.contentSize.height > self.view.frame.maxY - 115{
             y = self.sccrollView.contentSize.height - CGFloat(self.view.frame.maxY - 115)

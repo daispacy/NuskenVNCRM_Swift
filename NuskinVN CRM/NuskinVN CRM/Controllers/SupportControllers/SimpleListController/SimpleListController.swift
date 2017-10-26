@@ -34,7 +34,11 @@ UISearchBarDelegate{
     func showData(data:[String]) {
         listData = data
         listFiltered = listData
-        tableView.reloadData()
+        onDidLoad = {[weak self] in
+            guard let _self = self else { return true }
+            _self.tableView.reloadData()
+            return true
+        }
     }
     
     deinit {
@@ -75,8 +79,8 @@ extension SimpleListController {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onSelectData?(listFiltered[indexPath.row])
         self.navigationController?.popViewController(animated: true)
+        onSelectData?(listFiltered[indexPath.row])
     }
 }
 

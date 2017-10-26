@@ -109,6 +109,26 @@ class OrderDetailController: RootViewController {
             }
         }
         
+        orderCustomerView.onSelectCustomer = {[weak self] customer in
+            if let _self = self {
+                _self.customerSelected = customer
+                if let cus = customer {
+                    if let add = cus.address {
+                        Support.popup.showAlert(message: "same_address_customer".localized(), buttons: ["no".localized(),"    \("yes".localized())    "], vc: _self.navigationController!, onAction: {[weak self] index in
+                            if let _self = self {
+                                if index == 1 {
+                                    _self.addressOrder.text = add
+                                    _self.address_order = add
+                                    
+                                }
+                            }
+                            
+                        })
+                    }
+                }
+            }
+        }
+        
         orderProductView.onUpdateProducts = {[weak self] list in
             if let _self = self {
                 _self.listProducts = list
@@ -119,6 +139,22 @@ class OrderDetailController: RootViewController {
                 _self.orderProductView.show(order: order)
                 _self.orderCustomerView.show(order: order)
                 _self.configText()
+                _ = AppConfig.order.listStatus.map({[weak self] item in
+                    if let _self = self {
+                        if order.status == item["id"] as! Int64 {
+                            if item["name"] as! String == "process".localized() {
+                                _self.btnStatus.isEnabled = false
+                                _self.addressOrder.isEnabled = false
+                                _self.btnPaymentMethod.isEnabled = false
+                                _self.btnTransporter.isEnabled = false
+                                _self.txtTransporterID.isEnabled = false
+                                _self.orderProductView.disableControl()
+                                _self.orderCustomerView.btnChooseCustomer.isEnabled = false
+                                _self.orderCustomerView.txtOrderCode.isEnabled = false
+                            }
+                        }
+                    }
+                })
             }
             return true
         }
@@ -449,6 +485,27 @@ class OrderDetailController: RootViewController {
                     _self.order_code = order_code
                 }
             }
+            
+            orderCustomerView.onSelectCustomer = {[weak self] customer in
+                if let _self = self {
+                    _self.customerSelected = customer
+                    if let cus = customer {
+                        if let add = cus.address {
+                            Support.popup.showAlert(message: "same_address_customer".localized(), buttons: ["no".localized(),"    \("yes".localized())    "], vc: _self.navigationController!, onAction: {[weak self] index in
+                                if let _self = self {
+                                    if index == 1 {
+                                        _self.addressOrder.text = add
+                                        _self.address_order = add
+                                        
+                                    }
+                                }
+                                
+                            })
+                        }
+                    }
+                }
+            }
+            
         }
         
         _ = collectLabelOrderDetail.map({

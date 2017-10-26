@@ -23,6 +23,7 @@ class OrderProductListView: UIView {
     var listOrderItem:[JSON] = []
     var onUpdateProducts:(([JSON])->Void)?
     var isFirstLoaded:Bool = false
+    var isDisableEdit:Bool = false
     
     var navigationController:UINavigationController?
     
@@ -39,6 +40,17 @@ class OrderProductListView: UIView {
     func show(order:OrderDO) {
         self.order = order
         refreshData()
+    }
+    
+    func disableControl() {
+        isDisableEdit = true
+        btnAddProduct.isHidden = true
+        _ = stackViewContainer.arrangedSubviews.map({ view in
+            if view.isKind(of: BlockOrderProductView.self) {
+                let v = view as! BlockOrderProductView
+                v.disableControl()
+            }
+        })
     }
     
     // MARK: - private
@@ -225,24 +237,37 @@ class OrderProductListView: UIView {
 }
 
 // MARK: - BLOCK ORDER PRODUCT VIEW
-class BlockOrderProductView: UIView {
+class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
     
     @IBOutlet var lblName: UILabel!
     @IBOutlet var lblTotal: UILabel!
     @IBOutlet var lblPrice: UILabel!
+    @IBOutlet var vwControl: UIView!
+    @IBOutlet var btnDelete: UIButton!
+    @IBOutlet var imgProduct: UIImageView!
     
-   var onSelectEdit:((OrderItemDO)->Void)?
+    var tapGesture:UITapGestureRecognizer!
+    var onSelectEdit:((OrderItemDO)->Void)?
     var onSelectDelete:((OrderItemDO)->Void)?
     var onSelectEditJSON:((JSON)->Void)?
     var onSelectDeleteJSON:((JSON)->Void)?
     var product:OrderItemDO?
     var json:JSON?
+    var isIgnoreTouh:Bool = false
     
     // MARK: - init
     override func awakeFromNib() {
         super.awakeFromNib()
         configView()
         configText()
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.processEdit(_:)))
+        tapGesture.delegate = self
+        tapGesture.cancelsTouchesInView = false
+        self.addGestureRecognizer(tapGesture)
+    }
+    
+    deinit {
+        self.removeGestureRecognizer(tapGesture!)
     }
     
     // MARK: - interface
@@ -252,13 +277,21 @@ class BlockOrderProductView: UIView {
         lblName.text = product.name
         lblTotal.text = "\(product.quantity) \("unit".localized())"
         lblPrice.text = "\(product.price) \("price_unit".localized().uppercased())"
-        
+    }
+    
+    func disableControl() {
+        vwControl.removeFromSuperview()
     }
     
     func show(json:JSON) {
         self.json = json
         if let pro = json["product"] as? ProductDO{
             lblName.text = pro.name
+            if let imgStr = pro.avatar {
+                if imgStr.characters.count > 0 {
+                    imgProduct.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/a_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+                }
+            }
         }
         if let quantity = Int64("\(json["total"] ?? 0)"),
             let price = Int64("\(json["price"] ?? 0)")
@@ -269,8 +302,8 @@ class BlockOrderProductView: UIView {
     }
     
     // MARK: - event process
-    @IBAction func processEdit(_ sender: Any) {
-        
+    func processEdit(_ sender: UIGestureRecognizer) {
+        if isIgnoreTouh {return}
         if self.json != nil {
             onSelectEditJSON?(self.json!)
         } else {
@@ -278,6 +311,17 @@ class BlockOrderProductView: UIView {
                 onSelectEdit?(pro)
             }
         }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if let view = touch.view {
+            if view.isDescendant(of: self.btnDelete) {
+                isIgnoreTouh = true
+                return false
+            }
+        }
+        isIgnoreTouh = false
+        return true
     }
     
     @IBAction func processRemove(_ sender: Any) {
@@ -311,4 +355,6 @@ class BlockOrderProductView: UIView {
         lbl.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!
         lbl.textColor = UIColor(hex: Theme.color.customer.titleGroup)
     }
+    
+    
 }

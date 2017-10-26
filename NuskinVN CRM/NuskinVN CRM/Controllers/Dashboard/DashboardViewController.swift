@@ -12,8 +12,10 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     
     private var dashboardView:DashboardView!
     private var leftButtonMenu:UIButton!
-    private var rightButtonMenu:UIButton!    
+    private var rightButtonMenu:UIButton!
 
+    var isSyncWithLoading:Bool = false
+    
     // MARK: - INIT
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +48,14 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         tabBarController?.delegate = self
     }
 
+    func firstSyncData() {
+        
+        let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
+        self.navigationController?.present(vc, animated: false, completion: {
+            vc.startSync(true)
+        })
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -63,7 +73,15 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
         let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
         itemTabbar.tag = 10
         tabBarItem  = itemTabbar
-        
+        if isSyncWithLoading {
+            isSyncWithLoading = false
+            firstSyncData()
+        }
+        if let timer = LocalService.shared.timerSyncToServer {
+            if !timer.isValid {
+                LocalService.shared.startSyncDataBackground()
+            }
+        }
 //        SyncService.shared.getDashboard(completion: {[weak self] resut in
 //            if let _self = self {
 //                switch resut {
@@ -155,10 +173,11 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
             let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
             AppConfig.navigation.changeRootControllerTo(viewcontroller: vc, animated: false)
         } else if menuItem.title == "sync_data".localized() {
-            let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
-            self.present(vc, animated: true, completion: {
-                vc.startSync()
-            })
+//            let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
+//            self.present(vc, animated: true, completion: {
+//                vc.startSync()
+//            })
+            firstSyncData()
         }
     }
 }

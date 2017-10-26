@@ -14,6 +14,10 @@
 "start_sync_order_items" = "Đồng bộ sản phẩm";
 "complete" = "Hoàn thành";
 "edit_customer" = "Thông tin KH";
+"order_invalid" = "Đơn hàng vô hiệu";
+"same_address_customer" = "Địa chỉ giao hàng cũng là địa chỉ khách hàng?";
+"no" = "Không";
+"yes" = "Có";
 
 
 "placeholder_name_group" = "Tên nhóm";
@@ -121,8 +125,8 @@
 "processing" = "Đang xử lý";
 "delivering" = "Đang giao hàng";
 "delivered" = "Đã giao hàng";
-"no_charge" = "Đã thanh toán";
-"money_collected" = "Chưa thanh toán";
+"no_charge" = "Chưa thanh toán";
+"money_collected" = "Đã thanh toán";
 "online" = "Thanh toán trực tuyến";
 "credit_card" = "Thẻ tín dụng";
 "paypal" = "Paypal";

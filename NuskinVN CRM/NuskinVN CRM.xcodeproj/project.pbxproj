@@ -27,6 +27,7 @@
 		231D97EB1F95C7F2003E8DA3 /* OrderListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 231D97E91F95C7F2003E8DA3 /* OrderListController.xib */; };
 		231D97F01F95C836003E8DA3 /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231D97EE1F95C836003E8DA3 /* OrderListCell.swift */; };
 		231D97F11F95C836003E8DA3 /* OrderListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 231D97EF1F95C836003E8DA3 /* OrderListCell.xib */; };
+		23208F251FA1BAA800B2EDFF /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23208F241FA1BAA800B2EDFF /* LocalNotification.swift */; };
 		2323238D1F83452A00290926 /* GroupCustomerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2323238B1F83452A00290926 /* GroupCustomerController.swift */; };
 		2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2323238C1F83452A00290926 /* GroupCustomerController.xib */; };
 		232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */; };
@@ -187,6 +188,7 @@
 		231D97E91F95C7F2003E8DA3 /* OrderListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderListController.xib; sourceTree = "<group>"; };
 		231D97EE1F95C836003E8DA3 /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
 		231D97EF1F95C836003E8DA3 /* OrderListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderListCell.xib; sourceTree = "<group>"; };
+		23208F241FA1BAA800B2EDFF /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		2323238B1F83452A00290926 /* GroupCustomerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCustomerController.swift; sourceTree = "<group>"; };
 		2323238C1F83452A00290926 /* GroupCustomerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupCustomerController.xib; sourceTree = "<group>"; };
 		232323901F834B6E00290926 /* GroupCollectCustomerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCollectCustomerCell.swift; sourceTree = "<group>"; };
@@ -876,6 +878,7 @@
 				2302487E1F755B4D00177679 /* Support.swift */,
 				232D2D031F76CB5200B93B45 /* Theme.swift */,
 				23DEDE381F72CBD7003D4097 /* AppConfig.swift */,
+				23208F241FA1BAA800B2EDFF /* LocalNotification.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1012,6 +1015,11 @@
 					23CAF80F1F7207FC0016DBDF = {
 						CreatedOnToolsVersion = 9.0;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					23CAF8261F7207FC0016DBDF = {
 						CreatedOnToolsVersion = 9.0;
@@ -1297,6 +1305,7 @@
 				23853AA61F8B30F50039D653 /* SyncService.swift in Sources */,
 				233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
+				23208F251FA1BAA800B2EDFF /* LocalNotification.swift in Sources */,
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
 				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,
 				230A91A51F99C10D00761590 /* GroupManager.swift in Sources */,

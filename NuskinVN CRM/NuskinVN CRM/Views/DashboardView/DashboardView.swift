@@ -27,6 +27,7 @@ class DashboardView: CViewSwitchLanguage {
     var totalSalesView:TotalSummaryView!
     var totalSummaryCustomerView:TotalSummaryView!
     var chartStatisticsOrder:ChartStatisticsOrder!
+    var chartStatisticsOrder1:ChartStatisticsOrder!
     var topProductView: TopProductView!
     var birthdayCustomerListView:BirthdayCustomerListView!
     
@@ -59,6 +60,9 @@ class DashboardView: CViewSwitchLanguage {
         
         //block chart order
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
+        
+        //block chart order
+        chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
 
         //block top product
 //        topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
@@ -75,7 +79,14 @@ class DashboardView: CViewSwitchLanguage {
     
     override func reload(_ data:JSON) {
         
-        if let totalCustomer = data["total_customers"],
+        if stackView.arrangedSubviews.count > 0 {
+            _ = stackView.arrangedSubviews.map({
+                $0.removeFromSuperview()
+            })
+            configView()
+        }
+        
+        if let totalCustomer = data["total_orders_invalid"],
             let totalOrderComplete = data["total_orders_processed"],
             let totalOrderUncomplete = data["total_orders_not_processed"] {
             stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
@@ -109,9 +120,20 @@ class DashboardView: CViewSwitchLanguage {
             let data3 = data["total_orders_not_processed"]{
             chartStatisticsOrder.reload(data)
             stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
+            chartStatisticsOrder.setTitleOption(one: "process".localized(), two: "unprocess".localized())
             chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! String)!,Double(data3 as! String)!])
         } else {
             chartStatisticsOrder.removeFromSuperview()
+        }
+        
+        if let data2 = data["total_orders_no_charge"],
+            let data3 = data["total_orders_money_collected"]{
+            chartStatisticsOrder1.reload(data)
+            stackView.insertArrangedSubview(chartStatisticsOrder1, at: stackView.arrangedSubviews.count)
+            chartStatisticsOrder1.setTitleOption(one: "money_collected".localized(), two: "no_charge".localized())
+            chartStatisticsOrder1.setChart(["",""], values: [Double(data3 as! String)!,Double(data2 as! String)!])
+        } else {
+            chartStatisticsOrder1.removeFromSuperview()
         }
         
     }
