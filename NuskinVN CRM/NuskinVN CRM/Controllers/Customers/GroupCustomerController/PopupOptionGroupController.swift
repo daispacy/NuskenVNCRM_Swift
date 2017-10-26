@@ -82,12 +82,7 @@ class PopupOptionGroupController: UIViewController{
         } else {
             oldframe.size.height = CGFloat(listData!.count*40) + 20 + CGFloat((listData!.count-1)*5)
         }
-      
-        UIView.animate(withDuration: 0.5, animations: { () -> Void in
-            self.containerTable.frame = oldframe
-        }) { (_) -> Void in
-            
-        }
+        self.containerTable.frame = oldframe
     }
     
     // MARK: - event
@@ -144,11 +139,7 @@ class PopupOptionGroupController: UIViewController{
                 oldframe.size.height = CGFloat(listData!.count*50) + 15 + CGFloat((listData!.count-1)*5)
             }
  
-            self.view.layoutIfNeeded()
-            UIView.animate(withDuration:0.5, animations: { () -> Void in
-                self.containerTable.frame = oldframe
-            }) { (_) -> Void in
-            }
+            self.containerTable.frame = oldframe            
         }
     }
     

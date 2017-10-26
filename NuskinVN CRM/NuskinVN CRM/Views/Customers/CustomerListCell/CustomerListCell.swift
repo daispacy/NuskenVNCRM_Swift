@@ -52,7 +52,7 @@ class CustomerListCell: UITableViewCell {
                     _self.onEditCustomer?(obj)
                 }
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
     }
     
     // MARK: - private
@@ -166,21 +166,21 @@ class FunctionStackViewCustomer: UIView {
             if let _self = self {
                 _self.onSelectFunction?("facebook")
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         btnZalo.rx.tap.subscribe(onNext: {[weak self] in
             if let _self = self {
                 _self.onSelectFunction?("zalo")
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         btnSkype.rx.tap.subscribe(onNext: {[weak self] in
             if let _self = self {
                 _self.onSelectFunction?("skype")
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         btnViber.rx.tap.subscribe(onNext: {[weak self] in
             if let _self = self {
                 _self.onSelectFunction?("viber")
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
     }
 }

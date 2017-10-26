@@ -12,11 +12,15 @@ extension String {
     {
         let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)
         calendar?.timeZone = .current
-        let DateArray = self.components(separatedBy: "/")
+        var DateArray = self.components(separatedBy: "-")
+        if DateArray.count == 0 {
+            DateArray = self.components(separatedBy: "/")
+        }
         let components = NSDateComponents()
         components.year = Int(DateArray[2])!
         components.month = Int(DateArray[1])!
         components.day = Int(DateArray[0])! + 1
+        components.timeZone = TimeZone(abbreviation: "GMT+0:00")
         let date = calendar?.date(from: components as DateComponents)
         
         return date!

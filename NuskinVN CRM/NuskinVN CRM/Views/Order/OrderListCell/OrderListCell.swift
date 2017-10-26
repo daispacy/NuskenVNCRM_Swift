@@ -23,6 +23,7 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var lblGoal: UILabel!
     @IBOutlet var lblTotalPrice: UILabel!
     @IBOutlet var lblStatus: UILabel!
+    @IBOutlet var vwStatus: UIView!
     
     var isEdit:Bool = false
     var object:OrderDO!
@@ -37,7 +38,7 @@ class OrderListCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
-        lblStatus.text = "loading".localized()
+//        lblStatus.text = "loading".localized()
         self.layoutIfNeeded()
         self.setNeedsDisplay()
         
@@ -77,20 +78,31 @@ class OrderListCell: UITableViewCell {
         }else {
             lblNameCustomer.text = "unknown".localized()
         }
-            lblTotalPrice.text = "\(order.totalPrice.toTextPrice()) \("price_unit".localized())"
+        lblTotalPrice.text = "\(order.totalPrice.toTextPrice()) \("price_unit".localized())"
         lblGoal.text = "\(order.totalPV.toTextPrice()) \("pv".localized().uppercased())"
         
-        if let date = order.date_created {
+        if let date = order.last_updated {
             let date_created = date as Date
             lblDateCreated.text = date_created.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
         }
         
         lblCode.text = order.code
-        _ = AppConfig.order.listStatus.map({
-            if $0["id"] as! Int64 == order.status {
-                lblStatus.text = $0["name"] as? String
-            }
-        })
+                
+        switch order.status {
+        case 0:
+            vwStatus.backgroundColor = UIColor(hex:"0xff1744")
+        case 1:
+            vwStatus.backgroundColor = UIColor(hex:"0x38a4dd")
+        case 3:
+            vwStatus.backgroundColor = UIColor(hex:"0xffab00")
+        default:
+            vwStatus.backgroundColor = UIColor.clear
+        }
+//        _ = AppConfig.order.listStatus.map({
+//            if $0["id"] as! Int64 == order.status {
+//                lblStatus.text = $0["name"] as? String
+//            }
+//        })
         
     }
     
@@ -112,12 +124,16 @@ class OrderListCell: UITableViewCell {
         vwBtnCheck.isHidden = !isEdit
         btnCheck.isSelected = isChecked
 
-        configLabel(lbl: lblCode)
-        configLabel(lbl: lblGoal)
+        configLabel(lbl: lblCode)        
         configLabel(lbl: lblNameCustomer, isTitle: true)
         configLabel(lbl: lblTotalPrice)
-        configLabel(lbl: lblDateCreated)
-        configLabel(lbl: lblStatus)
+//        configLabel(lbl: lblStatus)
+        
+        lblDateCreated.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblDateCreated.textColor = UIColor(hex:Theme.color.customer.titleGroup)
+        
+        lblGoal.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblGoal.textColor = UIColor(hex:Theme.color.customer.titleGroup)
     }
     
     func configText() {
@@ -125,7 +141,7 @@ class OrderListCell: UITableViewCell {
     }
     
     func configLabel(lbl:UILabel,isTitle:Bool = false) {        
-        lbl.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lbl.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         lbl.textColor = UIColor(hex:isTitle ? Theme.color.order.listCustomerName : Theme.color.customer.titleGroup)
     }
     
@@ -137,6 +153,7 @@ class OrderListCell: UITableViewCell {
         isChecked = false
         isSelect = false
         isEdit = false
+        vwStatus.backgroundColor = UIColor.clear
         configView()
         configText()
         super.prepareForReuse()

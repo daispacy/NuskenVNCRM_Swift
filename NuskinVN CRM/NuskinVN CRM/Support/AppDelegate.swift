@@ -42,7 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let ww = window {
             
             if UserManager.currentUser() != nil && AppConfig.setting.isRememberUser(){
-                AppConfig.navigation.gotoDashboardAfterSigninSuccess()
+                let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
+                ww.rootViewController = vc
+                ww.makeKeyAndVisible()
             } else {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc

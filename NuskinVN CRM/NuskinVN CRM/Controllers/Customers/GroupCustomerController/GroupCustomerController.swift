@@ -123,14 +123,16 @@ extension GroupCustomerController {
         let cell:GroupCollectCustomerCell = collectView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! GroupCollectCustomerCell
         
         cell.show(data: listGroups[indexPath.row])
-        cell.onSelectOption = {
+        cell.onSelectOption = { [weak self]
             sender, group in
+            guard let _self = self else { return }
             let popup = PopupOptionGroupController(nibName: "PopupOptionGroupController", bundle: Bundle.main)
-            popup.onSelect = {
+            popup.onSelect = {[weak self]
                 option in
+                guard let _self = self else { return }
                 switch option.tag {
                 case 2:
-                    Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: { [weak self]
+                    Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: _self, onAction: { [weak self]
                         i in
                         if let _self = self {
                             if i == 1 {
@@ -150,9 +152,9 @@ extension GroupCustomerController {
                             }
                         }
                     })
-                    
+                        print("test")
                 default:
-                    self.showPopupGroup(object: group)
+                    _self.showPopupGroup(object: group)
                     break
                 }
             }
@@ -164,7 +166,7 @@ extension GroupCustomerController {
                                           tag: 2),
                               ],
                        fromView: sender as! UIButton)
-            self.present(popup, animated: false, completion: nil)
+            _self.present(popup, animated: false, completion: nil)
         }
         return cell
     }
@@ -181,10 +183,8 @@ extension GroupCustomerController {
         } else {
             if gotoFromCustomerList {
                 let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-                vc.onDidLoad = {
-                    vc.setGroupSelected(group: obj)
-                }
                 self.navigationController?.pushViewController(vc, animated: true)
+                vc.setGroupSelected(group: obj)
             } else {
                 onSelectGroup?(obj)
                 self.navigationController?.popViewController(animated: true)

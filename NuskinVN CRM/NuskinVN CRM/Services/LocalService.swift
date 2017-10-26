@@ -56,6 +56,7 @@ final class LocalService: NSObject {
         if let bool = self.isShouldSyncData?() {
             if bool == false {
                 print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
                 return
             }
         }
@@ -84,7 +85,9 @@ final class LocalService: NSObject {
     
     private func syncOrdersItems() {
             print("*******\nSTART SYNC ORDERITEMS\n*******")
-    
+        
+        NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrderItem"),object:nil)
+        
         SyncService.shared.getOrderItems(completion: { (result) in
             switch result {
             case .success(let data):
@@ -101,7 +104,7 @@ final class LocalService: NSObject {
                             OrderItemManager.saveOrderItemWith(array:data)
                         }
                         
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
                     }
                 case .failure(_):
                     print("Error: cant get orderitem from server 2")
@@ -114,9 +117,11 @@ final class LocalService: NSObject {
     }
     
     private func syncOrders() {
+        
         OrderManager.getAllOrdersNotSynced { list in
             let listDictionaryOrders:[JSON] = list.flatMap({$0.toDictionary})
             print("*******\nSTART SYNC ORDERS: \(listDictionaryOrders.count)\n*******")
+            NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrder"),object:nil)
             
             print(listDictionaryOrders)
             SyncService.shared.postAllOrdersToServer(list: listDictionaryOrders, completion: { (result) in
@@ -158,7 +163,7 @@ final class LocalService: NSObject {
     private func syncCustomers() {
         CustomerManager.getAllCustomersNotSynced { list in
             let listDictionaryCustomer:[JSON] = list.flatMap({$0.toDictionary})
-            
+            NotificationCenter.default.post(name:Notification.Name("SyncData:StartCustomer"),object:nil)
             print("*******\nSTART SYNC CUSTOMERS: \(listDictionaryCustomer.count)\n*******")
             SyncService.shared.postAllCustomerToServer(list: listDictionaryCustomer, completion: { (result) in
                 switch result {
@@ -200,7 +205,7 @@ final class LocalService: NSObject {
     private func syncGroups() {
         GroupManager.getAllGroupSynced(onComplete: { (list) in
             let listDictionaryGroup:[JSON] = list.flatMap({$0.toDictionary})
-            
+            NotificationCenter.default.post(name:Notification.Name("SyncData:StartGroup"),object:nil)
             print("*******\nSTART SYNC GROUPS: \(listDictionaryGroup.count)\n*******")
             SyncService.shared.postAllGroupToServer(list: listDictionaryGroup, completion: { result in
                 switch result {

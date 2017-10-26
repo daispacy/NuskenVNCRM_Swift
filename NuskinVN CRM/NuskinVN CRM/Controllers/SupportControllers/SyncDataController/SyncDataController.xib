@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13528" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13526"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SyncDataController" customModule="NuskinVN_CRM" customModuleProvider="target">
+            <connections>
+                <outlet property="btnQuit" destination="dfz-ga-3Kd" id="cyY-HB-H9P"/>
+                <outlet property="indicator" destination="ksh-D2-QJl" id="p8N-0n-j0f"/>
+                <outlet property="lblStatus" destination="xTf-gm-DfA" id="dR6-RE-viC"/>
+                <outlet property="sccrollView" destination="HeZ-VN-S60" id="nOf-cd-6gy"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dfz-ga-3Kd">
+                    <rect key="frame" x="0.0" y="597" width="375" height="70"/>
+                    <constraints>
+                        <constraint firstAttribute="height" priority="750" constant="70" id="mVA-64-bqe"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <connections>
+                        <action selector="quit:" destination="-1" eventType="touchUpInside" id="RkZ-Sa-nM9"/>
+                    </connections>
+                </button>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HeZ-VN-S60">
+                    <rect key="frame" x="0.0" y="20" width="375" height="577"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="BaR-lA-A2A">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="57.5"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xTf-gm-DfA">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ksh-D2-QJl">
+                                    <rect key="frame" x="0.0" y="20.5" width="375" height="37"/>
+                                    <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </activityIndicatorView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="BaR-lA-A2A" firstAttribute="leading" secondItem="HeZ-VN-S60" secondAttribute="leading" id="9gP-kd-f90"/>
+                        <constraint firstItem="BaR-lA-A2A" firstAttribute="top" secondItem="HeZ-VN-S60" secondAttribute="top" id="BMS-cU-t3z"/>
+                        <constraint firstAttribute="bottom" secondItem="BaR-lA-A2A" secondAttribute="bottom" id="lXT-ay-Dha"/>
+                        <constraint firstAttribute="trailing" secondItem="BaR-lA-A2A" secondAttribute="trailing" id="pAM-FK-aKn"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="BaR-lA-A2A" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="4O3-F5-gue"/>
+                <constraint firstAttribute="trailing" secondItem="HeZ-VN-S60" secondAttribute="trailing" id="8BC-jV-GtD"/>
+                <constraint firstItem="jXO-yX-eJS" firstAttribute="bottom" secondItem="dfz-ga-3Kd" secondAttribute="bottom" id="GuI-Dt-Nc4"/>
+                <constraint firstItem="BaR-lA-A2A" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" priority="250" id="LeS-GJ-JoS"/>
+                <constraint firstItem="dfz-ga-3Kd" firstAttribute="leading" secondItem="jXO-yX-eJS" secondAttribute="leading" id="QX2-Jv-zV4"/>
+                <constraint firstAttribute="bottom" secondItem="HeZ-VN-S60" secondAttribute="bottom" constant="70" id="a0B-gw-vam"/>
+                <constraint firstItem="HeZ-VN-S60" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gY9-N5-5lV"/>
+                <constraint firstItem="jXO-yX-eJS" firstAttribute="top" secondItem="HeZ-VN-S60" secondAttribute="top" id="pkC-eW-9oz"/>
+                <constraint firstItem="jXO-yX-eJS" firstAttribute="trailing" secondItem="dfz-ga-3Kd" secondAttribute="trailing" id="yyf-J7-e3E"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="jXO-yX-eJS"/>
+            <point key="canvasLocation" x="-186" y="4"/>
+        </view>
+    </objects>
+</document>

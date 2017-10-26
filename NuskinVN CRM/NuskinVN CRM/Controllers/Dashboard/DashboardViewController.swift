@@ -20,6 +20,9 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
+        
         
         configText()
         
@@ -110,7 +113,8 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
                                       view: leftButtonMenu,
                                       selector: #selector(self.menuItemLeftPress(menuItem:)))
             } else {
-                Support.popup.showMenu(items: ["logout".localized()],
+                Support.popup.showMenu(items: ["sync_data".localized(),
+                                               "logout".localized()],
                                       sender: self,
                                       view: rightButtonMenu,
                                       selector: #selector(self.menuItemRightPress(menuItem:)))
@@ -131,7 +135,8 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
                                   view: leftButtonMenu,
                                   selector: #selector(self.menuItemLeftPress(menuItem:)))
         } else {
-            Support.popup.showMenu(items: ["logout".localized()],
+            Support.popup.showMenu(items: ["sync_data".localized(),
+                                           "logout".localized()],
                                   sender: self,
                                   view: rightButtonMenu,
                                   selector: #selector(self.menuItemRightPress(menuItem:)))
@@ -149,6 +154,11 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
             UserManager.reset()
             let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
             AppConfig.navigation.changeRootControllerTo(viewcontroller: vc, animated: false)
+        } else if menuItem.title == "sync_data".localized() {
+            let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
+            self.present(vc, animated: true, completion: {
+                vc.startSync()
+            })
         }
     }
 }

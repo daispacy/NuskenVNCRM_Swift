@@ -75,7 +75,7 @@ class UserManager: NSObject {
             if list.count > 0 {
                 return list.first!
             } else {
-                return NSEntityDescription.insertNewObject(forEntityName: "UserDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! UserDO
+                return nil
             }
             
         } catch {

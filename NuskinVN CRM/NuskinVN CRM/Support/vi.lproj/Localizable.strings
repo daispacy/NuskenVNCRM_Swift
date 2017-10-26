@@ -6,6 +6,16 @@
   Copyright © 2017 Dai Pham. All rights reserved.
 */
 
+"sync_data" = "Đồng bộ dữ liệu";
+"syncing" = "Đang đồng bộ dữ liệu";
+"start_sync_group" = "Đồng bộ nhóm khách hàng";
+"start_sync_customer" = "Đồng bộ khách hàng";
+"start_sync_order" = "Đồng bộ đơn hàng";
+"start_sync_order_items" = "Đồng bộ sản phẩm";
+"complete" = "Hoàn thành";
+"edit_customer" = "Thông tin KH";
+
+
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";
 "choose_group_level" = "Cấp độ";

@@ -82,7 +82,9 @@ public class OrderDO: NSManagedObject {
     }
 
     func customer() -> CustomerDO? {
-        
+        if customer_id == 0 {
+            return nil
+        }
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
 //            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
         if let user = UserManager.currentUser() {

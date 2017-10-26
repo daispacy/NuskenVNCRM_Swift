@@ -54,8 +54,6 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     override func viewDidLoad() {
            super.viewDidLoad()
         
-        title = "add_customer".localized().uppercased()
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
@@ -125,38 +123,51 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         if listGroups.count > 0 {
             self.groupSelected = listGroups.first
         }
+        onDidLoad = {[weak self] in
+            guard let _self = self else { return true }
+            _self.configText()
+            return true
+        }
         
     }
     
     func setGroupSelected(group:GroupDO) {
         self.groupSelected = group
-        self.btnGroup.setTitle(group.group_name, for: .normal)
-        self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        onDidLoad = { [weak self] in
+            if let _self = self {
+            _self.btnGroup.setTitle(group.group_name, for: .normal)
+            _self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                return true
+            }
+            return true
+        }
     }
     
     // MARK: - private
     private func bindControl() {
         
         // validate
-        
+        let support = Support.validate.self
+        let customerDOExist = CustomerDO.self
+        let isE = self.isEdit
         let nameIsValid = txtName.rx.text.orEmpty
             .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
             .shareReplay(1)
         let emailIsValid = txtEmail.rx.text.orEmpty
             .map {
-                    Support.validate.isValidEmailAddress(emailAddressString: $0) && !CustomerDO.isExist(email:$0,except:self.isEdit)
+                support.isValidEmailAddress(emailAddressString: $0) && !customerDOExist.isExist(email:$0,except:isE)
             }
             .shareReplay(1)
-        
-        nameIsValid.bind(to: lblErrorName.rx.isHidden).disposed(by: disposeBag)
-        emailIsValid.bind(to: lblErrorEmail.rx.isHidden).disposed(by: disposeBag)
-        
+
+        nameIsValid.bind(to: lblErrorName.rx.isHidden).addDisposableTo(disposeBag)
+        emailIsValid.bind(to: lblErrorEmail.rx.isHidden).addDisposableTo(disposeBag)
+
         let everythingValid = Observable.combineLatest(nameIsValid, emailIsValid) { $0 && $1 }
             .shareReplay(1)
-        
+
         everythingValid
-            .bind(to: btnProcess.rx.isEnabled)
-            .disposed(by: disposeBag)
+            .bind(to: self.btnProcess.rx.isEnabled)
+            .addDisposableTo(disposeBag)
         
         //listern data
         txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
@@ -167,7 +178,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     _self.lblErrorEmail.text = "invalid_email".localized()
                 }
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         
         
         btnBirthday.rx.tap
@@ -189,7 +200,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     })
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnGroup.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -203,7 +214,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     _self.navigationController?.pushViewController(vc, animated: true)
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnChoosePhotos.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -211,7 +222,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     _self.showSelectGetPhotos()
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnGender.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -237,7 +248,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     popupC.show(data: ["male".localized(),"female".localized()], fromView: _self.btnGender.superview!)
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnCity.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -252,6 +263,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         vc.onDidLoad = {
                             vc.title = "choose_city".localized().uppercased()
                             vc.showData(data: listData)
+                            return true
                         }
                         vc.onSelectData = { name in
                             _self.btnCity.setTitle(name, for: .normal)
@@ -264,7 +276,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     }
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnDistrict.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -294,6 +306,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                                 vc.onDidLoad = {
                                     vc.title = "choose_district".localized().uppercased()
                                     vc.showData(data: listData)
+                                    return true
                                 }
                             }
                         }
@@ -306,7 +319,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     }
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         // event process
         btnProcess.rx.tap
@@ -374,7 +387,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     }
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnCancel.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -383,7 +396,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                 }
                 
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
     }
     
     func showSelectGetPhotos() {
@@ -539,10 +552,12 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
         }
         
-        if customer == nil {
+        if !self.isEdit {
             btnProcess.setTitle("add".localized().uppercased(), for: .normal)
+            title = "add_customer".localized().uppercased()
         } else {
             btnProcess.setTitle("update".localized().uppercased(), for: .normal)
+            title = "edit_customer".localized().uppercased()
         }
         
         btnCancel.setTitle("cancel".localized(), for: .normal)

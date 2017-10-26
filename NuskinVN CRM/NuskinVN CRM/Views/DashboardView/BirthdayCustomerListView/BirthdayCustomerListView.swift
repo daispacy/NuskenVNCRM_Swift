@@ -7,16 +7,10 @@
 //
 
 import UIKit
+import CoreData
 
 var BlockCustomerView_associated: String = "BlockCustomerView"
 
-protocol BirthdayCustomerListViewDelegate: class {
-    func BirthdayCustomerListView(didSelect:BirthdayCustomerListView, customer:Customer)
-}
-
-protocol CustomerBlockViewDelegate: class {
-    func CustomerBlockView(didSelect:CustomerBlockView,customer:Customer)
-}
 
 class CustomerBlockView: CViewSwitchLanguage {
     
@@ -27,7 +21,6 @@ class CustomerBlockView: CViewSwitchLanguage {
     @IBOutlet var bottomLine: UIView!
     @IBOutlet var lblStatus: UILabel!
     
-    weak var delegate:CustomerBlockViewDelegate?
     var tapOpenPopup:UITapGestureRecognizer?
     var object:Any?
     
@@ -51,15 +44,15 @@ class CustomerBlockView: CViewSwitchLanguage {
     }
     
     // MARK: - INTERFACE
-    func showInfoCustomer(customer:Customer?) {
+    func showInfoCustomer(customer:CustomerDO?) {
         guard let data = customer else { return }
         
         object = data
        
         lblName.text = "\(data.fullname)"
         
-        lblBirthday.text = data.birthday
-        imgvAvatar.image = UIImage(named:"checkbox_check")
+//        lblBirthday.text = data.birthday
+//        imgvAvatar.image = UIImage(named:"checkbox_check")
         
         if(data.status == 1) {
             vwStatus.backgroundColor = UIColor(hex:"0x009688")
@@ -82,7 +75,6 @@ class CustomerBlockView: CViewSwitchLanguage {
     // MARK: - EVENT
     @objc private func openPopup() {
         
-        delegate?.CustomerBlockView(didSelect: self,customer:object as! Customer)
     }
     
     // MARK: - PRIVATE
@@ -99,36 +91,28 @@ class CustomerBlockView: CViewSwitchLanguage {
     }
 }
 
-class BirthdayCustomerListView: UIView, CustomerBlockViewDelegate {
+class BirthdayCustomerListView: UIView {
 
     @IBOutlet var lblTitle: CLabelGradient!
     @IBOutlet var stackListCustomer: UIStackView!
     
-    weak var delegate:BirthdayCustomerListViewDelegate?
-    fileprivate var customerSelected:Customer?
+    fileprivate var customerSelected:CustomerDO?
     
     // MARK: - INIT
     override func awakeFromNib() {
         super.awakeFromNib()
         
         configView()
-        
-        reloadListCustomer([Customer(id: 0, distributor_id: 0, store_id: 0),
-                            Customer(id: 0, distributor_id: 0, store_id: 0),
-                            Customer(id: 0, distributor_id: 0, store_id: 0),
-                            Customer(id: 0, distributor_id: 0, store_id: 0),
-                            Customer(id: 0, distributor_id: 0, store_id: 0)])
     }
 
     // MARK: - INTERFACE
-    func reloadListCustomer(_ listCustomers:Array<Any>?) {
+    func reloadListCustomer(_ listCustomers:[CustomerDO]?) {
         guard let data = listCustomers else { return }
         
         var i:Int = 0
         for item in data {
             let customerView = Bundle.main.loadNibNamed("CustomerBlockView", owner: self, options: nil)!.first as! CustomerBlockView
-            customerView.delegate = self
-            customerView.showInfoCustomer(customer: item as? Customer)
+            customerView.showInfoCustomer(customer: item)
             
             customerView.hideBottomLine(isHide: i == data.count - 1)
             
@@ -161,7 +145,7 @@ class BirthdayCustomerListView: UIView, CustomerBlockViewDelegate {
 }
 
 extension BirthdayCustomerListView {
-    func CustomerBlockView(didSelect: CustomerBlockView, customer:Customer) {
+    func CustomerBlockView(didSelect: CustomerBlockView, customer:CustomerDO) {
         customerSelected = customer        
         
         Support.popup.showMenu(items: ["popup_menu_item_send_birthday".localized()],
@@ -174,6 +158,6 @@ extension BirthdayCustomerListView {
     }
     
     @objc fileprivate func sendCongrabBirthday(menuItem:KxMenuItem) {
-        delegate?.BirthdayCustomerListView(didSelect: self, customer: customerSelected!)
+       
     }
 }

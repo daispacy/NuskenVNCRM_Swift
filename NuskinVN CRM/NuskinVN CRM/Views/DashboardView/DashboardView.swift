@@ -13,7 +13,7 @@ protocol DashboardViewDelegate: class {
     
 }
 
-class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
+class DashboardView: CViewSwitchLanguage {
 
     
     @IBOutlet var stackView: UIStackView!
@@ -124,11 +124,5 @@ class DashboardView: CViewSwitchLanguage, BirthdayCustomerListViewDelegate {
         if let view = birthdayCustomerListView {
             view.refreshPopupMenu()
         }
-    }
-}
-
-extension DashboardView {
-    func BirthdayCustomerListView(didSelect: BirthdayCustomerListView, customer: Customer) {
-        
     }
 }

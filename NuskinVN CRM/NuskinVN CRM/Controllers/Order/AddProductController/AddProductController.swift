@@ -55,6 +55,13 @@ class AddProductController: UIViewController {
         configView()
         configText()
         
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _self = self {
+                return false
+            }
+            return true
+        }
+        
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         tapGesture.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tapGesture)
@@ -159,7 +166,7 @@ class AddProductController: UIViewController {
                             _self.txtPV.text = "\(Int64(text)! * product.pv)"
                         }
                     }
-                }).disposed(by: disposeBag)
+                }).addDisposableTo(disposeBag)
     }
     
     // MARK: - BUTTON EVENT

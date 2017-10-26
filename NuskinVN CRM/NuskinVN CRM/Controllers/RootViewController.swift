@@ -14,12 +14,12 @@ import RxCocoa
 
 class RootViewController: UIViewController {
     
-    var onDidLoad:(()->Void)?
-    var disposeBag = DisposeBag()
+    var onDidLoad:(()->Bool)?
+    let disposeBag:DisposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        onDidLoad?()
+        _ = onDidLoad?()
     }
     
     // Add an observer for LCLLanguageChangeNotification on viewWillAppear. This is posted whenever a language changes and allows the viewcontroller to make the necessary UI updated. Very useful for places in your app when a language change might happen.
@@ -39,6 +39,7 @@ class RootViewController: UIViewController {
     }
     
     deinit {
+        
         print("\(String(describing: self.self)) dealloc")
     }
 

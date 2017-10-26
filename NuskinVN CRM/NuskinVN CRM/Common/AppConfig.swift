@@ -112,7 +112,7 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             //start service if signin Success
-            LocalService.shared.startSyncData()            
+//            LocalService.shared.startSyncData()            
             
             let vc:UITabBarController = UITabBarController.init()
             

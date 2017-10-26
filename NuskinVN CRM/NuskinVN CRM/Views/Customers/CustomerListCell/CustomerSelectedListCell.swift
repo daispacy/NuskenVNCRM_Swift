@@ -53,7 +53,7 @@ class CustomerSelectedListCell: UITableViewCell {
                     _self.onEditCustomer?(obj)
                 }
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
     }
     
     // MARK: - private

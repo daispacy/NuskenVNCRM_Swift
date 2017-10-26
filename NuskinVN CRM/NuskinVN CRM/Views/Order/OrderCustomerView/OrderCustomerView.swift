@@ -99,8 +99,9 @@ class OrderCustomerView: UIView {
                         
                     })
                     vc.showData(data: listData.sorted(by: {$0 < $1}))
+                    return true
                 }
-                
+            
                 vc.onSelectData = {[weak self] name in
                     if let _self = self {
                         _ = _self.listCustomer.map({
@@ -126,26 +127,26 @@ class OrderCustomerView: UIView {
                     }
                 }
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         
         txtTel.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.customerSelected?.tel = $0
                 _self.onUpdateData?(_self.customerSelected,_self.orderCode)
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.customerSelected?.address = $0
                 _self.onUpdateData?(_self.customerSelected,_self.orderCode)
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         txtOrderCode.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.orderCode = $0
                 _self.onUpdateData?(_self.customerSelected,_self.orderCode)
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         
     }
     

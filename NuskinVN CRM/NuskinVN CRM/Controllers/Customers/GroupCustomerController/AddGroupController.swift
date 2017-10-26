@@ -33,7 +33,7 @@ class AddGroupController: UIViewController {
     var isEdit: Bool!
     var group:GroupDO?
     var name:String = ""
-    var position:Int64 = GroupLevel.one.rawValue
+    var position:Int64 = 1
     var group_color:String = "gradient"
     
     var tapGesture:UITapGestureRecognizer!
@@ -158,17 +158,17 @@ class AddGroupController: UIViewController {
         
         switch sender.tag {
         case 11:
-            position = GroupLevel.ten.rawValue
+            position = 1
         case 12:
-            position = GroupLevel.nine.rawValue
+            position = 2
         case 13:
-            position = GroupLevel.seven.rawValue
+            position = 3
         case 14:
-            position = GroupLevel.three.rawValue
+            position = 4
         case 15:
-            position = GroupLevel.one.rawValue
+            position = 5
         default:
-            position = GroupLevel.one.rawValue
+            position = 6
         }
     }
     
@@ -377,30 +377,30 @@ class AddGroupController: UIViewController {
         _ = groupLevel.map({
             $0.isSelected = false
             switch (gr.position) {
-            case GroupLevel.one.rawValue:
+            case 1:
                 if $0.tag == 15 {
                     $0.isSelected = true
                 }
                 break
                 
-            case GroupLevel.three.rawValue:
+            case 2:
                 if $0.tag == 14 {
                     $0.isSelected = true
                 }
                 break
                 
-            case GroupLevel.seven.rawValue:
+            case 3:
                 if $0.tag == 13 {
                     $0.isSelected = true
                 }
                 break
                 
-            case GroupLevel.nine.rawValue:
+            case 4:
                 if $0.tag == 12 {
                     $0.isSelected = true
                 }
                 break
-            case GroupLevel.ten.rawValue:
+            case 6:
                 if $0.tag == 11 {
                     $0.isSelected = true
                 }

@@ -33,8 +33,9 @@ UITableViewDataSource{
         self.tableView.addGestureRecognizer(tapGesture!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 50
+        tableView.estimatedRowHeight = 86.4
         
         // Do any additional setup after loading the view.
         let rightButtonMenu = UIButton(type: .custom)
@@ -116,11 +117,7 @@ extension OrderListController {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = OrderDetailController(nibName: "OrderDetailController", bundle: Bundle.main)
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.onDidLoad = {[weak self] in
-            if let _self = self {
-                vc.edit(_self.listOrder[indexPath.row])
-            }
-        }
+        vc.edit(self.listOrder[indexPath.row])        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

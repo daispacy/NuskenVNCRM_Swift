@@ -114,10 +114,14 @@ class OrderDetailController: RootViewController {
                 _self.listProducts = list
             }
         }
-        
-        orderProductView.show(order: order)
-        orderCustomerView.show(order: order)
-        configText()
+        onDidLoad = {[weak self] in
+            if let _self = self  {
+                _self.orderProductView.show(order: order)
+                _self.orderCustomerView.show(order: order)
+                _self.configText()
+            }
+            return true
+        }
         
     }
     
@@ -150,7 +154,7 @@ class OrderDetailController: RootViewController {
                     _ = _self.listStatus.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnStatus.superview!)
                 }
-            }).disposed(by: disposeBag)
+            }).addDisposableTo(disposeBag)
         
         btnPaymentStatus.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -179,7 +183,7 @@ class OrderDetailController: RootViewController {
                     _ = _self.listPaymentStatus.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnPaymentStatus.superview!)
                 }
-            }).disposed(by: disposeBag)
+            }).addDisposableTo(disposeBag)
         
         btnPaymentMethod.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -207,7 +211,7 @@ class OrderDetailController: RootViewController {
                     _ = _self.listPaymentMethod.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnPaymentMethod.superview!)
                 }
-            }).disposed(by: disposeBag)
+            }).addDisposableTo(disposeBag)
         
         btnTransporter.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -235,26 +239,26 @@ class OrderDetailController: RootViewController {
                     _ = _self.listTranspoter.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnTransporter.superview!)
                 }
-            }).disposed(by: disposeBag)
+            }).addDisposableTo(disposeBag)
         
         txtTransporterID.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.transporter_id = $0
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         
         addressOrder.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.address_order = $0
             }
-        }).disposed(by: disposeBag)
+        }).addDisposableTo(disposeBag)
         
         btnCancel.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
                     _self.navigationController?.popViewController(animated: true)
                 }
-            }).disposed(by: disposeBag)
+            }).addDisposableTo(disposeBag)
         
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -298,6 +302,7 @@ class OrderDetailController: RootViewController {
                         ord.shipping_unit = _self.transporter
                         ord.svd = _self.transporter_id
                         ord.code = _self.order_code
+//                        ord.date_created = _self.order?.date_created
 //                        ord.tempProducts = _self.listProducts
                         ord.tel = customer.tel
                         ord.email = customer.email
@@ -332,6 +337,7 @@ class OrderDetailController: RootViewController {
                         ord.distributor_id = user.id_card_no
                         ord.address = _self.address_order
                         ord.date_created = Date.init(timeIntervalSinceNow: 0) as NSDate
+                        ord.last_updated = Date.init(timeIntervalSinceNow: 0) as NSDate
                         ord.status = _self.status
                         ord.payment_option = _self.payment_method
                         ord.payment_status = _self.payment_status
@@ -358,7 +364,7 @@ class OrderDetailController: RootViewController {
                         })
                     }
                 }
-            }).disposed(by: disposeBag)
+            }).addDisposableTo(disposeBag)
     }
     
     override func configText() {
@@ -368,24 +374,32 @@ class OrderDetailController: RootViewController {
         
         addressOrder.placeholder = "address_order".localized()
         txtTransporterID.placeholder = "transporter_id".localized()
-        _ = AppConfig.order.listPaymentMethod.map({
-            if $0["id"] as! Int64 == payment_method {
-                self.btnPaymentMethod.setTitle($0["name"] as? String, for: .normal)
+        _ = AppConfig.order.listPaymentMethod.map({[weak self] item in
+            if let _self = self {
+                if item["id"] as! Int64 == payment_method {
+                    _self.btnPaymentMethod.setTitle(item["name"] as? String, for: .normal)
+                }
             }
         })
-        _ = AppConfig.order.listPaymentStatus.map({
-            if $0["id"] as! Int64 == payment_status {
-                self.btnPaymentStatus.setTitle($0["name"] as? String, for: .normal)
+        _ = AppConfig.order.listPaymentStatus.map({[weak self] item in
+            if let _self = self {
+                if item["id"] as! Int64 == payment_status {
+                    _self.btnPaymentStatus.setTitle(item["name"] as? String, for: .normal)
+                }
             }
         })
-        _ = AppConfig.order.listStatus.map({
-            if $0["id"] as! Int64 == status {
-                self.btnStatus.setTitle($0["name"] as? String, for: .normal)
+        _ = AppConfig.order.listStatus.map({[weak self] item in
+            if let _self = self {
+                if item["id"] as! Int64 == status {
+                    _self.btnStatus.setTitle(item["name"] as? String, for: .normal)
+                }
             }
         })
-        _ = AppConfig.order.listTranspoter.map({
-            if $0["id"] as! Int64 == transporter {
-                self.btnTransporter.setTitle($0["name"] as? String, for: .normal)
+        _ = AppConfig.order.listTranspoter.map({[weak self] item in
+            if let _self = self {
+                if item["id"] as! Int64 == transporter {
+                    _self.btnTransporter.setTitle(item["name"] as? String, for: .normal)
+                }
             }
         })
         

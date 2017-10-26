@@ -112,6 +112,12 @@ class OrderManager: NSObject {
                 object.local_id = data
             }
             
+            if let data = dictionary["customer_id"] as? String {
+                object.customer_id = Int64(data)!
+            } else if let data = dictionary["customer_id"] as? Int64 {
+                object.customer_id = data
+            }
+            
             if let data = dictionary["store_id"] as? String {
                 object.store_id = Int64(data)!
             } else if let data = dictionary["store_id"] as? Int64 {
@@ -171,11 +177,19 @@ class OrderManager: NSObject {
                 object.code = data
             }
             
-            if let data = dictionary["date_created"] as? NSDate {
-                object.date_created = data
+            if let data = dictionary["date_created"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.date_created = myDate as NSDate
+                }
             }
-            if let data = dictionary["last_updated"] as? NSDate {
-                object.last_updated = data
+            if let data = dictionary["last_updated"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.last_updated = myDate as NSDate
+                }
             }
             
             if let properties = dictionary["properties"] as? JSON {

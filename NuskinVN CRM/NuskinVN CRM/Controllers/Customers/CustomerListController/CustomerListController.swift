@@ -143,16 +143,17 @@ UITabBarControllerDelegate {
     // MARK: - event button
     @IBAction func chooseGroup(_ sender: UIButton) {
         let popupC = PopupController(nibName: "PopupController", bundle: Bundle.main)
-        popupC.onSelect = {
+        popupC.onSelect = {[weak self]
             item, index in
+            guard let _self = self else { return }
             print("\(item) \(index)")
             if index > 0 {
-                self.groupSelected = self.listGroup[index-1]
+                _self.groupSelected = _self.listGroup[index-1]
             } else {
-                self.groupSelected = nil
+                _self.groupSelected = nil
             }
-            self.btnFilterGroup.setTitle(item, for: .normal)
-            self.updateTableContent()
+            _self.btnFilterGroup.setTitle(item, for: .normal)
+            _self.updateTableContent()
             //            self.refreshListCustomer()
         }
         popupC.onDismiss = {
@@ -180,9 +181,7 @@ UITabBarControllerDelegate {
         //        let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
         //        self.navigationController?.pushViewController(vc, animated: true)
         let vc = GroupCustomerController(nibName: "GroupCustomerController", bundle: Bundle.main)
-        vc.onDidLoad = {
             vc.gotoFromCustomerList = true
-        }
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -247,9 +246,11 @@ extension CustomerListController {
                 if let _self = self {
                     let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
                     _self.navigationController?.pushViewController(vc, animated: true)
-                    vc.onDidLoad = {
+                    
+//                    vc.onDidLoad = {
                         vc.edit(customer: customer)
-                    }
+//                        return true
+//                    }
                 }
             }
             return cell
@@ -264,6 +265,7 @@ extension CustomerListController {
                     _self.navigationController?.pushViewController(vc, animated: true)
                     vc.onDidLoad = {
                         vc.edit(customer: customer)
+                        return true
                     }
                 }
             }
