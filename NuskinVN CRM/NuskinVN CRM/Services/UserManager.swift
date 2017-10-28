@@ -86,7 +86,7 @@ class UserManager: NSObject {
             var list:[UserDO] = []
             list = result.flatMap({$0 as? UserDO})
             if list.count > 0 {
-                return list.first!
+                return list.last!
             } else {
                 return nil
             }
@@ -95,6 +95,15 @@ class UserManager: NSObject {
             let fetchError = error as NSError
             print(fetchError)
             return nil
+        }
+    }
+    
+    static func save() {
+        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        do {
+            try context.save()
+        } catch {
+            // TODO: handle the error
         }
     }
     
@@ -121,6 +130,18 @@ class UserManager: NSObject {
                 object.id_card_no = data
             }
             
+            if let data = dictionary["id"] as? String {
+                object.id = Int64(data)!
+            } else if let data = dictionary["id"] as? Int64 {
+                object.id = data
+            }
+            
+            if let data = dictionary["status"] as? String {
+                object.status = Int64(data)!
+            } else if let data = dictionary["status"] as? Int64 {
+                object.status = data
+            }
+            
             if let data = dictionary["store_id"] as? String {
                 object.store_id = Int64(data)!
             } else if let data = dictionary["store_id"] as? Int64 {
@@ -131,16 +152,53 @@ class UserManager: NSObject {
                 object.username = data
             }
 
+            if let data = dictionary["fullname"] as? String {
+                object.fullname = data
+            }
+            
+            if let data = dictionary["address"] as? String {
+                object.address = data
+            }
+            
             if let data = dictionary["email"] as? String {
                 object.email = data
             }
             
-//            if let properties = dictionary["properties"] as? JSON {
-//                let jsonData = try! JSONSerialization.data(withJSONObject: properties)
-//                if let pro = String(data: jsonData, encoding: .utf8) {
-//                    object.properties = pro
-//                }
-//            }
+            if let data = dictionary["tel"] as? String {
+                object.tel = data
+            }
+            
+            if let data = dictionary["cell"] as? String {
+                object.cell = data
+            }
+            
+            if let data = dictionary["type"] as? String {
+                object.type = Int64(data)!
+            } else if let data = dictionary["type"] as? Int64 {
+                object.type = data
+            }
+            
+            if let data = dictionary["date_created"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.date_created = myDate as NSDate
+                }
+            }
+            if let data = dictionary["last_login"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.last_login = myDate as NSDate
+                }
+            }
+            
+            if let properties = dictionary["properties"] as? JSON {
+                let jsonData = try! JSONSerialization.data(withJSONObject: properties)
+                if let pro = String(data: jsonData, encoding: .utf8) {
+                    object.properties = pro
+                }                
+            }
             
             return object
         }

@@ -18,7 +18,14 @@
 "same_address_customer" = "Địa chỉ giao hàng cũng là địa chỉ khách hàng?";
 "no" = "Không";
 "yes" = "Có";
-
+"msg_login_failed_or_user_invalid" = "VNID và mật khẩu không đúng hoặc VNID vô hiệu.";
+"search_product" = "Tìm kiếm sản phẩm";
+"email_invalid_or_name_customer_invalid" = "Email hoặc tên khách hàng không hợp lệ.";
+"email_invalid_or_name_invalid" = "Email hoặc tên không hợp lệ.";
+"please_login_before_use_this_function" = "Vui lòng đăng nhập trước khi sử dụng tính năng này.";
+"my_profile" = "Thông tin cá nhân";
+"quit" = "Thoát";
+"update_profile_success" = "Cập nhật thông tin thành công";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

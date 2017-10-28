@@ -267,7 +267,9 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
     }
     
     deinit {
-        self.removeGestureRecognizer(tapGesture!)
+        if tapGesture != nil {
+            self.removeGestureRecognizer(tapGesture!)
+        }
     }
     
     // MARK: - interface
@@ -281,6 +283,9 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
     
     func disableControl() {
         vwControl.removeFromSuperview()
+        if tapGesture != nil {
+            self.removeGestureRecognizer(tapGesture!)
+        }
     }
     
     func show(json:JSON) {

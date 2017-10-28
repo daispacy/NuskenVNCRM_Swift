@@ -254,8 +254,6 @@ class AddGroupController: UIViewController {
         
         containerView.layer.cornerRadius = 12
         containerView.clipsToBounds      = true
-        
-//        group = GroupCustomer(id: 0, distributor_id: UserManager.currentUser().id_card_no!, store_id: UserManager.currentUser().id_card_no!)
     }
     
     func configText() {

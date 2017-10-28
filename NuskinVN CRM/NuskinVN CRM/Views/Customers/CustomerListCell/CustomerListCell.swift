@@ -113,10 +113,11 @@ class CustomerListCell: UITableViewCell {
         
         lblName.text = customer.fullname
        
-        if let avaStr = customer.avatar {
+        if let avaStr = customer.avatar,
+            let urlAvatar = customer.urlAvatar{
             if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                if avaStr.contains(".jpg") {
-                    imgAvatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/customers/\(avaStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)", placeHolder: nil)
+                if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                    imgAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
                 } else {
                     if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                         let decodedimage = UIImage(data: dataDecoded)

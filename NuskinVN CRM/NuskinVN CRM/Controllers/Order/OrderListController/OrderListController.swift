@@ -41,15 +41,17 @@ UITableViewDataSource{
         let rightButtonMenu = UIButton(type: .custom)
         rightButtonMenu.setImage(Support.image.iconFont(code: "\u{f067}", size: 22), for: .normal)
         rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-        rightButtonMenu.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
+        rightButtonMenu.addTarget(self, action: #selector(self.menuPressRight(sender:)), for: .touchUpInside)
         let item2 = UIBarButtonItem(customView: rightButtonMenu)
         self.navigationItem.rightBarButtonItem  = item2
         
         configText()
         configView()
+        // add menu from root
+        addDefaultMenu(true)
     }
     
-    func menuPress(sender:UIButton) {
+    func menuPressRight(sender:UIButton) {
         let vc = OrderDetailController(nibName: "OrderDetailController", bundle: Bundle.main)
         self.navigationController?.pushViewController(vc, animated: true)
     }

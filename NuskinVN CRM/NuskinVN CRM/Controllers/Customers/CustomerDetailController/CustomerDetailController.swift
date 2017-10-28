@@ -49,8 +49,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     var groupSelected:GroupDO?
     var birthday:Date?
     var gender:Int64 = 0
+    var city_id:Int64 = 0
+    var district_id:Int64 = 0
     var avatar:String?
-    
+            
     override func viewDidLoad() {
            super.viewDidLoad()
         
@@ -119,6 +121,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     func edit(customer:CustomerDO) {
         self.customer = customer
         self.isEdit = true
+        self.avatar = customer.avatar
+        self.city_id = customer.city_id
+        self.district_id = customer.district_id
+        self.gender = customer.gender
         let listGroups = customer.listGroups()
         if listGroups.count > 0 {
             self.groupSelected = listGroups.first
@@ -145,29 +151,6 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     
     // MARK: - private
     private func bindControl() {
-        
-        // validate
-        let support = Support.validate.self
-        let customerDOExist = CustomerDO.self
-        let isE = self.isEdit
-        let nameIsValid = txtName.rx.text.orEmpty
-            .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
-            .shareReplay(1)
-        let emailIsValid = txtEmail.rx.text.orEmpty
-            .map {
-                support.isValidEmailAddress(emailAddressString: $0) && !customerDOExist.isExist(email:$0,except:isE)
-            }
-            .shareReplay(1)
-
-        nameIsValid.bind(to: lblErrorName.rx.isHidden).addDisposableTo(disposeBag)
-        emailIsValid.bind(to: lblErrorEmail.rx.isHidden).addDisposableTo(disposeBag)
-
-        let everythingValid = Observable.combineLatest(nameIsValid, emailIsValid) { $0 && $1 }
-            .shareReplay(1)
-
-        everythingValid
-            .bind(to: self.btnProcess.rx.isEnabled)
-            .addDisposableTo(disposeBag)
         
         //listern data
         txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
@@ -233,7 +216,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         print("\(item) \(index)")
                         _self.btnGender.setTitle(item, for: .normal)
                         _self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                        _self.gender = Int64(index)
+                        _self.gender = Int64(index + 1)
                     }
                     popupC.onDismiss = {
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
@@ -253,31 +236,37 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         btnCity.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    DispatchQueue.main.async {
-                        var listData:[String] = []
-                        _ = _self.listCountry.filter{$0.country_id == 0}.map({
-                            listData.append($0.name)
-                        })
-                        
-                        let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
-                        vc.onDidLoad = {
-                            vc.title = "choose_city".localized().uppercased()
-                            vc.showData(data: listData)
-                            return true
-                        }
-                        vc.onSelectData = { name in
-                            if name != _self.btnCity.titleLabel?.text {
-                                _self.btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
-                                _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
-                            }
-                            _self.btnCity.setTitle(name, for: .normal)
-                            _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                            if !_self.btnDistrict.isEnabled {
-                                _self.btnDistrict.isEnabled = true
-                            }
-                        }
-                        _self.navigationController?.pushViewController(vc, animated: true)
+                    
+                    var listData:[String] = []
+                    _ = _self.listCountry.filter{$0.country_id == 0}.map({
+                        listData.append($0.name)
+                    })
+                    
+                    let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                    vc.onDidLoad = {
+                        vc.title = "choose_city".localized().uppercased()
+                        vc.showData(data: listData)
+                        return true
                     }
+                    vc.onSelectData = { name in
+                        _ = _self.listCountry.map({
+                            if $0.name == name {
+                                _self.city_id = $0.id
+                            }
+                        })
+                        if name != _self.btnCity.titleLabel?.text {
+                            _self.btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
+                            _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
+                            _self.district_id = 0
+                        }
+                        _self.btnCity.setTitle(name, for: .normal)
+                        _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                        if !_self.btnDistrict.isEnabled {
+                            _self.btnDistrict.isEnabled = true
+                        }
+                    }
+                    _self.navigationController?.pushViewController(vc, animated: true)
+                    
                 }
             })
             .addDisposableTo(disposeBag)
@@ -318,6 +307,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     
                     
                     vc.onSelectData = { name in
+                        _ = _self.listCountry.map({
+                            if $0.name == name && $0.country_id > 0{
+                                _self.district_id = $0.id
+                            }
+                        })
                         _self.btnDistrict.setTitle(name, for: .normal)
                         _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
@@ -329,6 +323,14 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
+                    
+                    if !_self.validdateData() {
+                        Support.popup.showAlert(message: "email_invalid_or_name_customer_invalid".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        })
+                        return
+                    }
+                    
                     guard let user = UserManager.currentUser() else {
                         Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                             
@@ -341,6 +343,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         let customer = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! CustomerDO
                         customer.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                         customer.status = 1
+                        customer.date_created = Date.init(timeIntervalSinceNow: 0) as NSDate
                         customer.email = _self.txtEmail.text
                         customer.fullname = _self.txtName.text
                         customer.address = _self.txtAddress.text
@@ -353,11 +356,13 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         customer.setFacebook(_self.txtFacebook.text ?? "")
                         customer.setZalo(_self.txtZalo.text ?? "")
                         customer.setViber(_self.txtViber.text ?? "")
+                        customer.city_id = _self.city_id
+                        customer.district_id = _self.district_id
                         customer.synced = false
                         if let group = _self.groupSelected {
                                 customer.group_id = group.id
                         }
-                        customer.distributor_id = user.id_card_no
+                        customer.distributor_id = user.id
                         customer.store_id = user.store_id
                         
                         CustomerManager.updateCustomerEntity(customer, onComplete: {
@@ -376,9 +381,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                             customerUpdate.setFacebook(_self.txtFacebook.text ?? "")
                             customerUpdate.setZalo(_self.txtZalo.text ?? "")
                             customerUpdate.setViber(_self.txtViber.text ?? "")
-                            
-                            customerUpdate.distributor_id = user.id_card_no
+                            customerUpdate.date_created = _self.customer?.date_created
+                            customerUpdate.distributor_id = user.id
                             customerUpdate.store_id = user.store_id
+                            customerUpdate.city_id = _self.city_id
+                            customerUpdate.district_id = _self.district_id
                             
                             customerUpdate.synced = false
                             if let group = _self.groupSelected {
@@ -401,6 +408,16 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                 
             })
             .addDisposableTo(disposeBag)
+    }
+    
+    func validdateData() -> Bool {
+        guard let email = self.txtEmail.text, let name = self.txtName.text else { return false }
+        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && CustomerDO.isExist(email:email,except:self.isEdit)
+        let checkName = name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0
+        lblErrorEmail.isHidden = checkEmail
+        lblErrorName.isHidden = checkName
+        
+        return  checkEmail && checkName
     }
     
     func showSelectGetPhotos() {
@@ -574,15 +591,15 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         })
         
         if let cus = customer {
-            if let avaStr = cus.avatar {
+            if let avaStr = cus.avatar,
+                let urlAvatar = cus.urlAvatar {
                 if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                    if avaStr.contains(".jpg") {
-                        imvAvatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/customers/\(avaStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)", placeHolder: UIImage(named:"avatar_holder_gradient_256"))
+                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                        imvAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
                     } else {
                         if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                             let decodedimage = UIImage(data: dataDecoded)
                             imvAvatar.image = decodedimage
-                            self.avatar = avaStr
                         }
                     }
                 }

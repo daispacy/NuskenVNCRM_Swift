@@ -46,12 +46,25 @@ public class CustomerDO: NSManagedObject {
             }
         }
         
+        var date_created_ = ""
+        var last_updated_ = ""
+        
+        if let created = date_created as Date?{
+            date_created_ = created.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
+        if let updated = last_login as Date?{
+            last_updated_ = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
         return [
             "id": id,
             "store_id": store_id,
             "distributor_id": distributor_id,
             "area_id": area_id,
             "type": type,
+            "city_id": city_id,
+            "district_id": district_id,
             "username": username ?? "",
             "password": password ?? "",
             "fullname": fullname ?? "",
@@ -68,8 +81,8 @@ public class CustomerDO: NSManagedObject {
             "avatar": avatar ?? "",
             "group_id": group_id,
             "properties": proper,
-            "date_created": date_created ?? "",
-            "last_login": last_login ?? "",
+            "date_created": date_created_,
+            "last_login": last_updated_,
             "status": status,
             "synced":synced
         ]
@@ -294,7 +307,7 @@ public class CustomerDO: NSManagedObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@", [id],[local_id],[user.id_card_no])
+            predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@", [id],[local_id],[user.id])
         }
         
         fetchRequest.predicate = predicate
@@ -339,4 +352,24 @@ public class CustomerDO: NSManagedObject {
             return []
     }
     
+    var urlAvatar:String? {
+        if let properties = self.properties {
+            if let data = properties.data(using: String.Encoding.utf8) {
+                do {
+                    if let pro:JSON = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {
+                        if let color = pro["avatar"] as? String {
+                            if color.contains("@") {
+                                return "\(Server.domainImage.rawValue)/upload/1/customers/\(color.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                            } else {
+                                return "\(Server.domainImage.rawValue)/upload/1/customers/a_\(color.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                            }
+                        }
+                    }
+                } catch {
+                    print("warning parse properties GROUP: \(properties)")
+                }
+            }
+        }
+        return nil
+    }
 }

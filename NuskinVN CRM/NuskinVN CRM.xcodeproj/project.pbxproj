@@ -43,6 +43,10 @@
 		232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232D2CFF1F76C81E00B93B45 /* ChartStatisticsSales.xib */; };
 		232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D2D011F76C83400B93B45 /* ChartStatisticsSales.swift */; };
 		232D2D041F76CB5200B93B45 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D2D031F76CB5200B93B45 /* Theme.swift */; };
+		232E18831FA47E7A00C52128 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232E18811FA47D4E00C52128 /* UserProfileController.swift */; };
+		232E18841FA47F1300C52128 /* UserProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232E18821FA47D4E00C52128 /* UserProfileController.xib */; };
+		232E18871FA4978000C52128 /* UserDO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232E18851FA4978000C52128 /* UserDO+CoreDataClass.swift */; };
+		232E18881FA4978000C52128 /* UserDO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232E18861FA4978000C52128 /* UserDO+CoreDataProperties.swift */; };
 		232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17371F74C7FD0053A87D /* DashboardViewController.swift */; };
 		232F174A1F74CA170053A87D /* MenuListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F17491F74CA170053A87D /* MenuListView.swift */; };
 		232F174C1F74CA250053A87D /* MenuListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232F174B1F74CA250053A87D /* MenuListView.xib */; };
@@ -55,6 +59,8 @@
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
 		233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233F78581F8E4C1600EDB1AF /* String+wrap.swift */; };
+		2346D8C01FA309D100E3EEDD /* GroupProductDO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2346D8BE1FA309D100E3EEDD /* GroupProductDO+CoreDataClass.swift */; };
+		2346D8C11FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2346D8BF1FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift */; };
 		234747291F991A650068F70A /* CustomerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234747281F991A650068F70A /* CustomerManager.swift */; };
 		234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D77A11F826BB500CC4436 /* MenuDashboardView.swift */; };
 		234D77A41F826BEB00CC4436 /* MenuDashboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */; };
@@ -204,6 +210,10 @@
 		232D2CFF1F76C81E00B93B45 /* ChartStatisticsSales.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartStatisticsSales.xib; sourceTree = "<group>"; };
 		232D2D011F76C83400B93B45 /* ChartStatisticsSales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartStatisticsSales.swift; sourceTree = "<group>"; };
 		232D2D031F76CB5200B93B45 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		232E18811FA47D4E00C52128 /* UserProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
+		232E18821FA47D4E00C52128 /* UserProfileController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserProfileController.xib; sourceTree = "<group>"; };
+		232E18851FA4978000C52128 /* UserDO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		232E18861FA4978000C52128 /* UserDO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		232F17371F74C7FD0053A87D /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		232F17491F74CA170053A87D /* MenuListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListView.swift; sourceTree = "<group>"; };
 		232F174B1F74CA250053A87D /* MenuListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuListView.xib; sourceTree = "<group>"; };
@@ -218,6 +228,8 @@
 		2338A2BB1F72AA5E00B74AB4 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		233F78581F8E4C1600EDB1AF /* String+wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+wrap.swift"; sourceTree = "<group>"; };
+		2346D8BE1FA309D100E3EEDD /* GroupProductDO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroupProductDO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		2346D8BF1FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroupProductDO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		234747281F991A650068F70A /* CustomerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerManager.swift; sourceTree = "<group>"; };
 		234D77A11F826BB500CC4436 /* MenuDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuDashboardView.swift; sourceTree = "<group>"; };
 		234D77A31F826BEB00CC4436 /* MenuDashboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuDashboardView.xib; sourceTree = "<group>"; };
@@ -547,6 +559,15 @@
 			path = GroupCollectCustomerCell;
 			sourceTree = "<group>";
 		};
+		232E18801FA47D2800C52128 /* UserProfileController */ = {
+			isa = PBXGroup;
+			children = (
+				232E18811FA47D4E00C52128 /* UserProfileController.swift */,
+				232E18821FA47D4E00C52128 /* UserProfileController.xib */,
+			);
+			path = UserProfileController;
+			sourceTree = "<group>";
+		};
 		232F173B1F74C8E50053A87D /* MenuView */ = {
 			isa = PBXGroup;
 			children = (
@@ -629,6 +650,10 @@
 		2356DFF41F736AAC00134A73 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				232E18851FA4978000C52128 /* UserDO+CoreDataClass.swift */,
+				232E18861FA4978000C52128 /* UserDO+CoreDataProperties.swift */,
+				2346D8BE1FA309D100E3EEDD /* GroupProductDO+CoreDataClass.swift */,
+				2346D8BF1FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift */,
 				23664FFE1F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift */,
 				23664FFF1F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift */,
 				232818E31F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift */,
@@ -903,6 +928,7 @@
 			isa = PBXGroup;
 			children = (
 				231D97E61F95C78F003E8DA3 /* SupportControllers */,
+				232E18801FA47D2800C52128 /* UserProfileController */,
 				231D97E51F95C787003E8DA3 /* Order */,
 				232323891F83435C00290926 /* Dashboard */,
 				232323881F83435100290926 /* Authentic */,
@@ -1014,7 +1040,7 @@
 				TargetAttributes = {
 					23CAF80F1F7207FC0016DBDF = {
 						CreatedOnToolsVersion = 9.0;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1071,6 +1097,7 @@
 				232323931F834B7B00290926 /* GroupCollectCustomerCell.xib in Resources */,
 				235722291F7D58170096A636 /* Roboto-BoldItalic.ttf in Resources */,
 				23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */,
+				232E18841FA47F1300C52128 /* UserProfileController.xib in Resources */,
 				23776B121F9BCD55003EE5BF /* ProductListCell.xib in Resources */,
 				2357221E1F7D58170096A636 /* Roboto-Medium.ttf in Resources */,
 				2357221F1F7D58170096A636 /* Roboto-Light.ttf in Resources */,
@@ -1253,8 +1280,10 @@
 				230248861F7569ED00177679 /* CustomAlertController.swift in Sources */,
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
 				2382F84E1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift in Sources */,
+				2346D8C11FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift in Sources */,
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
+				232E18871FA4978000C52128 /* UserDO+CoreDataClass.swift in Sources */,
 				230248821F755DF800177679 /* CMessageLabel.swift in Sources */,
 				2353D8DC1F8BA0BE006FCFF1 /* Result.swift in Sources */,
 				23EBBB031F98B87300881FBA /* CoreDataStack.swift in Sources */,
@@ -1290,6 +1319,7 @@
 				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
 				23C85B941F9790F4004F0DCE /* Date+Wrap.swift in Sources */,
 				23810C311F85338400C0B5C7 /* LocalService.swift in Sources */,
+				232E18881FA4978000C52128 /* UserDO+CoreDataProperties.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				232818E51F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift in Sources */,
 				23B906501FA07BE500FF24C2 /* CustomerSelectedListCell.swift in Sources */,
@@ -1310,6 +1340,7 @@
 				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,
 				230A91A51F99C10D00761590 /* GroupManager.swift in Sources */,
 				2303C2881F971073001F0A42 /* OrderProductListView.swift in Sources */,
+				232E18831FA47E7A00C52128 /* UserProfileController.swift in Sources */,
 				23776B181F9BE946003EE5BF /* OrderManager.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
@@ -1319,6 +1350,7 @@
 				234747291F991A650068F70A /* CustomerManager.swift in Sources */,
 				23544BB81F96758500FA81A5 /* OrderCustomerView.swift in Sources */,
 				236650011F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift in Sources */,
+				2346D8C01FA309D100E3EEDD /* GroupProductDO+CoreDataClass.swift in Sources */,
 				23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */,
 				232818E21F9C8D5300D57799 /* OrderItemDO+CoreDataProperties.swift in Sources */,
 				23776B1B1F9BEDB3003EE5BF /* OrderDO+CoreDataClass.swift in Sources */,
@@ -1472,13 +1504,16 @@
 			baseConfigurationReference = C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = C9E3WU44HT;
 				INFOPLIST_FILE = "$(SRCROOT)/NuskinVN CRM/Support/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.derasoft.nuskinvncrm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c574bf71-7775-4c2a-948e-92e1847da449";
+				PROVISIONING_PROFILE_SPECIFIER = "NuskinVNCRM Distribution";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1489,13 +1524,16 @@
 			baseConfigurationReference = 160D3B1D7895AA06D191ECBA /* Pods-NuskinVN CRM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = C9E3WU44HT;
 				INFOPLIST_FILE = "$(SRCROOT)/NuskinVN CRM/Support/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.derasoft.nuskinvncrm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c574bf71-7775-4c2a-948e-92e1847da449";
+				PROVISIONING_PROFILE_SPECIFIER = "NuskinVNCRM Distribution";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

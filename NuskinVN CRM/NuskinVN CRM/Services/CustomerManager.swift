@@ -17,7 +17,7 @@ class CustomerManager: NSObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         }
         var predicate2 = NSPredicate(format: "1 > 0")
         var predicate4 = NSPredicate(format: "1 > 0")
@@ -59,7 +59,7 @@ class CustomerManager: NSObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         }
         let predicate3 = NSPredicate(format: "synced == false")
     
@@ -223,11 +223,19 @@ class CustomerManager: NSObject {
 //                object.zalo = data
 //            }
 
-            if let data = dictionary["date_created"] as? NSDate {
-                object.date_created = data
+            if let data = dictionary["date_created"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.date_created = myDate as NSDate
+                }
             }
-            if let data = dictionary["last_login"] as? NSDate {
-                object.last_login = data
+            if let data = dictionary["last_login"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.last_login = myDate as NSDate
+                }
             }
             
             if let properties = dictionary["properties"] as? JSON {

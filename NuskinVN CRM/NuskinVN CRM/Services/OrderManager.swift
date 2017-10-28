@@ -17,7 +17,7 @@ class OrderManager: NSObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         }
         var predicate2 = NSPredicate(format: "1 > 0")
         
@@ -50,7 +50,7 @@ class OrderManager: NSObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id_card_no])
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         }
         let predicate3 = NSPredicate(format: "synced == false")
         

@@ -57,6 +57,8 @@ UITabBarControllerDelegate {
         
         configView()
         configText()
+        // add menu from root
+        addDefaultMenu()
         
         LocalService.shared.isShouldSyncData = {[weak self] in
             if let _self = self {

@@ -21,9 +21,7 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     var listData:Array<String>?
     
-    let maxHeight:CGFloat = {
-        return 250
-    }()
+    let maxHeight:CGFloat = 250
     
     // MARK: - INIT
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -53,6 +51,10 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
     }
     
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
+        
+        tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
+        
         let point:CGPoint = hostView!.superview!.convert(hostView!.frame.origin, to: nil)
         
         var newframe:CGRect = hostView!.frame
@@ -63,12 +65,37 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         containerTable.frame = newframe
         var oldframe = newframe
         oldframe.size.width = hostView!.superview!.frame.size.width
-        if CGFloat(listData!.count*44) > maxHeight {
+        if tableView.contentSize.height > maxHeight {
             oldframe.size.height = maxHeight
         } else {
-            oldframe.size.height = CGFloat(listData!.count*44)
+            oldframe.size.height = tableView.contentSize.height
         }
-      
+        
+        UIView.animate(withDuration: 0.5, animations: { () -> Void in
+            self.containerTable.frame = oldframe
+        }) { (_) -> Void in
+            
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        
+        let point:CGPoint = hostView!.superview!.convert(hostView!.frame.origin, to: nil)
+        
+        var newframe:CGRect = hostView!.frame
+        newframe.origin.x = hostView!.superview!.frame.origin.x
+        newframe.origin.y = point.y + hostView!.frame.maxY
+        newframe.size.width = hostView!.superview!.frame.size.width
+        newframe.size.height = 1
+        containerTable.frame = newframe
+        var oldframe = newframe
+        oldframe.size.width = hostView!.superview!.frame.size.width
+        if tableView.contentSize.height > maxHeight {
+            oldframe.size.height = maxHeight
+        } else {
+            oldframe.size.height = tableView.contentSize.height
+        }
+        
         UIView.animate(withDuration: 0.5, animations: { () -> Void in
             self.containerTable.frame = oldframe
         }) { (_) -> Void in
@@ -85,7 +112,9 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
             let point:CGPoint = fromView.superview!.convert(fromView.frame.origin, to: nil)
         
             addTableView()
-            tableView.reloadData()
+            tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.top)
+            tableView.layoutIfNeeded()
+            self.view.layoutIfNeeded()
             
             var newframe:CGRect = fromView.frame
             newframe.origin.x = fromView.superview!.frame.origin.x
@@ -95,19 +124,16 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
             containerTable.frame = newframe
             var oldframe = newframe
             oldframe.size.width = fromView.superview!.frame.size.width
-            if CGFloat(listData!.count*44) > maxHeight {
+            if tableView.contentSize.height > maxHeight {
                 oldframe.size.height = maxHeight
             } else {
-                oldframe.size.height = CGFloat(listData!.count*44)
+                oldframe.size.height = tableView.contentSize.height
             }
- 
-            self.view.layoutIfNeeded()
-            UIView.animate(withDuration:0.5, animations: { () -> Void in
-                self.containerTable.frame = oldframe
-            }) { (_) -> Void in
-            }
+            self.containerTable.frame = oldframe
         }
     }
+    
+    
     
     // MARK: - PRIVATE
     func addTableView() {
@@ -115,6 +141,8 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         tableView = UITableView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 1, height: 1)), style: .plain)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 50
         containerTable.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.topAnchor.constraint(equalTo: containerTable.topAnchor).isActive = true
@@ -148,11 +176,8 @@ extension PopupController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         cell.textLabel?.text = listData![indexPath.row]
+        cell.textLabel?.numberOfLines = 0
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(44)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -88,13 +88,27 @@ final class LocalService: NSObject {
         self.syncCustomers()
         
         // products
-        SyncService.shared.syncProducts(completion: {_ in })
+        SyncService.shared.syncProducts(completion: {_ in
+            NotificationCenter.default.post(name:Notification.Name("SyncData:Group&Product"),object:nil)
+        })
         
         // orders
         self.syncOrders()
         
         // order items
         self.syncOrdersItems()
+        
+        //user
+        self.syncUser()
+    }
+    
+    private func syncUser() {
+        guard let user = UserManager.currentUser() else { return }
+        if user.synced == false {
+            SyncService.shared.syncUser({ _ in
+                
+            })
+        }
     }
     
     private func syncOrdersItems(_ onComplete:(()->Void)? = nil) {

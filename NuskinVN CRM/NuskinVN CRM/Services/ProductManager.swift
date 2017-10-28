@@ -11,20 +11,26 @@ import CoreData
 
 class ProductManager: NSObject {
     
-    static func getAllProducts(search:String? = nil, onComplete:(([ProductDO])->Void)) {
+    static func getAllProducts(search:String? = nil,groupID:Int64? = 0, onComplete:(([ProductDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ProductDO")
         fetchRequest.returnsObjectsAsFaults = false
         var predicate2 = NSPredicate(format: "1 > 0")
+        var predicate1 = NSPredicate(format: "1 > 0")
         let predicate3 = NSPredicate(format: "status == 1")
         if let text = search {
             if text.characters.count > 0 {
                 predicate2 = NSPredicate(format: "name contains[cd] %@ OR keyword contains[cd] %@",text,text)
             }
         }
+        if let id = groupID {
+            if id > 0 {
+                predicate1 = NSPredicate(format: "cat_id IN %@",[id])
+            }
+        }
         
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate3])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "price", ascending: true),NSSortDescriptor(key: "retail_price", ascending: true)]
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "price", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
         do {
@@ -40,8 +46,32 @@ class ProductManager: NSObject {
         }
     }
     
+    static func getAllGroups(_ onComplete:(([GroupProductDO])->Void)) {
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupProductDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let predicate3 = NSPredicate(format: "status == 1")
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate3])
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.predicate = predicateCompound
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            var list:[GroupProductDO] = []
+            list = result.flatMap({$0 as? GroupProductDO})
+            onComplete(list)
+            
+        } catch {
+            let fetchError = error as NSError
+            onComplete([])
+            print(fetchError)
+        }
+    }
+    
     static func saveProducctWith(array: [JSON]) {
-        ProductManager.clearData(array,onComplete: { array in
+        ProductManager.clearDataProduct {
             if array.count > 0 {
                 _ = array.map{ProductManager.createProductEntityFrom(dictionary: $0)}
             }
@@ -50,7 +80,20 @@ class ProductManager: NSObject {
             } catch let error {
                 print(error)
             }
-        })
+        }
+    }
+    
+    static func saveGroupWith(array: [JSON]) {
+        ProductManager.clearDataGroupProduct {
+            if array.count > 0 {
+                _ = array.map{ProductManager.createGroupEntityFrom(dictionary: $0)}
+            }
+            do {
+                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
+            } catch let error {
+                print(error)
+            }
+        }
     }
     
     static func updateProductEntity(_ product:NSManagedObject, onComplete:(()->Void)) {
@@ -148,55 +191,110 @@ class ProductManager: NSObject {
         return nil
     }
     
-    static func clearData(_ fromList:[JSON], onComplete:(([JSON])->Void)) {
+    static func createGroupEntityFrom(dictionary: JSON) -> NSManagedObject? {
+        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        if let object = NSEntityDescription.insertNewObject(forEntityName: "GroupProductDO", into: context) as? GroupProductDO {
+            if let data = dictionary["id"] as? String {
+                object.id = Int64(data)!
+            } else if let data = dictionary["id"] as? Int64 {
+                object.id = data
+            }
+            
+            if let data = dictionary["store_id"] as? String {
+                object.store_id = Int64(data)!
+            } else if let data = dictionary["store_id"] as? Int64 {
+                object.store_id = data
+            }
+            
+            if let data = dictionary["parent_id"] as? String {
+                object.parent_id = Int64(data)!
+            } else if let data = dictionary["parent_id"] as? Int64 {
+                object.parent_id = data
+            }
+            if let data = dictionary["position"] as? String {
+                object.position = Int64(data)!
+            } else if let data = dictionary["position"] as? Int64 {
+                object.position = data
+            }
+            
+            if let data = dictionary["slug"] as? String {
+                object.slug = data
+            } else if let data = dictionary["slug"] as? Int64 {
+                object.slug = "\(data)"
+            }
+            
+            if let data = dictionary["viewed"] as? String {
+                object.viewed = Int64(data)!
+            } else if let data = dictionary["viewed"] as? Int64 {
+                object.viewed = data
+            }
+            
+            if let data = dictionary["status"] as? String {
+                object.status = Int64(data)!
+            } else if let data = dictionary["status"] as? Int64 {
+                object.status = data
+            }
+            
+            if let data = dictionary["name"] as? String {
+                object.name = data
+            }
+            
+            if let data = dictionary["sapo"] as? String {
+                object.sapo = data
+            }
+            
+            if let data = dictionary["keyword"] as? String {
+                object.keyword = data
+            }
+            
+            if let properties = dictionary["properties"] as? JSON {
+                let jsonData = try! JSONSerialization.data(withJSONObject: properties)
+                if let pro = String(data: jsonData, encoding: .utf8) {
+                    object.properties = pro
+                }
+            }
+            
+            return object
+        }
+        return nil
+    }
+    
+    static func clearDataProduct(_ complete:(()->Void)) {
         do {
-            var list:[JSON] = []
+            
             let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ProductDO")
             fetchRequest.returnsObjectsAsFaults = false
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {
-                    let obj = $0
-                    _ = fromList.contains(where: { (item) -> Bool in
-                        if let data = item["id"] as? String {
-                            if let id = Int64(data) {
-                                _ = obj.map{
-                                    let productDO = $0 as! ProductDO
-                                    if id == productDO.id {
-                                        list.append(item)
-                                        context.delete($0)
-                                    }
-                                }
-                            }
-                        }
-                        return false
-                    })
+                    $0.map({context.delete($0)})
                 }
                 CoreDataStack.sharedInstance.saveContext()
-                list = fromList.filter {
-                    if let dt = $0["id"] as? String {
-                        if let hID = Int64(dt) {
-                            if list.count == 0 {
-                                return true
-                            }
-                            return list.contains(where: { (item) -> Bool in
-                                if let data = item["id"] as? String {
-                                    if let id = Int64(data) {
-                                        if id == hID {
-                                            return false
-                                        }
-                                    }
-                                }
-                                return true
-                            })
-                        }
-                    }
-                    return true
-                }
-                onComplete(list)
+                complete()
             } catch let error {
                 print("ERROR DELETING : \(error)")
+                complete()
+            }
+        }
+    }
+    
+    static func clearDataGroupProduct(_ complete:(()->Void)) {
+        do {
+            
+            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupProductDO")
+            fetchRequest.returnsObjectsAsFaults = false
+            do {
+                let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
+                _ = objects.map {
+                    $0.map({context.delete($0)})
+                }
+                CoreDataStack.sharedInstance.saveContext()
+                complete()
+            } catch let error {
+                print("ERROR DELETING : \(error)")
+                complete()
             }
         }
     }

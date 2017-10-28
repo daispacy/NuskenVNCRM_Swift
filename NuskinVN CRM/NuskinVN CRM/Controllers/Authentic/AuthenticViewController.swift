@@ -108,7 +108,7 @@ extension AuthenticViewController {
                             _self.authenticView.btnProcess.stopAnimation()
                             let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
                             _self.present(test, animated: false, completion: {done in
-                                test.message(message: "msg_login_failed".localized(), buttons: ["ok".localized().uppercased()], select: {
+                                test.message(message: "msg_login_failed_or_user_invalid".localized(), buttons: ["ok".localized().uppercased()], select: {
                                     i in
                                     print("item select \(i)")
                                 })

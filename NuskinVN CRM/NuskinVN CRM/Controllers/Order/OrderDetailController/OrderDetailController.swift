@@ -370,7 +370,7 @@ class OrderDetailController: RootViewController {
                             ord.email = customer.email
                         }
                         ord.synced = false
-                        ord.distributor_id = user.id_card_no
+                        ord.distributor_id = user.id
                         ord.address = _self.address_order
                         ord.date_created = Date.init(timeIntervalSinceNow: 0) as NSDate
                         ord.last_updated = Date.init(timeIntervalSinceNow: 0) as NSDate

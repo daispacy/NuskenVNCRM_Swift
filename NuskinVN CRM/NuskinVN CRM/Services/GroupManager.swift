@@ -30,7 +30,7 @@ class GroupManager: NSObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id_card_no])
+            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id])
         }
         let predicate3 = NSPredicate(format: "status == 1")
 //        let predicate2 = NSPredicate(format: "SUBQUERY(customers,$x, ANY $x == customers).@count >= 0")
@@ -57,7 +57,7 @@ class GroupManager: NSObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id_card_no])
+            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id])
         }
         let predicate3 = NSPredicate(format: "synced == false")
         //        let predicate2 = NSPredicate(format: "SUBQUERY(customers,$x, ANY $x == customers).@count >= 0")

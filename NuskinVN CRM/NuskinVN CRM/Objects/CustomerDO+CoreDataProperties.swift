@@ -38,6 +38,8 @@ extension CustomerDO {
     @NSManaged public var store_id: Int64
     @NSManaged public var tel: String?
     @NSManaged public var type: Int64
+    @NSManaged public var city_id: Int64
+    @NSManaged public var district_id: Int64
     @NSManaged public var username: String?
 //    @NSManaged public var viber: String?
 //    @NSManaged public var zalo: String?

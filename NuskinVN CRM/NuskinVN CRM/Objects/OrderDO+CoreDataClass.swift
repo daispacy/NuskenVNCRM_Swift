@@ -88,7 +88,7 @@ public class OrderDO: NSManagedObject {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
 //            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
         if let user = UserManager.currentUser() {
-            fetchRequest.predicate = NSPredicate(format: "(id IN %@ OR local_id IN %@) AND distributor_id IN %@", [customer_id],[customer_id],[user.id_card_no])
+            fetchRequest.predicate = NSPredicate(format: "(id IN %@ OR local_id IN %@) AND distributor_id IN %@", [customer_id],[customer_id],[user.id])
         }
             fetchRequest.returnsObjectsAsFaults = false
             

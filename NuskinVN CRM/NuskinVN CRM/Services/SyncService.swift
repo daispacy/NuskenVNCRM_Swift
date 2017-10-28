@@ -14,15 +14,17 @@ enum Server:String {
     case domain = "https://nuskinvncrm.com/mobile.php"
     case domainImage = "https://nuskinvncrm.com"
     case op = "mobile"
-    case ver = "1.0"
+    case ver = "1.1"
     case act_authentic = "authentic"
     case act_resetpw = "resetpw"
     case act_customers = "customers"
     case act_group = "groupcustomers"
     case act_product = "product"
+    case act_productgroup = "allgroup&product"
     case act_config = "config"
     case act_dashboard = "dashboard"
     case act_order = "order"
+    case act_user = "user"
 }
 
 protocol SyncServiceDelegate:class {
@@ -36,6 +38,7 @@ final class SyncService: NSObject {
         case unAuthorized = 401
         case notFound = 404
         case cantParseData = 501
+        case invalid = 0
     }
     
     static let shared = SyncService()
@@ -159,11 +162,17 @@ final class SyncService: NSObject {
                         if error == 0 {
                             if let json:JSON = jsonArray["data"] as? JSON{                                
                                 if let user:UserDO = UserManager.saveUserWith(dictionary: json) {
-                                    completion(.success(user))
+                                    if user.status == 0 {
+                                        if let reason = GetDataFailureReason(rawValue: 0) {
+                                            completion(.failure(reason))
+                                        }
+                                    } else {
+                                        completion(.success(user))
+                                    }
                                 }
                             }
                         } else {
-                            if let reason = GetDataFailureReason(rawValue: 404) {
+                            if let reason = GetDataFailureReason(rawValue: (jsonArray["code"] as? Int) ?? 530) {
                                 completion(.failure(reason))
                             }
                         }
@@ -212,6 +221,70 @@ final class SyncService: NSObject {
         }
     }
     
+    func syncUser(_ completion: @escaping GetUserCompletion) {
+        guard let user = UserManager.currentUser() else { return}
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_user.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        
+        parameters["store_id"] = user.store_id
+        parameters["distributor_id"] = user.id
+        
+        if let data = user.address {
+            parameters["address"] = data
+        }
+        
+        if let data = user.email {
+            parameters["email"] = data
+        }
+        
+        if let data = user.fullname {
+            parameters["fullname"] = data
+        }
+        
+        if let data = user.tel {
+            parameters["tel"] = data
+        }
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        completion(.failure(GetDataFailureReason(rawValue: 504)))
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let json:JSON = jsonArray["data"] as? JSON{
+                                if let user:UserDO = UserManager.saveUserWith(dictionary: json) {
+                                    if user.status == 0 {
+                                        if let reason = GetDataFailureReason(rawValue: 0) {
+                                            completion(.failure(reason))
+                                        }
+                                    } else {
+                                        completion(.success(user))
+                                    }
+                                }
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: (jsonArray["code"] as? Int) ?? 530) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let statusCode = response.response?.statusCode,
+                        let reason = GetDataFailureReason(rawValue: statusCode) {
+                        completion(.failure(reason))
+                    }
+                    completion(.failure(nil))
+                }
+        }
+    }
+    
     // MARK: - CUSTOMER
     typealias GetCustomerDOResult = Result<[JSON], GetDataFailureReason>
     typealias GetCustomerDOCompletion = (_ result: GetCustomerDOResult) -> Void
@@ -225,7 +298,7 @@ final class SyncService: NSObject {
         parameters["page"] = 1
         parameters["number_item"] = 99999
         parameters["type"] = "all"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -268,7 +341,7 @@ final class SyncService: NSObject {
         guard let user = UserManager.currentUser() else { return}
         parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -319,7 +392,7 @@ final class SyncService: NSObject {
         guard let user = UserManager.currentUser() else { return}
         parameters["store_id"] = user.store_id
         parameters["type"] = "all"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -365,7 +438,7 @@ final class SyncService: NSObject {
         guard let user = UserManager.currentUser() else { return}
         parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -421,7 +494,7 @@ final class SyncService: NSObject {
         guard let user = UserManager.currentUser() else { return}
         parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -476,7 +549,7 @@ final class SyncService: NSObject {
         guard let user = UserManager.currentUser() else { return}
         parameters["store_id"] = user.store_id
         parameters["type"] = "getorderitems"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -521,7 +594,7 @@ final class SyncService: NSObject {
         
         parameters["store_id"] = user.store_id
         parameters["type"] = "all"
-        parameters["distributor_id"] = user.id_card_no
+        parameters["distributor_id"] = user.id
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -553,8 +626,8 @@ final class SyncService: NSObject {
         }
     }
     
-    // MARK: - Product
-    typealias GetProductResult = Result<[JSON], GetDataFailureReason>
+    // MARK: - Product & Group Product
+    typealias GetProductResult = Result<JSON, GetDataFailureReason>
     typealias GetProductCompletion = (_ result: GetProductResult) -> Void
     func syncProducts(completion: @escaping GetProductCompletion) {
         guard let user = UserManager.currentUser() else { return}
@@ -564,7 +637,7 @@ final class SyncService: NSObject {
             "app_key":"\(Server.app_key.rawValue)"]
         
         parameters["store_id"] = user.store_id
-        parameters["type"] = "all"
+        parameters["type"] = "allgroup&product"
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -579,9 +652,14 @@ final class SyncService: NSObject {
                     }
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
-                            if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
-                                ProductManager.saveProducctWith(array: jsonArray)
-                                completion(.success(jsonArray))
+                            if let json:JSON = jsonArray["data"] as? JSON{
+                                if let jsonGroup:[JSON] = json["products"] as? [JSON]{
+                                    ProductManager.saveProducctWith(array: jsonGroup)
+                                }
+                                if let jsonGroup:[JSON] = json["groups"] as? [JSON]{
+                                    ProductManager.saveGroupWith(array: jsonGroup)
+                                }
+                                completion(.success(json))
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {
