@@ -18,7 +18,7 @@ class CustomerSelectedListCell: UITableViewCell {
     @IBOutlet var lblName: UILabel!
     @IBOutlet var btnEdit: UIButton!
     @IBOutlet var stackViewContainer: UIStackView!
-    
+    var viewcontroller:UIViewController?
     
     var onSelectCustomer:((CustomerDO, Bool) -> Void)?
     var onEditCustomer:((CustomerDO) -> Void)?
@@ -95,6 +95,10 @@ class CustomerSelectedListCell: UITableViewCell {
         
         lblName.text = customer.fullname
        
+        if customer.listOrders().count > 0 {
+            self.btnCheck.isEnabled = false
+        }
+        
         if let avaStr = customer.avatar {
             if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                 if avaStr.contains(".jpg") {
@@ -111,6 +115,15 @@ class CustomerSelectedListCell: UITableViewCell {
     }
     
     func setSelect() {
+        guard let customer = object else { return}
+        if customer.listOrders().count > 0 {
+            guard let vc = self.viewcontroller else {return}
+            Support.popup.showAlert(message: "this_customer_have_order_cant_delete".localized(), buttons: ["ok".localized()], vc: vc, onAction: {i in
+                
+            })
+            
+            return
+        }
         btnCheck.isSelected = !btnCheck.isSelected
         self.isChecked = btnCheck.isSelected
         onSelectCustomer?(object!,btnCheck.isSelected)

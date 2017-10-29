@@ -145,6 +145,7 @@
 		23CAF82C1F7207FC0016DBDF /* NuskinVN_CRMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CAF82B1F7207FC0016DBDF /* NuskinVN_CRMTests.swift */; };
 		23CC3BE31FA0C04200D33F64 /* SyncDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CC3BE11FA0C04200D33F64 /* SyncDataController.swift */; };
 		23CC3BE41FA0C04200D33F64 /* SyncDataController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CC3BE21FA0C04200D33F64 /* SyncDataController.xib */; };
+		23D05A011FA4E28D003504B7 /* MasterDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D05A001FA4E28D003504B7 /* MasterDataManager.swift */; };
 		23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2FB931F8F79F5002EA64E /* SimpleListController.swift */; };
 		23D2FB961F8F79F6002EA64E /* SimpleListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D2FB941F8F79F5002EA64E /* SimpleListController.xib */; };
 		23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */; };
@@ -318,6 +319,7 @@
 		23CAF82D1F7207FC0016DBDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23CC3BE11FA0C04200D33F64 /* SyncDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDataController.swift; sourceTree = "<group>"; };
 		23CC3BE21FA0C04200D33F64 /* SyncDataController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SyncDataController.xib; sourceTree = "<group>"; };
+		23D05A001FA4E28D003504B7 /* MasterDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterDataManager.swift; sourceTree = "<group>"; };
 		23D2FB931F8F79F5002EA64E /* SimpleListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleListController.swift; sourceTree = "<group>"; };
 		23D2FB941F8F79F5002EA64E /* SimpleListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SimpleListController.xib; sourceTree = "<group>"; };
 		23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManageView.swift; sourceTree = "<group>"; };
@@ -747,6 +749,7 @@
 				2353D8DA1F8BA0BE006FCFF1 /* Result.swift */,
 				237F84B51F72DF73008B4822 /* LocalService.swift */,
 				23853AA51F8B30F50039D653 /* SyncService.swift */,
+				23D05A001FA4E28D003504B7 /* MasterDataManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1354,6 +1357,7 @@
 				23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */,
 				232818E21F9C8D5300D57799 /* OrderItemDO+CoreDataProperties.swift in Sources */,
 				23776B1B1F9BEDB3003EE5BF /* OrderDO+CoreDataClass.swift in Sources */,
+				23D05A011FA4E28D003504B7 /* MasterDataManager.swift in Sources */,
 				2302487D1F7547B600177679 /* CButton.swift in Sources */,
 				23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */,
 			);
@@ -1512,8 +1516,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.derasoft.nuskinvncrm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c574bf71-7775-4c2a-948e-92e1847da449";
-				PROVISIONING_PROFILE_SPECIFIER = "NuskinVNCRM Distribution";
+				PROVISIONING_PROFILE = "fb25c7a4-628e-456a-963c-3030bd738266";
+				PROVISIONING_PROFILE_SPECIFIER = "Nuskin CRM Distribution appstore";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1532,8 +1536,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.derasoft.nuskinvncrm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c574bf71-7775-4c2a-948e-92e1847da449";
-				PROVISIONING_PROFILE_SPECIFIER = "NuskinVNCRM Distribution";
+				PROVISIONING_PROFILE = "fb25c7a4-628e-456a-963c-3030bd738266";
+				PROVISIONING_PROFILE_SPECIFIER = "Nuskin CRM Distribution appstore";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

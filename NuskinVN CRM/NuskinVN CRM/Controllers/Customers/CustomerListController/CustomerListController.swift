@@ -231,7 +231,7 @@ extension CustomerListController {
         if self.isEdit {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cellSelected") as! CustomerSelectedListCell
             let isCheked = self.listCustomerSelected.filter({($0).email == (listCustomer[indexPath.row]).email}).count > 0
-            
+            cell.viewcontroller = self
             cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
             cell.onSelectCustomer = {[weak self] customer, isAdd in
                 if let _self = self {

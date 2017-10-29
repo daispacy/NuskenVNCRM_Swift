@@ -28,7 +28,8 @@ class OrderManager: NSObject {
         }
         
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
+        NSSortDescriptor(key: "status", ascending: false)]
         fetchRequest.predicate = predicateCompound
         
         do {
@@ -145,7 +146,7 @@ class OrderManager: NSObject {
             if let data = dictionary["email"] as? String {
                 object.email = data
             }
-            if let data = dictionary["address"] as? String {
+            if let data = dictionary["raddress"] as? String {
                 object.address = data
             }
             if let data = dictionary["tel"] as? String {
@@ -196,6 +197,9 @@ class OrderManager: NSObject {
                 let jsonData = try! JSONSerialization.data(withJSONObject: properties)
                 if let pro = String(data: jsonData, encoding: .utf8) {
                     object.properties = pro
+                }
+                if let add = properties["ship_address"] as? String {
+                    object.address = add
                 }
             }
             

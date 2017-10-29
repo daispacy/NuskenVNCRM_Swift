@@ -54,6 +54,14 @@
         <attribute name="store_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="viewed" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
+    <entity name="MasterDataDO" representedClassName="MasterDataDO" syncable="YES" codeGenerationType="class">
+        <attribute name="data_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="data_text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="data_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="data_value" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
     <entity name="OrderDO" representedClassName="OrderDO" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="cell" optional="YES" attributeType="String" syncable="YES"/>
@@ -147,5 +155,6 @@
         <element name="OrderItemDO" positionX="-1035" positionY="-126" width="126" height="150"/>
         <element name="ProductDO" positionX="-875" positionY="-126" width="128" height="390"/>
         <element name="UserDO" positionX="-1037" positionY="48" width="128" height="270"/>
+        <element name="MasterDataDO" positionX="-1143" positionY="27" width="128" height="135"/>
     </elements>
 </model>

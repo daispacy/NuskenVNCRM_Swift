@@ -157,17 +157,12 @@ class AppConfig: NSObject {
     
     // MARK: - order
     class order: AppConfig {
-        static let listStatus:[JSON] = [["id":Int64(0),"name":"invalid".localized()],
-                                   ["id":Int64(1),"name":"process".localized()],
-                                   ["id":Int64(3),"name":"unprocess".localized()]]
-        static let listPaymentStatus:[JSON] = [["id":Int64(2),"name":"no_charge".localized()],
-                                          ["id":Int64(1),"name":"money_collected".localized()]]
-        static let listPaymentMethod:[JSON] = [["id":Int64(1),"name":"cod".localized()]/*,
-                                          "online".localized(),
-                                          "credit_card".localized(),
-                                          "paypal".localized()*/]
-        static let listTranspoter:[JSON] = [["id":Int64(1),"name":"Vnpost - EMS".localized()],
-                                       ["id":Int64(2),"name":"Viettel post".localized()],
-                                       ["id":Int64(3),"name":"fast_delivery".localized()]]
+        static let listStatus:[JSON] = MasterDataManager.getData("ORDER_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        
+        static let listPaymentStatus:[JSON] = MasterDataManager.getData("PAYMENT_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        
+        static let listPaymentMethod:[JSON] = MasterDataManager.getData("PAYMENT_TYPE").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        
+        static let listTranspoter:[JSON] = MasterDataManager.getData("SHIPPER").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
     }
 }

@@ -412,7 +412,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     
     func validdateData() -> Bool {
         guard let email = self.txtEmail.text, let name = self.txtName.text else { return false }
-        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && CustomerDO.isExist(email:email,except:self.isEdit)
+        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !CustomerDO.isExist(email:email,except:self.isEdit)
         let checkName = name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0
         lblErrorEmail.isHidden = checkEmail
         lblErrorName.isHidden = checkName

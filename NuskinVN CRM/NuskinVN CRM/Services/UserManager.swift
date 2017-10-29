@@ -42,11 +42,11 @@ class UserManager: NSObject {
                 //total_orders_amount
                 OrderManager.getAllOrders(onComplete: { listOrder in
                     _ = listOrder.map({
-                        if $0.status != 0 {
+                        if $0.status != 0 { // invalid
                             totalAmountOrders += $0.totalPrice
-                            if $0.status == 1 {
+                            if $0.status == 1 { // process
                                 totaOrdersprocess += 1
-                            } else if $0.status == 3 {
+                            } else if $0.status == 3 { // unprocess
                                 totalOrdersunprocess += 1
                             }
                         } else {

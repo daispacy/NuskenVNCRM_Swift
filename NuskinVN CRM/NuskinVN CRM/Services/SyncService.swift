@@ -25,6 +25,7 @@ enum Server:String {
     case act_dashboard = "dashboard"
     case act_order = "order"
     case act_user = "user"
+    case act_master_data = "master_data"
 }
 
 protocol SyncServiceDelegate:class {
@@ -245,6 +246,12 @@ final class SyncService: NSObject {
         
         if let data = user.tel {
             parameters["tel"] = data
+        }
+        
+        if !user.synced {
+            parameters["type"] = "sync"
+        } else {
+            parameters["type"] = "update"
         }
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
@@ -670,6 +677,51 @@ final class SyncService: NSObject {
                 case .failure(_):
                     if let reason = GetDataFailureReason(rawValue: 404) {
                         completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
+    // MARK: - Master Data
+    func getMasterData(completion: @escaping GetGroupCompletion) {
+        
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        configuration.timeoutIntervalForResource = 10
+        _ = Alamofire.SessionManager(configuration: configuration)
+        
+        let parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_master_data.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:[JSON] = jsonArray["data"] as? [JSON] {
+                                MasterDataManager.saveDataWith(jsonArray)
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        print("\(reason)")
+                        //                        completion(.failure(reason))
                     }
                 }
         }

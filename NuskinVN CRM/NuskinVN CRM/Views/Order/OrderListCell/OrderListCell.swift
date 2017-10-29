@@ -89,11 +89,11 @@ class OrderListCell: UITableViewCell {
         lblCode.text = order.code
                 
         switch order.status {
-        case 0:
+        case 0: // invalid
             vwStatus.backgroundColor = UIColor(hex:"0xff1744")
-        case 1:
+        case 1: // process
             vwStatus.backgroundColor = UIColor(hex:"0x38a4dd")
-        case 3:
+        case 3: // unprocess
             vwStatus.backgroundColor = UIColor(hex:"0xffab00")
         default:
             vwStatus.backgroundColor = UIColor.clear

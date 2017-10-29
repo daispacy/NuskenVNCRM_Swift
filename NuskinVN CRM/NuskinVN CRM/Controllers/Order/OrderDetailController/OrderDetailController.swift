@@ -23,6 +23,12 @@ class OrderDetailController: RootViewController {
     @IBOutlet var btnPaymentMethod: CButtonWithImageRight2!
     @IBOutlet var btnTransporter: CButtonWithImageRight2!
     @IBOutlet var txtTransporterID: UITextField!
+    
+    @IBOutlet var lblTotalPrice: UILabel!
+    @IBOutlet var lblTotalPV: UILabel!
+    @IBOutlet var lblTextTotalPriccce: UILabel!
+    @IBOutlet var lblTextTotalPV: UILabel!
+    
     @IBOutlet var btnProcess: CButtonAlert!
     @IBOutlet var btnCancel: CButtonAlert!
     
@@ -132,8 +138,10 @@ class OrderDetailController: RootViewController {
         orderProductView.onUpdateProducts = {[weak self] list in
             if let _self = self {
                 _self.listProducts = list
+                _self.updatePricePV()
             }
         }
+        
         onDidLoad = {[weak self] in
             if let _self = self  {
                 _self.orderProductView.show(order: order)
@@ -453,12 +461,36 @@ class OrderDetailController: RootViewController {
         }
         
         btnCancel.setTitle("cancel".localized(), for: .normal)
-
-            addressOrder.text = self.address_order
         
-            txtTransporterID.text = self.transporter_id
+        addressOrder.text = self.address_order
+        
+        txtTransporterID.text = self.transporter_id
         
         
+        lblTextTotalPriccce.text = "total_price".localized()
+        lblTextTotalPV.text = "PV".localized()
+        updatePricePV()
+    }
+    
+    func updatePricePV() {
+        var price:Int64 = 0
+        var pv:Int64 = 0
+        
+        if listProducts.count > 0 {
+            _ = self.listProducts.map({
+                var dict = $0
+                if let pr = dict["price"] as? Int64,
+                    let product = dict["product"] as? ProductDO,
+                    let quantity = dict["total"] as? Int64 {
+                    price += (pr * quantity)
+                    pv += (product.pv * quantity)
+                }
+                
+            })
+        }
+        
+        lblTotalPrice.text = "\(price.toTextPrice()) \("price_unit".localized().uppercased())"
+        lblTotalPV.text = "\(pv.toTextPrice()) \("pv".localized().uppercased())"
     }
     
     func configView() {
@@ -477,6 +509,7 @@ class OrderDetailController: RootViewController {
             orderProductView.onUpdateProducts = {[weak self] list in
                 if let _self = self {
                     _self.listProducts = list
+                    _self.updatePricePV()
                 }
             }
             orderCustomerView.onUpdateData = {[weak self] customer, order_code in
@@ -528,6 +561,15 @@ class OrderDetailController: RootViewController {
         btnCancel.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
         btnCancel.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
         btnCancel.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
+        lblTotalPV.textColor = UIColor(hex: Theme.colorNavigationBar)
+        lblTotalPV.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
+        lblTotalPrice.textColor = UIColor(hex: Theme.colorNavigationBar)
+        lblTotalPrice.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
+        lblTextTotalPV.textColor = UIColor(hex: Theme.color.customer.subGroup)
+        lblTextTotalPV.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        lblTextTotalPriccce.textColor = UIColor(hex: Theme.color.customer.subGroup)
+        lblTextTotalPriccce.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
     }
     
     func hideKeyboard() {

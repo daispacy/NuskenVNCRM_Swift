@@ -26,6 +26,10 @@
 "my_profile" = "Thông tin cá nhân";
 "quit" = "Thoát";
 "update_profile_success" = "Cập nhật thông tin thành công";
+"wire_transfer" = "Chuyển khoản";
+"this_customer_have_order_cant_delete" = "Khách hàng đã có đơn hàng.";
+"total_price" = "Thành tiền:";
+"PV" = "PV:";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

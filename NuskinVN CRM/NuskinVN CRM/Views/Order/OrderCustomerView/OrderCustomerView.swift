@@ -59,18 +59,21 @@ class OrderCustomerView: UIView {
             self.orderCode = code
             self.txtOrderCode.text = code
         }
-        if let tel = order.tel {
-            self.txtTel.text = tel
-        }
-        if let address = order.address {
-            self.txtAddress.text = address
-        }
-        if let email = order.email {
-            self.txtEmail.text = email
-        }
+        
         if let customer = order.customer() {
             self.btnChooseCustomer.setTitle(customer.fullname, for: .normal)
             self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+            
+            if let tel = customer.tel {
+                self.txtTel.text = tel
+            }
+            
+            if let address = customer.address {
+                self.txtAddress.text = address
+            }
+            if let email = customer.email {
+                self.txtEmail.text = email
+            }
         }
         UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
             self.vwTel.alpha = 1
