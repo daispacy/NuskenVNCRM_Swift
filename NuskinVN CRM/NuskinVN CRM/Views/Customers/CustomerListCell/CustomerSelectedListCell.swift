@@ -22,6 +22,7 @@ class CustomerSelectedListCell: UITableViewCell {
     
     var onSelectCustomer:((CustomerDO, Bool) -> Void)?
     var onEditCustomer:((CustomerDO) -> Void)?
+    var onRegisterAgainPreventSync:(()->Void)?
     
     var isEdit:Bool = false
     var object:CustomerDO?
@@ -120,6 +121,9 @@ class CustomerSelectedListCell: UITableViewCell {
             guard let vc = self.viewcontroller else {return}
             Support.popup.showAlert(message: "this_customer_have_order_cant_delete".localized(), buttons: ["ok".localized()], vc: vc, onAction: {i in
                 
+            }, { [weak self] index in
+                guard let _self = self else {return}
+                _self.onRegisterAgainPreventSync?()
             })
             
             return
@@ -141,6 +145,7 @@ class CustomerSelectedListCell: UITableViewCell {
         removeFunctionView()
         imgAvatar.image = nil
         btnCheck.isSelected = false
+        btnCheck.isEnabled = true
         isChecked = false
         isSelect = false
         isEdit = false

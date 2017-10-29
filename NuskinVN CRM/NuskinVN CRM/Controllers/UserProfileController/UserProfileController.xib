@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13526"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UserProfileController" customModule="NuskinVN_CRM">
             <connections>
                 <outlet property="btnCancel" destination="bvt-Cx-56A" id="YmG-Ej-7Ni"/>
+                <outlet property="btnChangePassword" destination="Q9n-Qm-j2e" id="LBW-x2-BZ6"/>
                 <outlet property="btnChoosePhotos" destination="qaA-8s-WXU" id="434-fg-jao"/>
                 <outlet property="btnProcess" destination="mOj-UT-hX8" id="fQq-vo-zmj"/>
                 <outlet property="imvAvatar" destination="57b-9y-iMp" id="LJ0-xs-KNz"/>
@@ -41,7 +43,7 @@
                     <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="q0l-lC-sLz">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="586"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="666"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qYN-fZ-zmh">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
@@ -328,33 +330,48 @@
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rsu-qX-lZe" userLabel="button">
-                                    <rect key="frame" x="0.0" y="506" width="375" height="80"/>
+                                    <rect key="frame" x="0.0" y="506" width="375" height="160"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gtD-1k-vzD">
-                                            <rect key="frame" x="187.5" y="0.0" width="60" height="80"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ux9-Xz-Qyi">
+                                            <rect key="frame" x="0.0" y="20" width="375" height="140"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mOj-UT-hX8" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="20" width="20" height="40"/>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9n-Qm-j2e" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="187.5" y="0.0" width="66" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="R8n-Cf-0NQ"/>
+                                                        <constraint firstAttribute="height" constant="40" id="ICk-29-GdP"/>
                                                     </constraints>
                                                     <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                                    <state key="normal" title="Button"/>
                                                 </button>
-                                                <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bvt-Cx-56A" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="20" width="20" height="40"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="Bx0-q9-lhx"/>
-                                                    </constraints>
-                                                    <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
-                                                </button>
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gtD-1k-vzD">
+                                                    <rect key="frame" x="187.5" y="40" width="60" height="100"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mOj-UT-hX8" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="30" width="20" height="40"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="40" id="R8n-Cf-0NQ"/>
+                                                            </constraints>
+                                                            <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bvt-Cx-56A" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="30" width="20" height="40"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="40" id="Bx0-q9-lhx"/>
+                                                            </constraints>
+                                                            <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                                        </button>
+                                                    </subviews>
+                                                </stackView>
                                             </subviews>
                                         </stackView>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="gtD-1k-vzD" secondAttribute="bottom" id="30k-sf-n9j"/>
-                                        <constraint firstItem="gtD-1k-vzD" firstAttribute="centerX" secondItem="rsu-qX-lZe" secondAttribute="centerX" id="Gem-6t-utQ"/>
-                                        <constraint firstItem="gtD-1k-vzD" firstAttribute="top" secondItem="rsu-qX-lZe" secondAttribute="top" id="yZW-sC-PVm"/>
+                                        <constraint firstItem="Ux9-Xz-Qyi" firstAttribute="leading" secondItem="rsu-qX-lZe" secondAttribute="leading" id="FoI-u0-qUL"/>
+                                        <constraint firstItem="Ux9-Xz-Qyi" firstAttribute="top" secondItem="rsu-qX-lZe" secondAttribute="top" constant="20" id="fc9-1V-XDx"/>
+                                        <constraint firstAttribute="height" constant="160" id="gF5-Hs-26h"/>
+                                        <constraint firstAttribute="trailing" secondItem="Ux9-Xz-Qyi" secondAttribute="trailing" id="gsX-PD-Ii9"/>
+                                        <constraint firstAttribute="bottom" secondItem="Ux9-Xz-Qyi" secondAttribute="bottom" id="ykV-bz-rk7"/>
                                     </constraints>
                                 </view>
                             </subviews>

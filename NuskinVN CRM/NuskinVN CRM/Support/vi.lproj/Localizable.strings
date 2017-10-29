@@ -30,6 +30,18 @@
 "this_customer_have_order_cant_delete" = "Khách hàng đã có đơn hàng.";
 "total_price" = "Thành tiền:";
 "PV" = "PV:";
+"sorry_please_select_a_customer" = "Đơn hàng này chưa có khách hàng.";
+"sorry_please_provide_order_code" = "Mã đơn hàng không hợp lệ.";
+"change_pw" = "Đổi mật khẩu";
+"new_password" = "Mật khẩu mới";
+"current_password" = "Mật khẩu hiện tại";
+"retype_password" = "Xác nhận lại mật khẩu";
+"invalid_password" = "Mật khẩu không hợp lệ";
+"invalid_retype_password" = "Mật khẩu không khớp";
+"change_password_success" = "Đổi mật khẩu thành công";
+"change_password_failed" = "Đổi mật khẩu thất bại";
+"password_is_wrong" = "Mật khẩu hiện tại không đúng.";
+"new_password_not_same_current_password" = "Mật khẩu mới không được giống mật khẩu hiện tại.";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

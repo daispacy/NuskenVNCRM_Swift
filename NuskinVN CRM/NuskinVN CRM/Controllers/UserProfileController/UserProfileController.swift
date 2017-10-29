@@ -30,11 +30,13 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
     @IBOutlet var lblErrorEmail: UILabel!
     @IBOutlet var lblErrorName: UILabel!
     @IBOutlet var lblTitle: UILabel!
+    @IBOutlet var btnChangePassword: CButtonAlert!
     
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
     var customer:CustomerDO?
     var onDismissComplete:(()->Void)?
+    var onDidRotate:(()->Void)?
 
     var avatar:String?
     
@@ -71,6 +73,15 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
             }
             return true
         }
+    }
+    
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
+        self.onDidRotate?()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
     }
     
     deinit {
@@ -118,6 +129,9 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
                     if !_self.validdateData() {
                         Support.popup.showAlert(message: "email_invalid_or_name_invalid".localized(), buttons: ["ok".localized()], vc: _self, onAction: {index in
                             
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                         })
                         return
                     }
@@ -125,6 +139,9 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
                     guard let user = UserManager.currentUser() else {
                         Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self, onAction: {index in
                             
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                         })
                         return
                     }
@@ -137,6 +154,13 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
                     UserManager.save()
                     Support.popup.showAlert(message: "update_profile_success".localized(), buttons: ["ok".localized()], vc: _self, onAction: {index in
                         
+                    }, {
+                        LocalService.shared.isShouldSyncData = {[weak self] in
+                            if let _ = self {
+                                return false
+                            }
+                            return true
+                        }
                     })
                 }
                 
@@ -148,6 +172,20 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
                 if let _self = self {
                     _self.dismiss(animated: true, completion:nil)
                     _self.onDismissComplete?()
+                }
+                
+            })
+            .addDisposableTo(disposeBag)
+        
+        btnChangePassword.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                if let _self = self {
+                    let vc = ChangePasswordController(nibName: "ChangePasswordController", bundle: Bundle.main)
+                    _self.present(vc, animated: true, completion: nil)
+                    vc.deinitial = {
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
                 
             })
@@ -207,11 +245,15 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         
         btnProcess.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnProcess.frame, isReverse:true)
         btnProcess.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnProcess.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnCancel.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
         btnCancel.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnCancel.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnCancel.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        
+        btnChangePassword.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
+        btnChangePassword.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
+        btnChangePassword.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblErrorName.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
         lblErrorEmail.font = lblErrorName.font
@@ -250,7 +292,8 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         btnProcess.setTitle("update".localized().uppercased(), for: .normal)
         lblTitle.text = "my_profile".localized().uppercased()
         
-        btnCancel.setTitle("quit".localized(), for: .normal)
+        btnCancel.setTitle("quit".localized().uppercased(), for: .normal)
+        btnChangePassword.setTitle("change_pw".localized().uppercased(), for: .normal)
         
         lblErrorEmail.text = "invalid_email".localized()
         lblErrorName.text = "invalid_fullname".localized()

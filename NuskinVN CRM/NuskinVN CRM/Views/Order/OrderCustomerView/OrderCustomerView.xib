@@ -13,11 +13,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB" customClass="OrderCustomerView" customModule="NuskinVN_CRM" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="376" height="161"/>
+            <rect key="frame" x="0.0" y="0.0" width="376" height="242"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="e93-MF-UxM">
-                    <rect key="frame" x="0.0" y="0.0" width="376" height="161"/>
+                    <rect key="frame" x="0.0" y="0.0" width="376" height="242"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3kC-yb-vx7" userLabel="order_code">
                             <rect key="frame" x="0.0" y="0.0" width="376" height="80"/>
@@ -99,7 +99,7 @@
                             </constraints>
                         </view>
                         <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qyz-de-rNk" userLabel="email">
-                            <rect key="frame" x="0.0" y="161" width="376" height="0.0"/>
+                            <rect key="frame" x="0.0" y="161.5" width="376" height="0.0"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="m25-OW-ez5">
                                     <rect key="frame" x="15" y="5" width="376" height="60.5"/>
@@ -133,7 +133,7 @@
                             </constraints>
                         </view>
                         <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TVk-Db-I4X" userLabel="tel">
-                            <rect key="frame" x="0.0" y="161" width="376" height="0.0"/>
+                            <rect key="frame" x="0.0" y="161.5" width="376" height="0.0"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="elN-2h-ZO8">
                                     <rect key="frame" x="15" y="5" width="376" height="60.5"/>
@@ -167,7 +167,7 @@
                             </constraints>
                         </view>
                         <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9rq-gD-xX4" userLabel="address">
-                            <rect key="frame" x="0.0" y="161" width="376" height="0.0"/>
+                            <rect key="frame" x="0.0" y="161.5" width="376" height="0.0"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="044-4E-ETU">
                                     <rect key="frame" x="15" y="5" width="376" height="60.5"/>
@@ -200,6 +200,40 @@
                                 <constraint firstItem="044-4E-ETU" firstAttribute="leading" secondItem="9rq-gD-xX4" secondAttribute="leading" constant="15" id="w9j-UH-GOs"/>
                             </constraints>
                         </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n5f-Do-4aX" userLabel="address_order">
+                            <rect key="frame" x="0.0" y="162" width="376" height="80"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="jZc-XQ-eVt">
+                                    <rect key="frame" x="15" y="5" width="376" height="60.5"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZOz-P8-Hhk">
+                                            <rect key="frame" x="0.0" y="0.0" width="376" height="20.5"/>
+                                            <accessibility key="accessibilityConfiguration" identifier="address_order"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textField opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="fullname" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vwe-AQ-rn9">
+                                            <rect key="frame" x="0.0" y="20.5" width="376" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" priority="750" constant="40" id="nLh-Ia-WlY"/>
+                                            </constraints>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="jZc-XQ-eVt" secondAttribute="bottom" priority="250" constant="5" id="AKS-vK-W8a"/>
+                                <constraint firstAttribute="trailing" secondItem="jZc-XQ-eVt" secondAttribute="trailing" constant="15" id="Dwg-WP-pKj"/>
+                                <constraint firstAttribute="height" constant="80" id="HPR-yh-BVr"/>
+                                <constraint firstItem="jZc-XQ-eVt" firstAttribute="top" secondItem="n5f-Do-4aX" secondAttribute="top" constant="5" id="N7b-8i-20V"/>
+                                <constraint firstItem="jZc-XQ-eVt" firstAttribute="leading" secondItem="n5f-Do-4aX" secondAttribute="leading" constant="15" id="dc3-Hi-X59"/>
+                            </constraints>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <viewLayoutGuide key="safeArea" id="Rmp-xt-rBE"/>
@@ -218,6 +252,7 @@
                 <outlet property="lblErrorChooseCustomer" destination="YcG-Wr-j4x" id="avb-jr-v1A"/>
                 <outlet property="lblErrorCode" destination="Tbq-p8-Isl" id="RNw-1f-EAt"/>
                 <outlet property="txtAddress" destination="p3i-4y-IpV" id="gJl-lj-PyN"/>
+                <outlet property="txtAddressOrder" destination="vwe-AQ-rn9" id="96n-d8-7NE"/>
                 <outlet property="txtEmail" destination="Jsm-0d-Swo" id="sSV-qO-avx"/>
                 <outlet property="txtOrderCode" destination="Bdj-CU-61X" id="VTS-g8-uuh"/>
                 <outlet property="txtTel" destination="82s-b7-Tw7" id="ntZ-Ch-RVJ"/>
@@ -229,8 +264,9 @@
                 <outletCollection property="collectsLabelBrands" destination="8mz-m5-1Nc" collectionClass="NSMutableArray" id="vzl-mO-WWB"/>
                 <outletCollection property="collectsLabelBrands" destination="V9O-A8-E2o" collectionClass="NSMutableArray" id="Q8r-H9-o9c"/>
                 <outletCollection property="collectsLabelBrands" destination="Y9M-Pi-QKP" collectionClass="NSMutableArray" id="MTH-yR-tFb"/>
+                <outletCollection property="collectsLabelBrands" destination="ZOz-P8-Hhk" collectionClass="NSMutableArray" id="9M9-qU-dM0"/>
             </connections>
-            <point key="canvasLocation" x="55" y="-123.5"/>
+            <point key="canvasLocation" x="55" y="-83"/>
         </view>
     </objects>
     <resources>

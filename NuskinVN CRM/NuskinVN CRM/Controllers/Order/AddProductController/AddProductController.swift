@@ -26,6 +26,7 @@ class AddProductController: UIViewController {
     @IBOutlet var txtSugguestPrice: UITextField!
     @IBOutlet var collectLabelAddProruct: [UILabel]!
     
+    var ondeinitial:(()->Void)?
     var onAddData:((JSON,Bool)->Void)?
     var onCheckProductExist:((ProductDO)->Bool)?
     var onChangeOrderItem:((OrderItemDO)->Void)?
@@ -56,7 +57,7 @@ class AddProductController: UIViewController {
         configText()
         
         LocalService.shared.isShouldSyncData = {[weak self] in
-            if let _self = self {
+            if let _ = self {
                 return false
             }
             return true
@@ -76,6 +77,7 @@ class AddProductController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
         if(tapGesture != nil) {
             self.view.removeGestureRecognizer(tapGesture!)
         }
@@ -115,6 +117,7 @@ class AddProductController: UIViewController {
         self.view.removeGestureRecognizer(tapGesture)
         NotificationCenter.default.removeObserver(self)
         print("\(String(describing: AddProductController.self)) dealloc")
+        self.ondeinitial?()
     }
     
     // MARK: - INTERFACE
@@ -212,6 +215,13 @@ class AddProductController: UIViewController {
                                     if bool {
                                         Support.popup.showAlert(message: "product_exist_in_order".localized(), buttons: ["ok".localized()], vc: self, onAction: {index in
                                                                                      
+                                        }, {
+                                            LocalService.shared.isShouldSyncData = {[weak self] in
+                                                if let _ = self {
+                                                    return false
+                                                }
+                                                return true
+                                            }
                                         })
                                         return
                                     }

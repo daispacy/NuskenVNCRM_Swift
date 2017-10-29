@@ -51,6 +51,7 @@ UISearchBarDelegate{
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardDidHide, object: nil)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,7 +60,12 @@ UISearchBarDelegate{
         refreshList()
     }
     
-    deinit {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.preventSyncData()
+    }
+    
+    deinit {        
         self.view.removeGestureRecognizer(tapGesture!)
         NotificationCenter.default.removeObserver(self)
     }
@@ -107,6 +113,11 @@ UISearchBarDelegate{
             })
         }
         popupC.show(data: listData, fromView: sender)
+        popupC.ondeinitial = {
+            [weak self] in
+            guard let _self = self else {return}
+            _self.preventSyncData()
+        }
     }
     
     // MARK: - private

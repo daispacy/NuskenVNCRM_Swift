@@ -60,13 +60,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "NuskinVN CRM/Controllers/SupportControllers/SyncDataController/SyncDataController.swift"
-            timestampString = "530736402.842231"
+            filePath = "NuskinVN CRM/Controllers/RootViewController.swift"
+            timestampString = "530988586.551887"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
-            landmarkName = "quit(_:)"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "didRotate(from:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

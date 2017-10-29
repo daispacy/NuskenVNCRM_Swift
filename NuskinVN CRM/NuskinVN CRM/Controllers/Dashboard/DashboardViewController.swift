@@ -61,16 +61,6 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
             }
         }
         
-//        SyncService.shared.getDashboard(completion: {[weak self] resut in
-//            if let _self = self {
-//                switch resut {
-//                case .success(let resut):
-//                    _self.reloadData(resut)
-//                case .failure(_):
-//                    print("failed get data for dashboard")
-//                }
-//            }
-//        })
         UserManager.getDataDashboard {[weak self] data in
             if let _self = self {
                 _self.reloadData(data)

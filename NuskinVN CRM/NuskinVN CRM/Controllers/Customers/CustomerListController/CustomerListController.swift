@@ -59,16 +59,10 @@ UITabBarControllerDelegate {
         configText()
         // add menu from root
         addDefaultMenu()
-        
-        LocalService.shared.isShouldSyncData = {[weak self] in
-            if let _self = self {
-                return !_self.isEdit
-            }
-            return true
-        }
     }
     
     deinit {
+
         if self.tableView != nil {
             self.tableView.removeGestureRecognizer(tapGesture!)
             NotificationCenter.default.removeObserver(self)
@@ -82,6 +76,18 @@ UITabBarControllerDelegate {
         tabBarItem  = itemTabbar
         
         updateTableContent()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if self.isEdit {
+            self.preventSyncData()
+        } else {
+            if LocalService.shared.isShouldSyncData != nil {
+                print("REMOVE REGISTER PREVENT SYNC CUSTOMER LIST: \(self.isEdit)")
+                LocalService.shared.isShouldSyncData = nil
+            }
+        }
     }
     
     func updateTableContent() {
@@ -177,6 +183,13 @@ UITabBarControllerDelegate {
             })
         }
         popupC.show(data: listData, fromView: sender)
+        popupC.ondeinitial = {
+            [weak self] in
+            guard let _self = self else {return}
+            if _self.isEdit == false {
+                _self.preventSyncData()
+            }
+        }
     }
     
     @IBAction func addNewCustomer(_ sender: Any) {
@@ -189,6 +202,16 @@ UITabBarControllerDelegate {
     
     @IBAction func checkOrDeleteCustomers(_ sender: Any) {
         isEdit = !isEdit
+        
+        if isEdit {
+            self.preventSyncData()
+        } else {
+            if LocalService.shared.isShouldSyncData != nil {
+                print("REMOVE REGISTER PREVENT SYNC CUSTOMER LIST: \(self.isEdit)")
+                LocalService.shared.isShouldSyncData = nil
+            }
+        }
+        
         if !isEdit {
             if self.listCustomerSelected.count > 0 {
                 Support.popup.showAlert(message: "would_you_like_delete_customers".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: {i in
@@ -209,7 +232,7 @@ UITabBarControllerDelegate {
                         self.configView()
                         self.updateTableContent()
                     }
-                })
+                },nil)
             } else {
                 configView()
                 updateTableContent()
@@ -254,6 +277,11 @@ extension CustomerListController {
 //                        return true
 //                    }
                 }
+            }
+            cell.onRegisterAgainPreventSync = {
+                [weak self] in
+                guard let _self = self else {return}
+                _self.preventSyncData()
             }
             return cell
         } else {

@@ -158,6 +158,8 @@
 		23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA78751F72301E0017E47E /* AuthenticViewController.swift */; };
 		23EBBB011F98B3D600881FBA /* CRM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23EBBAFF1F98B3D600881FBA /* CRM.xcdatamodeld */; };
 		23EBBB031F98B87300881FBA /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EBBB021F98B87200881FBA /* CoreDataStack.swift */; };
+		23ED22631FA628C600D1F046 /* ChangePasswordController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23ED22611FA628C600D1F046 /* ChangePasswordController.xib */; };
+		23ED22641FA628C600D1F046 /* ChangePasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED22621FA628C600D1F046 /* ChangePasswordController.swift */; };
 		23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F09A1F1F780BB1005654F0 /* PoupMenu.swift */; };
 		23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */; };
 		23F68B111F90D243007B94EE /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F68B101F90D243007B94EE /* libsqlite3.0.tbd */; };
@@ -332,6 +334,8 @@
 		23EA78751F72301E0017E47E /* AuthenticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticViewController.swift; sourceTree = "<group>"; };
 		23EBBB001F98B3D600881FBA /* CRM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CRM.xcdatamodel; sourceTree = "<group>"; };
 		23EBBB021F98B87200881FBA /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		23ED22611FA628C600D1F046 /* ChangePasswordController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChangePasswordController.xib; sourceTree = "<group>"; };
+		23ED22621FA628C600D1F046 /* ChangePasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePasswordController.swift; sourceTree = "<group>"; };
 		23F09A1F1F780BB1005654F0 /* PoupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoupMenu.swift; sourceTree = "<group>"; };
 		23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Wrap.swift"; sourceTree = "<group>"; };
 		23F68B101F90D243007B94EE /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
@@ -930,6 +934,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				23ED22601FA628A000D1F046 /* ChangePasswordController */,
 				231D97E61F95C78F003E8DA3 /* SupportControllers */,
 				232E18801FA47D2800C52128 /* UserProfileController */,
 				231D97E51F95C787003E8DA3 /* Order */,
@@ -961,6 +966,15 @@
 				23EA78731F7218640017E47E /* AuthenticView.xib */,
 			);
 			path = AuthenticView;
+			sourceTree = "<group>";
+		};
+		23ED22601FA628A000D1F046 /* ChangePasswordController */ = {
+			isa = PBXGroup;
+			children = (
+				23ED22621FA628C600D1F046 /* ChangePasswordController.swift */,
+				23ED22611FA628C600D1F046 /* ChangePasswordController.xib */,
+			);
+			path = ChangePasswordController;
 			sourceTree = "<group>";
 		};
 		23F09A1E1F780B93005654F0 /* PopupMenu */ = {
@@ -1106,6 +1120,7 @@
 				2357221F1F7D58170096A636 /* Roboto-Light.ttf in Resources */,
 				2357222F1F7D58170096A636 /* Roboto-Black.ttf in Resources */,
 				2357546F1F85DF53003C8B1F /* PopupOptionGroupController.xib in Resources */,
+				23ED22631FA628C600D1F046 /* ChangePasswordController.xib in Resources */,
 				23544BB51F9672E800FA81A5 /* OrderDetailController.xib in Resources */,
 				232D2D001F76C81E00B93B45 /* ChartStatisticsSales.xib in Resources */,
 				230FC7241F8CA66400C51497 /* FunctionStackViewCustomer.xib in Resources */,
@@ -1323,6 +1338,7 @@
 				23C85B941F9790F4004F0DCE /* Date+Wrap.swift in Sources */,
 				23810C311F85338400C0B5C7 /* LocalService.swift in Sources */,
 				232E18881FA4978000C52128 /* UserDO+CoreDataProperties.swift in Sources */,
+				23ED22641FA628C600D1F046 /* ChangePasswordController.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
 				232818E51F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift in Sources */,
 				23B906501FA07BE500FF24C2 /* CustomerSelectedListCell.swift in Sources */,

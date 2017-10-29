@@ -30,6 +30,15 @@ UISearchBarDelegate{
         tableView.addGestureRecognizer(tapGesture!)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.preventSyncData()
+    }
+    
     // MARK: - interface
     func showData(data:[String]) {
         listData = data
@@ -41,7 +50,7 @@ UISearchBarDelegate{
         }
     }
     
-    deinit {
+    deinit {        
         self.tableView.removeGestureRecognizer(tapGesture!)
     }
     

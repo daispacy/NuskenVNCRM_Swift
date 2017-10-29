@@ -10,6 +10,8 @@ import UIKit
 
 class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var startAnimation:(()->Void)?
+    var ondeinitial:(() -> Void)?
     var onSelect:((String,Int) -> Void)?
     var onDismiss:(() -> Void)?
     
@@ -43,11 +45,52 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         // Do any additional setup after loading the view.
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dissMissView))
         vwOverlay.addGestureRecognizer(tapGesture)
+        
+        // prevent sync data while working with order
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
+    }
+   
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard let host = self.hostView else {return}
+        let point:CGPoint = host.superview!.convert(self.hostView!.frame.origin, to: nil)
+        var newframe:CGRect = host.frame
+        newframe.origin.x = host.superview!.frame.origin.x
+        newframe.origin.y = point.y + host.frame.maxY
+        newframe.size.width = host.superview!.frame.size.width
+        newframe.size.height = 1
+        self.containerTable.frame = newframe
+        var oldframe = newframe
+        oldframe.size.width = host.superview!.frame.size.width
+        if self.tableView.contentSize.height > self.maxHeight {
+            oldframe.size.height = self.maxHeight
+        } else {
+            oldframe.size.height = self.tableView.contentSize.height
+        }
+        self.containerTable.frame = oldframe
+        
+        tableView.transform = CGAffineTransform(scaleX: 0, y: 0.5)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+            self.tableView.transform = .identity // get back to original scale in an animated way
+        }, completion: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
     }
     
     deinit {
         vwOverlay.removeGestureRecognizer(tapGesture)
         print("deinit PopupController")
+        self.ondeinitial?()
     }
     
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
@@ -78,30 +121,30 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
     }
     
-    override func viewDidLayoutSubviews() {
-        
-        let point:CGPoint = hostView!.superview!.convert(hostView!.frame.origin, to: nil)
-        
-        var newframe:CGRect = hostView!.frame
-        newframe.origin.x = hostView!.superview!.frame.origin.x
-        newframe.origin.y = point.y + hostView!.frame.maxY
-        newframe.size.width = hostView!.superview!.frame.size.width
-        newframe.size.height = 1
-        containerTable.frame = newframe
-        var oldframe = newframe
-        oldframe.size.width = hostView!.superview!.frame.size.width
-        if tableView.contentSize.height > maxHeight {
-            oldframe.size.height = maxHeight
-        } else {
-            oldframe.size.height = tableView.contentSize.height
-        }
-        
-        UIView.animate(withDuration: 0.5, animations: { () -> Void in
-            self.containerTable.frame = oldframe
-        }) { (_) -> Void in
-            
-        }
-    }
+//    override func viewDidLayoutSubviews() {
+//
+//        let point:CGPoint = hostView!.superview!.convert(hostView!.frame.origin, to: nil)
+//
+//        var newframe:CGRect = hostView!.frame
+//        newframe.origin.x = hostView!.superview!.frame.origin.x
+//        newframe.origin.y = point.y + hostView!.frame.maxY
+//        newframe.size.width = hostView!.superview!.frame.size.width
+//        newframe.size.height = 1
+//        containerTable.frame = newframe
+//        var oldframe = newframe
+//        oldframe.size.width = hostView!.superview!.frame.size.width
+//        if tableView.contentSize.height > maxHeight {
+//            oldframe.size.height = maxHeight
+//        } else {
+//            oldframe.size.height = tableView.contentSize.height
+//        }
+//
+//        UIView.animate(withDuration: 0.5, animations: { () -> Void in
+//            self.containerTable.frame = oldframe
+//        }) { (_) -> Void in
+//
+//        }
+//    }
     
     // MARK:  - INTERFACE
     func show(data:Array<String>? = nil, fromView:UIView) {
@@ -109,27 +152,10 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
             listData = dt
             hostView = fromView
             
-            let point:CGPoint = fromView.superview!.convert(fromView.frame.origin, to: nil)
-        
             addTableView()
             tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.top)
             tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
-            
-            var newframe:CGRect = fromView.frame
-            newframe.origin.x = fromView.superview!.frame.origin.x
-            newframe.origin.y = point.y + fromView.frame.maxY
-            newframe.size.width = fromView.superview!.frame.size.width
-            newframe.size.height = 1
-            containerTable.frame = newframe
-            var oldframe = newframe
-            oldframe.size.width = fromView.superview!.frame.size.width
-            if tableView.contentSize.height > maxHeight {
-                oldframe.size.height = maxHeight
-            } else {
-                oldframe.size.height = tableView.contentSize.height
-            }
-            self.containerTable.frame = oldframe
         }
     }
     

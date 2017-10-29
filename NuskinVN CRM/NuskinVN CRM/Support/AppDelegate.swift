@@ -71,6 +71,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // Support for background fetch
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if (UIApplication.shared.applicationState == .active) {
+            print("PREVENT SYNC BACKGROUND WHEN APP ACTIVE")
+            return
+        }
         print("start fecth")        
         LocalService.shared.startSyncDataBackground {
 //            LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())

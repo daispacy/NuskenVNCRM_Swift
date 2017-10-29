@@ -129,7 +129,7 @@ class Support: NSObject {
             KxMenu.sharedMenu().menuView.target = sender
         }
         
-        static func showAlert(message:String,buttons:Array<String> ,vc:UIViewController, onAction:@escaping ((Int)-> Void)) {
+        static func showAlert(message:String,buttons:Array<String> ,vc:UIViewController, onAction:@escaping ((Int)-> Void),_ deinitial:(()-> Void)?) {
             let test = CustomAlertController(nibName: "CustomAlertController", bundle: Bundle.main)
             vc.present(test, animated: false, completion: {done in
                 test.message(message: message, buttons: buttons, select: {
@@ -137,6 +137,9 @@ class Support: NSObject {
                     onAction(i)
                 })
             })
+            test.onDeinit = {
+                deinitial?()
+            }
         }
     }
     

@@ -70,46 +70,46 @@ final class LocalService: NSObject {
     }
     
     @objc private func syncToServer() {
-        DispatchQueue.global(qos: .background).async {
-            // user
-            self.syncUser()
-            
-            //master data
-            self.syncMasterData()
-            
-            if let bool = self.isShouldSyncData?() {
-                if bool == false {
-                    print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                    NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                    return
-                }
-            }
-            
-            if !Support.connectivity.isConnectedToInternet() {
-                // Device doesn't have internet connection
-                print("Internet Offline")
+        
+        if let bool = LocalService.shared.isShouldSyncData?() {
+            if bool == false {
+                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
                 NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                 return
             }
-            
-            // groups
-            self.syncGroups()
-            
-            // customers
-            self.syncCustomers()
-            
-            // products
-            SyncService.shared.syncProducts(completion: {_ in
-                NotificationCenter.default.post(name:Notification.Name("SyncData:Group&Product"),object:nil)
-            })
-            
-            // orders
-            self.syncOrders()
-            
-            // order items
-            self.syncOrdersItems()
         }
+        
+        if !Support.connectivity.isConnectedToInternet() {
+            // Device doesn't have internet connection
+            print("Internet Offline")
+            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+            return
+        }
+        
+        // user
+        self.syncUser()
+        
+        //master data
+        self.syncMasterData()
+        
+        // groups
+        self.syncGroups()
+        
+        // customers
+        self.syncCustomers()
+        
+        // products
+        SyncService.shared.syncProducts(completion: {_ in
+            NotificationCenter.default.post(name:Notification.Name("SyncData:Group&Product"),object:nil)
+        })
+        
+        // orders
+        self.syncOrders()
+        
+        // order items
+        self.syncOrdersItems()
+        
     }
     
     private func syncMasterData() {
@@ -138,6 +138,9 @@ final class LocalService: NSObject {
             switch result {
             case .success(let data):
                 guard data.count > 0 else {
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                    }
                     print("Dont have new orderitems from server")
                     return
                 }
@@ -184,6 +187,9 @@ final class LocalService: NSObject {
                 switch result {
                 case .success(let data):
                     guard data.count > 0 else {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                        }
                         print("Dont have new orders from server")
                         return
                     }
@@ -235,6 +241,9 @@ final class LocalService: NSObject {
                 switch result {
                 case .success(let data):
                     guard data.count > 0 else {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                        }
                         print("Dont have new customers from server")
                         return
                     }
@@ -287,6 +296,9 @@ final class LocalService: NSObject {
                 switch result {
                 case .success(let data):
                     guard data.count > 0 else {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                        }
                         print("Dont have new group from server")
                         return
                     }

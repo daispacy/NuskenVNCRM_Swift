@@ -151,6 +151,9 @@ extension GroupCustomerController {
                                 }
                             }
                         }
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                     })
                         print("test")
                 default:

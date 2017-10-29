@@ -16,6 +16,7 @@ class CustomAlertController: UIViewController {
     @IBOutlet var vwcontrol: UIView!
     
     private var select_: ((Int) -> Void)?
+    var onDeinit: (()->Void)?
     
     var tapGesture:UITapGestureRecognizer?
     
@@ -26,13 +27,6 @@ class CustomAlertController: UIViewController {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        
-        LocalService.shared.isShouldSyncData = {[weak self] in
-            if let _ = self {
-                return false
-            }
-            return true
-        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -58,6 +52,13 @@ class CustomAlertController: UIViewController {
         
         vwcontrol.layer.cornerRadius = 10;
         vwcontrol.clipsToBounds      = true;
+        
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -66,6 +67,8 @@ class CustomAlertController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        print("REMOVE CCHECK SYNC ALERT")
+        LocalService.shared.isShouldSyncData = nil
         if(tapGesture != nil) {
             self.view.removeGestureRecognizer(tapGesture!)
         }
@@ -73,6 +76,7 @@ class CustomAlertController: UIViewController {
     
     deinit {
         print("\(String(describing: CustomAlertController.self)) dealloc")
+        self.onDeinit?()
     }
     
     // MARK: - INTERFACE

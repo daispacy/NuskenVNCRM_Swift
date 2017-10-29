@@ -24,6 +24,7 @@ class RootViewController: UIViewController {
         _ = onDidLoad?()
     }
     
+    
     // Add an observer for LCLLanguageChangeNotification on viewWillAppear. This is posted whenever a language changes and allows the viewcontroller to make the necessary UI updated. Very useful for places in your app when a language change might happen.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -34,6 +35,10 @@ class RootViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 //        NotificationCenter.default.removeObserver(self)
+        if LocalService.shared.isShouldSyncData != nil{
+            print("REMOVE CHECK PREVENT SYNC")
+            LocalService.shared.isShouldSyncData = nil
+        }
     }
     
     func configText() {
@@ -68,9 +73,28 @@ class RootViewController: UIViewController {
             } else {
                 let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
                 self.navigationController?.present(vc, animated: true, completion: {
-                    
+                    vc.onDidRotate = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.showTabbar(false)
+                    }
+                    vc.onDismissComplete = {[weak self] in
+                        guard let _self = self else {return}
+                        _self.showTabbar(true)
+                    }
                 })
             }
+        }
+    }
+    
+    func preventSyncData() {
+        // prevent sync data while working with order
+        print("REGISTER PREVENT SYNC")
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
         }
     }
     
@@ -115,10 +139,15 @@ class RootViewController: UIViewController {
             self.navigationController?.present(vc, animated: true, completion: {[weak self] in
                 guard let _self = self else {return}
                 _self.showTabbar(false)
+                vc.onDidRotate = {
+                    [weak self] in
+                    guard let _self = self else {return}
+                    _self.showTabbar(false)
+                }
             })
             vc.onDismissComplete = {[weak self] in
                 guard let _self = self else {return}
-                _self.showTabbar()
+                _self.showTabbar(true)
             }
         }
         
@@ -147,7 +176,7 @@ class RootViewController: UIViewController {
         guard let _tabbaController = self.tabBarController else { return }
         let frame = _tabbaController.tabBar.frame;
         let height = frame.size.height;
-        let offsetY = isShow ? -height : height;
+        let offsetY = isShow ? 0-height : height;
         
         // zero duration means no animation
         let duration = 0.3;

@@ -39,6 +39,11 @@ class SyncDataController: RootViewController {
         super.init(coder: aDecoder)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

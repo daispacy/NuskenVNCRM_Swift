@@ -73,16 +73,15 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         configText()
         configView()
         bindControl()
-        
-        LocalService.shared.isShouldSyncData = {[weak self] in
-            if let _ = self {
-                return false
-            }
-            return true
-        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.preventSyncData()
     }
     
     deinit {
+        LocalService.shared.isShouldSyncData = nil
         self.view.removeGestureRecognizer(tapGesture!)
     }
     
@@ -229,6 +228,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     popupC.show(data: ["male".localized(),"female".localized()], fromView: _self.btnGender.superview!)
+                    popupC.ondeinitial = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
             })
             .addDisposableTo(disposeBag)
@@ -327,6 +331,9 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     if !_self.validdateData() {
                         Support.popup.showAlert(message: "email_invalid_or_name_customer_invalid".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                             
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                         })
                         return
                     }
@@ -334,6 +341,9 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     guard let user = UserManager.currentUser() else {
                         Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                             
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                         })
                         return
                     }
@@ -648,5 +658,23 @@ class CButtonWithImageRight2: UIButton {
         super.layoutSubviews()
         imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width - 10, 0, 20)
         titleEdgeInsets = UIEdgeInsetsMake(0, -13, 0, 0)
+    }
+}
+
+extension UIImagePickerController {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        // prevent sync data while working with order
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
+    }
+    
+    open override func viewDidAppear(_ animated: Bool) {
+        LocalService.shared.isShouldSyncData = nil
+        super.viewDidAppear(animated)
     }
 }

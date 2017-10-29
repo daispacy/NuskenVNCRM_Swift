@@ -63,16 +63,9 @@ class OrderDetailController: RootViewController {
         configText()
         binding()
         
-        // prevent sync data while working with order
-        LocalService.shared.isShouldSyncData = {[weak self] in
-            if let _ = self {
-                return false
-            }
-            return true
-        }
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
         
     }
     
@@ -81,9 +74,10 @@ class OrderDetailController: RootViewController {
         NotificationCenter.default.removeObserver(self)
         print("\(String(describing: OrderDetailController.self)) dealloc")
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
+        
+    override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.preventSyncData()
     }
     
     // MARK: - interface
@@ -93,25 +87,12 @@ class OrderDetailController: RootViewController {
         if let address = order.address {
             self.address_order = address
         }
-        self.status = order.status
-       self.payment_method = order.payment_option
         
-        
-        self.payment_status = order.payment_status
-        self.transporter = order.shipping_unit
-        
-        if let svd = order.svd {
-            self.transporter_id = svd
-        }
-        
-        if let code = order.code {
-            self.order_code = code
-        }
-        
-        orderCustomerView.onUpdateData = {[weak self] customer, order_code in
+        orderCustomerView.onUpdateData = {[weak self] customer, order_code, order_address in
             if let _self = self {
                 _self.customerSelected = customer
                 _self.order_code = order_code
+                _self.address_order = order_address
             }
         }
         
@@ -121,14 +102,24 @@ class OrderDetailController: RootViewController {
                 if let cus = customer {
                     if let add = cus.address {
                         Support.popup.showAlert(message: "same_address_customer".localized(), buttons: ["no".localized(),"    \("yes".localized())    "], vc: _self.navigationController!, onAction: {[weak self] index in
-                            if let _self = self {
+                            if let _self = self {                                
                                 if index == 1 {
                                     _self.addressOrder.text = add
                                     _self.address_order = add
-                                    
+                                    _self.orderCustomerView.orderAddress = add
+                                    _self.orderCustomerView.txtAddressOrder.text = add
+                                } else {
+                                    _self.addressOrder.text = ""
+                                    _self.address_order = ""
+                                    _self.orderCustomerView.orderAddress = ""
+                                    _self.orderCustomerView.txtAddressOrder.text = ""
                                 }
+                                
                             }
                             
+                            }, { [weak self] index in
+                                guard let _self = self else {return}
+                                _self.preventSyncData()
                         })
                     }
                 }
@@ -146,6 +137,21 @@ class OrderDetailController: RootViewController {
             if let _self = self  {
                 _self.orderProductView.show(order: order)
                 _self.orderCustomerView.show(order: order)
+                
+                _self.status = order.status
+                _self.payment_method = order.payment_option
+                
+                
+                _self.payment_status = order.payment_status
+                _self.transporter = order.shipping_unit
+                
+                if let svd = order.svd {
+                    _self.transporter_id = svd
+                }
+                
+                if let code = order.code {
+                    _self.order_code = code
+                }
                 _self.configText()
                 _ = AppConfig.order.listStatus.map({[weak self] item in
                     if let _self = self {
@@ -197,6 +203,11 @@ class OrderDetailController: RootViewController {
                     var listData:[String] = []
                     _ = _self.listStatus.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnStatus.superview!)
+                    popupC.ondeinitial = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
             }).addDisposableTo(disposeBag)
         
@@ -226,6 +237,11 @@ class OrderDetailController: RootViewController {
                     var listData:[String] = []
                     _ = _self.listPaymentStatus.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnPaymentStatus.superview!)
+                    popupC.ondeinitial = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
             }).addDisposableTo(disposeBag)
         
@@ -254,6 +270,11 @@ class OrderDetailController: RootViewController {
                     var listData:[String] = []
                     _ = _self.listPaymentMethod.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnPaymentMethod.superview!)
+                    popupC.ondeinitial = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
             }).addDisposableTo(disposeBag)
         
@@ -282,6 +303,11 @@ class OrderDetailController: RootViewController {
                     var listData:[String] = []
                     _ = _self.listTranspoter.map({listData.append($0["name"] as! String)})
                     popupC.show(data: listData, fromView: _self.btnTransporter.superview!)
+                    popupC.ondeinitial = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
             }).addDisposableTo(disposeBag)
         
@@ -310,6 +336,10 @@ class OrderDetailController: RootViewController {
                     guard let user = UserManager.currentUser() else {
                         Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                             
+                        },{[weak self] in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
+                            
                         })
                         return
                     }
@@ -323,6 +353,9 @@ class OrderDetailController: RootViewController {
                         _self.orderCustomerView.lblErrorChooseCustomer.isHidden = false
                         Support.popup.showAlert(message: "sorry_please_select_a_customer".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                             
+                        },{[weak self] in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                         })
                         return
                     }
@@ -330,6 +363,9 @@ class OrderDetailController: RootViewController {
                     if _self.orderCustomerView.lblErrorCode.isHidden == false {
                         Support.popup.showAlert(message: "sorry_please_provide_order_code".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                             
+                        },{[weak self] in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
                         })
                         return
                     }
@@ -412,6 +448,7 @@ class OrderDetailController: RootViewController {
     }
     
     override func configText() {
+        
         _ = collectLabelOrderDetail.map({
             $0.text = $0.accessibilityIdentifier?.localized()
         })
@@ -420,28 +457,28 @@ class OrderDetailController: RootViewController {
         txtTransporterID.placeholder = "transporter_id".localized()
         _ = AppConfig.order.listPaymentMethod.map({[weak self] item in
             if let _self = self {
-                if item["id"] as! Int64 == payment_method {
+                if item["id"] as! Int64 == _self.payment_method {
                     _self.btnPaymentMethod.setTitle(item["name"] as? String, for: .normal)
                 }
             }
         })
         _ = AppConfig.order.listPaymentStatus.map({[weak self] item in
             if let _self = self {
-                if item["id"] as! Int64 == payment_status {
+                if item["id"] as! Int64 == _self.payment_status {
                     _self.btnPaymentStatus.setTitle(item["name"] as? String, for: .normal)
                 }
             }
         })
         _ = AppConfig.order.listStatus.map({[weak self] item in
             if let _self = self {
-                if item["id"] as! Int64 == status {
+                if item["id"] as! Int64 == _self.status {
                     _self.btnStatus.setTitle(item["name"] as? String, for: .normal)
                 }
             }
         })
         _ = AppConfig.order.listTranspoter.map({[weak self] item in
             if let _self = self {
-                if item["id"] as! Int64 == transporter {
+                if item["id"] as! Int64 == _self.transporter {
                     _self.btnTransporter.setTitle(item["name"] as? String, for: .normal)
                 }
             }
@@ -502,8 +539,8 @@ class OrderDetailController: RootViewController {
         // block product view
         orderProductView.navigationController = self.navigationController
        
-        stackViewContainer.insertArrangedSubview(orderCustomerView, at: stackViewContainer.arrangedSubviews.count-2)
-        stackViewContainer.insertArrangedSubview(orderProductView, at: stackViewContainer.arrangedSubviews.count-2)
+        stackViewContainer.insertArrangedSubview(orderCustomerView, at: stackViewContainer.arrangedSubviews.count-3)
+        stackViewContainer.insertArrangedSubview(orderProductView, at: stackViewContainer.arrangedSubviews.count-3)
         
         if self.order == nil {
             orderProductView.onUpdateProducts = {[weak self] list in
@@ -512,10 +549,18 @@ class OrderDetailController: RootViewController {
                     _self.updatePricePV()
                 }
             }
-            orderCustomerView.onUpdateData = {[weak self] customer, order_code in
+            
+            orderProductView.onRegisterPreventSyncAgain = {
+                [weak self] in
+                guard let _self = self else {return}
+                _self.preventSyncData()
+            }
+            
+            orderCustomerView.onUpdateData = {[weak self] customer, order_code, order_address in
                 if let _self = self {
                     _self.customerSelected = customer
                     _self.order_code = order_code
+                    _self.address_order = order_address
                 }
             }
             
@@ -529,10 +574,19 @@ class OrderDetailController: RootViewController {
                                     if index == 1 {
                                         _self.addressOrder.text = add
                                         _self.address_order = add
-                                        
-                                    }
+                                        _self.orderCustomerView.orderAddress = add
+                                        _self.orderCustomerView.txtAddressOrder.text = add
+                                    } else {
+                                        _self.addressOrder.text = ""
+                                        _self.address_order = ""
+                                        _self.orderCustomerView.orderAddress = ""
+                                        _self.orderCustomerView.txtAddressOrder.text = ""
+                                    }                                   
                                 }
                                 
+                                },{[weak self] in
+                                    guard let _self = self else {return}
+                                    _self.preventSyncData()
                             })
                         }
                     }

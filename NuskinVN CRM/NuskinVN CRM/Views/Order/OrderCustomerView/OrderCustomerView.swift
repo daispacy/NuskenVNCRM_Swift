@@ -20,6 +20,7 @@ class OrderCustomerView: UIView {
     @IBOutlet var txtEmail: UITextField!
     @IBOutlet var txtTel: UITextField!
     @IBOutlet var txtAddress: UITextField!
+    @IBOutlet var txtAddressOrder: UITextField!
     
     @IBOutlet var vwEmail: UIView!
     @IBOutlet var vwTel: UIView!
@@ -28,10 +29,11 @@ class OrderCustomerView: UIView {
     
     var customerSelected:CustomerDO?
     var orderCode:String = ""
+    var orderAddress:String = ""
     var disposeBag = DisposeBag()
     var navigationController:UINavigationController?
     var listCustomer:[CustomerDO] = []
-    var onUpdateData:((CustomerDO?,String)->Void)?
+    var onUpdateData:((CustomerDO?,String,String)->Void)?
     var onSelectCustomer:((CustomerDO?)->Void)?
     var order:OrderDO?
     
@@ -60,6 +62,11 @@ class OrderCustomerView: UIView {
             self.txtOrderCode.text = code
         }
         
+        if let code = order.address {
+            self.orderAddress = code
+            self.txtAddressOrder.text = code
+        }
+        
         if let customer = order.customer() {
             self.btnChooseCustomer.setTitle(customer.fullname, for: .normal)
             self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
@@ -71,6 +78,7 @@ class OrderCustomerView: UIView {
             if let address = customer.address {
                 self.txtAddress.text = address
             }
+            
             if let email = customer.email {
                 self.txtEmail.text = email
             }
@@ -111,7 +119,7 @@ class OrderCustomerView: UIView {
                                 _self.txtEmail.text = _self.customerSelected?.email
                                 _self.btnChooseCustomer.setTitle(name, for: .normal)
                                 _self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                                _self.onUpdateData!(_self.customerSelected!,_self.orderCode)
+                                _self.onUpdateData!(_self.customerSelected!,_self.orderCode,_self.orderAddress)
                                 UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                                     _self.vwTel.alpha = 1
                                     _self.vwEmail.alpha = 1
@@ -132,19 +140,25 @@ class OrderCustomerView: UIView {
         txtTel.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.customerSelected?.tel = $0
-                _self.onUpdateData?(_self.customerSelected,_self.orderCode)
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode,_self.orderAddress)
             }
         }).addDisposableTo(disposeBag)
         txtAddress.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.customerSelected?.address = $0
-                _self.onUpdateData?(_self.customerSelected,_self.orderCode)
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode,_self.orderAddress)
             }
         }).addDisposableTo(disposeBag)
         txtOrderCode.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
                 _self.orderCode = $0
-                _self.onUpdateData?(_self.customerSelected,_self.orderCode)
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode,_self.orderAddress)
+            }
+        }).addDisposableTo(disposeBag)
+        txtAddressOrder.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+            if let _self = self {
+                _self.orderAddress = $0
+                _self.onUpdateData?(_self.customerSelected,_self.orderCode,_self.orderAddress)
             }
         }).addDisposableTo(disposeBag)
         
@@ -160,6 +174,7 @@ class OrderCustomerView: UIView {
         configTextfield(txtEmail)
         configTextfield(txtAddress)
         configTextfield(txtOrderCode)
+        configTextfield(txtAddressOrder)
         
         configButton(btnChooseCustomer)
         txtEmail.isEnabled = false
@@ -180,12 +195,12 @@ class OrderCustomerView: UIView {
         txtEmail.placeholder = "placeholder_email".localized()
         txtTel.placeholder = "placeholder_phone".localized()
         txtAddress.placeholder = "placeholder_address".localized()
+        txtAddressOrder.placeholder = "address_order".localized()
         
         btnChooseCustomer.setTitle("placeholder_choose_customer".localized(), for: .normal)
         
         lblErrorCode.text = "invalid_order_code".localized()
         lblErrorChooseCustomer.text = "choose_customer".localized()
-        
         
     }
     

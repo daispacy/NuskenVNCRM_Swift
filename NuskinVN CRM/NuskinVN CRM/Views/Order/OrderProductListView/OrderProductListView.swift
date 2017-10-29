@@ -24,7 +24,7 @@ class OrderProductListView: UIView {
     var onUpdateProducts:(([JSON])->Void)?
     var isFirstLoaded:Bool = false
     var isDisableEdit:Bool = false
-    
+    var onRegisterPreventSyncAgain:(()->Void)?
     var navigationController:UINavigationController?
     
     // MARK: - init
@@ -122,6 +122,9 @@ class OrderProductListView: UIView {
                                             _self.refreshData()
                                         }
                                     }
+                                },{[weak self] in
+                                    guard let _self = self else {return}
+                                    _self.onRegisterPreventSyncAgain?()
                                 })
                             }
                         }
@@ -154,7 +157,10 @@ class OrderProductListView: UIView {
                                     self.refreshData()
                                 }
                             }
-                        })
+                        },{[weak self] in
+                        guard let _self = self else {return}
+                        _self.onRegisterPreventSyncAgain?()
+                    })
                     }
                 })
             }
@@ -209,6 +215,11 @@ class OrderProductListView: UIView {
             }
             self.listOrderItem.append(data)
             self.refreshData()
+        }
+        vc.ondeinitial = {
+            [weak self] in
+            guard let _self = self else { return}
+            _self.onRegisterPreventSyncAgain?()
         }
         
 //        vc.onChangeOrderItem = { orderItem in

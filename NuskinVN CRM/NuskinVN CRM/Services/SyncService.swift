@@ -222,6 +222,45 @@ final class SyncService: NSObject {
         }
     }
     
+    func changePW(current:String, newPW:String, retypePW:String, onDone:(()->Void)?, onFail:((String)->Void)?) {
+        guard let user = UserManager.currentUser() else { return}
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_user.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)",
+            "type":"changepw"]
+        
+        parameters["username"] = user.username
+        parameters["current_password"] = current
+        parameters["new_password"] = newPW
+        parameters["confirm_password"] = retypePW
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        onFail?("")
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            onDone?()
+                        } else {
+                            if let msg:String = jsonArray["message"] as? String{
+                                onFail?(msg.localized())
+                            } else {
+                                onFail?("")
+                            }
+                        }
+                    }
+                case .failure(_):
+                    onFail?("")
+                }
+        }
+    }
+    
     func syncUser(_ completion: @escaping GetUserCompletion) {
         guard let user = UserManager.currentUser() else { return}
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",

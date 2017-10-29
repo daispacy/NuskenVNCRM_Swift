@@ -201,6 +201,20 @@ class OrderManager: NSObject {
                 if let add = properties["ship_address"] as? String {
                     object.address = add
                 }
+                if let data = properties["payment_option"] as? String {
+                    object.payment_option = Int64(data)!
+                } else if let data = properties["payment_option"] as? Int64 {
+                    object.payment_option = data
+                }
+                
+                if let data = properties["shiping"] as? String {
+                    object.shipping_unit = Int64(data)!
+                } else if let data = properties["shiping"] as? Int64 {
+                    object.shipping_unit = data
+                }
+                if let data = properties["svd"] as? String {
+                    object.svd = data
+                }
             }
             
             return object

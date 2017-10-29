@@ -29,7 +29,7 @@ public class GroupDO: NSManagedObject {
     
     func customers()->[CustomerDO] {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.predicate = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)", [id],[local_id])
+        fetchRequest.predicate = NSPredicate(format: "(group_id IN %@ OR group_id IN %@) AND status == 1", [id],[local_id])
         fetchRequest.returnsObjectsAsFaults = false
         
         do {
