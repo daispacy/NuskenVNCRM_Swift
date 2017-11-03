@@ -129,6 +129,7 @@
 		2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */; };
 		238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F5E5A1F8E5767006C55BF /* DatePickerController.swift */; };
 		238F5E5D1F8E5767006C55BF /* DatePickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 238F5E5B1F8E5767006C55BF /* DatePickerController.xib */; };
+		2396401E1FACBF16003BB83B /* OtherExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2396401D1FACBF16003BB83B /* OtherExtension.swift */; };
 		239CB0E01F7EB88800E42781 /* CView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239CB0DF1F7EB88800E42781 /* CView.swift */; };
 		23B9064C1FA0495300FF24C2 /* YAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B9064B1FA0495300FF24C2 /* YAxisValueFormatter.swift */; };
 		23B9064E1FA07BB000FF24C2 /* CustomerSelectedListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23B9064D1FA07BAF00FF24C2 /* CustomerSelectedListCell.xib */; };
@@ -301,6 +302,7 @@
 		2386CBDB1F865A81005B5F23 /* CustomerListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerListCell.xib; sourceTree = "<group>"; };
 		238F5E5A1F8E5767006C55BF /* DatePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerController.swift; sourceTree = "<group>"; };
 		238F5E5B1F8E5767006C55BF /* DatePickerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerController.xib; sourceTree = "<group>"; };
+		2396401D1FACBF16003BB83B /* OtherExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtension.swift; sourceTree = "<group>"; };
 		239CB0DF1F7EB88800E42781 /* CView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CView.swift; sourceTree = "<group>"; };
 		23B9064B1FA0495300FF24C2 /* YAxisValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAxisValueFormatter.swift; sourceTree = "<group>"; };
 		23B9064D1FA07BAF00FF24C2 /* CustomerSelectedListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerSelectedListCell.xib; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				230248781F753C4A00177679 /* CInput */,
 				23C85B931F9790F4004F0DCE /* Date+Wrap.swift */,
 				23B9064B1FA0495300FF24C2 /* YAxisValueFormatter.swift */,
+				2396401D1FACBF16003BB83B /* OtherExtension.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1315,6 +1318,7 @@
 				2302487F1F755B4D00177679 /* Support.swift in Sources */,
 				232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
+				2396401E1FACBF16003BB83B /* OtherExtension.swift in Sources */,
 				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
 				235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */,
 				23CC3BE31FA0C04200D33F64 /* SyncDataController.swift in Sources */,

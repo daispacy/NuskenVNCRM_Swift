@@ -13,6 +13,7 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
     var startAnimation:(()->Void)?
     var ondeinitial:(() -> Void)?
     var onSelect:((String,Int) -> Void)?
+    var onSelectObject:((JSON) -> Void)?
     var onDismiss:(() -> Void)?
     
     var tableView:UITableView!
@@ -20,8 +21,11 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
     @IBOutlet var vwOverlay: UIView!
     var tapGesture:UITapGestureRecognizer!
     var hostView: UIView?
+    var textAlignment:NSTextAlignment = .left
     
     var listData:Array<String>?
+    var listObject:[JSON]?
+    var isObject:Bool = false
     
     let maxHeight:CGFloat = 250
     
@@ -159,6 +163,19 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
     }
     
+    func show(_ data:[JSON]? = nil, fromView:UIView) {
+        if let dt = data {
+            isObject = true
+            listObject = dt
+            hostView = fromView
+            
+            addTableView()
+            tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.top)
+            tableView.layoutIfNeeded()
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     
     
     // MARK: - PRIVATE
@@ -196,18 +213,31 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
 
 extension PopupController {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.isObject {
+            return listObject!.count
+        }
         return listData!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.text = listData![indexPath.row]
+        if self.isObject {
+            let obj = listObject![indexPath.row]
+            cell.textLabel?.text = obj["text"] as? String
+        } else {
+            cell.textLabel?.text = listData![indexPath.row]
+        }
+        cell.textLabel?.textAlignment = textAlignment
         cell.textLabel?.numberOfLines = 0
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onSelect?(listData![indexPath.row],indexPath.row)
+        if self.isObject {
+            onSelectObject?(listObject![indexPath.row])
+        } else {
+            onSelect?(listData![indexPath.row],indexPath.row)
+        }
         self.dissMissView()
     }
 }

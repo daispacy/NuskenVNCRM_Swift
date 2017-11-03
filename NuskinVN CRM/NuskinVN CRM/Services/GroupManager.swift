@@ -24,6 +24,41 @@ class GroupManager: NSObject {
         })
     }
     
+    static func getReportGroup(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:(([GroupDO])->Void)) {
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id])
+        }
+        
+        let predicate3 = NSPredicate(format: "status == 1")
+        var predicate2 = NSPredicate(format: "status == 1")
+        if !isLifeTime {
+            if let from = fromDate,
+                let to = toDate {
+                predicate2 = NSPredicate(format: "(date_created >= %@ AND date_created <= %@ AND distributor_id != 0)",from,to)
+            }
+        }
+        
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "group_name", ascending: true)]
+        fetchRequest.predicate = predicateCompound
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            var list:[GroupDO] = []
+            list = result.flatMap({$0 as? GroupDO})
+            onComplete(list)
+            
+        } catch {
+            let fetchError = error as NSError
+            onComplete([])
+            print(fetchError)
+        }
+    }
+    
     static func getAllGroup(onComplete:(([GroupDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")

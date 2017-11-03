@@ -27,10 +27,28 @@ public class GroupDO: NSManagedObject {
         }
     }
     
-    func customers()->[CustomerDO] {
+    func customers(fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true)->[CustomerDO] {
+        
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.predicate = NSPredicate(format: "(group_id IN %@ OR group_id IN %@) AND status == 1", [id],[local_id])
         fetchRequest.returnsObjectsAsFaults = false
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+        }
+        var predicate2 = NSPredicate(format: "1 > 0")
+        let predicate3 = NSPredicate(format: "status == 1")
+        if !isLifeTime {
+            if let from = fromDate,
+                let to = toDate {
+                predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+            }
+        }
+        
+        let predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[id],[local_id])
+        
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+        fetchRequest.predicate = predicateCompound
         
         do {
             let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)

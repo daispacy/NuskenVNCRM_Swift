@@ -26,6 +26,12 @@ extension String {
         return date!
     }
     
+    func toDate2() -> Date{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss"
+        return dateFormatter.date(from: self) ?? Date.init(timeIntervalSinceNow: 0)
+    }
+    
     func toPrice() -> String {
         if !self.isNumber() { return self }
         let formatter = NumberFormatter()

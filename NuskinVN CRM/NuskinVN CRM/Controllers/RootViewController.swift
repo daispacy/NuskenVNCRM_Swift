@@ -168,8 +168,7 @@ class RootViewController: UIViewController {
             imageView.layer.cornerRadius = 15
             if let user = UserManager.currentUser() {
                 if let avaStr = user.avatar {
-                    if let urlAvatar = user.urlAvatar {
-                        rightButtonMenu.imageView!.layer.cornerRadius = 15;
+                    if let urlAvatar = user.urlAvatar {                        
                         if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                             if avaStr.contains(".jpg") || avaStr.contains(".png"){
                                 imageView.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)

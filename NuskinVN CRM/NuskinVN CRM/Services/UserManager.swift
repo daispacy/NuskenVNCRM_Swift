@@ -11,8 +11,8 @@ import CoreData
 
 class UserManager: NSObject {
     
-    static func getDataDashboard(onComplete:((JSON)->Void)) {
-        CustomerManager.getAllCustomers { list in
+    static func getDataDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true,onComplete:((JSON)->Void)) {
+        CustomerManager.getReportCustomers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { list in
             var dict:JSON = [:]
             dict["total_customers"] = Int64(list.filter{$0.status == 1}.count)
             var ordered:Int64 = 0
@@ -32,15 +32,15 @@ class UserManager: NSObject {
             })
             dict["total_customers_ordered"] = ordered
             dict["total_customers_not_ordered"] = notorderd
-            GroupManager.getAllGroup(onComplete: { listGroup in
+            GroupManager.getReportGroup(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { listGroup in
                 var listCustomer:[JSON] = []
                 _ = listGroup.map({
-                    listCustomer.append(["id":$0.id,"name":$0.group_name ?? "","total":Double($0.customers().count)])
+                    listCustomer.append(["id":$0.id,"name":$0.group_name ?? "","total":Double($0.customers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime).count)])
                 })
                 dict["customers"] = listCustomer
                 
                 //total_orders_amount
-                OrderManager.getAllOrders(onComplete: { listOrder in
+                OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { listOrder in
                     _ = listOrder.map({
                         if $0.status != 0 { // invalid
                             totalAmountOrders += $0.totalPrice
@@ -72,7 +72,7 @@ class UserManager: NSObject {
                 
             })
             
-        }
+        })
     }
     
     static func currentUser() -> UserDO? {

@@ -9,20 +9,16 @@
 import UIKit
 import CoreData
 
-protocol DashboardViewDelegate: class {
-    
-}
-
 class DashboardView: CViewSwitchLanguage {
 
     
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var scrollView: UIScrollView!
     
-    weak var delegate_: DashboardViewDelegate?
+    var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
     
     //custom view
-    var menuDashboard:MenuDashboardView!
+    var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
     var totalSummaryView:TotalSummaryView!
     var totalSalesView:TotalSummaryView!
     var totalSummaryCustomerView:TotalSummaryView!
@@ -37,6 +33,13 @@ class DashboardView: CViewSwitchLanguage {
         NotificationCenter.default.addObserver(self, selector: #selector(DashboardView.reloadWhenDetectRotation), name: NSNotification.Name(rawValue: "App:DeviceRotate"), object: nil)
         configView()
         
+        // block menu
+        menuDashboard.onSelectFilter = {[weak self] from,to,lifetime in
+            guard let _self = self else {return}
+            _self.onSelectFilter?(from,to,lifetime)
+        }
+        
+        stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
     }
     
     deinit {
@@ -46,8 +49,7 @@ class DashboardView: CViewSwitchLanguage {
     // MARK: - INTERFACE
     func configView () {
         
-        // block menu
-//        menuDashboard = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
+        
         
         // block summary
         totalSummaryView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)?.first as! TotalSummaryView
@@ -70,9 +72,6 @@ class DashboardView: CViewSwitchLanguage {
         //block customer ordered before 30 days
 //        birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
         
-        // insert custom view into stack
-//        stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
-        
 //        stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
 //        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
     }
@@ -81,7 +80,9 @@ class DashboardView: CViewSwitchLanguage {
         
         if stackView.arrangedSubviews.count > 0 {
             _ = stackView.arrangedSubviews.map({
-                $0.removeFromSuperview()
+                if !$0.isEqual(menuDashboard) {
+                    $0.removeFromSuperview()
+                }
             })
             configView()
         }

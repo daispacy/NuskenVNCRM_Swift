@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DashboardViewController: RootViewController, DashboardViewDelegate, UITabBarControllerDelegate {
+class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     
     private var dashboardView:DashboardView!
 
@@ -59,12 +59,15 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
             }
         }
         
-        UserManager.getDataDashboard {[weak self] data in
+        self.getDataForDashboard()        
+    }
+    
+    func getDataForDashboard(fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true) {
+        UserManager.getDataDashboard(fromDate, toDate: toDate, isLifeTime: isLifeTime) {[weak self] data in
             if let _self = self {
                 _self.reloadData(data)
             }
         }
-        
     }
     
     func reloadData(_ data:JSON) {
@@ -73,8 +76,11 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     
     override func loadView() {
         dashboardView = Bundle.main.loadNibNamed(String(describing: DashboardView.self), owner: self, options: nil)?.first as! DashboardView
-        dashboardView.delegate_ = self
         self.view = dashboardView
+        dashboardView.onSelectFilter = {[weak self] from, to, lifetime in
+            guard let _self = self else {return}
+            _self.getDataForDashboard(fromDate: from, toDate: to,isLifeTime: lifetime)
+        }
     }        
     
     override func configText() {

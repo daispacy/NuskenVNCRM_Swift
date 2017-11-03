@@ -11,6 +11,40 @@ import CoreData
 
 class OrderManager: NSObject {
     
+    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:(([OrderDO])->Void)) {
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+        }
+        var predicate2 = NSPredicate(format: "1 > 0")
+        if !isLifeTime {
+            if let from = fromDate,
+                let to = toDate {
+                predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+            }
+        }
+        
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
+                                        NSSortDescriptor(key: "status", ascending: false)]
+        fetchRequest.predicate = predicateCompound
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            var list:[OrderDO] = []
+            list = result.flatMap({$0 as? OrderDO})
+            onComplete(list)
+            
+        } catch {
+            let fetchError = error as NSError
+            onComplete([])
+            print(fetchError)
+        }
+    }
+    
     static func getAllOrders(search:String? = nil, onComplete:(([OrderDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
