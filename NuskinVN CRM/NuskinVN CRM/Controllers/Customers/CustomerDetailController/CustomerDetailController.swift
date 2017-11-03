@@ -80,6 +80,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         self.preventSyncData()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.view.endEditing(true)
+    }
+    
     deinit {
         LocalService.shared.isShouldSyncData = nil
         self.view.removeGestureRecognizer(tapGesture!)
@@ -124,6 +129,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         self.city_id = customer.city_id
         self.district_id = customer.district_id
         self.gender = customer.gender
+        if let birth = customer.birthday as Date?{
+            self.birthday = birth
+        }
+        
         let listGroups = customer.listGroups()
         if listGroups.count > 0 {
             self.groupSelected = listGroups.first
@@ -154,7 +163,13 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         //listern data
         txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
             if let _self = self {
-                if CustomerDO.isExist(email:$0,except:_self.isEdit) {
+                var oldemail = ""
+                if let cus = _self.customer {
+                    oldemail = cus.email!
+                }
+                _self.lblErrorEmail.isHidden = true
+                
+                if CustomerDO.isExist(email:$0, oldEmail: oldemail,except:_self.isEdit) {
                     _self.lblErrorEmail.text = "email_has_exist".localized()
                 } else {
                     _self.lblErrorEmail.text = "invalid_email".localized()
@@ -368,6 +383,9 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         customer.setViber(_self.txtViber.text ?? "")
                         customer.city_id = _self.city_id
                         customer.district_id = _self.district_id
+                        if let birth = _self.birthday as NSDate? {
+                            customer.birthday = birth
+                        }
                         customer.synced = false
                         if let group = _self.groupSelected {
                                 customer.group_id = group.id
@@ -380,6 +398,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         })
                     } else {
                         if let customerUpdate = _self.customer {
+                            customerUpdate.email = _self.txtEmail.text
                             customerUpdate.fullname = _self.txtName.text
                             customerUpdate.address = _self.txtAddress.text
                             customerUpdate.avatar = _self.avatar
@@ -396,6 +415,9 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                             customerUpdate.store_id = user.store_id
                             customerUpdate.city_id = _self.city_id
                             customerUpdate.district_id = _self.district_id
+                            if let birth = _self.birthday as NSDate? {
+                                customerUpdate.birthday = birth
+                            }
                             
                             customerUpdate.synced = false
                             if let group = _self.groupSelected {
@@ -422,7 +444,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     
     func validdateData() -> Bool {
         guard let email = self.txtEmail.text, let name = self.txtName.text else { return false }
-        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !CustomerDO.isExist(email:email,except:self.isEdit)
+        var oldemail = ""
+        if let cus = self.customer {
+            oldemail = cus.email!
+        }
+        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !CustomerDO.isExist(email:email,oldEmail: oldemail,except:self.isEdit)
         let checkName = name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0
         lblErrorEmail.isHidden = checkEmail
         lblErrorName.isHidden = checkName
@@ -514,8 +540,6 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         // set value when edit a customer
         if self.customer != nil {
             
-            txtEmail.isEnabled = false
-            
             txtName.text = customer?.fullname
             txtEmail.text = customer?.email
             txtZalo.text = customer?.zalo
@@ -531,10 +555,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                 btnGender.setTitle("female".localized(), for: .normal)
             }
             if let cus = self.customer {
-//                if customer.birthday.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
-//                    btnBirthday.setTitle(customer.birthday, for: .normal)
-//                    self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-//                }
+
                 if let city = cus.city {
                     if city.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         btnCity.setTitle(city, for: .normal)
@@ -548,6 +569,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         btnDistrict.setTitle(country, for: .normal)
                         self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
+                }
+                
+                if let birth = cus.birthday as Date? {
+                    self.btnBirthday.setTitle(birth.toString(dateFormat: "dd/MM/yyyy"), for: .normal)
+                    self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                 }
             }
             self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
@@ -601,16 +627,22 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         })
         
         if let cus = customer {
-            if let avaStr = cus.avatar,
-                let urlAvatar = cus.urlAvatar {
-                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imvAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
-                    } else {
-                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                            let decodedimage = UIImage(data: dataDecoded)
-                            imvAvatar.image = decodedimage
+            if let avaStr = cus.avatar {
+                if let urlAvatar = cus.urlAvatar {
+                    if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                        if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                            imvAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                        } else {
+                            if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                                let decodedimage = UIImage(data: dataDecoded)
+                                imvAvatar.image = decodedimage
+                            }
                         }
+                    }
+                } else {
+                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                        let decodedimage = UIImage(data: dataDecoded)
+                        imvAvatar.image = decodedimage
                     }
                 }
             }
@@ -638,9 +670,12 @@ extension CustomerDetailController {
             let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
             self.avatar = strBase64            
         }
+        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
+        LocalService.shared.startSyncData()
     }
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : Any]?) {
-        // Whatever you want here
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
+        LocalService.shared.startSyncData()
         
     }
 }
@@ -665,16 +700,7 @@ extension UIImagePickerController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         // prevent sync data while working with order
-        LocalService.shared.isShouldSyncData = {[weak self] in
-            if let _ = self {
-                return false
-            }
-            return true
-        }
-    }
-    
-    open override func viewDidAppear(_ animated: Bool) {
-        LocalService.shared.isShouldSyncData = nil
-        super.viewDidAppear(animated)
+        print("REMOVE LOOP SYNC WHEN UIImagePickerController OPENED")
+        LocalService.shared.timerSyncToServer?.invalidate()
     }
 }

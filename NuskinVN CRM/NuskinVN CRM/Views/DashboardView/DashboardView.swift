@@ -117,11 +117,12 @@ class DashboardView: CViewSwitchLanguage {
         
         
         if let data2 = data["total_orders_processed"],
-            let data3 = data["total_orders_not_processed"]{
+            let data3 = data["total_orders_not_processed"],
+            let totalCustomer = data["total_orders_invalid"]{
             chartStatisticsOrder.reload(data)
             stackView.insertArrangedSubview(chartStatisticsOrder, at: stackView.arrangedSubviews.count)
-            chartStatisticsOrder.setTitleOption(one: "process".localized(), two: "unprocess".localized())
-            chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! String)!,Double(data3 as! String)!])
+            chartStatisticsOrder.setTitleOption(one: "process".localized(), two: "unprocess".localized(), three: "invalid".localized())
+            chartStatisticsOrder.setChart(["",""], values: [Double(data2 as! String)!,Double(data3 as! String)!,Double(totalCustomer as! String)!])
         } else {
             chartStatisticsOrder.removeFromSuperview()
         }

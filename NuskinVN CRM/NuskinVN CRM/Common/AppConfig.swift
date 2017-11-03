@@ -111,8 +111,10 @@ class AppConfig: NSObject {
     class navigation: AppConfig {
         static func gotoDashboardAfterSigninSuccess() {
             
+            LocalNotification.registerForLocalNotification(on: UIApplication.shared)
+            
             //start service if signin Success
-//            LocalService.shared.startSyncData()            
+            LocalService.shared.startSyncData()
             
             let vc:UITabBarController = UITabBarController.init()
             let dashboardC:DashboardViewController =  DashboardViewController()

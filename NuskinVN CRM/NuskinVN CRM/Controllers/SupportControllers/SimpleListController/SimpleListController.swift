@@ -81,7 +81,7 @@ extension SimpleListController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        cell.textLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         cell.textLabel?.textColor = UIColor(hex:Theme.color.customer.subGroup)
         cell.textLabel?.text = listFiltered[indexPath.row]
         return cell

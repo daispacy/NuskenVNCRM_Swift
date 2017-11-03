@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         UIApplication.shared.setMinimumBackgroundFetchInterval(60)
-        LocalNotification.registerForLocalNotification(on: UIApplication.shared)
         
         // set default language
         AppConfig.language.setLanguage(language: "vi")
@@ -72,12 +72,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Support for background fetch
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         if (UIApplication.shared.applicationState == .active) {
+            completionHandler(UIBackgroundFetchResult.noData)
             print("PREVENT SYNC BACKGROUND WHEN APP ACTIVE")
             return
         }
         print("start fecth")        
         LocalService.shared.startSyncDataBackground {
-//            LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())
             completionHandler(UIBackgroundFetchResult.newData)
             print("end fecth")
         }
@@ -87,23 +87,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
-        switch application.applicationState {
-            
-        case .inactive:
-            print("Inactive")
-            //Show the view with the content of the push
-            completionHandler(.newData)
-            
-        case .background:
-            print("Background")
-            //Refresh the local model
-            completionHandler(.newData)
-            
-        case .active:
-            print("Active")
-            //Show an in-app banner
+        let aps = userInfo["aps"] as! [String: AnyObject]
+        
+        // 1
+        if aps["content-available"] as? Int == 1 {
+            print("start fecth from remote notification")
+            LocalService.shared.startSyncDataBackground {
+//                LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())
+                completionHandler(.newData)
+                print("end fecth from remote notification")
+            }
+        } else  {
             completionHandler(.newData)
         }
+    }
+    
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+        
+        let token = tokenParts.joined()
+        if let user = UserManager.currentUser() {
+            user.device_token = "\(token)"
+            user.synced = false
+            UserManager.save()
+        }
+    }
+    
+    func application(_ application: UIApplication,
+                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register: \(error)")
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
@@ -119,6 +134,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        if let _ = UserManager.currentUser() {
+            LocalService.shared.startSyncData()
+        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

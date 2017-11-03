@@ -29,7 +29,6 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
     @IBOutlet var txtVNID: UITextField!
     @IBOutlet var lblErrorEmail: UILabel!
     @IBOutlet var lblErrorName: UILabel!
-    @IBOutlet var lblTitle: UILabel!
     @IBOutlet var btnChangePassword: CButtonAlert!
     
     var activeField:UITextField?
@@ -43,11 +42,6 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
     // MARK: - INIT
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
-        self.providesPresentationContextTransitionStyle = true
-        self.definesPresentationContext = true
-        self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -122,6 +116,14 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
     // MARK: - private
     private func bindControl() {
         // event process
+        btnChoosePhotos.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                if let _self = self {
+                    _self.showSelectGetPhotos()
+                }
+            })
+            .addDisposableTo(disposeBag)
+        
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
@@ -150,6 +152,9 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
                     user.address = _self.txtAddress.text
                     user.tel = _self.txtPhone.text
                     user.email = _self.txtEmail.text
+                    if let ava = _self.avatar {
+                        user.avatar = ava
+                    }
                     user.synced = false
                     UserManager.save()
                     Support.popup.showAlert(message: "update_profile_success".localized(), buttons: ["ok".localized()], vc: _self, onAction: {index in
@@ -260,24 +265,10 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         lblErrorName.textColor = UIColor.red
         lblErrorEmail.textColor = lblErrorName.textColor
         
-        lblTitle.textColor = UIColor(hex:Theme.colorNavigationBar)
-        lblTitle.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
-        
         _ = collectBrand.map({
             $0.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
             $0.textColor = UIColor(hex: Theme.color.customer.subGroup)
         })
-        
-        // set value when edit a customer
-        if self.customer != nil {
-            
-            txtEmail.isEnabled = false
-            
-            txtName.text = customer?.fullname
-            txtEmail.text = customer?.email
-            txtPhone.text = customer?.tel
-            txtAddress.text = customer?.address                                    
-        }
     }
     
     override func configText() {
@@ -290,7 +281,7 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         lblErrorEmail.text = "invalid_email".localized()
 
         btnProcess.setTitle("update".localized().uppercased(), for: .normal)
-        lblTitle.text = "my_profile".localized().uppercased()
+        title = "my_profile".localized().uppercased()
         
         btnCancel.setTitle("quit".localized().uppercased(), for: .normal)
         btnChangePassword.setTitle("change_pw".localized().uppercased(), for: .normal)
@@ -308,6 +299,27 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         txtEmail.text = user.email
         txtPhone.text = user.tel
         txtAddress.text = user.address
+        
+        if let avaStr = user.avatar {
+            if let urlAvatar = user.urlAvatar {
+                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                        imvAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                    } else {
+                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                            let decodedimage = UIImage(data: dataDecoded)
+                            imvAvatar.image = decodedimage
+                        }
+                    }
+                }
+            } else {
+                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                    let decodedimage = UIImage(data: dataDecoded)
+                    imvAvatar.image = decodedimage
+                }
+            }
+        }
+        
     }
     
     private func configButton(_ button:UIButton, isHolder:Bool = false) {

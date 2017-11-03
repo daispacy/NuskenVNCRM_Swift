@@ -39,29 +39,45 @@ final class LocalService: NSObject {
             print("Please login before use SYNC")
             return
         }
-        
+        print("START SERVICE SYNC DATA")
         // first
-        self.syncToServer()
+//        self.syncToServer()
         
         if let bool = self.timerSyncToServer?.isValid {
             if bool {self.timerSyncToServer?.invalidate()}
         }
         
         // loop
-        self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*1, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
+        self.timerSyncToServer = Timer.scheduledTimer(timeInterval: 60*2, target: self, selector: #selector(self.syncToServer), userInfo: nil, repeats: true)
     }
     
     func startSyncDataBackground(onComplete:(()->Void)? = nil) {
+        if let bool = LocalService.shared.isShouldSyncData?() {
+            if bool == false {
+                onComplete?()
+                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                return
+            }
+        }
         DispatchQueue.global(qos: .background).async {
-            self.syncUser()
-            self.syncMasterData()
-            self.syncGroups {
-                self.syncCustomers {
-                    self.syncOrders {
-                        self.syncOrdersItems {
-                            DispatchQueue.main.async {
-                                onComplete?()
-                            }
+            self.syncUser{
+                self.syncMasterData{
+                    self.syncGroups {
+                        self.syncCustomers {
+                            SyncService.shared.syncProducts(completion: {_ in
+                                self.syncOrders {
+                                    self.syncOrdersItems {
+                                        DispatchQueue.main.async {
+                                            onComplete?()
+                                            DispatchQueue.main.async {
+                                                NotificationCenter.default.post(name:Notification.Name("SyncData:AllDone"),object:nil)
+                                            }
+                                        }
+                                    }
+                                }
+                            })
                         }
                     }
                 }
@@ -87,6 +103,11 @@ final class LocalService: NSObject {
             return
         }
         
+        self.startSyncDataBackground(onComplete: nil)
+        
+        /*
+        return
+        
         // user
         self.syncUser()
         
@@ -109,20 +130,21 @@ final class LocalService: NSObject {
         
         // order items
         self.syncOrdersItems()
+ */
         
     }
     
-    private func syncMasterData() {
+    private func syncMasterData(_ onComplete:(()->Void)? = nil) {
         SyncService.shared.getMasterData { _ in
-            
+            onComplete?()
         }
     }
     
-    private func syncUser() {
-        guard let _ = UserManager.currentUser() else { return }
+    private func syncUser(_ onComplete:(()->Void)? = nil) {
+        guard let _ = UserManager.currentUser() else { onComplete?(); return }
 //        if user.synced == false {
             SyncService.shared.syncUser({ _ in
-                
+                onComplete?()
             })
 //        }
     }
@@ -138,6 +160,7 @@ final class LocalService: NSObject {
             switch result {
             case .success(let data):
                 guard data.count > 0 else {
+                    onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
@@ -147,17 +170,27 @@ final class LocalService: NSObject {
                 
                 switch result {
                 case .success(let data):
+                    if let bool = LocalService.shared.isShouldSyncData?() {
+                        if bool == false {
+                            onComplete?()
+                            print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            return
+                        }
+                    }
                     if data.count > 0 {
                         print("SAVE ORDERITEM TO CORE DATA")
                         OrderItemManager.resetData {
                             OrderItemManager.saveOrderItemWith(array:data)
                         }
-                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
                         }
                     }
+                    onComplete?()
                 case .failure(_):
+                    onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
@@ -165,6 +198,7 @@ final class LocalService: NSObject {
                     break
                 }
             case.failure(_):
+                onComplete?()
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                 }
@@ -187,6 +221,7 @@ final class LocalService: NSObject {
                 switch result {
                 case .success(let data):
                     guard data.count > 0 else {
+                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
                         }
@@ -200,20 +235,30 @@ final class LocalService: NSObject {
                         _ = list.map({
                             let group = $0
                             group.synced = true
-                            do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
+                            do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{onComplete?()}
                             
                         })
+                        if let bool = LocalService.shared.isShouldSyncData?() {
+                            if bool == false {
+                                onComplete?()
+                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                return
+                            }
+                        }
                         if data.count > 0 {
                             print("SAVE ORDER TO CORE DATA")
                             OrderManager.clearAllDataSynced {
                                 OrderManager.saveOrderWith(array:data)
                             }
-                            onComplete?()
                             DispatchQueue.main.async {
                                 NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
                             }
                         }
+                        onComplete?()
                     case .failure(_):
+                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         }
@@ -221,6 +266,7 @@ final class LocalService: NSObject {
                         break
                     }
                 case.failure(_):
+                    onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
@@ -241,6 +287,7 @@ final class LocalService: NSObject {
                 switch result {
                 case .success(let data):
                     guard data.count > 0 else {
+                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
                         }
@@ -250,6 +297,15 @@ final class LocalService: NSObject {
                     
                     switch result {
                     case .success(let data):
+                        if let bool = LocalService.shared.isShouldSyncData?() {
+                            if bool == false {
+                                onComplete?()
+                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                return
+                            }
+                        }
                         // change state to synced true
                         _ = list.map({
                             let group = $0
@@ -263,12 +319,14 @@ final class LocalService: NSObject {
                             CustomerManager.clearAllDataSynced {
                                 CustomerManager.saveCustomerWith(array: data)
                             }
-                            onComplete?()
+                            
                             DispatchQueue.main.async {
                                 NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
                             }
                         }
+                        onComplete?()
                     case .failure(_):
+                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         }
@@ -276,6 +334,7 @@ final class LocalService: NSObject {
                         break
                     }
                 case.failure(_):
+                    onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
@@ -296,6 +355,7 @@ final class LocalService: NSObject {
                 switch result {
                 case .success(let data):
                     guard data.count > 0 else {
+                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
                         }
@@ -305,6 +365,15 @@ final class LocalService: NSObject {
 
                     switch result {
                     case .success(let data):
+                        if let bool = LocalService.shared.isShouldSyncData?() {
+                            if bool == false {
+                                onComplete?()
+                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                return
+                            }
+                        }
                         _ = list.map({
                             let group = $0
                             group.synced = true
@@ -315,12 +384,14 @@ final class LocalService: NSObject {
                             GroupManager.clearAllDataSynced {
                                 GroupManager.saveGroupWith(array: data)
                             }
-                            onComplete?()
+                            
                             DispatchQueue.main.async {
                                 NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
                             }
                         }
+                        onComplete?()
                     case .failure(_):
+                        onComplete?()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         }
@@ -328,6 +399,7 @@ final class LocalService: NSObject {
                         break
                     }
                 case.failure(_):
+                    onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }

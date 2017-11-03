@@ -48,6 +48,7 @@ public class CustomerDO: NSManagedObject {
         
         var date_created_ = ""
         var last_updated_ = ""
+        var birthday_ = ""
         
         if let created = date_created as Date?{
             date_created_ = created.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
@@ -55,6 +56,10 @@ public class CustomerDO: NSManagedObject {
         
         if let updated = last_login as Date?{
             last_updated_ = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
+        if let updated = birthday as Date?{
+            birthday_ = updated.toString(dateFormat: "yyyy-MM-dd")
         }
         
         return [
@@ -83,13 +88,14 @@ public class CustomerDO: NSManagedObject {
             "properties": proper,
             "date_created": date_created_,
             "last_login": last_updated_,
+            "birthday": birthday_,
             "status": status,
             "synced":synced
         ]
     }
     
-    static func isExist(email:String,except:Bool) -> Bool{
-        
+    static func isExist(email:String, oldEmail:String,except:Bool) -> Bool{
+        guard let user = UserManager.currentUser() else { return true }
         if email.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 {
             return false
         }
@@ -97,9 +103,9 @@ public class CustomerDO: NSManagedObject {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
         fetchRequest.returnsObjectsAsFaults = false
         
-        var predicate = NSPredicate(format: "email == %@", email)
+        var predicate = NSPredicate(format: "email == %@ AND distributor_id == %d", email, user.id)
         if except {
-            predicate = NSPredicate(format: "email == %@ AND email <> %@", email,email)
+            predicate = NSPredicate(format: "email == %@ AND email <> %@ AND distributor_id == %d", email,oldEmail,user.id)
         }
         
         fetchRequest.predicate = predicate
@@ -366,7 +372,7 @@ public class CustomerDO: NSManagedObject {
                         }
                     }
                 } catch {
-                    print("warning parse properties GROUP: \(properties)")
+                    print("warning parse properties customer: \(properties)")
                 }
             }
         }

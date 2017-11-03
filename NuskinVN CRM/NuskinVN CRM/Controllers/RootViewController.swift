@@ -15,6 +15,7 @@ import RxCocoa
 class RootViewController: UIViewController {
     
     var onDidLoad:(()->Bool)?
+    var onReloadData:(()->Void)?
     let disposeBag:DisposeBag = DisposeBag()
     var leftButtonMenu:UIButton!
     var rightButtonMenu:UIButton!
@@ -49,6 +50,47 @@ class RootViewController: UIViewController {
         print("\(String(describing: self.self)) dealloc")
     }
 
+    func refreshAvatar() {
+        _ = rightButtonMenu.subviews.map({ (view) in
+            if view.tag == 1111 {
+                view.removeFromSuperview()
+            }
+        })
+        let imageView:UIImageView = UIImageView(image: UIImage(named: "menu_profile_white_76"))
+        imageView.tag = 1111
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 15
+        if let user = UserManager.currentUser() {
+            if let avaStr = user.avatar {
+                if let urlAvatar = user.urlAvatar {
+                    rightButtonMenu.imageView!.layer.cornerRadius = 15;
+                    if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                        if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                            imageView.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                        } else {
+                            if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                                let decodedimage = UIImage(data: dataDecoded)
+                                imageView.image = decodedimage
+                            }
+                        }
+                    }
+                } else {
+                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                        let decodedimage = UIImage(data: dataDecoded)
+                        imageView.image = decodedimage
+                    }
+                }
+            }
+        }
+        rightButtonMenu.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: rightButtonMenu.centerXAnchor).isActive = true
+        imageView.centerYAnchor.constraint(equalTo: rightButtonMenu.centerYAnchor).isActive = true
+    }
+    
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "App:DeviceRotate"), object: nil)
@@ -72,7 +114,8 @@ class RootViewController: UIViewController {
                                        selector: #selector(self.menuItemLeftPress(menuItem:)))
             } else {
                 let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
-                self.navigationController?.present(vc, animated: true, completion: {
+                let nv = UINavigationController(rootViewController: vc)
+                self.navigationController?.present(nv, animated: true, completion: {
                     vc.onDidRotate = {
                         [weak self] in
                         guard let _self = self else {return}
@@ -103,7 +146,7 @@ class RootViewController: UIViewController {
         let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
         self.navigationController?.present(vc, animated: false, completion: {
             vc.startSync(true)
-        })
+        })        
     }
     
     func addDefaultMenu (_ onlyLeft:Bool = false) {
@@ -118,7 +161,40 @@ class RootViewController: UIViewController {
         if !onlyLeft {
             // Do any additional setup after loading the view.
             rightButtonMenu = UIButton(type: .custom)
-            rightButtonMenu.setImage(UIImage(named: "menu_profile_white_76"), for: .normal)
+            let imageView:UIImageView = UIImageView(image: UIImage(named: "menu_profile_white_76"))
+            imageView.tag = 1111
+            imageView.contentMode = .scaleAspectFill
+            imageView.layer.masksToBounds = true
+            imageView.layer.cornerRadius = 15
+            if let user = UserManager.currentUser() {
+                if let avaStr = user.avatar {
+                    if let urlAvatar = user.urlAvatar {
+                        rightButtonMenu.imageView!.layer.cornerRadius = 15;
+                        if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                            if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                                imageView.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                            } else {
+                                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                                    let decodedimage = UIImage(data: dataDecoded)
+                                    imageView.image = decodedimage
+                                }
+                            }
+                        }
+                    } else {
+                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                            let decodedimage = UIImage(data: dataDecoded)
+                            imageView.image = decodedimage
+                        }
+                    }
+                }
+            }
+            rightButtonMenu.addSubview(imageView)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+            imageView.centerXAnchor.constraint(equalTo: rightButtonMenu.centerXAnchor).isActive = true
+            imageView.centerYAnchor.constraint(equalTo: rightButtonMenu.centerYAnchor).isActive = true
+            
             rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
             rightButtonMenu.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
             let item2 = UIBarButtonItem(customView: rightButtonMenu)
@@ -136,7 +212,8 @@ class RootViewController: UIViewController {
                                    selector: #selector(self.menuItemLeftPress(menuItem:)))
         } else {
             let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
-            self.navigationController?.present(vc, animated: true, completion: {[weak self] in
+            let nv = UINavigationController(rootViewController: vc)
+            self.navigationController?.present(nv, animated: true, completion: {[weak self] in
                 guard let _self = self else {return}
                 _self.showTabbar(false)
                 vc.onDidRotate = {
@@ -148,6 +225,7 @@ class RootViewController: UIViewController {
             vc.onDismissComplete = {[weak self] in
                 guard let _self = self else {return}
                 _self.showTabbar(true)
+                _self.refreshAvatar()
             }
         }
         
@@ -156,6 +234,7 @@ class RootViewController: UIViewController {
     
     @objc fileprivate func menuItemLeftPress(menuItem:KxMenuItem) {
         if menuItem.title == "logout".localized() {
+            LocalService.shared.timerSyncToServer?.invalidate()
             UserManager.reset()
             let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
             AppConfig.navigation.changeRootControllerTo(viewcontroller: vc, animated: false)

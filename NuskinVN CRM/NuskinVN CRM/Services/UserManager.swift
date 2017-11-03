@@ -17,7 +17,7 @@ class UserManager: NSObject {
             dict["total_customers"] = Int64(list.filter{$0.status == 1}.count)
             var ordered:Int64 = 0
             var notorderd:Int64 = 0
-            var totalAmountOrders:Int64 = 0
+            var totalAmountOrders:Int64 = 0            
             var totaOrdersprocess:Double = 0
             var totalOrdersunprocess:Double = 0
             var totalOrdersinvalid:Double = 0
@@ -197,7 +197,10 @@ class UserManager: NSObject {
                 let jsonData = try! JSONSerialization.data(withJSONObject: properties)
                 if let pro = String(data: jsonData, encoding: .utf8) {
                     object.properties = pro
-                }                
+                }
+                if let avatar = properties["avatar"] as? String {
+                    object.avatar = avatar
+                }
             }
             
             return object

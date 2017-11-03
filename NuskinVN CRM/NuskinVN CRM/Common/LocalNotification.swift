@@ -17,10 +17,17 @@ class LocalNotification: NSObject {
         center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
             // Enable or disable features based on authorization.
             if((error == nil)) {
-                print("Request authorization failed!")
+                print("Request authorization succeeded!")
             }
             else {
-                print("Request authorization succeeded!")
+                print("Request authorization failed!")
+            }
+            center.getNotificationSettings { (settings) in
+                print("Notification settings: \(settings)")
+                guard settings.authorizationStatus == .authorized else { return }
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
             }
         }
     }

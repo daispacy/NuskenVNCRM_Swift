@@ -42,6 +42,9 @@
 "change_password_failed" = "Đổi mật khẩu thất bại";
 "password_is_wrong" = "Mật khẩu hiện tại không đúng.";
 "new_password_not_same_current_password" = "Mật khẩu mới không được giống mật khẩu hiện tại.";
+"msg_err_vnid" = "VNID không hợp lệ. VNID hợp lệ có dạng: VNxxxxxx";
+"msg_err_pw" = "Mật khẩu không hợp lệ. Mật khẩu phải lớn hơn 5 ký tự";
+"price_not_lower_sugguest_price" = "Giá bán lẻ không được thấp hơn giá NPP";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

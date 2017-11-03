@@ -20,6 +20,7 @@ class SyncDataController: RootViewController {
     
     
     var timer:Timer?
+    var timerTimeOut:Timer?
     var didAppBusy:Bool = false
     var didSyncedOrder:Bool = false
     var didSyncedOrderItem:Bool = false
@@ -42,6 +43,7 @@ class SyncDataController: RootViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         LocalService.shared.isShouldSyncData = nil
+        timerTimeOut = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(self.quit(_:)), userInfo: nil, repeats: false);
     }
     
     override func viewDidLoad() {
@@ -91,7 +93,11 @@ class SyncDataController: RootViewController {
     
     // MARK: - interface
     func startSync(_ isLoading:Bool? = false) {
-        LocalService.shared.startSyncData()
+        LocalService.shared.startSyncDataBackground(onComplete: {[weak self] in
+            guard let _self = self else {return}
+            _self.dismiss(animated: false, completion: nil)
+            
+        })
         if let bool = isLoading {
             self.isLoading = bool
             if bool {
@@ -199,6 +205,9 @@ class SyncDataController: RootViewController {
     
     
     deinit {
+        if let t = timerTimeOut {
+            t.invalidate()
+        }
         NotificationCenter.default.removeObserver(self)
         print("dealloc SyncDataController")
     }

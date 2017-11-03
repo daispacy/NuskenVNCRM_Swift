@@ -186,7 +186,7 @@ UITabBarControllerDelegate {
         popupC.ondeinitial = {
             [weak self] in
             guard let _self = self else {return}
-            if _self.isEdit == false {
+            if _self.isEdit {
                 _self.preventSyncData()
             }
         }

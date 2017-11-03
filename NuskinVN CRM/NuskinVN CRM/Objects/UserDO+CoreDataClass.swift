@@ -19,7 +19,29 @@ public class UserDO: NSManagedObject {
             "fullname": fullname ?? "",
             "address": address ?? "",
             "email": email ?? "",
-            "tel": tel ?? ""
+            "tel": tel ?? "",
+            "avatar": avatar ?? ""
         ]
+    }
+    
+    var urlAvatar:String? {
+        if let properties = self.properties {
+            if let data = properties.data(using: String.Encoding.utf8) {
+                do {
+                    if let pro:JSON = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {
+                        if let color = pro["avatar"] as? String {
+                            if color.contains("\(username ?? "")") {
+                                return "\(Server.domainImage.rawValue)/upload/1/customers/\(color.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                            } else {
+                                return "\(Server.domainImage.rawValue)/upload/1/customers/a_\(color.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                            }
+                        }
+                    }
+                } catch {
+                    print("warning parse properties User: \(properties)")
+                }
+            }
+        }
+        return nil
     }
 }

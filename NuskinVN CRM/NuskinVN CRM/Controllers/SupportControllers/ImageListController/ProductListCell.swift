@@ -37,7 +37,7 @@ class ProductListCell: UITableViewCell {
         }
         
         lblOther.text = "PV: \(product.pv)"
-        lblPrice.text = "\(product.price.toTextPrice()) \("price_unit".localized())"
+        lblPrice.text = "\(product.retail_price.toTextPrice()) \("price_unit".localized())"
     }
     
     override func prepareForReuse() {

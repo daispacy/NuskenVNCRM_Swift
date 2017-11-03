@@ -113,19 +113,27 @@ class CustomerListCell: UITableViewCell {
         
         lblName.text = customer.fullname
        
-        if let avaStr = customer.avatar,
-            let urlAvatar = customer.urlAvatar{
-            if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                    imgAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
-                } else {
-                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                        let decodedimage = UIImage(data: dataDecoded)
-                        imgAvatar.image = decodedimage
+        let cus = customer
+        if let avaStr = cus.avatar {
+            if let urlAvatar = cus.urlAvatar {
+                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                    } else {
+                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                            let decodedimage = UIImage(data: dataDecoded)
+                            imgAvatar.image = decodedimage
+                        }
                     }
+                }
+            } else {
+                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                    let decodedimage = UIImage(data: dataDecoded)
+                    imgAvatar.image = decodedimage
                 }
             }
         }
+        
         
     }
     

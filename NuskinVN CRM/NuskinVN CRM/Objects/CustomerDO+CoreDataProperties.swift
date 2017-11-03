@@ -31,6 +31,7 @@ extension CustomerDO {
     @NSManaged public var group_id: Int64
     @NSManaged public var id: Int64
     @NSManaged public var last_login: NSDate?
+    @NSManaged public var birthday: NSDate?
     @NSManaged public var password: String?
     @NSManaged public var properties: String?
 //    @NSManaged public var skype: String?

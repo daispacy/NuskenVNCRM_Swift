@@ -31,6 +31,8 @@ extension UserDO {
     @NSManaged public var tel: String?
     @NSManaged public var type: Int64
     @NSManaged public var username: String?
+    @NSManaged public var avatar: String?
+    @NSManaged public var device_token: String?
     @NSManaged public var synced: Bool
 
 }

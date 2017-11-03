@@ -14,7 +14,7 @@ enum Server:String {
     case domain = "https://nuskinvncrm.com/mobile.php"
     case domainImage = "https://nuskinvncrm.com"
     case op = "mobile"
-    case ver = "1.1"
+    case ver = "1.2"
     case act_authentic = "authentic"
     case act_resetpw = "resetpw"
     case act_customers = "customers"
@@ -287,11 +287,21 @@ final class SyncService: NSObject {
             parameters["tel"] = data
         }
         
+        if let data = user.avatar {
+            parameters["avatar"] = data
+        }
+        
+        if let data = user.device_token {
+            parameters["device_token"] = data
+        }
+        
         if !user.synced {
             parameters["type"] = "sync"
         } else {
             parameters["type"] = "update"
         }
+        
+        parameters["device"] = "IOS"
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -305,6 +315,17 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let json:JSON = jsonArray["data"] as? JSON{
+                                if let bool = LocalService.shared.isShouldSyncData?() {
+                                    if bool == false {
+                                        print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                        if let reason = GetDataFailureReason(rawValue: (jsonArray["code"] as? Int) ?? 530) {
+                                            completion(.failure(reason))
+                                        }
+                                        return
+                                    }
+                                }
                                 if let user:UserDO = UserManager.saveUserWith(dictionary: json) {
                                     if user.status == 0 {
                                         if let reason = GetDataFailureReason(rawValue: 0) {
@@ -345,6 +366,9 @@ final class SyncService: NSObject {
         parameters["number_item"] = 99999
         parameters["type"] = "all"
         parameters["distributor_id"] = user.id
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -396,6 +420,10 @@ final class SyncService: NSObject {
             parameters["list_customer"] = theJSONText
         }
         
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
                 switch response.result {
@@ -439,6 +467,10 @@ final class SyncService: NSObject {
         parameters["store_id"] = user.store_id
         parameters["type"] = "all"
         parameters["distributor_id"] = user.id
+        
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -485,6 +517,7 @@ final class SyncService: NSObject {
         parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
         parameters["distributor_id"] = user.id
+        
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
             options: []) {
@@ -493,6 +526,9 @@ final class SyncService: NSObject {
              parameters["list_group"] = theJSONText
         }
        
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -549,6 +585,9 @@ final class SyncService: NSObject {
             parameters["list_items"] = theJSONText
         }
         
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
@@ -642,6 +681,10 @@ final class SyncService: NSObject {
         parameters["type"] = "all"
         parameters["distributor_id"] = user.id
         
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
                 switch response.result {
@@ -685,6 +728,10 @@ final class SyncService: NSObject {
         parameters["store_id"] = user.store_id
         parameters["type"] = "allgroup&product"
         
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
             .responseString { response in
                 switch response.result {
@@ -695,6 +742,17 @@ final class SyncService: NSObject {
                             completion(.failure(reason))
                         }
                         return
+                    }
+                    if let bool = LocalService.shared.isShouldSyncData?() {
+                        if bool == false {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                            print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            return
+                        }
                     }
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
@@ -748,6 +806,17 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let jsonArray:[JSON] = jsonArray["data"] as? [JSON] {
+                                if let bool = LocalService.shared.isShouldSyncData?() {
+                                    if bool == false {
+                                        if let reason = GetDataFailureReason(rawValue: 404) {
+                                            completion(.failure(reason))
+                                        }
+                                        print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                        return
+                                    }
+                                }
                                 MasterDataManager.saveDataWith(jsonArray)
                                 completion(.success(jsonArray))
                             }
@@ -760,7 +829,7 @@ final class SyncService: NSObject {
                 case .failure(_):
                     if let reason = GetDataFailureReason(rawValue: 404) {
                         print("\(reason)")
-                        //                        completion(.failure(reason))
+                        completion(.failure(reason))
                     }
                 }
         }

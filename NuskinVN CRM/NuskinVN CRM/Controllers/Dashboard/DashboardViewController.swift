@@ -18,11 +18,7 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:AllDone"), object: nil)
         
         configText()
         
@@ -38,11 +34,13 @@ class DashboardViewController: RootViewController, DashboardViewDelegate, UITabB
     }
     
     func reloadAfterSynced(notification:Notification) {
+        
         UserManager.getDataDashboard {[weak self] data in
             if let _self = self {
                 _self.reloadData(data)
             }
         }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

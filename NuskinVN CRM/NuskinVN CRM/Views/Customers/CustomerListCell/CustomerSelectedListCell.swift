@@ -100,18 +100,27 @@ class CustomerSelectedListCell: UITableViewCell {
             self.btnCheck.isEnabled = false
         }
         
-        if let avaStr = customer.avatar {
-            if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                if avaStr.contains(".jpg") {
-                    imgAvatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/customers/\(avaStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)", placeHolder: nil)
-                } else {
-                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                        let decodedimage = UIImage(data: dataDecoded)
-                        imgAvatar.image = decodedimage
+        let cus = customer
+        if let avaStr = cus.avatar {
+            if let urlAvatar = cus.urlAvatar {
+                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                    } else {
+                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                            let decodedimage = UIImage(data: dataDecoded)
+                            imgAvatar.image = decodedimage
+                        }
                     }
+                }
+            } else {
+                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                    let decodedimage = UIImage(data: dataDecoded)
+                    imgAvatar.image = decodedimage
                 }
             }
         }
+        
         
     }
     

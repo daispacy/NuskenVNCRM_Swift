@@ -124,8 +124,8 @@ class AddProductController: UIViewController {
     func showProduct(_ product:ProductDO) {
         self.product = product
         txtName.text = product.name
-        txtSugguestPrice.text = "\(product.price.toTextPrice())"
-        txtPrice.text = "\(product.price)"
+        txtSugguestPrice.text = "\(product.retail_price.toTextPrice())"
+        txtPrice.text = "\(product.retail_price)"
         txtTotal.text = "\(1)"
         txtPV.text = "\(product.pv.toTextPrice())"
         configText()
@@ -137,7 +137,7 @@ class AddProductController: UIViewController {
         if let pro = json["product"] as? ProductDO {
             self.product = pro
             txtName.text = pro.name
-            txtSugguestPrice.text = "\(pro.price.toTextPrice())"
+            txtSugguestPrice.text = "\(pro.retail_price.toTextPrice())"
             txtPV.text = "\(pro.pv.toTextPrice())"
         }
         if let quantity = Int64("\(json["total"] ?? 0)") {

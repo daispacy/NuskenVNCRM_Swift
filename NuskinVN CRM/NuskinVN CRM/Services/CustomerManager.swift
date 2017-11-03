@@ -246,6 +246,13 @@ class CustomerManager: NSObject {
                 if let avatar = properties["avatar"] as? String {
                     object.avatar = avatar
                 }
+                if let data = properties["birthday"] as? String {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    if let myDate = dateFormatter.date(from: data) {
+                        object.birthday = myDate as NSDate
+                    }
+                }
             }
             
             return object

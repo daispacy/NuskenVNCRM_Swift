@@ -326,6 +326,7 @@
 		23D2FB941F8F79F5002EA64E /* SimpleListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SimpleListController.xib; sourceTree = "<group>"; };
 		23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManageView.swift; sourceTree = "<group>"; };
 		23D31D051F7BE4C600BCD198 /* OrderManageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderManageView.xib; sourceTree = "<group>"; };
+		23D4D2501FA6E42B00305EF9 /* NuskinVN CRM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "NuskinVN CRM.entitlements"; sourceTree = "<group>"; };
 		23DEDE381F72CBD7003D4097 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		23E146E41F796FF200ECCC32 /* FontAwesomeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FontAwesomeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E146E61F796FF900ECCC32 /* Reachability.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Reachability.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -865,6 +866,7 @@
 		23CAF8121F7207FC0016DBDF /* NuskinVN CRM */ = {
 			isa = PBXGroup;
 			children = (
+				23D4D2501FA6E42B00305EF9 /* NuskinVN CRM.entitlements */,
 				235AB34C1F81F66A0036ADFA /* Protocols */,
 				230248771F753C4100177679 /* Components */,
 				2356DFF41F736AAC00134A73 /* Objects */,
@@ -1057,9 +1059,12 @@
 				TargetAttributes = {
 					23CAF80F1F7207FC0016DBDF = {
 						CreatedOnToolsVersion = 9.0;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -1524,16 +1529,17 @@
 			baseConfigurationReference = C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = "NuskinVN CRM/NuskinVN CRM.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C9E3WU44HT;
 				INFOPLIST_FILE = "$(SRCROOT)/NuskinVN CRM/Support/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.derasoft.nuskinvncrm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fb25c7a4-628e-456a-963c-3030bd738266";
-				PROVISIONING_PROFILE_SPECIFIER = "Nuskin CRM Distribution appstore";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1544,16 +1550,17 @@
 			baseConfigurationReference = 160D3B1D7895AA06D191ECBA /* Pods-NuskinVN CRM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = "NuskinVN CRM/NuskinVN CRM.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C9E3WU44HT;
 				INFOPLIST_FILE = "$(SRCROOT)/NuskinVN CRM/Support/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.derasoft.nuskinvncrm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fb25c7a4-628e-456a-963c-3030bd738266";
-				PROVISIONING_PROFILE_SPECIFIER = "Nuskin CRM Distribution appstore";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1566,6 +1573,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C9E3WU44HT;
 				INFOPLIST_FILE = "NuskinVN CRMTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "derasoft.com.nuskin.NuskinVN-CRMTests";
@@ -1583,6 +1591,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C9E3WU44HT;
 				INFOPLIST_FILE = "NuskinVN CRMTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "derasoft.com.nuskin.NuskinVN-CRMTests";

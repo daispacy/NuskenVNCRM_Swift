@@ -139,6 +139,7 @@ class AddGroupController: UIViewController {
                 group?.synced = false
                 group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
             }
+            group?.position = self.position
             group?.synced = false
             group?.setColor(group_color)
             group?.group_name = name
