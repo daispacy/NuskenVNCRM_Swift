@@ -23,6 +23,7 @@ class OrderDetailController: RootViewController {
     @IBOutlet var btnPaymentMethod: CButtonWithImageRight2!
     @IBOutlet var btnTransporter: CButtonWithImageRight2!
     @IBOutlet var txtTransporterID: UITextField!
+    @IBOutlet var txtOtherTransporter: UITextField!
     
     @IBOutlet var lblTotalPrice: UILabel!
     @IBOutlet var lblTotalPV: UILabel!
@@ -31,6 +32,7 @@ class OrderDetailController: RootViewController {
     
     @IBOutlet var btnProcess: CButtonAlert!
     @IBOutlet var btnCancel: CButtonAlert!
+    @IBOutlet var vwOtherTransporter: UIView!
     
     var order:OrderDO?
     var customerSelected:CustomerDO?
@@ -39,6 +41,8 @@ class OrderDetailController: RootViewController {
     var payment_method:Int64 = 1
     var address_order:String = ""
     var transporter:Int64 = 1
+    var district:String = ""
+    var city:String = ""
     var transporter_id:String = ""
     var order_code:String = ""
     var listProducts:[JSON] = []
@@ -88,11 +92,15 @@ class OrderDetailController: RootViewController {
             self.address_order = address
         }
         
-        orderCustomerView.onUpdateData = {[weak self] customer, order_code, order_address in
+        self.district = order.district
+        self.city = order.city
+        orderCustomerView.onUpdateData = {[weak self] customer, order_code, order_address, city, district in
             if let _self = self {
                 _self.customerSelected = customer
                 _self.order_code = order_code
                 _self.address_order = order_address
+                _self.district = district
+                _self.city = city
             }
         }
         
@@ -108,11 +116,19 @@ class OrderDetailController: RootViewController {
                                     _self.address_order = add
                                     _self.orderCustomerView.orderAddress = add
                                     _self.orderCustomerView.txtAddressOrder.text = add
+                                    _self.city = cus.city ?? ""
+                                    _self.district = cus.county ?? ""
+                                    _self.orderCustomerView.city = cus.city ?? ""
+                                    _self.orderCustomerView.district = cus.county ?? ""
+                                    _self.orderCustomerView.reloadCityDistrict(false)
                                 } else {
                                     _self.addressOrder.text = ""
                                     _self.address_order = ""
                                     _self.orderCustomerView.orderAddress = ""
                                     _self.orderCustomerView.txtAddressOrder.text = ""
+                                    _self.city = ""
+                                    _self.district = ""
+                                    _self.orderCustomerView.reloadCityDistrict()
                                 }
                                 
                             }
@@ -141,9 +157,13 @@ class OrderDetailController: RootViewController {
                 _self.status = order.status
                 _self.payment_method = order.payment_option
                 
+                if let address = order.transporter_other {
+                    _self.txtOtherTransporter.text = address
+                }
                 
                 _self.payment_status = order.payment_status
                 _self.transporter = order.shipping_unit
+                _self.vwOtherTransporter.isHidden = _self.transporter != 4
                 
                 if let svd = order.svd {
                     _self.transporter_id = svd
@@ -289,6 +309,8 @@ class OrderDetailController: RootViewController {
                         _self.btnTransporter.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                         let obj = _self.listTranspoter[index]
                         _self.transporter = obj["id"] as! Int64
+                        
+                        _self.vwOtherTransporter.isHidden = _self.transporter != 4
                     }
                     popupC.onDismiss = {
                         _self.btnTransporter.imageView!.transform = _self.btnTransporter.imageView!.transform.rotated(by: CGFloat(Double.pi))
@@ -344,11 +366,11 @@ class OrderDetailController: RootViewController {
                         return
                     }
                     
-                    if _self.order_code.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0 {
-                        _self.orderCustomerView.lblErrorCode.isHidden = false
-                    } else {
-                        _self.orderCustomerView.lblErrorCode.isHidden = true
-                    }
+//                    if _self.order_code.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count == 0 {
+//                        _self.orderCustomerView.lblErrorCode.isHidden = false
+//                    } else {
+//                        _self.orderCustomerView.lblErrorCode.isHidden = true
+//                    }
                     guard let customer = _self.customerSelected else {
                         _self.orderCustomerView.lblErrorChooseCustomer.isHidden = false
                         Support.popup.showAlert(message: "sorry_please_select_a_customer".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
@@ -360,19 +382,28 @@ class OrderDetailController: RootViewController {
                         return
                     }
                     _self.orderCustomerView.lblErrorChooseCustomer.isHidden = true
-                    if _self.orderCustomerView.lblErrorCode.isHidden == false {
-                        Support.popup.showAlert(message: "sorry_please_provide_order_code".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
-                            
-                        },{[weak self] in
-                            guard let _self = self else {return}
-                            _self.preventSyncData()
-                        })
-                        return
-                    }
+//                    if _self.orderCustomerView.lblErrorCode.isHidden == false {
+//                        Support.popup.showAlert(message: "sorry_please_provide_order_code".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+//                            
+//                        },{[weak self] in
+//                            guard let _self = self else {return}
+//                            _self.preventSyncData()
+//                        })
+//                        return
+//                    }
                     
                     if let ord = _self.order {
                         // update
-                        
+                        if !ord.validateCode(code: _self.order_code, oldCode: ord.code!, except: true) {
+                            _self.orderCustomerView.lblErrorCode.isHidden = false
+                            Support.popup.showAlert(message: "order_code_is_exist".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                                
+                            },{[weak self] in
+                                guard let _self = self else {return}
+                                _self.preventSyncData()
+                            })
+                            return
+                        }
                         ord.customer_id = (_self.customerSelected?.id)!
                         ord.address = _self.address_order
                         ord.last_updated = Date.init(timeIntervalSinceNow: 0) as NSDate
@@ -382,6 +413,11 @@ class OrderDetailController: RootViewController {
                         ord.shipping_unit = _self.transporter
                         ord.svd = _self.transporter_id
                         ord.code = _self.order_code
+                        ord.setCity(_self.city)
+                        ord.setDistrict(_self.district)
+                        if let orther = _self.txtOtherTransporter.text {
+                            ord.setOtherTransporter(orther)
+                        }
 //                        ord.date_created = _self.order?.date_created
 //                        ord.tempProducts = _self.listProducts
                         ord.tel = customer.tel
@@ -407,6 +443,18 @@ class OrderDetailController: RootViewController {
                     } else {
                         // add
                         let ord = NSEntityDescription.insertNewObject(forEntityName: "OrderDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! OrderDO
+                        
+                        if !OrderDO.validateCode(code: _self.order_code) {
+                            _self.orderCustomerView.lblErrorCode.isHidden = false
+                            Support.popup.showAlert(message: "order_code_is_exist".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                                
+                            },{[weak self] in
+                                guard let _self = self else {return}
+                                _self.preventSyncData()
+                            })
+                            return
+                        }
+                        
                         ord.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                         if let customer = _self.customerSelected {
                             ord.customer_id = customer.id
@@ -424,6 +472,11 @@ class OrderDetailController: RootViewController {
                         ord.shipping_unit = _self.transporter
                         ord.svd = _self.transporter_id
                         ord.code = _self.order_code
+                        ord.setCity(_self.city)
+                        ord.setDistrict(_self.district)
+                        if let orther = _self.txtOtherTransporter.text {
+                            ord.setOtherTransporter(orther)
+                        }
 //                        ord.tempProducts = _self.listProducts
                         OrderManager.updateOrderEntity(ord, onComplete: {
                             OrderItemManager.clearData(from:ord.id, onComplete: {
@@ -452,7 +505,7 @@ class OrderDetailController: RootViewController {
         _ = collectLabelOrderDetail.map({
             $0.text = $0.accessibilityIdentifier?.localized()
         })
-        
+        txtOtherTransporter.placeholder = "transporter_other".localized()
         addressOrder.placeholder = "address_order".localized()
         txtTransporterID.placeholder = "transporter_id".localized()
         _ = AppConfig.order.listPaymentMethod.map({[weak self] item in
@@ -502,7 +555,6 @@ class OrderDetailController: RootViewController {
         addressOrder.text = self.address_order
         
         txtTransporterID.text = self.transporter_id
-        
         
         lblTextTotalPriccce.text = "total_price".localized()
         lblTextTotalPV.text = "PV".localized()
@@ -556,11 +608,13 @@ class OrderDetailController: RootViewController {
                 _self.preventSyncData()
             }
             
-            orderCustomerView.onUpdateData = {[weak self] customer, order_code, order_address in
+            orderCustomerView.onUpdateData = {[weak self] customer, order_code, order_address, city, district in
                 if let _self = self {
                     _self.customerSelected = customer
                     _self.order_code = order_code
                     _self.address_order = order_address
+                    _self.district = district
+                    _self.city = city
                 }
             }
             
@@ -576,11 +630,19 @@ class OrderDetailController: RootViewController {
                                         _self.address_order = add
                                         _self.orderCustomerView.orderAddress = add
                                         _self.orderCustomerView.txtAddressOrder.text = add
+                                        _self.city = cus.city ?? ""
+                                        _self.district = cus.county ?? ""
+                                        _self.orderCustomerView.city = cus.city ?? ""
+                                        _self.orderCustomerView.district = cus.county ?? ""
+                                        _self.orderCustomerView.reloadCityDistrict(false)
                                     } else {
                                         _self.addressOrder.text = ""
                                         _self.address_order = ""
                                         _self.orderCustomerView.orderAddress = ""
                                         _self.orderCustomerView.txtAddressOrder.text = ""
+                                        _self.city = ""
+                                        _self.district = ""
+                                        _self.orderCustomerView.reloadCityDistrict()
                                     }                                   
                                 }
                                 
@@ -607,6 +669,7 @@ class OrderDetailController: RootViewController {
         
         configTextfield(txtTransporterID)
         configTextfield(addressOrder)
+        configTextfield(txtOtherTransporter)
         
         btnProcess.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnProcess.frame, isReverse:true)
         btnProcess.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)

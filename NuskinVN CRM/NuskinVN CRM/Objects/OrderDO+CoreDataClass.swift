@@ -70,6 +70,9 @@ public class OrderDO: NSManagedObject {
             "payment_status":payment_status,
             "payment_option":payment_option,
             "shipping_unit":shipping_unit,
+            "transporter_other":transporter_other ?? "",
+            "district":district,
+            "city":city,
             "svd":svd ?? "",
             "email":email ?? "",
             "tel":tel ?? "",
@@ -139,5 +142,195 @@ public class OrderDO: NSManagedObject {
             }
         
         return []
+    }
+    
+    // MARK: - properties
+    func setOtherTransporter(_ color:String) {
+        if let pro = properties {
+            do {
+                if let jsonData = pro.data(using: String.Encoding.utf8) {
+                    if var pro:JSON = try JSONSerialization.jsonObject(with: jsonData, options: []) as? JSON {
+                        pro["transporter_other"] = color
+                        
+                        do {
+                            let jsonData = try JSONSerialization.data(withJSONObject: pro)
+                            if let pro = String(data: jsonData, encoding: .utf8) {
+                                properties = pro
+                            }
+                        }catch{}
+                    }
+                }
+            }catch{}
+        } else {
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: ["transporter_other":color])
+                if let pro = String(data: jsonData, encoding: .utf8) {
+                    properties = pro
+                }
+            }catch{}
+        }
+    }
+    
+    var transporter_other:String? {
+        var gcolor:String?
+        if let properties = self.properties {
+            if let data = properties.data(using: String.Encoding.utf8) {
+                do {
+                    if let pro:JSON = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {
+                        if let color = pro["transporter_other"] as? String {
+                            gcolor = color
+                        }
+                    }
+                } catch {
+                    print("warning parse properties Order: \(properties)")
+                }
+            }
+        }
+        return gcolor
+    }
+    
+    
+    func setCity(_ color:String) {
+        if let pro = properties {
+            do {
+                if let jsonData = pro.data(using: String.Encoding.utf8) {
+                    if var pro:JSON = try JSONSerialization.jsonObject(with: jsonData, options: []) as? JSON {
+                        pro["city"] = color
+                        
+                        do {
+                            let jsonData = try JSONSerialization.data(withJSONObject: pro)
+                            if let pro = String(data: jsonData, encoding: .utf8) {
+                                properties = pro
+                            }
+                        }catch{}
+                    }
+                }
+            }catch{}
+        } else {
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: ["city":color])
+                if let pro = String(data: jsonData, encoding: .utf8) {
+                    properties = pro
+                }
+            }catch{}
+        }
+    }
+    
+    var city:String {
+        var gcolor:String = ""
+        if let properties = self.properties {
+            if let data = properties.data(using: String.Encoding.utf8) {
+                do {
+                    if let pro:JSON = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {
+                        if let color = pro["city"] as? String {
+                            gcolor = color
+                        }
+                    }
+                } catch {
+                    print("warning parse properties Order: \(properties)")
+                }
+            }
+        }
+        return gcolor
+    }
+    
+    func setDistrict(_ color:String) {
+        if let pro = properties {
+            do {
+                if let jsonData = pro.data(using: String.Encoding.utf8) {
+                    if var pro:JSON = try JSONSerialization.jsonObject(with: jsonData, options: []) as? JSON {
+                        pro["district"] = color
+                        
+                        do {
+                            let jsonData = try JSONSerialization.data(withJSONObject: pro)
+                            if let pro = String(data: jsonData, encoding: .utf8) {
+                                properties = pro
+                            }
+                        }catch{}
+                    }
+                }
+            }catch{}
+        } else {
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: ["district":color])
+                if let pro = String(data: jsonData, encoding: .utf8) {
+                    properties = pro
+                }
+            }catch{}
+        }
+    }
+    
+    var district:String {
+        var gcolor:String = ""
+        if let properties = self.properties {
+            if let data = properties.data(using: String.Encoding.utf8) {
+                do {
+                    if let pro:JSON = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {
+                        if let color = pro["district"] as? String {
+                            gcolor = color
+                        }
+                    }
+                } catch {
+                    print("warning parse properties Order: \(properties)")
+                }
+            }
+        }
+        return gcolor
+    }
+    
+    // MARK: - validate
+    func validateCode(code:String, oldCode:String,except:Bool)->Bool {
+        guard let user = UserManager.currentUser() else { return false }
+        if code.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 {
+            return true
+        }
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        var predicate = NSPredicate(format: "code == %@ AND distributor_id == %d", code, user.id)
+        if except {
+            predicate = NSPredicate(format: "code == %@ AND code <> %@ AND distributor_id == %d", code,oldCode,user.id)
+        }
+        
+        fetchRequest.predicate = predicate
+        do {
+            
+            let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            
+            return results.count == 0
+            
+        } catch let error as NSError {
+            
+            print(error)
+            
+        }
+        return false
+    }
+    
+    static func validateCode(code:String)->Bool {
+        guard let user = UserManager.currentUser() else { return false }
+        if code.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 {
+            return true
+        }
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let predicate = NSPredicate(format: "code == %@ AND distributor_id == %d", code, user.id)
+        
+        fetchRequest.predicate = predicate
+        do {
+            
+            let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            
+            return results.count != 0
+            
+        } catch let error as NSError {
+            
+            print(error)
+            
+        }
+        return false
     }
 }

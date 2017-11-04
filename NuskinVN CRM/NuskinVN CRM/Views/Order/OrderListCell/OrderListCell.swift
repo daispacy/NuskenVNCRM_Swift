@@ -16,7 +16,7 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var bottomLine: UIView!
     @IBOutlet var vwBtnCheck: UIView!
     @IBOutlet var btnCheck: UIButton!
-    @IBOutlet var imgAvatar: CImageViewRoundGradient!
+
     @IBOutlet var lblNameCustomer: UILabel!
     @IBOutlet var lblDateCreated: UILabel!
     @IBOutlet var lblCode: UILabel!
@@ -87,16 +87,24 @@ class OrderListCell: UITableViewCell {
         }
         
         lblCode.text = order.code
-                
+        
+        _ = AppConfig.order.listStatus.map({[weak self] item in
+            if let _self = self {
+                if order.status == item["id"] as! Int64 {
+                    _self.lblStatus.text = item["name"] as? String
+                }
+            }
+        })
+        
         switch order.status {
         case 0: // invalid
-            vwStatus.backgroundColor = UIColor(hex:"0xff1744")
+            lblStatus.textColor = UIColor(hex:"0xff1744")
         case 1: // process
-            vwStatus.backgroundColor = UIColor(hex:"0x38a4dd")
+            lblStatus.textColor = UIColor(hex:"0x38a4dd")
         case 3: // unprocess
-            vwStatus.backgroundColor = UIColor(hex:"0xffab00")
+            lblStatus.textColor = UIColor(hex:"0xffab00")
         default:
-            vwStatus.backgroundColor = UIColor.clear
+            lblStatus.textColor = UIColor.clear
         }
 //        _ = AppConfig.order.listStatus.map({
 //            if $0["id"] as! Int64 == order.status {
@@ -134,6 +142,9 @@ class OrderListCell: UITableViewCell {
         
         lblGoal.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         lblGoal.textColor = UIColor(hex:Theme.color.customer.titleGroup)
+        
+        lblStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblStatus.textColor = UIColor(hex:Theme.color.customer.titleGroup)
     }
     
     func configText() {
@@ -153,7 +164,7 @@ class OrderListCell: UITableViewCell {
         isChecked = false
         isSelect = false
         isEdit = false
-        vwStatus.backgroundColor = UIColor.clear
+        lblStatus.textColor = UIColor.clear
         configView()
         configText()
         super.prepareForReuse()

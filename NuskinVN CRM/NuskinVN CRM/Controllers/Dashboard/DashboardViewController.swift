@@ -14,6 +14,10 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
 
     var isSyncWithLoading:Bool = false
     
+    var fromDate:NSDate? = nil
+    var toDate:NSDate? = nil
+    var isLifeTime: Bool = true
+    
     // MARK: - INIT
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +39,7 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     
     func reloadAfterSynced(notification:Notification) {
         
-        UserManager.getDataDashboard {[weak self] data in
-            if let _self = self {
-                _self.reloadData(data)
-            }
-        }
+        self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
         
     }
     
@@ -63,6 +63,7 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     }
     
     func getDataForDashboard(fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true) {
+        print("\(fromDate) - \(toDate) - \(isLifeTime)")
         UserManager.getDataDashboard(fromDate, toDate: toDate, isLifeTime: isLifeTime) {[weak self] data in
             if let _self = self {
                 _self.reloadData(data)
@@ -79,6 +80,9 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
         self.view = dashboardView
         dashboardView.onSelectFilter = {[weak self] from, to, lifetime in
             guard let _self = self else {return}
+            _self.fromDate = from
+            _self.toDate = to
+            _self.isLifeTime = lifetime
             _self.getDataForDashboard(fromDate: from, toDate: to,isLifeTime: lifetime)
         }
     }        

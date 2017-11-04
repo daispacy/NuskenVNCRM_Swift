@@ -32,7 +32,7 @@ class CustomerManager: NSObject {
         if let gr = group {
             if gr.id == 0 {
                 if let group_name = gr.group_name {
-                    predicate4 = NSPredicate(format: "group_name = %@",group_name)
+                    predicate4 = NSPredicate(format: "group_name == %@",group_name)
                 }
             } else {
                 predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
@@ -74,7 +74,7 @@ class CustomerManager: NSObject {
         if let gr = group {
             if gr.id == 0 {
                 if let group_name = gr.group_name {
-                    predicate4 = NSPredicate(format: "group_name = %@",group_name)
+                    predicate4 = NSPredicate(format: "group_name == %@",group_name)
                 }
             } else {
                 predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
@@ -88,6 +88,48 @@ class CustomerManager: NSObject {
             let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
             var list:[CustomerDO] = []
             list = result.flatMap({$0 as? CustomerDO})
+            onComplete(list)
+            
+        } catch {
+            let fetchError = error as NSError
+            onComplete([])
+            print(fetchError)
+        }
+    }
+    
+    static func getAllCustomersOrdered(search:String? = nil,group:GroupDO? = nil,onComplete:(([CustomerDO])->Void)) {
+        // Initialize Fetch Request
+        guard let user = UserManager.currentUser() else {onComplete([]); return }
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+        var predicate2 = NSPredicate(format: "1 > 0")
+        var predicate4 = NSPredicate(format: "1 > 0")
+        let predicate3 = NSPredicate(format: "status == 1")
+        if let text = search {
+            if text.characters.count > 0 {
+                predicate2 = NSPredicate(format: "fullname contains[cd] %@",text)
+            }
+        }
+        if let gr = group {
+            if gr.id == 0 {
+                if let group_name = gr.group_name {
+                    predicate4 = NSPredicate(format: "group_name == %@",group_name)
+                }
+            } else {
+                predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
+            }
+        }
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+        fetchRequest.predicate = predicateCompound
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            var list:[CustomerDO] = []
+            list = result.flatMap({$0 as? CustomerDO})
+            list = list.filter{$0.listOrders().count > 0}
             onComplete(list)
             
         } catch {

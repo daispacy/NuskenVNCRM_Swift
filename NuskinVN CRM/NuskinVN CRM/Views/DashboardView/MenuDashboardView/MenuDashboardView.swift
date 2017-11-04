@@ -131,19 +131,31 @@ class MenuDashboardView: CViewSwitchLanguage {
             self.month != "all".localized() ||
             self.week != "all".localized() {
             isLifeTime = false
-            if self.day == "all".localized() {
+        }
+        if !isLifeTime {
+            
+            var mth = currentMonth
+            if self.month != "all".localized() {
+                mth = Int(self.month)!
+            }
+            if self.week != "all".localized() && self.day == "all".localized(){
                 if let frDateStr = listDay[1]["text"] as? String,
                     let toDateStr = listDay.last!["text"] as? String {
-                    var mth = currentMonth
-                    if self.month != "all".localized() {
-                        mth = Int(self.month)!
-                    }
                     fromDate = "\(currentYear)-\(mth)-\(frDateStr) 00:00:00".toDate2() as NSDate
                     toDate = "\(currentYear)-\(mth)-\(toDateStr) 23:59:59".toDate2() as NSDate
                 }
             } else {
-                fromDate = "\(currentYear)-\(currentMonth)-\(self.day) 00:00:00".toDate2() as NSDate
-                toDate = "\(currentYear)-\(currentMonth)-\(self.day) 23:59:59".toDate2() as NSDate
+                if self.day != "all".localized() {
+                    fromDate = "\(currentYear)-\(mth)-\(self.day) 00:00:00".toDate2() as NSDate
+                    toDate = "\(currentYear)-\(mth)-\(self.day) 23:59:59".toDate2() as NSDate
+                } else {
+                    if let frDateStr = listDay[1]["text"] as? String,
+                        let toDateStr = listDay.last!["text"] as? String {
+                        fromDate = "\(currentYear)-\(mth)-\(frDateStr) 00:00:00".toDate2() as NSDate
+                        toDate = "\(currentYear)-\(mth)-\(toDateStr) 23:59:59".toDate2() as NSDate
+                    }
+                    
+                }
             }
         }
         self.onSelectFilter?(fromDate, toDate, isLifeTime)

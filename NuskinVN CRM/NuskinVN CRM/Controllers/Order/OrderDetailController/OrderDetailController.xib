@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13528" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13770" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13526"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13770"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -25,14 +25,17 @@
                 <outlet property="lblTotalPrice" destination="2Sj-Tc-JLU" id="Jtf-U6-VCV"/>
                 <outlet property="scrollView" destination="8hL-ra-xp6" id="JUq-cC-Aa9"/>
                 <outlet property="stackViewContainer" destination="93f-3q-L0a" id="kCF-Do-aM8"/>
+                <outlet property="txtOtherTransporter" destination="aEI-OA-WXt" id="cH3-Po-OdY"/>
                 <outlet property="txtTransporterID" destination="fOu-Qy-2cO" id="dn7-LA-Y2U"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="vwOtherTransporter" destination="npZ-yp-Z0H" id="RD8-Ca-uOR"/>
                 <outletCollection property="collectLabelOrderDetail" destination="YCa-RS-WV7" collectionClass="NSMutableArray" id="ZD4-PS-cKx"/>
                 <outletCollection property="collectLabelOrderDetail" destination="ee9-yW-MFn" collectionClass="NSMutableArray" id="IbX-rL-PFF"/>
                 <outletCollection property="collectLabelOrderDetail" destination="ZFA-lb-LUV" collectionClass="NSMutableArray" id="tFo-j0-fH1"/>
                 <outletCollection property="collectLabelOrderDetail" destination="Rmb-TA-HVA" collectionClass="NSMutableArray" id="jxl-za-3oF"/>
                 <outletCollection property="collectLabelOrderDetail" destination="Cww-ww-Awy" collectionClass="NSMutableArray" id="hDM-vl-ibg"/>
                 <outletCollection property="collectLabelOrderDetail" destination="Y1n-qh-cWW" collectionClass="NSMutableArray" id="3Bn-Gt-lZx"/>
+                <outletCollection property="collectLabelOrderDetail" destination="frJ-YL-sVX" collectionClass="NSMutableArray" id="gce-h0-lgQ"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -233,6 +236,40 @@
                                                         <constraint firstAttribute="bottom" secondItem="7kA-JW-SCA" secondAttribute="bottom" constant="5" id="IsW-oc-7fo"/>
                                                         <constraint firstItem="7kA-JW-SCA" firstAttribute="top" secondItem="LGf-pQ-Sk2" secondAttribute="top" constant="5" id="ZoO-Lz-f1X"/>
                                                         <constraint firstAttribute="trailing" secondItem="7kA-JW-SCA" secondAttribute="trailing" constant="15" id="ZyP-wH-HEN"/>
+                                                    </constraints>
+                                                </view>
+                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="npZ-yp-Z0H" userLabel="other transport">
+                                                    <rect key="frame" x="0.0" y="161.5" width="375" height="0.0"/>
+                                                    <subviews>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="joj-2O-rcn">
+                                                            <rect key="frame" x="15" y="5" width="345" height="60.5"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frJ-YL-sVX">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="345" height="20.5"/>
+                                                                    <accessibility key="accessibilityConfiguration" identifier="transporter_other"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="fullname" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aEI-OA-WXt">
+                                                                    <rect key="frame" x="0.0" y="20.5" width="345" height="40"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" priority="750" constant="40" id="U6w-yv-pNO"/>
+                                                                    </constraints>
+                                                                    <nil key="textColor"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                    <textInputTraits key="textInputTraits"/>
+                                                                </textField>
+                                                            </subviews>
+                                                        </stackView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstItem="joj-2O-rcn" firstAttribute="leading" secondItem="npZ-yp-Z0H" secondAttribute="leading" constant="15" id="Bek-Ew-YAZ"/>
+                                                        <constraint firstAttribute="bottom" secondItem="joj-2O-rcn" secondAttribute="bottom" priority="250" constant="5" id="Bwa-2X-jm9"/>
+                                                        <constraint firstItem="joj-2O-rcn" firstAttribute="top" secondItem="npZ-yp-Z0H" secondAttribute="top" constant="5" id="ad8-5G-W2v"/>
+                                                        <constraint firstAttribute="trailing" secondItem="joj-2O-rcn" secondAttribute="trailing" constant="15" id="lnX-QP-3sM"/>
+                                                        <constraint firstAttribute="height" priority="750" constant="80" id="mPP-8M-djp"/>
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5hT-ei-6Cl" userLabel="transportID">

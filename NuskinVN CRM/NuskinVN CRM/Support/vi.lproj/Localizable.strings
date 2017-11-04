@@ -45,6 +45,11 @@
 "msg_err_vnid" = "VNID không hợp lệ. VNID hợp lệ có dạng: VNxxxxxx";
 "msg_err_pw" = "Mật khẩu không hợp lệ. Mật khẩu phải lớn hơn 5 ký tự";
 "price_not_lower_sugguest_price" = "Giá bán lẻ không được thấp hơn giá NPP";
+"order_code_is_exist" = "Mã đơn hàng này đã được sử dụng";
+"transporter_other" = "Đơn vị vận chuyển khác";
+"search_order_code" = "Tìm kiếm mã đơn hàng";
+"filter_status" = "Trạng thái";
+"filter_payment_status" = "Trạng thái thanh toán";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";
@@ -161,7 +166,7 @@
 "add_product" = "Thêm sản phẩm";
 "product" = "Sản phẩm";
 "order_code" = "Số hóa đơn";
-"choose_customer" = "Khách hàng";
+"choose_customer" = "Khách hàng chưa được chọn";
 "placeholder_order_code" = "Nhập số hóa đơn";
 "placeholder_choose_customer" = "Chọn khách hàng";
 "invalid_order_code" = "Số hóa đơn không hợp lệ";

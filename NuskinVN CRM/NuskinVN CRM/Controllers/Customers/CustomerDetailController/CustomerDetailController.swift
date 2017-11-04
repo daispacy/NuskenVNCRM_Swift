@@ -410,7 +410,6 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                             customerUpdate.setFacebook(_self.txtFacebook.text ?? "")
                             customerUpdate.setZalo(_self.txtZalo.text ?? "")
                             customerUpdate.setViber(_self.txtViber.text ?? "")
-                            customerUpdate.date_created = _self.customer?.date_created
                             customerUpdate.distributor_id = user.id
                             customerUpdate.store_id = user.store_id
                             customerUpdate.city_id = _self.city_id

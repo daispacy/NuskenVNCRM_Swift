@@ -45,23 +45,37 @@ class OrderManager: NSObject {
         }
     }
     
-    static func getAllOrders(search:String? = nil, onComplete:(([OrderDO])->Void)) {
+    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil, onComplete:(([OrderDO])->Void)) {
+        guard let user = UserManager.currentUser() else {onComplete([]); return}
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
         fetchRequest.returnsObjectsAsFaults = false
-        var predicate1 = NSPredicate(format: "1 > 0")
-        if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        }
+        
+        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         var predicate2 = NSPredicate(format: "1 > 0")
+        var predicate3 = NSPredicate(format: "1 > 0")
+        var predicate4 = NSPredicate(format: "1 > 0")
+        var predicate5 = NSPredicate(format: "1 > 0")
         
         if let text = search {
             if text.characters.count > 0 {
-                predicate2 = NSPredicate(format: "name contains[cd] %@ OR keyword contains[cd] %@",text,text)
+                predicate2 = NSPredicate(format: "code contains[cd] %@",text)
+            }
+        }
+        if let sta = status {
+            predicate3 = NSPredicate(format: "status IN %@",[sta])
+        }
+        if let psta = paymentStatus {
+            predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
+        }
+        
+        if let psta = customer_id {
+            if psta.count > 0 {
+                predicate5 = NSPredicate(format: "customer_id IN %@",psta)
             }
         }
         
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1])
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5])
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
         NSSortDescriptor(key: "status", ascending: false)]
         fetchRequest.predicate = predicateCompound
@@ -248,6 +262,17 @@ class OrderManager: NSObject {
                 }
                 if let data = properties["svd"] as? String {
                     object.svd = data
+                }
+                if let data = properties["city"] as? String {
+                    object.setCity(data)
+                }
+                
+                if let data = properties["district"] as? String {
+                    object.setDistrict(data)
+                }
+                
+                if let data = properties["transporter_other"] as? String {
+                    object.setOtherTransporter(data)
                 }
             }
             
