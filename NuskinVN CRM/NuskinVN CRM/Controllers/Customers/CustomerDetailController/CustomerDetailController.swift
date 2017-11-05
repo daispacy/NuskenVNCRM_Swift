@@ -675,6 +675,8 @@ extension CustomerDetailController {
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         print("START SYNC DATA WHEN UIImagePickerController CLOSED")
         LocalService.shared.startSyncData()
-        
+        picker.dismiss(animated: true) {
+            
+        }
     }
 }

@@ -30,6 +30,7 @@
 "this_customer_have_order_cant_delete" = "Khách hàng đã có đơn hàng.";
 "total_price" = "Thành tiền:";
 "PV" = "PV:";
+"pv" = "PV";
 "sorry_please_select_a_customer" = "Đơn hàng này chưa có khách hàng.";
 "sorry_please_provide_order_code" = "Mã đơn hàng không hợp lệ.";
 "change_pw" = "Đổi mật khẩu";
@@ -50,6 +51,17 @@
 "search_order_code" = "Tìm kiếm mã đơn hàng";
 "filter_status" = "Trạng thái";
 "filter_payment_status" = "Trạng thái thanh toán";
+"npp_price" = "Giá nhà phân phối";
+"from" = "Từ";
+"to" = "Đến";
+"subject" = "Tiêu đề";
+"body" = "Nội dung";
+"subject_or_body_invalid" = "Tiêu đề hoặc nội dung không hợp lệ";
+"compose_email" = "Soạn Thư";
+"send" = "Gửi";
+"send_email_failed" = "Gửi email thất bại";
+"send_email_success" = "Gửi email thành công";
+"from_name" = "Tên người gửi";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

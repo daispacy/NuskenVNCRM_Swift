@@ -55,6 +55,8 @@
 		2335A2311F7DEA7200D8A47E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2335A2301F7DEA7200D8A47E /* Launch Screen.storyboard */; };
 		2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2336C5771F875ED00008DE86 /* CustomerDetailController.swift */; };
 		2336C57A1F875ED00008DE86 /* CustomerDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2336C5781F875ED00008DE86 /* CustomerDetailController.xib */; };
+		2337CBA01FAF21FB00EFA6BA /* EmailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337CB9E1FAF21FB00EFA6BA /* EmailController.swift */; };
+		2337CBA11FAF21FB00EFA6BA /* EmailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2337CB9F1FAF21FB00EFA6BA /* EmailController.xib */; };
 		23384C3B1F90F46100DCAC53 /* crm.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 23384C3A1F90F46100DCAC53 /* crm.sqlite */; };
 		2338A2B81F72AA5800B74AB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2338A2BA1F72AA5800B74AB4 /* Localizable.strings */; };
 		2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2338A2BE1F72ADB400B74AB4 /* libsqlite3.tbd */; };
@@ -226,6 +228,8 @@
 		2335A2301F7DEA7200D8A47E /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		2336C5771F875ED00008DE86 /* CustomerDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailController.swift; sourceTree = "<group>"; };
 		2336C5781F875ED00008DE86 /* CustomerDetailController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerDetailController.xib; sourceTree = "<group>"; };
+		2337CB9E1FAF21FB00EFA6BA /* EmailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailController.swift; sourceTree = "<group>"; };
+		2337CB9F1FAF21FB00EFA6BA /* EmailController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmailController.xib; sourceTree = "<group>"; };
 		23384C3A1F90F46100DCAC53 /* crm.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = crm.sqlite; sourceTree = "<group>"; };
 		2338A2B31F72A92700B74AB4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2338A2B91F72AA5800B74AB4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -473,6 +477,7 @@
 		231D97E61F95C78F003E8DA3 /* SupportControllers */ = {
 			isa = PBXGroup;
 			children = (
+				2337CB9D1FAF21DE00EFA6BA /* EmailController */,
 				23CC3BE01FA0C01600D33F64 /* SyncDataController */,
 				23776B0A1F9BCCD0003EE5BF /* ImageListController */,
 				23D2FB921F8F79C4002EA64E /* SimpleListController */,
@@ -619,6 +624,15 @@
 				2336C5781F875ED00008DE86 /* CustomerDetailController.xib */,
 			);
 			path = CustomerDetailController;
+			sourceTree = "<group>";
+		};
+		2337CB9D1FAF21DE00EFA6BA /* EmailController */ = {
+			isa = PBXGroup;
+			children = (
+				2337CB9E1FAF21FB00EFA6BA /* EmailController.swift */,
+				2337CB9F1FAF21FB00EFA6BA /* EmailController.xib */,
+			);
+			path = EmailController;
 			sourceTree = "<group>";
 		};
 		234D77A01F826B7900CC4436 /* MenuDashboardView */ = {
@@ -1150,6 +1164,7 @@
 				23544BBA1F96758E00FA81A5 /* OrderCustomerView.xib in Resources */,
 				2365D4D81F77B41300673903 /* ChartStatisticsCustomer.xib in Resources */,
 				2357222E1F7D58170096A636 /* Roboto-Thin.ttf in Resources */,
+				2337CBA11FAF21FB00EFA6BA /* EmailController.xib in Resources */,
 				235722201F7D58170096A636 /* RobotoCondensed-Bold.ttf in Resources */,
 				235722221F7D58170096A636 /* Roboto-Regular.ttf in Resources */,
 				2336C57A1F875ED00008DE86 /* CustomerDetailController.xib in Resources */,
@@ -1342,6 +1357,7 @@
 				236650001F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift in Sources */,
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,
 				2365D4D71F77B41300673903 /* ChartStatisticsCustomer.swift in Sources */,
+				2337CBA01FAF21FB00EFA6BA /* EmailController.swift in Sources */,
 				2365D4DB1F77C83500673903 /* BirthdayCustomerListView.swift in Sources */,
 				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
 				23C85B941F9790F4004F0DCE /* Date+Wrap.swift in Sources */,

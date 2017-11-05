@@ -344,8 +344,4 @@ extension UserProfileController {
             self.avatar = strBase64            
         }
     }
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : Any]?) {
-        // Whatever you want here
-        
-    }
 }

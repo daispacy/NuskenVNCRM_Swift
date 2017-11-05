@@ -26,6 +26,7 @@ enum Server:String {
     case act_order = "order"
     case act_user = "user"
     case act_master_data = "master_data"
+    case act_email = "email"
 }
 
 protocol SyncServiceDelegate:class {
@@ -116,6 +117,25 @@ final class SyncService: NSObject {
                                     AppConfig.deeplink.setFacebookGroup(str: deeplink)
                                 }
                                 
+                                if let deeplink:String = json["facebook_link_itunes"] as? String {
+                                    print("LINK FACEBOOK ITUNES: \(deeplink)")
+                                    AppConfig.deeplink.setFacebookLinkItunes(str: deeplink)
+                                }
+                                
+                                if let deeplink:String = json["zalo_link_itunes"] as? String {
+                                    print("LINK ZALO ITUNES: \(deeplink)")
+                                    AppConfig.deeplink.setZaloLinkItunes(str: deeplink)
+                                }
+                                
+                                if let deeplink:String = json["viber_link_itunes"] as? String {
+                                    print("LINK VIBER ITUNES: \(deeplink)")
+                                    AppConfig.deeplink.setViberLinkItunes(str: deeplink)
+                                }
+                                
+                                if let deeplink:String = json["skype_link_itunes"] as? String {
+                                    print("LINK SKYPE ITUNES: \(deeplink)")
+                                    AppConfig.deeplink.setSkypeLinkItunes(str: deeplink)
+                                }
                             }
                         }
                     }
@@ -831,6 +851,56 @@ final class SyncService: NSObject {
                         print("\(reason)")
                         completion(.failure(reason))
                     }
+                }
+        }
+    }
+    
+    // MARK: - Other
+    func sendEmail(fullname:String?, from:String?, to:String?, subject:String?, body:String?, completion: @escaping ((NSString)->Void)) {
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_email.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        
+        if let user = fullname {
+            parameters["fullname"] = user
+        }
+        
+        if let em = from {
+            parameters["from"] = em
+        }
+        
+        if let em = to {
+            parameters["to"] = em
+        }
+        
+        if let em = subject {
+            parameters["subject"] = em
+        }
+        
+        if let em = body {
+            parameters["body"] = em
+        }
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        completion("error")
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            completion("")
+                        } else {
+                            completion("error")
+                        }
+                    }
+                case .failure(_):
+                    completion("error")
                 }
         }
     }

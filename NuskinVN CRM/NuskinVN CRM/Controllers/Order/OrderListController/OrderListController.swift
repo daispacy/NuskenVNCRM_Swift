@@ -37,6 +37,8 @@ UISearchBarDelegate{
     var payment_status:Int64?
     var customer_id:[Int64] = []
     var searchText:String?
+    var listCustomer:[CustomerDO] = []
+    var isGotoFromCustomerList:Bool = false
     
     let listStatus:[JSON] = AppConfig.order.listStatus
     let listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus
@@ -119,6 +121,30 @@ UISearchBarDelegate{
                 }
             }
         }
+        
+        let listCIDS = self.customer_id.filter{$0 != 0}
+        if listCIDS.count > 0 {
+            if listCustomer.count == 0 {
+                CustomerManager.getAllCustomersOrdered(onComplete: {[weak self] (list) in
+                    guard let _self = self else {return}
+                    _self.listCustomer = list
+                    let customerDO = _self.listCustomer.filter{
+                        listCIDS.contains($0.id) || listCIDS.contains($0.local_id)
+                    }
+                    if customerDO.count > 0 {
+                        _self.btnFilterCustomer.setTitle(customerDO[0].fullname, for: .normal)
+                    }
+                })
+            } else {
+                let customerDO = listCustomer.filter{
+                    listCIDS.contains($0.id) || listCIDS.contains($0.local_id)
+                }
+                if customerDO.count > 0 {
+                    self.btnFilterCustomer.setTitle(customerDO[0].fullname, for: .normal)
+                }
+            }
+        }
+        
     }
     
     private func binding() {
@@ -206,6 +232,7 @@ UISearchBarDelegate{
                     var listCustomers:[CustomerDO] = []
                     CustomerManager.getAllCustomersOrdered(onComplete: { (list) in
                         listCustomers = list
+                        _self.listCustomer = list
                         let popupC = PopupController(nibName: "PopupController", bundle: Bundle.main)
                         
                         popupC.onSelect = {

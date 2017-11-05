@@ -63,7 +63,7 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     }
     
     func getDataForDashboard(fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true) {
-        print("\(fromDate) - \(toDate) - \(isLifeTime)")
+//        print("\(fromDate) - \(toDate) - \(isLifeTime)")
         UserManager.getDataDashboard(fromDate, toDate: toDate, isLifeTime: isLifeTime) {[weak self] data in
             if let _self = self {
                 _self.reloadData(data)

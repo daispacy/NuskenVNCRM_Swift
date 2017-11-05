@@ -95,7 +95,7 @@ class ChartStatisticsOrder: CViewSwitchLanguage {
         if let th = three {
             lblInvaid.text = th
         } else {
-            stackInvalid.isHidden = true
+            stackInvalid.removeFromSuperview()
         }
     }
     // MARK: - PRIVATE

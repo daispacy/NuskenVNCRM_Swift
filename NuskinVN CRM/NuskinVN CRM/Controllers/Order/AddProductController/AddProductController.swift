@@ -22,6 +22,7 @@ class AddProductController: UIViewController {
     @IBOutlet var txtName: UITextField!
     @IBOutlet var txtTotal: UITextField!
     @IBOutlet var txtPrice: UITextField!
+    @IBOutlet var txtNPPPrice: UITextField!
     @IBOutlet var txtPV: UITextField!
     @IBOutlet var txtSugguestPrice: UITextField!
     @IBOutlet var collectLabelAddProruct: [UILabel]!
@@ -126,6 +127,7 @@ class AddProductController: UIViewController {
         txtName.text = product.name
         txtSugguestPrice.text = "\(product.retail_price.toTextPrice())"
         txtPrice.text = "\(product.retail_price)"
+        txtNPPPrice.text = "\(product.price.toTextPrice())"
         txtTotal.text = "\(1)"
         txtPV.text = "\(product.pv.toTextPrice())"
         configText()
@@ -137,6 +139,7 @@ class AddProductController: UIViewController {
         if let pro = json["product"] as? ProductDO {
             self.product = pro
             txtName.text = pro.name
+            txtNPPPrice.text = "\(pro.price.toTextPrice())"
             txtSugguestPrice.text = "\(pro.retail_price.toTextPrice())"
             txtPV.text = "\(pro.pv.toTextPrice())"
         }
@@ -277,6 +280,7 @@ class AddProductController: UIViewController {
         configTextfield(txtName)
         configTextfield(txtTotal)
         configTextfield(txtPrice)
+        configTextfield(txtNPPPrice)
         configTextfield(txtSugguestPrice)
         configTextfield(txtPV)
         
@@ -303,7 +307,7 @@ class AddProductController: UIViewController {
         
         txtName.placeholder = "placeholder_product_name".localized()
         txtSugguestPrice.placeholder = "recommend_price".localized()
-        txtPV.placeholder = "pv".localized()
+        txtPV.placeholder = "pv".localized().uppercased()
         txtPrice.placeholder = "placeholder_price".localized()
         txtTotal.placeholder = "placeholder_quantity".localized()
         

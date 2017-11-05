@@ -115,8 +115,8 @@ class DashboardView: CViewSwitchLanguage {
         } else {
             totalSummaryCustomerView.removeFromSuperview()
         }
-        
-        
+
+
         if let data2 = data["total_orders_processed"],
             let data3 = data["total_orders_not_processed"],
             let totalCustomer = data["total_orders_invalid"]{
@@ -127,7 +127,7 @@ class DashboardView: CViewSwitchLanguage {
         } else {
             chartStatisticsOrder.removeFromSuperview()
         }
-        
+
         if let data2 = data["total_orders_no_charge"],
             let data3 = data["total_orders_money_collected"]{
             chartStatisticsOrder1.reload(data)

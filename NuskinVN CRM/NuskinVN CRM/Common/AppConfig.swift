@@ -81,6 +81,50 @@ class AppConfig: NSObject {
             }
             return ""
         }
+        
+        static func setFacebookLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:FacebookLinkItunes")
+            
+        }
+        static func facebookLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:FacebookLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setViberLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:ViberLinkItunes")
+            
+        }
+        static func viberLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:ViberLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setZaloLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:ZaloLinkItunes")
+            
+        }
+        static func zaloLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:ZaloLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setSkypeLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:SkypeLinkItunes")
+            
+        }
+        static func skypeLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:SkypeLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
     }
     
     // MARK: - language

@@ -18,9 +18,10 @@ class CustomerListCell: UITableViewCell {
     @IBOutlet var btnEdit: UIButton!
     @IBOutlet var stackViewContainer: UIStackView!
     
-    
     var onSelectCustomer:((CustomerDO, Bool) -> Void)?
     var onEditCustomer:((CustomerDO) -> Void)?
+    var gotoOrderList:((CustomerDO)->Void)?
+    var involkeEmailView:((CustomerDO)->Void)?
     
     var isEdit:Bool = false
     var object:CustomerDO?
@@ -67,27 +68,84 @@ class CustomerListCell: UITableViewCell {
         if isSelect {
             
             let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
+            var listFunction:[JSON] = [["tag":1,"img":"ic_order_list_gradient_72"]] // default is order
             if let obj = self.object {
-                functionView.btnViber.isHidden = obj.viber.characters.count > 0
-                functionView.btnSkype.isHidden = obj.skype.characters.count > 0
-                functionView.btnZalo.isHidden = obj.zalo.characters.count > 0
-                functionView.btnFacebook.isHidden = obj.facebook.characters.count > 0
+                if AppConfig.deeplink.facebook().characters.count > 0 {
+                    if obj.facebook.characters.count > 0 {
+                        listFunction.append(["tag":5,"img":"ic_facebook_gradient_48"])
+                    }
+                }
+                
+                if let tel = obj.tel {
+                    if tel.characters.count > 0 {
+                        listFunction.append(["tag":4,"img":"ic_phone_gradient_48"])
+                    }
+                }
+                
+                if let email = obj.email {
+                    if email.characters.count > 0 {
+                        listFunction.append(["tag":7,"img":"ic_email_gradient"])
+                    }
+                }
+                
+                if AppConfig.deeplink.skype().characters.count > 0 {
+                    if obj.skype.characters.count > 0 {
+                        listFunction.append(["tag":3,"img":"ic_skype_gradient_72"])
+                    }
+                }
+                
+                if AppConfig.deeplink.viber().characters.count > 0 {
+                    if obj.viber.characters.count > 0 {
+                        listFunction.append(["tag":2,"img":"ic_viber_gradient_72"])
+                    }
+                }
+                
+                if AppConfig.deeplink.zalo().characters.count > 0 {
+                    if obj.zalo.characters.count > 0 {
+                        listFunction.append(["tag":6,"img":"ic_zalo_72"])
+                    }
+                }
+                
             }
+            functionView.loadListFunction(json: listFunction)
             functionView.onSelectFunction = {[weak self]
                 identifier in
+                guard let _self = self else {return}
+                guard let obj = self?.object else {return}
                 print("open \(identifier)")
-                if identifier == "facebook" {
-                    
-                } else if identifier == "skype" {
-                    
-                } else if identifier == "viber" {
-                    
-                } else if identifier == "zalo" {
-                    
+                if identifier == 5/*"facebook"*/ {
+                    _self.openDeepLink(link: AppConfig.deeplink.facebook().replacingOccurrences(of: "[|id|]", with: obj.facebook), linkItunes: AppConfig.deeplink.facebookLinkItunes())
+                } else if identifier == 3/*"skype"*/ {
+                    _self.openDeepLink(link: AppConfig.deeplink.skype().replacingOccurrences(of: "[|id|]", with: obj.skype), linkItunes: AppConfig.deeplink.skypeLinkItunes())
+                } else if identifier == 2/*"viber"*/ {
+                    _self.openDeepLink(link: AppConfig.deeplink.viber().replacingOccurrences(of: "[|id|]", with: obj.viber), linkItunes: AppConfig.deeplink.viberLinkItunes())
+                } else if identifier == 4/*"tel"*/ {
+                    guard let number = URL(string: "tel://" + obj.tel!) else { return }
+                    UIApplication.shared.open(number)
+                } else if identifier == 6/*"zalo"*/ {
+                    _self.openDeepLink(link: AppConfig.deeplink.zalo().replacingOccurrences(of: "[|id|]", with: obj.zalo), linkItunes: AppConfig.deeplink.zaloLinkItunes())
+                } else if identifier == 1/*"order list"*/ {
+                    _self.gotoOrderList?(obj)
+                } else if identifier == 7/*"send email"*/ {
+                    _self.involkeEmailView?(obj)
                 }
             }
             stackViewContainer.insertArrangedSubview(functionView, at: stackViewContainer.arrangedSubviews.count)
-            
+        }
+    }
+    
+    func openDeepLink(link:String, linkItunes:String) {
+        if let url = URL(string:link) {
+            let installed = UIApplication.shared.canOpenURL(url)
+            if installed {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                if let urlLink = URL(string: linkItunes) {
+                    if UIApplication.shared.canOpenURL(urlLink) {
+                        UIApplication.shared.open(urlLink, options: [:], completionHandler: nil)
+                    }
+                }
+            }
         }
     }
     
@@ -106,6 +164,9 @@ class CustomerListCell: UITableViewCell {
     // MARK: - interface
     func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = customer
+        if customer.fullname == "dai211811" {
+            print("catch")
+        }
         self.isEdit = isEdit
         self.isSelect = isSelect
         self.isChecked = isChecked
@@ -159,37 +220,43 @@ class CustomerListCell: UITableViewCell {
 
 class FunctionStackViewCustomer: UIView {
     
-    @IBOutlet var btnFacebook: UIButton!
-    @IBOutlet var btnZalo: UIButton!
-    @IBOutlet var btnSkype: UIButton!
-    @IBOutlet var btnViber: UIButton!
+    @IBOutlet var stackContainer: UIStackView!
     
-    var onSelectFunction:((String)->Void)?
+    var onSelectFunction:((Int)->Void)?
     
     var disposeBag = DisposeBag()
     
+    // MARK: - init
     override func awakeFromNib() {
         super.awakeFromNib()
+    }
+    
+    // MARK: - event
+    func buttonTouch(_ sender:UIButton) {
+        self.onSelectFunction?(sender.tag)
+    }
+    
+    // MARK: - interface
+    func loadListFunction(json:[JSON]) {
+        if json.count == 0 {return}
         
-        btnFacebook.rx.tap.subscribe(onNext: { [weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("facebook")
-            }
-        }).addDisposableTo(disposeBag)
-        btnZalo.rx.tap.subscribe(onNext: {[weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("zalo")
-            }
-        }).addDisposableTo(disposeBag)
-        btnSkype.rx.tap.subscribe(onNext: {[weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("skype")
-            }
-        }).addDisposableTo(disposeBag)
-        btnViber.rx.tap.subscribe(onNext: {[weak self] in
-            if let _self = self {
-                _self.onSelectFunction?("viber")
-            }
-        }).addDisposableTo(disposeBag)
+        for item in json {
+            createButton(item: item)
+        }
+    }
+    
+    // MARK: - private
+    func createButton(item:JSON) {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: item["img"] as! String), for: .normal)
+        button.addTarget(self, action: #selector(self.buttonTouch(_:)), for: .touchUpInside)
+        stackContainer.insertArrangedSubview(button, at: stackContainer.arrangedSubviews.count)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let width = button.widthAnchor.constraint(equalToConstant: 50)
+        let height = button.heightAnchor.constraint(equalToConstant: 50)
+        width.priority = 750
+        height.priority = 750
+        button.addConstraints([width,height])
+        button.tag = item["tag"] as! Int
     }
 }

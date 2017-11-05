@@ -382,13 +382,13 @@ class AddGroupController: UIViewController {
             $0.isSelected = false
             switch (gr.position) {
             case 1:
-                if $0.tag == 15 {
+                if $0.tag == 11 {
                     $0.isSelected = true
                 }
                 break
                 
             case 2:
-                if $0.tag == 14 {
+                if $0.tag == 12 {
                     $0.isSelected = true
                 }
                 break
@@ -400,12 +400,12 @@ class AddGroupController: UIViewController {
                 break
                 
             case 4:
-                if $0.tag == 12 {
+                if $0.tag == 14 {
                     $0.isSelected = true
                 }
                 break
             case 6:
-                if $0.tag == 11 {
+                if $0.tag == 15 {
                     $0.isSelected = true
                 }
                 break

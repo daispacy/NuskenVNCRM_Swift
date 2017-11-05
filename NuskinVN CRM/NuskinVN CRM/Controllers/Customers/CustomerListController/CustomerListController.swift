@@ -32,6 +32,7 @@ UITabBarControllerDelegate {
     var listCustomerSelected:[CustomerDO] = [] //list customer select to remove
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     var onSelectCustomer:((NSManagedObject)->Void)?
+    var isJumpToOrderList:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +75,7 @@ UITabBarControllerDelegate {
         let itemTabbar = UITabBarItem(title: "title_tabbar_button_dashboard".localized().uppercased(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
         itemTabbar.tag = 9
         tabBarItem  = itemTabbar
-        
+        self.isJumpToOrderList = false
         updateTableContent()
     }
     
@@ -299,6 +300,30 @@ extension CustomerListController {
                     }
                 }
             }
+            cell.gotoOrderList = {[weak self] customer in
+                guard let _self = self else {return}
+                let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
+                itemTabbar.tag = 10
+                _self.tabBarItem  = itemTabbar
+                let nv = _self.tabBarController?.viewControllers![1] as! UINavigationController
+                let vc = nv.viewControllers[0] as! OrderListController
+                vc.customer_id = [customer.id,customer.local_id]
+                _self.tabBarController?.selectedIndex = 1
+            }
+            cell.involkeEmailView = {[weak self] customer in
+                guard let _self = self else {return}
+                guard let user = UserManager.currentUser() else {return}
+                let vc = EmailController(nibName: "EmailController", bundle: Bundle.main)
+//                _self.showTabbar(false)
+                _self.navigationController?.present(vc, animated: true, completion: {
+                    vc.show(from: user.email!, to: customer.email!)
+                })
+                vc.onDismissComplete = {[weak self] in
+                    guard let _self = self else {return}
+//                    _self.showTabbar(true)
+                    _self.refreshAvatar()
+                }
+            }
             return cell
         }
     }
@@ -314,7 +339,7 @@ extension CustomerListController {
             cell.setSelect()
         } else {
             let customer = listCustomer[indexPath.row]
-            if expandRow == indexPath.row || !customer.isShouldOpenFunctionView {
+            if expandRow == indexPath.row {
                 // reset expand
                 expandRow = -1
                 self.tableView.reloadData()
@@ -391,7 +416,7 @@ extension CustomerListController {
             return false
         }
         
-        if tabBarController.tabBar.selectedItem?.tag == 1 {
+        if tabBarController.tabBar.selectedItem?.tag == 1{
             let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 10
             tabBarItem  = itemTabbar
