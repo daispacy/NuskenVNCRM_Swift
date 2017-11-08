@@ -25,11 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // start get config
         SyncService.shared.getConfig()
         
+        // config navigation bar
         UINavigationBar.appearance().barTintColor = UIColor(hex:Theme.colorNavigationBar)
         UINavigationBar.appearance().tintColor = UIColor.white
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white,NSFontAttributeName:UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)!]
         UINavigationBar.appearance().isTranslucent = false
-                
+        
+        // config tabbar
         UITabBar.appearance().unselectedItemTintColor = UIColor.white
         UITabBar.appearance().tintColor = UIColor.white
         UITabBar.appearance().barTintColor = UIColor(hex:"0xe30b7a")
@@ -39,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
+        // set directory for coredata
         CoreDataStack.sharedInstance.applicationDocumentsDirectory()
         
         if let ww = window {

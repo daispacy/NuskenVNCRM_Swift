@@ -11,7 +11,7 @@ import CoreData
 
 class UserManager: NSObject {
     
-    static func getDataDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true,onComplete:((JSON)->Void)) {
+    static func getDataDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:((JSON)->Void)) {
         CustomerManager.getReportCustomers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { list in
             var dict:JSON = [:]
             dict["total_customers"] = Int64(list.filter{$0.status == 1}.count)
@@ -79,17 +79,17 @@ class UserManager: NSObject {
                                         let pr1 = item.product(){
                                         if pr.id == pr1.id {
                                             index = i
+                                            listTemp[index]["total"] = Int64(listTemp[index]["total"] as! Int64) + item.price*item.quantity
+                                            listTemp[index]["quantity"] = Int64(listTemp[index]["quantity"] as! Int64) + item.quantity
                                             break
                                         }
                                     }
                                     i += 1
                                 }
-                            }
-                            if index != -1 {
-                                listTemp[index]["total"] = Int64(listTemp[index]["total"] as! Int64) + item.price*item.quantity
-                                listTemp[index]["quantity"] = Int64(listTemp[index]["quantity"] as! Int64) + item.quantity
-                            } else {                                listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
-                            }
+                                if index == -1 {
+                                    listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
+                                }
+                            }                            
                         })
                     }
                     if listTemp.count > 0 {
@@ -110,6 +110,87 @@ class UserManager: NSObject {
                 
             })
             
+        })
+    }
+    
+    static func getDataCustomerDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil, onComplete:((JSON)->Void)) {
+        guard let cus = customer else {onComplete([:]); return }
+        var dict:JSON = [:]
+        var totalAmountOrders:Int64 = 0
+        var totaOrdersprocess:Double = 0
+        var totalOrdersunprocess:Double = 0
+        var totalOrdersinvalid:Double = 0
+        var totalOrdersPaid:Double = 0
+        var totalOrdersUnpaid:Double = 0
+        var top10Product:[JSON] = []
+        
+        
+        
+        //total_orders_amount
+        var listOrderitems:[OrderItemDO] = []
+        OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, customer:cus, onComplete: { listOrder in
+            _ = listOrder.map({
+                if $0.status != 0 { // invalid
+                    totalAmountOrders += $0.totalPrice
+                    if $0.status == 1 { // process
+                        totaOrdersprocess += 1
+                    } else if $0.status == 3 { // unprocess
+                        totalOrdersunprocess += 1
+                    }
+                } else {
+                    totalOrdersinvalid += 1
+                }
+                if $0.payment_status == 1 {
+                    totalOrdersPaid += 1
+                } else if $0.payment_status == 2 {
+                    totalOrdersUnpaid += 1
+                }
+                if $0.orderItems().count > 0 {
+                    listOrderitems.append(contentsOf:$0.orderItems())
+                }
+            })
+            
+            //hanlde product
+            var listTemp:[[String:Any]] = []
+            if listOrderitems.count > 0 {
+                _ = listOrderitems.map({item  in
+                    // check listTemp has store this product
+                    if listTemp.count == 0 {
+                        listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
+                    } else {
+                        var index = -1
+                        var i = 0
+                        for it in listTemp {
+                            if let pr = it["product"] as? ProductDO,
+                                let pr1 = item.product(){
+                                if pr.id == pr1.id {
+                                    index = i
+                                    listTemp[index]["total"] = Int64(listTemp[index]["total"] as! Int64) + item.price*item.quantity
+                                    listTemp[index]["quantity"] = Int64(listTemp[index]["quantity"] as! Int64) + item.quantity
+                                    break
+                                }
+                            }
+                            i += 1
+                        }
+                        if index == -1 {
+                            listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
+                        }
+                    }
+                })
+            }
+            if listTemp.count > 0 {
+                top10Product = listTemp
+            }
+            
+            dict["total_orders_processed"] = totaOrdersprocess.cleanValue
+            dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
+            dict["total_orders_invalid"] = totalOrdersinvalid.cleanValue
+            dict["total_orders_amount"] = totalAmountOrders
+            dict["total_orders_no_charge"] = totalOrdersUnpaid.cleanValue
+            dict["total_orders_money_collected"] = totalOrdersPaid.cleanValue
+            dict["top_ten_product"] = top10Product
+            // return result
+            onComplete(dict)
         })
     }
     

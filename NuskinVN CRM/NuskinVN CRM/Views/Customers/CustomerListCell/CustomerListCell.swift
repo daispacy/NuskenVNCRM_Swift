@@ -68,7 +68,7 @@ class CustomerListCell: UITableViewCell {
         if isSelect {
             
             let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
-            var listFunction:[JSON] = [["tag":1,"img":"ic_order_list_gradient_72"]] // default is order
+            var listFunction:[JSON] = [["tag":8,"img":"ic_dashboard_gradient_72"],["tag":1,"img":"ic_order_list_gradient_72"]] // default is order
             if let obj = self.object {
                 if AppConfig.deeplink.facebook().characters.count > 0 {
                     if obj.facebook.characters.count > 0 {
@@ -107,6 +107,7 @@ class CustomerListCell: UITableViewCell {
                 }
                 
             }
+            let topVC = Support.topVC!
             functionView.loadListFunction(json: listFunction)
             functionView.onSelectFunction = {[weak self]
                 identifier in
@@ -128,6 +129,10 @@ class CustomerListCell: UITableViewCell {
                     _self.gotoOrderList?(obj)
                 } else if identifier == 7/*"send email"*/ {
                     _self.involkeEmailView?(obj)
+                } else if identifier == 8/*"dashboard"*/ {
+                    let vc = DashboardCustomerController(nibName: "DashboardCustomerController", bundle: Bundle.main)
+                    vc.customer = obj
+                    topVC.present(vc, animated: true, completion: nil)
                 }
             }
             stackViewContainer.insertArrangedSubview(functionView, at: stackViewContainer.arrangedSubviews.count)

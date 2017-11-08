@@ -11,7 +11,7 @@ import CoreData
 
 class OrderManager: NSObject {
     
-    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:(([OrderDO])->Void)) {
+    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil, onComplete:(([OrderDO])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else { onComplete([]); return }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
@@ -25,7 +25,12 @@ class OrderManager: NSObject {
             }
         }
         
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1])
+        var predicate3 = NSPredicate(format: "1 > 0")
+        if let cus = customer {
+            predicate3 = NSPredicate(format: "customer_id IN %@",[cus.local_id,cus.id].filter{$0 != 0})
+        }
+        
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3])
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
                                         NSSortDescriptor(key: "status", ascending: false)]
         fetchRequest.predicate = predicateCompound

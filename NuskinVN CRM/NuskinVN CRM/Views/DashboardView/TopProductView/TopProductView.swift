@@ -62,7 +62,7 @@ class TopProductView: UIView {
             }
             i += 1
         }
-        if dataReal.count <= 10 {
+        if dataReal.count < 11 {
             btnOtherProduct.removeFromSuperview()
         }
     }

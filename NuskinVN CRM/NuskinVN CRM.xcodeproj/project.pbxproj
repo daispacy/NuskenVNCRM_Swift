@@ -157,6 +157,8 @@
 		23D2FB961F8F79F6002EA64E /* SimpleListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D2FB941F8F79F5002EA64E /* SimpleListController.xib */; };
 		23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */; };
 		23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D31D051F7BE4C600BCD198 /* OrderManageView.xib */; };
+		23D6349D1FB3484B00AF97F4 /* DashboardCustomerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D6349B1FB3484B00AF97F4 /* DashboardCustomerController.swift */; };
+		23D6349E1FB3484B00AF97F4 /* DashboardCustomerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D6349C1FB3484B00AF97F4 /* DashboardCustomerController.xib */; };
 		23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DEDE381F72CBD7003D4097 /* AppConfig.swift */; };
 		23E146E31F796FF200ECCC32 /* FontAwesomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E146E41F796FF200ECCC32 /* FontAwesomeKit.framework */; };
 		23E146E51F796FF900ECCC32 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E146E61F796FF900ECCC32 /* Reachability.framework */; };
@@ -341,6 +343,8 @@
 		23D31D031F7BE4BA00BCD198 /* OrderManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManageView.swift; sourceTree = "<group>"; };
 		23D31D051F7BE4C600BCD198 /* OrderManageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderManageView.xib; sourceTree = "<group>"; };
 		23D4D2501FA6E42B00305EF9 /* NuskinVN CRM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "NuskinVN CRM.entitlements"; sourceTree = "<group>"; };
+		23D6349B1FB3484B00AF97F4 /* DashboardCustomerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCustomerController.swift; sourceTree = "<group>"; };
+		23D6349C1FB3484B00AF97F4 /* DashboardCustomerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DashboardCustomerController.xib; sourceTree = "<group>"; };
 		23DEDE381F72CBD7003D4097 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		23E146E41F796FF200ECCC32 /* FontAwesomeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FontAwesomeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E146E61F796FF900ECCC32 /* Reachability.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Reachability.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -561,6 +565,8 @@
 			isa = PBXGroup;
 			children = (
 				232F17371F74C7FD0053A87D /* DashboardViewController.swift */,
+				23D6349B1FB3484B00AF97F4 /* DashboardCustomerController.swift */,
+				23D6349C1FB3484B00AF97F4 /* DashboardCustomerController.xib */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -1152,6 +1158,7 @@
 				235722261F7D58170096A636 /* RobotoCondensed-LightItalic.ttf in Resources */,
 				2365D4DD1F77C84000673903 /* BirthdayCustomerListView.xib in Resources */,
 				23D31D061F7BE4C600BCD198 /* OrderManageView.xib in Resources */,
+				23D6349E1FB3484B00AF97F4 /* DashboardCustomerController.xib in Resources */,
 				2335A2311F7DEA7200D8A47E /* Launch Screen.storyboard in Resources */,
 				23384C3B1F90F46100DCAC53 /* crm.sqlite in Resources */,
 				232323931F834B7B00290926 /* GroupCollectCustomerCell.xib in Resources */,
@@ -1392,6 +1399,7 @@
 				232818E51F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift in Sources */,
 				23B906501FA07BE500FF24C2 /* CustomerSelectedListCell.swift in Sources */,
 				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
+				23D6349D1FB3484B00AF97F4 /* DashboardCustomerController.swift in Sources */,
 				2382F84D1F9A6114001FF122 /* CustomerDO+CoreDataClass.swift in Sources */,
 				238F5E5C1F8E5767006C55BF /* DatePickerController.swift in Sources */,
 				2353D8DB1F8BA0BE006FCFF1 /* JSON.swift in Sources */,

@@ -1,56 +1,89 @@
 //
-//  DashboardView.swift
+//  DashboardCustomerController.swift
 //  NuskinVN CRM
 //
-//  Created by Dai Pham on 9/22/17.
+//  Created by Dai Pham on 11/8/17.
 //  Copyright © 2017 Dai Pham. All rights reserved.
 //
 
 import UIKit
-import CoreData
 
-class DashboardView: CViewSwitchLanguage {
+class DashboardCustomerController: UIViewController {
 
-    
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var scrollView: UIScrollView!
-    
-    var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
-    var involkeFunctionView:((CustomerDO,Bool)->Void)?
-    
+    @IBOutlet var btnClose: UIButton!
+    @IBOutlet var lblNam: UILabel!
     //custom view
     var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
     var totalSummaryView:TotalSummaryView!
     var totalSalesView:TotalSummaryView!
-    var totalSummaryCustomerView:TotalSummaryView!
     var chartStatisticsOrder:ChartStatisticsOrder!
     var chartStatisticsOrder1:ChartStatisticsOrder!
     var topProductView: TopProductView!
-    var birthdayCustomerListView:BirthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
-    var birthdayDontOrder30:BirthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
+    
+    // properties
+    var fromDate:NSDate? = nil
+    var toDate:NSDate? = nil
+    var isLifeTime: Bool = true
+    
+    var customer:CustomerDO?
     
     // MARK: - INIT
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        NotificationCenter.default.addObserver(self, selector: #selector(DashboardView.reloadWhenDetectRotation), name: NSNotification.Name(rawValue: "App:DeviceRotate"), object: nil)
-        configView()
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
+        self.providesPresentationContextTransitionStyle = true
+        self.definesPresentationContext = true
+        self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         // block menu
+        let height:NSLayoutConstraint = menuDashboard.heightAnchor.constraint(equalToConstant: 130)
+        height.priority = 750
+        menuDashboard.addConstraint(height)
         menuDashboard.onSelectFilter = {[weak self] from,to,lifetime in
             guard let _self = self else {return}
-            _self.onSelectFilter?(from,to,lifetime)
+            _self.fromDate = from
+            _self.toDate = to
+            _self.isLifeTime = lifetime
+            _self.getReport()
         }
         
         // menu
         stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
+        
         menuDashboard.updateControlsYear(nil)
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "App:DeviceRotation"), object: self)
+    // MARK: - event
+    @IBAction func closeEvent(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - private
+    func getReport() {
+        guard let cus = self.customer else {self.dismiss(animated: true, completion: nil); return}
+        if let name = cus.fullname {
+            lblNam.text = name.uppercased()
+        } else {
+            lblNam.text = ""
+        }
+        
+        UserManager.getDataCustomerDashboard(self.fromDate, toDate: self.toDate, isLifeTime: self.isLifeTime, customer: cus) {[weak self] data in
+            guard let _self = self else {return}
+            _self.reload(data)
+        }
+    }
+    
     func configView () {
         
         // block summary
@@ -59,21 +92,21 @@ class DashboardView: CViewSwitchLanguage {
         // block total
         totalSalesView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
         
-        //block chart summary customer
-        totalSummaryCustomerView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
-        
         //block chart order
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
         
         //block chart order
         chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
-
+        
         //block top product
         topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
+        
+        lblNam.textColor = UIColor.white
+        lblNam.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
     }
     
     // MARK: - interface
-    override func reload(_ data:JSON) {
+    func reload(_ data:JSON) {
         
         if stackView.arrangedSubviews.count > 0 {
             _ = stackView.arrangedSubviews.map({
@@ -100,20 +133,6 @@ class DashboardView: CViewSwitchLanguage {
             totalSalesView.removeFromSuperview()
         }
         
-        
-        if let data2 = data["total_customers_ordered"],
-            let data3 = data["total_customers_not_ordered"],
-            let listGroupCustomers = data["customers"] as? [JSON]{
-            if listGroupCustomers.count > 0 {
-                totalSummaryCustomerView.reload(data)
-                stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
-                totalSummaryCustomerView.loadChartCustomer(totalOrdered: "\(data2)", totalNotOrderd: "\(data3)")
-            }
-        } else {
-            totalSummaryCustomerView.removeFromSuperview()
-        }
-
-
         if let data2 = data["total_orders_processed"],
             let data3 = data["total_orders_not_processed"],
             let totalCustomer = data["total_orders_invalid"]{
@@ -124,7 +143,7 @@ class DashboardView: CViewSwitchLanguage {
         } else {
             chartStatisticsOrder.removeFromSuperview()
         }
-
+        
         if let data2 = data["total_orders_no_charge"],
             let data3 = data["total_orders_money_collected"]{
             chartStatisticsOrder1.reload(data)
@@ -142,37 +161,5 @@ class DashboardView: CViewSwitchLanguage {
         } else {
             topProductView.removeFromSuperview()
         }
-        
-        // block customer ordered before 30 days
-        stackView.insertArrangedSubview(birthdayDontOrder30, at: stackView.arrangedSubviews.count)
-        birthdayDontOrder30.reloadData(true,forceRemoveButtonCheck: true)
-        birthdayDontOrder30.involkeFunctionView = {[weak self] customer, sender in
-            guard let _self = self else {return}
-            _self.involkeFunctionView?(customer,true)
-        }
-        birthdayDontOrder30.needReloadData = {[weak self] in
-            guard let _self = self else {return}
-            _self.birthdayDontOrder30.reloadData(true,forceRemoveButtonCheck: true)
-        }
-        
-        // block customer have birthday today
-        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
-        birthdayCustomerListView.reloadData(false,forceRemoveButtonCheck: true)
-        birthdayCustomerListView.involkeFunctionView = {[weak self] customer, sender in
-            guard let _self = self else {return}
-            _self.involkeFunctionView?(customer,false)
-        }
-        birthdayCustomerListView.needReloadData = {[weak self] in
-            guard let _self = self else {return}
-            _self.birthdayCustomerListView.reloadData(false,forceRemoveButtonCheck: true)
-        }
-    }
-    
-    override func reloadTexts() {
-        // set text here
-    }
-    
-    func reloadWhenDetectRotation () {
-        
     }
 }
