@@ -22,6 +22,8 @@
 		230A91A51F99C10D00761590 /* GroupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230A91A41F99C10D00761590 /* GroupManager.swift */; };
 		230A91A71F99CD8A00761590 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230A91A61F99CD8A00761590 /* UserManager.swift */; };
 		230FC7241F8CA66400C51497 /* FunctionStackViewCustomer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */; };
+		231234041FB0AEC6006A9A49 /* BirthdayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231234031FB0AEC6006A9A49 /* BirthdayManager.swift */; };
+		231234061FB0DF0E006A9A49 /* NotOrder30DOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231234051FB0DF0E006A9A49 /* NotOrder30DOManager.swift */; };
 		231C72141F72BD4F00654621 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C72131F72BD4F00654621 /* RootViewController.swift */; };
 		231D97EA1F95C7F2003E8DA3 /* OrderListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231D97E81F95C7F2003E8DA3 /* OrderListController.swift */; };
 		231D97EB1F95C7F2003E8DA3 /* OrderListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 231D97E91F95C7F2003E8DA3 /* OrderListController.xib */; };
@@ -139,6 +141,8 @@
 		23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */; };
 		23BB51B71F761F0A005FC2C7 /* TotalSummaryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */; };
 		23C85B941F9790F4004F0DCE /* Date+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C85B931F9790F4004F0DCE /* Date+Wrap.swift */; };
+		23C9C6DE1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23C9C6DC1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib */; };
+		23C9C6DF1FB19D9700C1C5B3 /* PopupCustomerFunctionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C9C6DD1FB19D9700C1C5B3 /* PopupCustomerFunctionController.swift */; };
 		23CA607F1F7F8705007C3305 /* TopProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CA607E1F7F8705007C3305 /* TopProductView.swift */; };
 		23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CA60801F7F8716007C3305 /* TopProductView.xib */; };
 		23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CA60831F7F8742007C3305 /* BlockTopProductView.xib */; };
@@ -195,6 +199,8 @@
 		230A91A41F99C10D00761590 /* GroupManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupManager.swift; sourceTree = "<group>"; };
 		230A91A61F99CD8A00761590 /* UserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		230FC7231F8CA66400C51497 /* FunctionStackViewCustomer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunctionStackViewCustomer.xib; sourceTree = "<group>"; };
+		231234031FB0AEC6006A9A49 /* BirthdayManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BirthdayManager.swift; sourceTree = "<group>"; };
+		231234051FB0DF0E006A9A49 /* NotOrder30DOManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotOrder30DOManager.swift; sourceTree = "<group>"; };
 		231C72131F72BD4F00654621 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		231D97E81F95C7F2003E8DA3 /* OrderListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListController.swift; sourceTree = "<group>"; };
 		231D97E91F95C7F2003E8DA3 /* OrderListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderListController.xib; sourceTree = "<group>"; };
@@ -314,6 +320,8 @@
 		23BB51B41F761ED9005FC2C7 /* TotalSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSummaryView.swift; sourceTree = "<group>"; };
 		23BB51B61F761F0A005FC2C7 /* TotalSummaryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TotalSummaryView.xib; sourceTree = "<group>"; };
 		23C85B931F9790F4004F0DCE /* Date+Wrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Wrap.swift"; sourceTree = "<group>"; };
+		23C9C6DC1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopupCustomerFunctionController.xib; sourceTree = "<group>"; };
+		23C9C6DD1FB19D9700C1C5B3 /* PopupCustomerFunctionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupCustomerFunctionController.swift; sourceTree = "<group>"; };
 		23CA607E1F7F8705007C3305 /* TopProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopProductView.swift; sourceTree = "<group>"; };
 		23CA60801F7F8716007C3305 /* TopProductView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopProductView.xib; sourceTree = "<group>"; };
 		23CA60831F7F8742007C3305 /* BlockTopProductView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockTopProductView.xib; sourceTree = "<group>"; };
@@ -477,6 +485,7 @@
 		231D97E61F95C78F003E8DA3 /* SupportControllers */ = {
 			isa = PBXGroup;
 			children = (
+				23C9C6DB1FB19D6300C1C5B3 /* PopupCustomerFunctionController */,
 				2337CB9D1FAF21DE00EFA6BA /* EmailController */,
 				23CC3BE01FA0C01600D33F64 /* SyncDataController */,
 				23776B0A1F9BCCD0003EE5BF /* ImageListController */,
@@ -760,6 +769,8 @@
 		237F84B41F72DF5C008B4822 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				231234051FB0DF0E006A9A49 /* NotOrder30DOManager.swift */,
+				231234031FB0AEC6006A9A49 /* BirthdayManager.swift */,
 				232818DD1F9C89FF00D57799 /* OrderItemManager.swift */,
 				23776B171F9BE946003EE5BF /* OrderManager.swift */,
 				23776B081F9BC880003EE5BF /* ProductManager.swift */,
@@ -848,6 +859,15 @@
 				2365D4CD1F77A0A100673903 /* ChartStatisticsOrder.xib */,
 			);
 			path = ChartStatisticsOrder;
+			sourceTree = "<group>";
+		};
+		23C9C6DB1FB19D6300C1C5B3 /* PopupCustomerFunctionController */ = {
+			isa = PBXGroup;
+			children = (
+				23C9C6DD1FB19D9700C1C5B3 /* PopupCustomerFunctionController.swift */,
+				23C9C6DC1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib */,
+			);
+			path = PopupCustomerFunctionController;
 			sourceTree = "<group>";
 		};
 		23CA607D1F7F86E1007C3305 /* TopProductView */ = {
@@ -1120,6 +1140,7 @@
 			files = (
 				2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */,
 				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
+				23C9C6DE1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib in Resources */,
 				2303C28A1F97107C001F0A42 /* OrderProductListView.xib in Resources */,
 				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
 				231D97EB1F95C7F2003E8DA3 /* OrderListController.xib in Resources */,
@@ -1321,6 +1342,7 @@
 				230248861F7569ED00177679 /* CustomAlertController.swift in Sources */,
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
 				2382F84E1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift in Sources */,
+				231234041FB0AEC6006A9A49 /* BirthdayManager.swift in Sources */,
 				2346D8C11FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift in Sources */,
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
@@ -1336,6 +1358,7 @@
 				2396401E1FACBF16003BB83B /* OtherExtension.swift in Sources */,
 				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
 				235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */,
+				231234061FB0DF0E006A9A49 /* NotOrder30DOManager.swift in Sources */,
 				23CC3BE31FA0C04200D33F64 /* SyncDataController.swift in Sources */,
 				2303C2961F972D03001F0A42 /* AddProductController.swift in Sources */,
 				231D97F01F95C836003E8DA3 /* OrderListCell.swift in Sources */,
@@ -1353,6 +1376,7 @@
 				23F09A201F780BB1005654F0 /* PoupMenu.swift in Sources */,
 				23776B091F9BC880003EE5BF /* ProductManager.swift in Sources */,
 				23B9064C1FA0495300FF24C2 /* YAxisValueFormatter.swift in Sources */,
+				23C9C6DF1FB19D9700C1C5B3 /* PopupCustomerFunctionController.swift in Sources */,
 				23776B111F9BCD55003EE5BF /* ProductListCell.swift in Sources */,
 				236650001F9F161F00CCFF4B /* GroupDO+CoreDataClass.swift in Sources */,
 				2351E34F1F7B55DF00BC228A /* UIImageView+Wrap.swift in Sources */,

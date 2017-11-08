@@ -41,11 +41,11 @@ class CustomAlertController: UIViewController {
         
         btnFirst.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnFirst.frame, isReverse:true)
         btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnFirst.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFirst.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnSecond.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnSecond.frame, isReverse:true)
         btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnSecond.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnSecond.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
     
         lblMessage.textColor = UIColor(hex:Theme.colorAlertTextNormal)
         lblMessage.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)

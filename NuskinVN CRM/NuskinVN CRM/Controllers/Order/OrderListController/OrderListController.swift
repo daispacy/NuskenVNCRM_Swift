@@ -29,8 +29,10 @@ UISearchBarDelegate{
     @IBOutlet var lblcustomer: UILabel!
     @IBOutlet var stackFilter: UIStackView!
     @IBOutlet var vwFilter: UIView!
+    @IBOutlet var stackContainer: UIStackView!
     
-    
+    var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
+        
     var listOrder:[OrderDO] = []
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     var status:Int64?
@@ -40,9 +42,14 @@ UISearchBarDelegate{
     var listCustomer:[CustomerDO] = []
     var isGotoFromCustomerList:Bool = false
     
-    let listStatus:[JSON] = AppConfig.order.listStatus
-    let listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus
+    var listStatus:[JSON] = AppConfig.order.listStatus()
+    var listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus()
     
+    var fromDate:NSDate? = nil
+    var toDate:NSDate? = nil
+    var isLifeTime: Bool = true
+    
+    // MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -63,28 +70,85 @@ UISearchBarDelegate{
         searchBar.delegate = self
         
         // Do any additional setup after loading the view.
-        let rightButtonMenu = UIButton(type: .custom)
-        rightButtonMenu.setImage(Support.image.iconFont(code: "\u{f067}", size: 22), for: .normal)
-        rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-        rightButtonMenu.addTarget(self, action: #selector(self.menuPressRight(sender:)), for: .touchUpInside)
-        let item2 = UIBarButtonItem(customView: rightButtonMenu)
-        self.navigationItem.rightBarButtonItem  = item2
+        let rightButtonAdd = UIButton(type: .custom)
+        rightButtonAdd.setImage(Support.image.iconFont(code: "\u{f067}", size: 22), for: .normal)
+        rightButtonAdd.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        rightButtonAdd.addTarget(self, action: #selector(self.addewOrder(sender:)), for: .touchUpInside)
+        let item2 = UIBarButtonItem(customView: rightButtonAdd)
+        item2.tag = 99
+        let rightButtonFilter = UIButton(type: .custom)
+        rightButtonFilter.setImage(Support.image.iconFont(code: "\u{f0b0}", size: 22), for: .normal)
+        rightButtonFilter.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        rightButtonFilter.addTarget(self, action: #selector(self.menuFitlerPress(_:)), for: .touchUpInside)
+        let itemFilter2 = UIBarButtonItem(customView: rightButtonFilter)
+        itemFilter2.tag = 100
+        self.navigationItem.rightBarButtonItems = [item2,itemFilter2]
+        
+        stackContainer.insertArrangedSubview(menuDashboard, at: 0)
+        let height:NSLayoutConstraint = menuDashboard.heightAnchor.constraint(equalToConstant: 130)
+        height.priority = 750
+        menuDashboard.addConstraint(height)
+        menuDashboard.onSelectFilter = {[weak self] from, to, isLifeTime in
+            guard let _self = self else {return}
+            _self.fromDate = from
+            _self.toDate = to
+            _self.isLifeTime = isLifeTime
+            _self.refreshListOrder()
+        }
         
         configText()
         configView()
         // add menu from root
         addDefaultMenu(true)
         binding()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func menuPressRight(sender:UIButton) {
+    func keyboardWillShow(notification: NSNotification) {
+        UIView.animate(withDuration: 0.2) {
+            self.menuDashboard.isHidden = true
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        UIView.animate(withDuration: 0.2) {
+            self.menuDashboard.isHidden = false
+        }
+    }
+    
+    func menuFitlerPress(_ sender:UIBarButtonItem) {
+        UIView.animate(withDuration: 0.2) {
+            self.vwFilter.isHidden = !self.vwFilter.isHidden
+            self.menuDashboard.isHidden = !self.menuDashboard.isHidden
+        }
+    }
+    
+    func addewOrder(sender:UIBarButtonItem) {
+        
         let vc = OrderDetailController(nibName: "OrderDetailController", bundle: Bundle.main)
         self.navigationController?.pushViewController(vc, animated: true)
+        vc.onPop = {
+            [weak self] in
+            guard let _self = self else {return}
+            _self.customer_id = []
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        listStatus = AppConfig.order.listStatus()
+        listPaymentStatus = AppConfig.order.listPaymentStatus()
+        
         refreshListOrder()
+//        self.showTabbar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+//        self.showTabbar(false)
     }
     
     override func configText() {
@@ -110,22 +174,11 @@ UISearchBarDelegate{
     func refreshListOrder() {
         listOrder.removeAll()
         self.tableView.reloadData()
-        OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id) {[weak self] list in
-            if let _self = self {
-                if list.count > 0 {
-                    _self.listOrder.append(contentsOf: list)
-                    _self.tableView.reloadData()
-                    _self.showLoading(isShow: false, isShowMessage: false)
-                } else {
-                    _self.showLoading(isShow: false, isShowMessage: true)
-                }
-            }
-        }
         
         let listCIDS = self.customer_id.filter{$0 != 0}
         if listCIDS.count > 0 {
             if listCustomer.count == 0 {
-                CustomerManager.getAllCustomersOrdered(onComplete: {[weak self] (list) in
+                CustomerManager.getAllCustomers(onComplete: {[weak self] (list) in
                     guard let _self = self else {return}
                     _self.listCustomer = list
                     let customerDO = _self.listCustomer.filter{
@@ -143,8 +196,22 @@ UISearchBarDelegate{
                     self.btnFilterCustomer.setTitle(customerDO[0].fullname, for: .normal)
                 }
             }
+        } else {
+            self.btnFilterCustomer.setTitle("all".localized(), for: .normal)
         }
         
+        
+        OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id,fromDate: self.fromDate,toDate: self.toDate,isLifeTime: self.isLifeTime) {[weak self] list in
+            if let _self = self {
+                if list.count > 0 {
+                    _self.listOrder.append(contentsOf: list)
+                    _self.tableView.reloadData()
+                    _self.showLoading(isShow: false, isShowMessage: false)
+                } else {
+                    _self.showLoading(isShow: false, isShowMessage: true)
+                }
+            }
+        }
     }
     
     private func binding() {
@@ -169,11 +236,7 @@ UISearchBarDelegate{
                     popupC.onDismiss = {
                         _self.btnFilterStatus.imageView!.transform = _self.btnFilterStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnFilterStatus.imageView!.transform = _self.btnFilterStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     var listData:[String] = ["all".localized()]
@@ -208,11 +271,7 @@ UISearchBarDelegate{
                     popupC.onDismiss = {
                         _self.btnFilterPaymentStatus.imageView!.transform = _self.btnFilterPaymentStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnFilterPaymentStatus.imageView!.transform = _self.btnFilterPaymentStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     var listData:[String] = ["all".localized()]
@@ -230,7 +289,7 @@ UISearchBarDelegate{
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
                     var listCustomers:[CustomerDO] = []
-                    CustomerManager.getAllCustomersOrdered(onComplete: { (list) in
+                    CustomerManager.getAllCustomers(onComplete: { (list) in
                         listCustomers = list
                         _self.listCustomer = list
                         let popupC = PopupController(nibName: "PopupController", bundle: Bundle.main)
@@ -250,11 +309,7 @@ UISearchBarDelegate{
                         popupC.onDismiss = {
                             _self.btnFilterCustomer.imageView!.transform = _self.btnFilterCustomer.imageView!.transform.rotated(by: CGFloat(Double.pi))
                         }
-                        var topVC = UIApplication.shared.keyWindow?.rootViewController
-                        while((topVC!.presentedViewController) != nil){
-                            topVC = topVC!.presentedViewController
-                        }
-                        topVC?.present(popupC, animated: false, completion: {isDone in
+                        Support.topVC?.present(popupC, animated: false, completion: {isDone in
                             _self.btnFilterCustomer.imageView!.transform = _self.btnFilterCustomer.imageView!.transform.rotated(by: CGFloat(Double.pi))
                         })
                         var listData:[String] = ["all".localized()]
@@ -275,21 +330,21 @@ UISearchBarDelegate{
         btnFilterStatus.layer.masksToBounds = true
         btnFilterStatus.layer.cornerRadius = 7
         btnFilterStatus.layer.borderColor = UIColor(hex:Theme.colorDBBackgroundDashboard).cgColor
-        btnFilterStatus.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFilterStatus.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         btnFilterStatus.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
         
         btnFilterPaymentStatus.layer.borderWidth = 1.0
         btnFilterPaymentStatus.layer.masksToBounds = true
         btnFilterPaymentStatus.layer.cornerRadius = 7
         btnFilterPaymentStatus.layer.borderColor = UIColor(hex:Theme.colorDBBackgroundDashboard).cgColor
-        btnFilterPaymentStatus.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFilterPaymentStatus.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         btnFilterPaymentStatus.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
         
         btnFilterCustomer.layer.borderWidth = 1.0
         btnFilterCustomer.layer.masksToBounds = true
         btnFilterCustomer.layer.cornerRadius = 7
         btnFilterCustomer.layer.borderColor = UIColor(hex:Theme.colorDBBackgroundDashboard).cgColor
-        btnFilterCustomer.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFilterCustomer.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         btnFilterCustomer.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
         
         btnFilterPaymentStatus.titleEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0)
@@ -329,6 +384,10 @@ extension OrderListController {
         self.searchText = searchText
         refreshListOrder()
     }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.hideKeyboard()
+    }
 }
 
 // MARK: - tableview delegate
@@ -352,14 +411,17 @@ extension OrderListController {
 
 // MARK: - scrollview delegate
 extension OrderListController:UIScrollViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
 //        let currentLocation = scrollView.contentOffset.y
 //        vwFilter.isHidden = true
-    }
+//    }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        UIView.animate(withDuration: 0.2) {
-            self.vwFilter.isHidden = velocity.y > 0
+        if velocity.y > 0 && !self.vwFilter.isHidden && !self.menuDashboard.isHidden{
+            UIView.animate(withDuration: 0.2) {
+                self.vwFilter.isHidden = velocity.y > 0
+                self.menuDashboard.isHidden = velocity.y > 0
+            }
         }
     }
 }

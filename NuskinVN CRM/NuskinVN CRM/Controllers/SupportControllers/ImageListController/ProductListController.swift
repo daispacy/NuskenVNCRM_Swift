@@ -45,7 +45,7 @@ UISearchBarDelegate{
         btnGroupProduct.layer.masksToBounds = true
         btnGroupProduct.layer.cornerRadius = 7
         btnGroupProduct.layer.borderColor = UIColor(hex:Theme.colorDBBackgroundDashboard).cgColor
-        btnGroupProduct.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnGroupProduct.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         btnGroupProduct.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
         btnGroupProduct.setTitle("all".localized(), for: .normal)
         
@@ -97,11 +97,7 @@ UISearchBarDelegate{
         popupC.onDismiss = {
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
         }
-        var topVC = UIApplication.shared.keyWindow?.rootViewController
-        while((topVC!.presentedViewController) != nil){
-            topVC = topVC!.presentedViewController
-        }
-        topVC?.present(popupC, animated: false, completion: {isDone in
+        Support.topVC?.present(popupC, animated: false, completion: {isDone in
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
         })
         var listData:[String] = ["all".localized()]

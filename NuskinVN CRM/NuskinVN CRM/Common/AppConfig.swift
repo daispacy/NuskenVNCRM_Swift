@@ -156,7 +156,7 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             LocalNotification.registerForLocalNotification(on: UIApplication.shared)
-            
+            BirthdayManager.clearData {}
             //start service if signin Success
             LocalService.shared.startSyncData()
             
@@ -203,12 +203,12 @@ class AppConfig: NSObject {
     
     // MARK: - order
     class order: AppConfig {
-        static let listStatus:[JSON] = MasterDataManager.getData("ORDER_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        static func listStatus() ->[JSON] { return MasterDataManager.getData("ORDER_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})}
         
-        static let listPaymentStatus:[JSON] = MasterDataManager.getData("PAYMENT_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        static func listPaymentStatus() ->[JSON] {return MasterDataManager.getData("PAYMENT_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]}) }
         
-        static let listPaymentMethod:[JSON] = MasterDataManager.getData("PAYMENT_TYPE").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        static func listPaymentMethod() ->[JSON] {return MasterDataManager.getData("PAYMENT_TYPE").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})}
         
-        static let listTranspoter:[JSON] = MasterDataManager.getData("SHIPPER").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})
+        static func listTranspoter() -> [JSON] {return MasterDataManager.getData("SHIPPER").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})}
     }
 }

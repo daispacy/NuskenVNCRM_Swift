@@ -31,6 +31,16 @@ public class CustomerDO: NSManagedObject {
         }
     }
     
+    var isCongratBirthday:Bool {
+        let list = [local_id,id].filter{$0 != 0}
+        return !BirthdayManager.checkBirthday(list)
+    }
+    
+    var isRemind:Bool {
+        let list = [local_id,id].filter{$0 != 0}
+        return NotOrder30DOManager.checkRemind(list)
+    }
+    
     var toDictionary:[String:Any] {
         
         var proper:JSON = [:]
@@ -303,6 +313,39 @@ public class CustomerDO: NSManagedObject {
         return zalo.characters.count > 0 && facebook.characters.count > 0 && viber.characters.count > 0 && skype.characters.count > 0
     }
     
+    
+    func checkNotOrderOn30Day() -> Bool {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        var predicate = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@ AND date_created > %@", [id],[local_id],[user.id],Date(timeIntervalSinceNow: -2592000) as NSDate)
+        }
+        
+        fetchRequest.predicate = predicate
+        
+        do {
+            
+            let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest) as! [OrderDO]
+            listlistOrdersManager = results
+            return results.count == 0
+            
+        } catch let error as NSError {
+            return true
+        }
+    }
+    
+    func lastDateOrder() -> String {
+        if listOrders().count > 0 {
+            if let order = listOrders().first {
+                if let date = order.date_created {
+                    return (date as Date).toString(dateFormat: "mm/DD/yyyy")
+                }
+            }
+        }
+        return ""
+    }
+    
     func listOrders() -> [OrderDO] {
         
 //        if let list = listlistOrdersManager {
@@ -315,7 +358,7 @@ public class CustomerDO: NSManagedObject {
         if let user = UserManager.currentUser() {
             predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@", [id],[local_id],[user.id])
         }
-        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date_created", ascending: false)]
         fetchRequest.predicate = predicate
         
         do {

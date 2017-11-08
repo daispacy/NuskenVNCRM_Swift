@@ -43,7 +43,7 @@ extension CustomerDO {
     @NSManaged public var district_id: Int64
     @NSManaged public var username: String?
 //    @NSManaged public var viber: String?
-//    @NSManaged public var zalo: String?
+    @NSManaged public var is_remind_birthday: Bool
     @NSManaged public var group_name: String?
     @NSManaged public var synced: Bool
     @NSManaged public var avatar: String?

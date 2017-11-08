@@ -17,6 +17,11 @@ class MenuDashboardView: CViewSwitchLanguage {
     @IBOutlet var lblWeek: UILabel!
     @IBOutlet var lblMonth: UILabel!
     
+    @IBOutlet var btnYearLeft: UIButton!
+    @IBOutlet var btnYearRight: UIButton!
+    @IBOutlet var btnSelectYear: UIButton!
+    
+    
     var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
     
     var currentMonth:Int {
@@ -35,6 +40,14 @@ class MenuDashboardView: CViewSwitchLanguage {
         var data:[JSON] = [["id":"0","text":"all".localized()]]
         for i in 1 ..< 5 {
             data.append(["id":"\(i)","text":"\(i)".localized()])
+        }
+        return data
+    }
+    
+    var listYear:[Int] {
+        var data:[Int] = []
+        for i in 2000 ..< currentYear+1 {
+            data.append(Int(i))
         }
         return data
     }
@@ -82,11 +95,14 @@ class MenuDashboardView: CViewSwitchLanguage {
     var week:String = "all".localized()
     var day:String = "all".localized()//Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "dd")
     var month:String = "all".localized()//Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "MM")
+    var year:String = "2017"
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        configView()
+        year = "\(currentYear)"
         configText()
+        configView()
+        updateControlsYear(nil)
     }
     
     override func reloadTexts() {
@@ -121,7 +137,29 @@ class MenuDashboardView: CViewSwitchLanguage {
         }
     }
     
+    @IBAction func eventButtonYear(_ sender: UIButton) {
+        if sender.isEqual(btnYearLeft) ||
+            sender.isEqual(btnYearRight) {
+            updateControlsYear(sender.isEqual(btnYearRight))
+        } else {
+            
+        }
+    }
+    
     // MARK: - private
+    func updateControlsYear(_ isUp:Bool?) {
+        if let text = btnSelectYear.titleLabel?.text {
+            year = text
+            if let up = isUp {
+                year = "\(!up ? Int(year)! - 1 : Int(year)! + 1)"
+            }
+            btnSelectYear.setTitle("\(year)", for: .normal)
+            btnYearLeft.isEnabled = Int(year)! != listYear.first
+            btnYearRight.isEnabled = Int(year) != listYear.last
+            self.convertToDateAndInvolve()
+        }
+    }
+    
     func convertToDateAndInvolve() {
         var isLifeTime:Bool = true
         var fromDate:NSDate = Date.init(timeIntervalSinceNow: 0) as NSDate
@@ -129,32 +167,36 @@ class MenuDashboardView: CViewSwitchLanguage {
         
         if self.day != "all".localized() ||
             self.month != "all".localized() ||
-            self.week != "all".localized() {
+            self.week != "all".localized() ||
+            year != "all".localized(){
             isLifeTime = false
         }
         if !isLifeTime {
             
-            var mth = currentMonth
+            var mth = 0
             if self.month != "all".localized() {
                 mth = Int(self.month)!
             }
-            if self.week != "all".localized() && self.day == "all".localized(){
+            
+            if self.week != "all".localized() && self.day != "all".localized() {
+                fromDate = "\(year)-\(mth == 0 ? currentMonth : mth)-\(self.day) 00:00:00".toDate2() as NSDate
+                toDate = "\(year)-\(mth == 0 ? currentMonth : mth)-\(self.day) 23:59:59".toDate2() as NSDate
+                
+            } else if self.week == "all".localized() && self.day != "all".localized() {
+                fromDate = "\(year)-\(mth == 0 ? currentMonth : mth)-\(self.day) 00:00:00".toDate2() as NSDate
+                toDate = "\(year)-\(mth == 0 ? currentMonth : mth)-\(self.day) 23:59:59".toDate2() as NSDate
+                
+            } else if self.week != "all".localized() && self.day == "all".localized(){
                 if let frDateStr = listDay[1]["text"] as? String,
                     let toDateStr = listDay.last!["text"] as? String {
-                    fromDate = "\(currentYear)-\(mth)-\(frDateStr) 00:00:00".toDate2() as NSDate
-                    toDate = "\(currentYear)-\(mth)-\(toDateStr) 23:59:59".toDate2() as NSDate
+                    fromDate = "\(year)-\(mth == 0 ? currentMonth : mth)-\(frDateStr) 00:00:00".toDate2() as NSDate
+                    toDate = "\(year)-\(mth == 0 ? currentMonth : mth)-\(toDateStr) 23:59:59".toDate2() as NSDate
                 }
-            } else {
-                if self.day != "all".localized() {
-                    fromDate = "\(currentYear)-\(mth)-\(self.day) 00:00:00".toDate2() as NSDate
-                    toDate = "\(currentYear)-\(mth)-\(self.day) 23:59:59".toDate2() as NSDate
-                } else {
-                    if let frDateStr = listDay[1]["text"] as? String,
-                        let toDateStr = listDay.last!["text"] as? String {
-                        fromDate = "\(currentYear)-\(mth)-\(frDateStr) 00:00:00".toDate2() as NSDate
-                        toDate = "\(currentYear)-\(mth)-\(toDateStr) 23:59:59".toDate2() as NSDate
-                    }
-                    
+            }  else if self.week == "all".localized() && self.day == "all".localized(){
+                if let frDateStr = listDay[1]["text"] as? String,
+                    let toDateStr = listDay.last!["text"] as? String {
+                    fromDate = "\(year)-\(mth == 0 ? 1 : mth)-\(frDateStr) 00:00:00".toDate2() as NSDate
+                    toDate = "\(year)-\(mth == 0 ? 12 : mth)-\(toDateStr) 23:59:59".toDate2() as NSDate
                 }
             }
         }
@@ -173,11 +215,7 @@ class MenuDashboardView: CViewSwitchLanguage {
             guard let _ = self else {return}
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
         }
-        var topVC = UIApplication.shared.keyWindow?.rootViewController
-        while((topVC!.presentedViewController) != nil){
-            topVC = topVC!.presentedViewController
-        }
-        topVC?.present(popupC, animated: false, completion: {[weak self] isDone in
+        Support.topVC?.present(popupC, animated: false, completion: {[weak self] isDone in
             guard let _ = self else {return}
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
         })
@@ -192,12 +230,15 @@ class MenuDashboardView: CViewSwitchLanguage {
         lblDay.text = "day".localized().capitalized
         lblMonth.text = "month".localized().capitalized
         lblWeek.text = "week".localized().capitalized
+        
+        self.layoutIfNeeded()
+        self.setNeedsDisplay()
     }
     
     func configView() {
-        btnDay.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
-        btnWeek.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
-        btnMonth.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnDay.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        btnWeek.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        btnMonth.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnDay.setTitleColor(UIColor(hex:Theme.colorDBTextNormal), for: .normal)
         btnWeek.setTitleColor(UIColor(hex:Theme.colorDBTextNormal), for: .normal)
@@ -217,6 +258,10 @@ class MenuDashboardView: CViewSwitchLanguage {
         btnMonth.layer.masksToBounds = true
         btnMonth.layer.cornerRadius = 5
         btnMonth.layer.borderColor = UIColor(hex:Theme.colorDBBackgroundDashboard).cgColor
+        
+        btnSelectYear.tintColor = UIColor(hex:"0x349ad5")
+        btnSelectYear.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.larger)
+        btnSelectYear.setTitleColor(UIColor(_gradient: Theme.colorGradient, frame: btnSelectYear.titleLabel!.frame, isReverse: false), for: .normal)
         
         btnDay.titleEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0)
         btnMonth.titleEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0)

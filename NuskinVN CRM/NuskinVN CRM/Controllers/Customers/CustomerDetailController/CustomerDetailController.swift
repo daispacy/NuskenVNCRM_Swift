@@ -235,11 +235,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     popupC.onDismiss = {
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     popupC.show(data: ["male".localized(),"female".localized()], fromView: _self.btnGender.superview!)
@@ -485,7 +481,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             alertController.addAction(actionPhotos)
         }
-        self.navigationController?.present(alertController, animated: true, completion: nil)
+        Support.topVC?.present(alertController, animated: true, completion: nil)
     }
     
     private func configView() {
@@ -509,11 +505,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         
         btnProcess.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnProcess.frame, isReverse:true)
         btnProcess.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnProcess.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnCancel.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
         btnCancel.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnCancel.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnCancel.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblErrorName.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
         lblErrorEmail.font = lblErrorName.font

@@ -24,4 +24,13 @@ public class ProductDO: NSManagedObject {
             self.init(entity: entity!, insertInto: context)
         }
     }
+    
+    var toDictionary:[String:Any] {
+        
+        return [
+            "id": id,
+            "name":name ?? "",
+            "avatar":avatar ?? ""
+        ]
+    }
 }

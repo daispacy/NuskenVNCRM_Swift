@@ -237,7 +237,7 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             alertController.addAction(actionPhotos)
         }
-        self.navigationController?.present(alertController, animated: true, completion: nil)
+        Support.topVC?.present(alertController, animated: true, completion: nil)
     }
     
     private func configView() {

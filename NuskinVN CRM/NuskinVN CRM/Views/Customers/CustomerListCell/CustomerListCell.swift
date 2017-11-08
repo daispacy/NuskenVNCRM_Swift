@@ -164,9 +164,7 @@ class CustomerListCell: UITableViewCell {
     // MARK: - interface
     func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = customer
-        if customer.fullname == "dai211811" {
-            print("catch")
-        }
+        
         self.isEdit = isEdit
         self.isSelect = isSelect
         self.isChecked = isChecked

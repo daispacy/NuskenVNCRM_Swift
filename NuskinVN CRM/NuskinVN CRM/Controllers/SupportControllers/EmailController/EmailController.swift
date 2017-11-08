@@ -106,7 +106,7 @@ class EmailController: UIViewController {
     deinit {
         self.view.removeGestureRecognizer(tapGesture)
         NotificationCenter.default.removeObserver(self)
-        print("\(String(describing: AddProductController.self)) dealloc")
+        print("\(String(describing: EmailController.self)) dealloc")
     }
     
     // MARK: - BIND CONTROL
@@ -151,9 +151,11 @@ class EmailController: UIViewController {
     
     // MARK: - private
     func validateData() ->Bool {
+        guard let email = txtTo.text else { return false }
         if txtSubject.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 ||
             txtFromName.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 ||
-            txtBody.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 {
+            txtBody.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 ||
+            !Support.validate.isValidEmailAddress(emailAddressString: email){
             return false
         } else {
             return true
@@ -163,11 +165,11 @@ class EmailController: UIViewController {
     func configView() {
         btnFirst.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnFirst.frame, isReverse:true)
         btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnFirst.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFirst.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnSecond.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnSecond.frame, isReverse:true)
         btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnSecond.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnSecond.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblMessage.textColor = UIColor(hex:Theme.colorAlertTextNormal)
         lblMessage.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)

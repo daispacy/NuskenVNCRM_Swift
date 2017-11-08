@@ -91,7 +91,7 @@ class OrderProductListView: UIView {
                     return
                 }
                 self.listOrderItem.append(contentsOf: order.orderItems().flatMap({
-                    ["price":$0.price,"total":$0.quantity,"product":$0.product()]
+                    ["price":$0.price,"total":$0.quantity,"product":$0.product()!]
                 }))
                 
                 if self.listOrderItem.count > 0 {
@@ -174,7 +174,11 @@ class OrderProductListView: UIView {
     func handleProduct(product:ProductDO? = nil, json:JSON? = nil, order:OrderItemDO? = nil) {
        
         let vc = AddProductController(nibName: "AddProductController", bundle: Bundle.main)
-        self.navigationController?.present(vc, animated: false, completion: {
+        var topVC = UIApplication.shared.keyWindow?.rootViewController
+        while((topVC!.presentedViewController) != nil){
+            topVC = topVC!.presentedViewController
+        }
+        topVC?.present(vc, animated: false, completion: {
             if let pro = product {
                 vc.showProduct(pro)
             }
@@ -305,7 +309,7 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
             lblName.text = pro.name
             if let imgStr = pro.avatar {
                 if imgStr.characters.count > 0 {
-                    imgProduct.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/a_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+                    imgProduct.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
                 }
             }
         }

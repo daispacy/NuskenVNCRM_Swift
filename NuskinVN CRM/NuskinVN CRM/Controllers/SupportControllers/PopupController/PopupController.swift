@@ -15,6 +15,7 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
     var onSelect:((String,Int) -> Void)?
     var onSelectObject:((JSON) -> Void)?
     var onDismiss:(() -> Void)?
+    var needReloadData:(() -> Void)?
     
     var tableView:UITableView!
     var containerTable:UIView!

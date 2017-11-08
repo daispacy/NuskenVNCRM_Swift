@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13771" systemVersion="17B48" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="BirthdayDO" representedClassName="BirthdayDO" syncable="YES" codeGenerationType="class">
+        <attribute name="birthday" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="customer_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="customer_local_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
     <entity name="CustomerDO" representedClassName="CustomerDO" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="area_id" optional="YES" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES" syncable="YES"/>
@@ -17,6 +22,7 @@
         <attribute name="group_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="group_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="is_remind_birthday" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="last_login" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="local_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
@@ -62,6 +68,11 @@
         <attribute name="data_value" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="NotOrder30DO" representedClassName="NotOrder30DO" syncable="YES" codeGenerationType="class">
+        <attribute name="customer_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="customer_local_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="date_remind" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <entity name="OrderDO" representedClassName="OrderDO" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
@@ -151,7 +162,7 @@
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CustomerDO" positionX="-1350" positionY="-126" width="128" height="435"/>
+        <element name="CustomerDO" positionX="-1350" positionY="-126" width="128" height="450"/>
         <element name="GroupDO" positionX="-1179" positionY="-0" width="128" height="225"/>
         <element name="GroupProductDO" positionX="-1143" positionY="27" width="128" height="210"/>
         <element name="MasterDataDO" positionX="-1143" positionY="27" width="128" height="135"/>
@@ -159,5 +170,7 @@
         <element name="OrderItemDO" positionX="-1035" positionY="-126" width="126" height="150"/>
         <element name="ProductDO" positionX="-875" positionY="-126" width="128" height="390"/>
         <element name="UserDO" positionX="-1037" positionY="48" width="128" height="300"/>
+        <element name="BirthdayDO" positionX="-1143" positionY="27" width="128" height="90"/>
+        <element name="NotOrder30DO" positionX="-1134" positionY="36" width="128" height="90"/>
     </elements>
 </model>

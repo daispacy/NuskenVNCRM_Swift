@@ -837,6 +837,7 @@ final class SyncService: NSObject {
                                         return
                                     }
                                 }
+                                print("SAVE MASTER DATA TO CORE DATA")
                                 MasterDataManager.saveDataWith(jsonArray)
                                 completion(.success(jsonArray))
                             }

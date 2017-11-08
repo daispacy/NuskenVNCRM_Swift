@@ -12,6 +12,15 @@ import Alamofire
 
 class Support: NSObject {
     
+    // MARK: - Top Controller
+    static var topVC:UIViewController? {
+        var topVC = UIApplication.shared.keyWindow?.rootViewController
+        while((topVC!.presentedViewController) != nil){
+            topVC = topVC!.presentedViewController
+        }
+        return topVC
+    }
+    
     // MARK: - check internet connection
     class connectivity {
         class func isConnectedToInternet() ->Bool {

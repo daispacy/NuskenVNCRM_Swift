@@ -13,12 +13,10 @@ class OrderManager: NSObject {
     
     static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:(([OrderDO])->Void)) {
         // Initialize Fetch Request
+        guard let user = UserManager.currentUser() else { onComplete([]); return }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
         fetchRequest.returnsObjectsAsFaults = false
-        var predicate1 = NSPredicate(format: "1 > 0")
-        if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        }
+        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         var predicate2 = NSPredicate(format: "1 > 0")
         if !isLifeTime {
             if let from = fromDate,
@@ -45,7 +43,7 @@ class OrderManager: NSObject {
         }
     }
     
-    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil, onComplete:(([OrderDO])->Void)) {
+    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil,fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:(([OrderDO])->Void)) {
         guard let user = UserManager.currentUser() else {onComplete([]); return}
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
@@ -74,8 +72,15 @@ class OrderManager: NSObject {
                 predicate5 = NSPredicate(format: "customer_id IN %@",psta)
             }
         }
+        var predicate6 = NSPredicate(format: "1 > 0")
+        if !isLifeTime {
+            if let from = fromDate,
+                let to = toDate {
+                predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+            }
+        }
         
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5])
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
         NSSortDescriptor(key: "status", ascending: false)]
         fetchRequest.predicate = predicateCompound

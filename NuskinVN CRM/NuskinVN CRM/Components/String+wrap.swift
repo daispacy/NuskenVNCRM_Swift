@@ -36,12 +36,13 @@ extension String {
         if !self.isNumber() { return self }
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        return  formatter.string(from: NSNumber(value: Int64(self)!))!.replacingOccurrences(of: ",", with: ".")
+        formatter.groupingSize = 3
+        return  formatter.string(from: NSNumber(value: Int64(self.replacingOccurrences(of: ".", with: ""))!))!.replacingOccurrences(of: ",", with: ".")
     }
     
     func isNumber() -> Bool {
         let numberCharacters = CharacterSet.decimalDigits.inverted
-        return !self.isEmpty && self.rangeOfCharacter(from: numberCharacters) == nil
+        return !self.replacingOccurrences(of: ".", with: "").isEmpty && self.replacingOccurrences(of: ".", with: "").rangeOfCharacter(from: numberCharacters) == nil
     }
 }
 

@@ -70,6 +70,7 @@ final class LocalService: NSObject {
                                 self.syncOrders {
                                     self.syncOrdersItems {
                                         DispatchQueue.main.async {
+                                            print("SYNC DATA COMPLETE")
                                             onComplete?()
                                             DispatchQueue.main.async {
                                                 NotificationCenter.default.post(name:Notification.Name("SyncData:AllDone"),object:nil)
@@ -159,50 +160,32 @@ final class LocalService: NSObject {
         SyncService.shared.getOrderItems(completion: { (result) in
             switch result {
             case .success(let data):
-                guard data.count > 0 else {
-                    onComplete?()
-                    DispatchQueue.main.async {
+                if let bool = LocalService.shared.isShouldSyncData?() {
+                    if bool == false {
+                        onComplete?()
+                        print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                        return
                     }
-                    print("Dont have new orderitems from server")
-                    return
                 }
-                
-                switch result {
-                case .success(let data):
-                    if let bool = LocalService.shared.isShouldSyncData?() {
-                        if bool == false {
-                            onComplete?()
-                            print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                            return
-                        }
-                    }
+                OrderItemManager.resetData {
                     if data.count > 0 {
                         print("SAVE ORDERITEM TO CORE DATA")
-                        OrderItemManager.resetData {
-                            OrderItemManager.saveOrderItemWith(array:data)
-                        }
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
-                        }
+                        OrderItemManager.saveOrderItemWith(array:data)
                     }
-                    onComplete?()
-                case .failure(_):
-                    onComplete?()
                     DispatchQueue.main.async {
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                        NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
                     }
-                    print("Error: cant get orderitem from server 2")
-                    break
                 }
-            case.failure(_):
+                onComplete?()
+            case .failure(_):
                 onComplete?()
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                 }
-                print("Error: cant get orderitem from server 1")
+                print("Error: cant get orderitem from server 2")
+                break
             }
         })
     }
@@ -220,57 +203,41 @@ final class LocalService: NSObject {
             SyncService.shared.postAllOrdersToServer(list: listDictionaryOrders, completion: { (result) in
                 switch result {
                 case .success(let data):
-                    guard data.count > 0 else {
-                        onComplete?()
+                    // change state to synced true
+                    if let bool = LocalService.shared.isShouldSyncData?() {
+                        if bool == false {
+                            onComplete?()
+                            print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            return
+                        }
+                    }
+                    
+                    _ = list.map({
+                        let group = $0
+                        group.synced = true
+                        do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{onComplete?()}
+                        
+                    })
+                    
+                    OrderManager.clearAllDataSynced {
+                        if data.count > 0 {
+                            print("SAVE ORDER TO CORE DATA")
+                            OrderManager.saveOrderWith(array:data)
+                        }
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
                         }
-                        print("Dont have new orders from server")
-                        return
                     }
-                    
-                    switch result {
-                    case .success(let data):
-                        // change state to synced true
-                        _ = list.map({
-                            let group = $0
-                            group.synced = true
-                            do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{onComplete?()}
-                            
-                        })
-                        if let bool = LocalService.shared.isShouldSyncData?() {
-                            if bool == false {
-                                onComplete?()
-                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                                return
-                            }
-                        }
-                        if data.count > 0 {
-                            print("SAVE ORDER TO CORE DATA")
-                            OrderManager.clearAllDataSynced {
-                                OrderManager.saveOrderWith(array:data)
-                            }
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
-                            }
-                        }
-                        onComplete?()
-                    case .failure(_):
-                        onComplete?()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                        }
-                        print("Error: cant get order from server 2")
-                        break
-                    }
-                case.failure(_):
+                    onComplete?()
+                case .failure(_):
                     onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
-                    print("Error: cant get order from server 1")
+                    print("Error: cant get order from server 2")
+                    break
                 }
             })
         }
@@ -286,60 +253,42 @@ final class LocalService: NSObject {
             SyncService.shared.postAllCustomerToServer(list: listDictionaryCustomer, completion: { (result) in
                 switch result {
                 case .success(let data):
-                    guard data.count > 0 else {
-                        onComplete?()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                    if let bool = LocalService.shared.isShouldSyncData?() {
+                        if bool == false {
+                            onComplete?()
+                            print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            return
                         }
-                        print("Dont have new customers from server")
-                        return
                     }
-                    
-                    switch result {
-                    case .success(let data):
-                        if let bool = LocalService.shared.isShouldSyncData?() {
-                            if bool == false {
-                                onComplete?()
-                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                                return
-                            }
-                        }
-                        // change state to synced true
-                        _ = list.map({
-                            let group = $0
-                            group.synced = true
-                            do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
-                            
-                            
-                        })
+                    // change state to synced true
+                    _ = list.map({
+                        let group = $0
+                        group.synced = true
+                        do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
+                        
+                        
+                    })
+                    CustomerManager.clearAllDataSynced {
                         if data.count > 0 {
                             print("SAVE CUSTOMER TO CORE DATA")
-                            CustomerManager.clearAllDataSynced {
-                                CustomerManager.saveCustomerWith(array: data)
-                            }
-                            
+                            CustomerManager.saveCustomerWith(array: data)
                             DispatchQueue.main.async {
                                 NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
                             }
                         }
-                        onComplete?()
-                    case .failure(_):
-                        onComplete?()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                        }
-                        print("Error: cant get group from server 2")
-                        break
                     }
-                case.failure(_):
+                    onComplete?()
+                case .failure(_):
                     onComplete?()
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
-                    print("Error: cant get group from server 1")
+                    print("Error: cant get group from server 2")
+                    break
                 }
+                
             })
         }
     }
@@ -379,9 +328,9 @@ final class LocalService: NSObject {
                             group.synced = true
                             do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
                         })
-                        if data.count > 0 {
-                            print("SAVE GROUP TO CORE DATA")
-                            GroupManager.clearAllDataSynced {
+                        print("SAVE GROUP TO CORE DATA")
+                        GroupManager.clearAllDataSynced {
+                            if data.count > 0 {
                                 GroupManager.saveGroupWith(array: data)
                             }
                             

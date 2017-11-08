@@ -21,6 +21,7 @@
                 <outlet property="lblcustomer" destination="lbt-dx-rjr" id="k8x-zP-ASD"/>
                 <outlet property="lblstatus" destination="1OC-hS-d3M" id="20f-hv-CWF"/>
                 <outlet property="searchBar" destination="iNY-b4-SAh" id="LTv-gI-iGD"/>
+                <outlet property="stackContainer" destination="APm-ax-BZx" id="aey-Qj-fln"/>
                 <outlet property="stackFilter" destination="YoT-1A-mc1" id="CPx-Qo-Zf3"/>
                 <outlet property="tableView" destination="Bdd-mc-RRM" id="7XH-Ru-AIb"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -36,10 +37,10 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Ao-SL-kuD">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="215"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="224"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YoT-1A-mc1">
-                                    <rect key="frame" x="15" y="10" width="345" height="190"/>
+                                    <rect key="frame" x="15" y="10" width="345" height="199"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="KCs-Uk-SXf">
                                             <rect key="frame" x="0.0" y="0.0" width="345" height="20.5"/>
@@ -62,10 +63,10 @@
                                             </constraints>
                                         </stackView>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="tbe-2T-tJB">
-                                            <rect key="frame" x="0.0" y="30.5" width="345" height="34.5"/>
+                                            <rect key="frame" x="0.0" y="30.5" width="345" height="40"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TpX-rA-rre" customClass="CButtonWithImageRight" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="170" height="34.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="170" height="40"/>
                                                     <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="-100" maxY="0.0"/>
                                                     <state key="normal" image="arrow_down_black">
@@ -73,7 +74,7 @@
                                                     </state>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dxh-jv-eEt" customClass="CButtonWithImageRight" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="175" y="0.0" width="170" height="34.5"/>
+                                                    <rect key="frame" x="175" y="0.0" width="170" height="40"/>
                                                     <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="-100" maxY="0.0"/>
                                                     <state key="normal" image="arrow_down_black">
@@ -86,7 +87,7 @@
                                             </constraints>
                                         </stackView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="laA-Wn-1uR">
-                                            <rect key="frame" x="0.0" y="75" width="345" height="65"/>
+                                            <rect key="frame" x="0.0" y="80.5" width="345" height="65"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbt-dx-rjr">
                                                     <rect key="frame" x="0.0" y="0.0" width="345" height="20.5"/>
@@ -108,7 +109,7 @@
                                             </constraints>
                                         </stackView>
                                         <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="iNY-b4-SAh">
-                                            <rect key="frame" x="0.0" y="150" width="345" height="40"/>
+                                            <rect key="frame" x="0.0" y="155.5" width="345" height="43.5"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" priority="750" constant="40" id="KFY-sl-8oP"/>
                                             </constraints>
@@ -127,7 +128,7 @@
                             </constraints>
                         </view>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="Bdd-mc-RRM">
-                            <rect key="frame" x="0.0" y="225" width="375" height="442"/>
+                            <rect key="frame" x="0.0" y="234" width="375" height="433"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="DQM-Km-A7v"/>
@@ -137,11 +138,11 @@
                     </subviews>
                 </stackView>
                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="IBZ-zI-n4h">
-                    <rect key="frame" x="169" y="427.5" width="37" height="37"/>
+                    <rect key="frame" x="169" y="432" width="37" height="37"/>
                     <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </activityIndicatorView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7hh-JL-RUs">
-                    <rect key="frame" x="0.0" y="225" width="375" height="442"/>
+                    <rect key="frame" x="0.0" y="234" width="375" height="433"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>

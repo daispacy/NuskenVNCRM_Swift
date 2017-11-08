@@ -19,10 +19,12 @@ class RootViewController: UIViewController {
     let disposeBag:DisposeBag = DisposeBag()
     var leftButtonMenu:UIButton!
     var rightButtonMenu:UIButton!
+    var isTabbarShow:Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
         _ = onDidLoad?()
+        self.navigationController?.hidesBottomBarWhenPushed = true
     }
     
     
@@ -115,7 +117,7 @@ class RootViewController: UIViewController {
             } else {
                 let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
                 let nv = UINavigationController(rootViewController: vc)
-                self.navigationController?.present(nv, animated: true, completion: {
+                Support.topVC?.present(nv, animated: true, completion: {
                     vc.onDidRotate = {
                         [weak self] in
                         guard let _self = self else {return}
@@ -144,7 +146,7 @@ class RootViewController: UIViewController {
     func firstSyncData() {
         
         let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
-        self.navigationController?.present(vc, animated: false, completion: {
+        Support.topVC?.present(vc, animated: false, completion: {
             vc.startSync(true)
         })        
     }
@@ -212,7 +214,7 @@ class RootViewController: UIViewController {
         } else {
             let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
             let nv = UINavigationController(rootViewController: vc)
-            self.navigationController?.present(nv, animated: true, completion: {[weak self] in
+            Support.topVC?.present(nv, animated: true, completion: {[weak self] in
                 guard let _self = self else {return}
                 _self.showTabbar(false)
                 vc.onDidRotate = {
@@ -251,6 +253,8 @@ class RootViewController: UIViewController {
     }
     
     func showTabbar(_ isShow:Bool = true) {
+        if isTabbarShow == isShow {return}
+        isTabbarShow = isShow
         guard let _tabbaController = self.tabBarController else { return }
         let frame = _tabbaController.tabBar.frame;
         let height = frame.size.height;

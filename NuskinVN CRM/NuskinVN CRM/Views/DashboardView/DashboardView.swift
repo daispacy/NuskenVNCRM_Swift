@@ -16,6 +16,7 @@ class DashboardView: CViewSwitchLanguage {
     @IBOutlet var scrollView: UIScrollView!
     
     var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
+    var involkeFunctionView:((CustomerDO,Bool)->Void)?
     
     //custom view
     var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
@@ -25,7 +26,8 @@ class DashboardView: CViewSwitchLanguage {
     var chartStatisticsOrder:ChartStatisticsOrder!
     var chartStatisticsOrder1:ChartStatisticsOrder!
     var topProductView: TopProductView!
-    var birthdayCustomerListView:BirthdayCustomerListView!
+    var birthdayCustomerListView:BirthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
+    var birthdayDontOrder30:BirthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
     
     // MARK: - INIT
     override func awakeFromNib() {
@@ -39,6 +41,7 @@ class DashboardView: CViewSwitchLanguage {
             _self.onSelectFilter?(from,to,lifetime)
         }
         
+        // menu
         stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
     }
     
@@ -67,10 +70,7 @@ class DashboardView: CViewSwitchLanguage {
         chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
 
         //block top product
-//        topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
-        
-        //block customer ordered before 30 days
-//        birthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
+        topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
         
 //        stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
 //        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
@@ -138,6 +138,37 @@ class DashboardView: CViewSwitchLanguage {
             chartStatisticsOrder1.removeFromSuperview()
         }
         
+        // top 10 product
+        if let data2 = data["top_ten_product"] as? [JSON]{
+            stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
+            topProductView.loadData(data: data2)
+        } else {
+            topProductView.removeFromSuperview()
+        }
+        
+        // block customer ordered before 30 days
+        stackView.insertArrangedSubview(birthdayDontOrder30, at: stackView.arrangedSubviews.count)
+        birthdayDontOrder30.reloadData(true,forceRemoveButtonCheck: true)
+        birthdayDontOrder30.involkeFunctionView = {[weak self] customer, sender in
+            guard let _self = self else {return}
+            _self.involkeFunctionView?(customer,true)
+        }
+        birthdayDontOrder30.needReloadData = {[weak self] in
+            guard let _self = self else {return}
+            _self.birthdayDontOrder30.reloadData(true,forceRemoveButtonCheck: true)
+        }
+        
+        // block customer have birthday today
+        stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
+        birthdayCustomerListView.reloadData(false,forceRemoveButtonCheck: true)
+        birthdayCustomerListView.involkeFunctionView = {[weak self] customer, sender in
+            guard let _self = self else {return}
+            _self.involkeFunctionView?(customer,false)
+        }
+        birthdayCustomerListView.needReloadData = {[weak self] in
+            guard let _self = self else {return}
+            _self.birthdayCustomerListView.reloadData(false,forceRemoveButtonCheck: true)
+        }
     }
     
     override func reloadTexts() {
@@ -145,8 +176,6 @@ class DashboardView: CViewSwitchLanguage {
     }
     
     func reloadWhenDetectRotation () {
-        if let view = birthdayCustomerListView {
-            view.refreshPopupMenu()
-        }
+        
     }
 }

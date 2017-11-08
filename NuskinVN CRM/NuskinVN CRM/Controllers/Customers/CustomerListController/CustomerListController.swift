@@ -168,11 +168,7 @@ UITabBarControllerDelegate {
         popupC.onDismiss = {
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
         }
-        var topVC = UIApplication.shared.keyWindow?.rootViewController
-        while((topVC!.presentedViewController) != nil){
-            topVC = topVC!.presentedViewController
-        }
-        topVC?.present(popupC, animated: false, completion: {isDone in
+        Support.topVC?.present(popupC, animated: false, completion: {isDone in
             sender.imageView!.transform = sender.imageView!.transform.rotated(by: CGFloat(Double.pi))
         })
         var listData:[String] = ["all".localized()]
@@ -307,6 +303,7 @@ extension CustomerListController {
                 _self.tabBarItem  = itemTabbar
                 let nv = _self.tabBarController?.viewControllers![1] as! UINavigationController
                 let vc = nv.viewControllers[0] as! OrderListController
+                vc.isGotoFromCustomerList = true
                 vc.customer_id = [customer.id,customer.local_id]
                 _self.tabBarController?.selectedIndex = 1
             }
@@ -315,7 +312,7 @@ extension CustomerListController {
                 guard let user = UserManager.currentUser() else {return}
                 let vc = EmailController(nibName: "EmailController", bundle: Bundle.main)
 //                _self.showTabbar(false)
-                _self.navigationController?.present(vc, animated: true, completion: {
+                Support.topVC?.present(vc, animated: true, completion: {
                     vc.show(from: user.email!, to: customer.email!)
                 })
                 vc.onDismissComplete = {[weak self] in
@@ -338,7 +335,7 @@ extension CustomerListController {
             let cell = tableView.cellForRow(at: indexPath) as! CustomerSelectedListCell
             cell.setSelect()
         } else {
-            let customer = listCustomer[indexPath.row]
+//            let customer = listCustomer[indexPath.row]
             if expandRow == indexPath.row {
                 // reset expand
                 expandRow = -1
@@ -373,7 +370,7 @@ extension CustomerListController {
         btnFilterGroup.layer.masksToBounds = true
         btnFilterGroup.layer.cornerRadius = 7
         btnFilterGroup.layer.borderColor = UIColor(hex:Theme.colorDBBackgroundDashboard).cgColor
-        btnFilterGroup.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFilterGroup.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         btnFilterGroup.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
         
         lblMessageData.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
@@ -420,6 +417,10 @@ extension CustomerListController {
             let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 10
             tabBarItem  = itemTabbar
+            let nv = self.tabBarController?.viewControllers![1] as! UINavigationController
+            let vc = nv.viewControllers[0] as! OrderListController
+            vc.isGotoFromCustomerList = false
+            nv.popToRootViewController(animated: true)
         } else {
             if tabBarItem.tag == 9 {
                 AppConfig.navigation.changeController(to: DashboardViewController(), on: tabBarController, index: 0)

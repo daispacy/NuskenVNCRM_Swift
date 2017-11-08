@@ -33,3 +33,13 @@ extension UIImagePickerController {
         LocalService.shared.timerSyncToServer?.invalidate()
     }
 }
+
+extension UIView {
+    func takeSnapshotOfView() -> UIImage? {
+        UIGraphicsBeginImageContext(CGSize(width: self.frame.size.width, height: self.frame.size.height))
+        self.drawHierarchy(in: CGRect(x: 0.0, y: 0.0, width: self.frame.size.width, height: self.frame.size.height), afterScreenUpdates: true)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+}

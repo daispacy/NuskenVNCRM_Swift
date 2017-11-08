@@ -126,7 +126,7 @@ class AddProductController: UIViewController {
         self.product = product
         txtName.text = product.name
         txtSugguestPrice.text = "\(product.retail_price.toTextPrice())"
-        txtPrice.text = "\(product.retail_price)"
+        txtPrice.text = "\(product.retail_price.toTextPrice())"
         txtNPPPrice.text = "\(product.price.toTextPrice())"
         txtTotal.text = "\(1)"
         txtPV.text = "\(product.pv.toTextPrice())"
@@ -136,19 +136,21 @@ class AddProductController: UIViewController {
     
     func edit(json:JSON) {
         self.isEdit = true
-        if let pro = json["product"] as? ProductDO {
-            self.product = pro
-            txtName.text = pro.name
-            txtNPPPrice.text = "\(pro.price.toTextPrice())"
-            txtSugguestPrice.text = "\(pro.retail_price.toTextPrice())"
-            txtPV.text = "\(pro.pv.toTextPrice())"
-        }
+        guard let pro = json["product"] as? ProductDO else { return}
+        
+        self.product = pro
+        txtName.text = pro.name
+        txtNPPPrice.text = "\(pro.price.toTextPrice())"
+        txtSugguestPrice.text = "\(pro.retail_price.toTextPrice())"
+        txtPV.text = "\(pro.pv.toTextPrice())"
+        
         if let quantity = Int64("\(json["total"] ?? 0)") {
-            txtTotal.text = "\(quantity)"
+            txtTotal.text = "\(quantity.toTextPrice())"
+            txtPV.text = "\((pro.pv * quantity).toTextPrice())"
         }
         
         if let price = Int64("\(json["price"] ?? 0)") {
-            txtPrice.text = "\(price)"
+            txtPrice.text = "\(price.toTextPrice())"
         }
         
         if self.isEdit {
@@ -177,7 +179,7 @@ class AddProductController: UIViewController {
                         let product = self?.product {
                         let text = $0
                         if text.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                            _self.txtPV.text = "\(Int64(text)! * product.pv)"
+                            _self.txtPV.text = "\(Int64(text.replacingOccurrences(of: ".", with: ""))! * product.pv)"
                         }
                     }
                 }).addDisposableTo(disposeBag)
@@ -197,8 +199,8 @@ class AddProductController: UIViewController {
                 let pro = self.product,
                 let strtotal = self.txtTotal.text {
                 
-                if let price = Int64(strprice),
-                    let total = Int64(strtotal){
+                if let price = Int64(strprice.replacingOccurrences(of: ".", with: "")),
+                    let total = Int64(strtotal.replacingOccurrences(of: ".", with: "")){
                     if price < pro.price {
                         lblError.text = "price_not_lower_sugguest_price".localized()
                         lblError.isHidden = false
@@ -265,11 +267,11 @@ class AddProductController: UIViewController {
     func configView() {
         btnFirst.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnFirst.frame, isReverse:true)
         btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnFirst.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFirst.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnSecond.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnSecond.frame, isReverse:true)
         btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnSecond.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnSecond.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblMessage.textColor = UIColor(hex:Theme.colorAlertTextNormal)
         lblMessage.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
@@ -320,6 +322,31 @@ class AddProductController: UIViewController {
     private func configTextfield(_ textfield:UITextField) {
         textfield.textColor = UIColor(hex: Theme.color.customer.subGroup)
         textfield.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        textfield.delegate = self
+    }
+}
+
+// MARK: - testfield delegate
+extension AddProductController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+        textField.text = textField.text?.toPrice()
+        txtPV.text = txtPV.text?.toPrice()
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentCharacterCount = textField.text?.characters.count ?? 0
+        if (range.length + range.location > currentCharacterCount){
+            return false
+        }
+        if  textField.isEqual(txtPrice) {
+            let newLength = currentCharacterCount + string.characters.count - range.length
+            let numberOfDot = textField.text!.characters.filter{$0 == "."}.count
+            return newLength <= 12 + numberOfDot
+        } else if  textField.isEqual(txtTotal) {
+            let newLength = currentCharacterCount + string.characters.count - range.length
+            let numberOfDot = textField.text!.characters.filter{$0 == "."}.count
+            return newLength <= 4 + numberOfDot
+        }
+        return true
+    }
 }

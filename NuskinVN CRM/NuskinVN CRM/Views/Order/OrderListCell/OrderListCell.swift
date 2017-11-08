@@ -23,6 +23,7 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var lblGoal: UILabel!
     @IBOutlet var lblTotalPrice: UILabel!
     @IBOutlet var lblStatus: UILabel!
+    @IBOutlet var lblPaymentStatus: UILabel!
     @IBOutlet var vwStatus: UIView!
     
     var isEdit:Bool = false
@@ -88,10 +89,18 @@ class OrderListCell: UITableViewCell {
         
         lblCode.text = order.code
         
-        _ = AppConfig.order.listStatus.map({[weak self] item in
+        _ = AppConfig.order.listStatus().map({[weak self] item in
             if let _self = self {
                 if order.status == item["id"] as! Int64 {
                     _self.lblStatus.text = item["name"] as? String
+                }
+            }
+        })
+        
+        _ = AppConfig.order.listPaymentStatus().map({[weak self] item in
+            if let _self = self {
+                if order.payment_status == item["id"] as! Int64 {
+                    _self.lblPaymentStatus.text = item["name"] as? String
                 }
             }
         })
@@ -106,12 +115,15 @@ class OrderListCell: UITableViewCell {
         default:
             lblStatus.textColor = UIColor.clear
         }
-//        _ = AppConfig.order.listStatus.map({
-//            if $0["id"] as! Int64 == order.status {
-//                lblStatus.text = $0["name"] as? String
-//            }
-//        })
-        
+
+        switch order.payment_status {
+        case 2: // unpaid
+            lblPaymentStatus.textColor = UIColor(hex:"0xff1744")
+        case 1: // paid
+            lblPaymentStatus.textColor = UIColor(hex:"0x38a4dd")
+        default:
+            lblStatus.textColor = UIColor.clear
+        }
     }
     
     func setSelect() {
@@ -145,6 +157,9 @@ class OrderListCell: UITableViewCell {
         
         lblStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         lblStatus.textColor = UIColor(hex:Theme.color.customer.titleGroup)
+        
+        lblPaymentStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblPaymentStatus.textColor = UIColor(hex:Theme.color.customer.titleGroup)
     }
     
     func configText() {

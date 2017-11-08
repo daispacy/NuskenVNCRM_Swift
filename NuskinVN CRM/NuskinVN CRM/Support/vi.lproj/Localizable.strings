@@ -56,12 +56,21 @@
 "to" = "Đến";
 "subject" = "Tiêu đề";
 "body" = "Nội dung";
-"subject_or_body_invalid" = "Tiêu đề hoặc nội dung không hợp lệ";
+"subject_or_body_invalid" = "Tiêu đề, nội dung hoặc email khách hàng không hợp lệ";
 "compose_email" = "Soạn Thư";
 "send" = "Gửi";
 "send_email_failed" = "Gửi email thất bại";
 "send_email_success" = "Gửi email thành công";
 "from_name" = "Tên người gửi";
+"list_customer_have_birthday_in_month" = "Danh sách khách hàng có sinh nhật trong tháng này";
+"not_prompt" = "Chưa nhắc nhở";
+"prompt" = "Đã nhắc nhở";
+"congrated" = "Đã chúc mừng";
+"not_congrated" = "Chưa chúc mừng";
+"mark_send" = "Đánh dấu đã gửi";
+"mark_prompt" = "Đánh dấu đã nhắc nhở";
+"error_save_to_photo" = "Không thể lưu đơn hàng này vào thư viện ảnh. Vui lòng kiểm tra quyền truy cập thư viện ảnh cho ứng dụng này.";
+"order_have_save_to_photo_success_do_you_want_go_to_photo" = "Lưu ảnh thành công. Bạn có muốn chuyển sang thư viện ảnh?";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";
@@ -77,6 +86,7 @@
 "email_has_exist" = "Email này đã được sử dụng.";
 "photo_library" = "Thư viện ảnh";
 "take_a_photo" = "Chụp ảnh";
+"save_photo" = "Lưu ảnh";
 
 "placeholder_vnid" = "VNID";
 "placeholder_email" = "Địa chỉ email";
@@ -115,7 +125,7 @@
 "dashboard" = "BẢNG ĐIỀU KHIỂN";
 "title_tabbar_button_customer" = "KHÁCH HÀNG";
 "customer" = "Khách hàng";
-"customer_not_found" = " Không tìm thấy khách hàng này";
+"customer_not_found" = " Không tìm thấy khách hàng nào";
 "choose_group" = "Chọn nhóm";
 "search" = "Tìm kiếm";
 "title_tabbar_button_dashboard" = "BẢNG ĐIỀU KHIỂN";
@@ -160,7 +170,7 @@
 "all" = "Tất cả";
 "skip" = "Bỏ qua";
 "order" = "Đơn hàng";
-"order_not_found" = " Không tìm thấy đơn hàng này";
+"order_not_found" = " Không tìm thấy đơn hàng nào";
 "add" = "Thêm";
 "cod" = "COD";
 "Vnpost - EMS" = "Vnpost - EMS";

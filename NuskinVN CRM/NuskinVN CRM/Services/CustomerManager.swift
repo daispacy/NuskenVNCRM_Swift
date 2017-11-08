@@ -97,6 +97,50 @@ class CustomerManager: NSObject {
         }
     }
     
+    static func getCustomersDontHaveOrder30Day (onComplete:(([CustomerDO])->Void)) {
+        var list:[CustomerDO] = []
+        CustomerManager.getAllCustomers { data in
+            list = data.filter{$0.checkNotOrderOn30Day()}
+        }
+        onComplete(list)
+    }
+    
+    static func getCustomersBirthday(onComplete:(([CustomerDO])->Void)) {
+        // Initialize Fetch Request
+        var data:[CustomerDO] = []
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        var predicate1 = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+        }
+        let predicate3 = NSPredicate(format: "status == 1")
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate3])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "birthday", ascending: true)]
+        fetchRequest.predicate = predicateCompound
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            var list:[CustomerDO] = []
+            list = result.flatMap({$0 as? CustomerDO})
+            data = list.filter {
+                if let birthday = $0.birthday as Date?{
+                    let calendar = Calendar.autoupdatingCurrent
+                    let components = calendar.dateComponents([.month], from: Date())
+                    let components1 = calendar.dateComponents([.month], from: birthday)
+                    return components.month! == components1.month!
+                }
+                return false
+            }
+            onComplete(data)
+            
+        } catch {
+            let fetchError = error as NSError
+            onComplete([])
+            print(fetchError)
+        }
+    }
+    
     static func getAllCustomersOrdered(search:String? = nil,group:GroupDO? = nil,onComplete:(([CustomerDO])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else {onComplete([]); return }
@@ -167,16 +211,16 @@ class CustomerManager: NSObject {
     }
     
     static func saveCustomerWith(array: [JSON]) {
-        CustomerManager.clearData(array,onComplete: { array in
-            if array.count > 0 {
-                _ = array.map{CustomerManager.createCustomerEntityFrom(dictionary: $0)}
-            }
-            do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
-            }
-        })
+//        CustomerManager.clearData(array,onComplete: { array in
+        if array.count > 0 {
+            _ = array.map{CustomerManager.createCustomerEntityFrom(dictionary: $0)}
+        }
+        do {
+            try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
+        } catch let error {
+            print(error)
+        }
+//        })
     }
     
     static func updateCustomerEntity(_ customer:NSManagedObject, onComplete:(()->Void)) {

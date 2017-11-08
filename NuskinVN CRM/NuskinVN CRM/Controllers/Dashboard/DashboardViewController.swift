@@ -85,6 +85,52 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
             _self.isLifeTime = lifetime
             _self.getDataForDashboard(fromDate: from, toDate: to,isLifeTime: lifetime)
         }
+        
+        let topVC = Support.topVC!
+        dashboardView.involkeFunctionView = {[weak self] customer,is30 in
+            guard let _self = self else {return}
+            guard let user = UserManager.currentUser() else {return}
+            
+            let vc = PopupCustomerFunctionController(nibName: "PopupCustomerFunctionController", bundle: Bundle.main)
+            
+            _self.preventSyncData()
+            topVC.present(vc, animated: false, completion: {
+                // load customer, is30: mean display text for block customer have order higher 30 day
+                vc.show(customer, is30:is30)
+            })
+            
+            // listern user choose function email
+            vc.involkeEmailView = { customer in
+                let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
+                _self.preventSyncData()
+                topVC.present(vc1, animated: true, completion: {
+                    vc1.show(from: user.email!, to: customer.email!)
+                })
+                vc1.onDismissComplete = {[weak self] in
+                    guard let _ = self else {return}
+                    print("REMOVE PREVENT SYNC DATA")
+                    LocalService.shared.isShouldSyncData = nil
+                }
+            }
+            
+            // remove prevent sync when this controller has deinit
+            vc.ondeinitial = {[weak self] in
+                guard let _ = self else {return}
+                print("REMOVE PREVENT SYNC DATA")
+                LocalService.shared.isShouldSyncData = nil
+            }
+            
+            // reload data when user mark
+            vc.needReloadData = {[weak self] in
+                guard let _self = self else {return}                
+                if is30 {
+                    _self.dashboardView.birthdayDontOrder30.reloadData(true, forceRemoveButtonCheck: true)
+                } else {
+                    _self.dashboardView.birthdayCustomerListView.reloadData(false, forceRemoveButtonCheck: true)
+                }
+            }
+            
+        }
     }        
     
     override func configText() {
@@ -100,6 +146,8 @@ extension DashboardViewController {
             let itemTabbar = UITabBarItem(title: "dashboard".localized().uppercased(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 9
             tabBarItem  = itemTabbar
+            let nv = self.tabBarController?.viewControllers![1] as! UINavigationController            
+            nv.popToRootViewController(animated: true)
         } else {
             if tabBarItem.tag == 10 {
                 AppConfig.navigation.changeController(to: CustomerListController(nibName: "CustomerListController", bundle: Bundle.main), on: tabBarController, index: 0)

@@ -30,6 +30,7 @@ class OrderDetailController: RootViewController {
     @IBOutlet var lblTextTotalPriccce: UILabel!
     @IBOutlet var lblTextTotalPV: UILabel!
     
+    @IBOutlet var btnSaveOrder: CButtonAlert!
     @IBOutlet var btnProcess: CButtonAlert!
     @IBOutlet var btnCancel: CButtonAlert!
     @IBOutlet var vwOtherTransporter: UIView!
@@ -46,11 +47,12 @@ class OrderDetailController: RootViewController {
     var transporter_id:String = ""
     var order_code:String = ""
     var listProducts:[JSON] = []
+    var onPop:(()->Void)?
     
-    let listStatus:[JSON] = AppConfig.order.listStatus
-    let listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus
-    let listPaymentMethod:[JSON] = AppConfig.order.listPaymentMethod
-    let listTranspoter:[JSON] = AppConfig.order.listTranspoter
+    var listStatus:[JSON] = AppConfig.order.listStatus()
+    var listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus()
+    var listPaymentMethod:[JSON] = AppConfig.order.listPaymentMethod()
+    var listTranspoter:[JSON] = AppConfig.order.listTranspoter()
     
     let orderProductView = Bundle.main.loadNibNamed("OrderProductListView", owner: self, options: [:])?.first as! OrderProductListView
     let orderCustomerView = Bundle.main.loadNibNamed("OrderCustomerView", owner: self, options: [:])?.first as! OrderCustomerView
@@ -81,6 +83,10 @@ class OrderDetailController: RootViewController {
         
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        listStatus = AppConfig.order.listStatus()
+        listPaymentStatus = AppConfig.order.listPaymentStatus()
+        listPaymentMethod = AppConfig.order.listPaymentMethod()
+        listTranspoter = AppConfig.order.listTranspoter()
         self.preventSyncData()
     }
     
@@ -173,7 +179,7 @@ class OrderDetailController: RootViewController {
                     _self.order_code = code
                 }
                 _self.configText()
-                _ = AppConfig.order.listStatus.map({[weak self] item in
+                _ = AppConfig.order.listStatus().map({[weak self] item in
                     if let _self = self {
                         if order.status == item["id"] as! Int64 {
                             if item["name"] as! String == "process".localized() {
@@ -213,11 +219,7 @@ class OrderDetailController: RootViewController {
                     popupC.onDismiss = {
                         _self.btnStatus.imageView!.transform = _self.btnStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnStatus.imageView!.transform = _self.btnStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     var listData:[String] = []
@@ -247,11 +249,7 @@ class OrderDetailController: RootViewController {
                     popupC.onDismiss = {
                         _self.btnPaymentStatus.imageView!.transform = _self.btnPaymentStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnPaymentStatus.imageView!.transform = _self.btnPaymentStatus.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     var listData:[String] = []
@@ -280,11 +278,7 @@ class OrderDetailController: RootViewController {
                     popupC.onDismiss = {
                         _self.btnPaymentMethod.imageView!.transform = _self.btnPaymentMethod.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnPaymentMethod.imageView!.transform = _self.btnPaymentMethod.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     var listData:[String] = []
@@ -315,11 +309,7 @@ class OrderDetailController: RootViewController {
                     popupC.onDismiss = {
                         _self.btnTransporter.imageView!.transform = _self.btnTransporter.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnTransporter.imageView!.transform = _self.btnTransporter.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     var listData:[String] = []
@@ -349,6 +339,13 @@ class OrderDetailController: RootViewController {
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
                     _self.navigationController?.popViewController(animated: true)
+                }
+            }).addDisposableTo(disposeBag)
+        
+        btnSaveOrder.rx.tap
+            .subscribe(onNext:{ [weak self] in
+                if let _self = self {
+                    _self.getImageOfScrollView()
                 }
             }).addDisposableTo(disposeBag)
         
@@ -436,7 +433,8 @@ class OrderDetailController: RootViewController {
                                     _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict)
                                     try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
                                 })
-                            })                            
+                            })
+                            _self.onPop?()
                             _self.navigationController?.popViewController(animated: true)
                         })
                         
@@ -493,6 +491,7 @@ class OrderDetailController: RootViewController {
                                 })
                             }) 
                             try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
+                            _self.onPop?()
                             _self.navigationController?.popViewController(animated: true)
                         })
                     }
@@ -508,28 +507,28 @@ class OrderDetailController: RootViewController {
         txtOtherTransporter.placeholder = "transporter_other".localized()
         addressOrder.placeholder = "address_order".localized()
         txtTransporterID.placeholder = "transporter_id".localized()
-        _ = AppConfig.order.listPaymentMethod.map({[weak self] item in
+        _ = AppConfig.order.listPaymentMethod().map({[weak self] item in
             if let _self = self {
                 if item["id"] as! Int64 == _self.payment_method {
                     _self.btnPaymentMethod.setTitle(item["name"] as? String, for: .normal)
                 }
             }
         })
-        _ = AppConfig.order.listPaymentStatus.map({[weak self] item in
+        _ = AppConfig.order.listPaymentStatus().map({[weak self] item in
             if let _self = self {
                 if item["id"] as! Int64 == _self.payment_status {
                     _self.btnPaymentStatus.setTitle(item["name"] as? String, for: .normal)
                 }
             }
         })
-        _ = AppConfig.order.listStatus.map({[weak self] item in
+        _ = AppConfig.order.listStatus().map({[weak self] item in
             if let _self = self {
                 if item["id"] as! Int64 == _self.status {
                     _self.btnStatus.setTitle(item["name"] as? String, for: .normal)
                 }
             }
         })
-        _ = AppConfig.order.listTranspoter.map({[weak self] item in
+        _ = AppConfig.order.listTranspoter().map({[weak self] item in
             if let _self = self {
                 if item["id"] as! Int64 == _self.transporter {
                     _self.btnTransporter.setTitle(item["name"] as? String, for: .normal)
@@ -543,14 +542,15 @@ class OrderDetailController: RootViewController {
         self.btnStatus.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
         
         if self.order == nil {
-            btnProcess.setTitle("add".localized().uppercased(), for: .normal)
+            btnProcess.setTitle("add".localized().uppercased().uppercased(), for: .normal)
             title = "add_order".localized().uppercased()
         } else {
-            btnProcess.setTitle("update".localized(), for: .normal)
+            btnProcess.setTitle("update".localized().uppercased(), for: .normal)
             title = "edit_order".localized().uppercased()
         }
         
-        btnCancel.setTitle("cancel".localized(), for: .normal)
+        btnCancel.setTitle("cancel".localized().uppercased(), for: .normal)
+        btnSaveOrder.setTitle("save_photo".localized().uppercased(), for: .normal)
         
         addressOrder.text = self.address_order
         
@@ -673,11 +673,15 @@ class OrderDetailController: RootViewController {
         
         btnProcess.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnProcess.frame, isReverse:true)
         btnProcess.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnProcess.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnCancel.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
         btnCancel.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnCancel.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnCancel.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        
+        btnSaveOrder.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
+        btnSaveOrder.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
+        btnSaveOrder.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblTotalPV.textColor = UIColor(hex: Theme.colorNavigationBar)
         lblTotalPV.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
@@ -723,5 +727,51 @@ class OrderDetailController: RootViewController {
     private func configTextfield(_ textfield:UITextField) {
         textfield.textColor = UIColor(hex: Theme.color.customer.subGroup)
         textfield.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+    }
+}
+
+// MARK: - TAKE A SCREEN SHOT
+extension OrderDetailController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    func getImageOfScrollView(){
+        
+        UIGraphicsBeginImageContext(scrollView.contentSize)
+        
+        let savedContentOffset = scrollView.contentOffset
+        let savedFrame = scrollView.frame
+        
+        scrollView.contentOffset = CGPoint.zero
+        scrollView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height-80)
+        
+        scrollView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        
+        scrollView.contentOffset = savedContentOffset
+        scrollView.frame = savedFrame
+        
+        UIGraphicsEndImageContext()
+        
+        UIImageWriteToSavedPhotosAlbum(image!, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    //MARK: - Add image to Library
+    func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let _ = error {
+            // we got back an error!
+            Support.popup.showAlert(message: "error_save_to_photo".localized(), buttons: ["ok".localized()], vc: self.navigationController!, onAction: {index in
+                
+            },{[weak self] in
+                guard let _self = self else {return}
+                _self.preventSyncData()
+            })
+        } else {
+            Support.popup.showAlert(message: "order_have_save_to_photo_success_do_you_want_go_to_photo".localized(), buttons: ["no".localized(),"yes".localized()], vc: self.navigationController!, onAction: {index in
+                if index == 1 {
+                    UIApplication.shared.open(URL(string:"photos-redirect://")!)
+                }
+            },{[weak self] in
+                guard let _self = self else {return}
+                _self.preventSyncData()
+            })
+        }
     }
 }
