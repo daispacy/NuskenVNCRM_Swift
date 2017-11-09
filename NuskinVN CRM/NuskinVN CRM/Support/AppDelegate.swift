@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppConfig.language.setLanguage(language: "vi")
         
         // start get config
-        SyncService.shared.getConfig()
+        SyncService.shared.getConfig()                
         
         // config navigation bar
         UINavigationBar.appearance().barTintColor = UIColor(hex:Theme.colorNavigationBar)

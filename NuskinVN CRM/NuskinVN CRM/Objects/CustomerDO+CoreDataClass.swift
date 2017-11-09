@@ -51,7 +51,7 @@ public class CustomerDO: NSManagedObject {
                         proper = pro
                     }
                 } catch {
-                    print("warning parse properties GROUP: \(properties)")
+                    print("warning parse properties CUSTOMER: \(properties)")
                 }
             }
         }
@@ -309,11 +309,6 @@ public class CustomerDO: NSManagedObject {
         return gcolor
     }
     
-    var isShouldOpenFunctionView:Bool {
-        return zalo.characters.count > 0 && facebook.characters.count > 0 && viber.characters.count > 0 && skype.characters.count > 0
-    }
-    
-    
     func checkNotOrderOn30Day() -> Bool {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
         fetchRequest.returnsObjectsAsFaults = false
@@ -328,9 +323,9 @@ public class CustomerDO: NSManagedObject {
             
             let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest) as! [OrderDO]
             listlistOrdersManager = results
-            return results.count == 0
+            return results.count > 0
             
-        } catch let error as NSError {
+        } catch {
             return true
         }
     }
@@ -339,7 +334,7 @@ public class CustomerDO: NSManagedObject {
         if listOrders().count > 0 {
             if let order = listOrders().first {
                 if let date = order.date_created {
-                    return (date as Date).toString(dateFormat: "mm/DD/yyyy")
+                    return (date as Date).toString(dateFormat: "dd/MM/yyyy\nHH:mm:ss")
                 }
             }
         }

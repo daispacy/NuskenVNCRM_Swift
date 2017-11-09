@@ -29,7 +29,7 @@ class NotOrder30DOManager: NSObject {
             }
             var list:[Int64] = [customer_id,customer_local_id]
             list = list.filter{$0 != 0}
-            if checkRemind(list) {
+            if !checkRemind(list) {
                 _ = NotOrder30DOManager.createBirthdayEntityFrom(dictionary: $0)
             }
         }
@@ -45,7 +45,7 @@ class NotOrder30DOManager: NSObject {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "NotOrder30DO")
         fetchRequest.returnsObjectsAsFaults = false
-        let predicate3 = NSPredicate(format: "(customer_id IN %@ AND customer_local_id IN %@)",customerID,customerID)
+        let predicate3 = NSPredicate(format: "(customer_id IN %@ OR customer_local_id IN %@)",customerID,customerID)
         
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate3])
 //        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "group_name", ascending: true)]
@@ -60,7 +60,7 @@ class NotOrder30DOManager: NSObject {
                     return false
                 }
             })
-            return b.count == 0
+            return b.count > 0
             
             
         } catch {

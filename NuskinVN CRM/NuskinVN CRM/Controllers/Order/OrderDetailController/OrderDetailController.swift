@@ -734,23 +734,30 @@ class OrderDetailController: RootViewController {
 extension OrderDetailController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func getImageOfScrollView(){
         
-        UIGraphicsBeginImageContext(scrollView.contentSize)
-        
-        let savedContentOffset = scrollView.contentOffset
-        let savedFrame = scrollView.frame
-        
-        scrollView.contentOffset = CGPoint.zero
-        scrollView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height-80)
-        
-        scrollView.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        
-        scrollView.contentOffset = savedContentOffset
-        scrollView.frame = savedFrame
-        
-        UIGraphicsEndImageContext()
-        
-        UIImageWriteToSavedPhotosAlbum(image!, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        let exportView = Bundle.main.loadNibNamed("FormExportOrderDetailView", owner: self, options: [:])?.first as! FormExportOrderDetailView
+        exportView.onReady = {[weak self] in
+            guard let _self = self else {return}
+            UIGraphicsBeginImageContext(exportView.frame.size)
+            
+            //        let savedContentOffset = scrollView.contentOffset
+            //        let savedFrame = scrollView.frame
+            
+            //        scrollView.contentOffset = CGPoint.zero
+            exportView.frame = CGRect(x: 0, y: 0, width: exportView.frame.size.width, height: exportView.frame.size.height)
+            exportView.layoutIfNeeded()
+            
+            exportView.layer.render(in: UIGraphicsGetCurrentContext()!)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            
+            //        scrollView.contentOffset = savedContentOffset
+            //        scrollView.frame = savedFrame
+            
+            UIGraphicsEndImageContext()
+            
+            UIImageWriteToSavedPhotosAlbum(image!, _self, #selector(_self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+        if !exportView.load(self.order) {return}
+        exportView.layoutSubviews()
     }
     
     //MARK: - Add image to Library

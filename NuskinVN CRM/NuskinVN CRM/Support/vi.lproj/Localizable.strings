@@ -71,6 +71,16 @@
 "mark_prompt" = "Đánh dấu đã nhắc nhở";
 "error_save_to_photo" = "Không thể lưu đơn hàng này vào thư viện ảnh. Vui lòng kiểm tra quyền truy cập thư viện ảnh cho ứng dụng này.";
 "order_have_save_to_photo_success_do_you_want_go_to_photo" = "Lưu ảnh thành công. Bạn có muốn chuyển sang thư viện ảnh?";
+"attach_email" = "Đính kèm";
+"attach_file" = "Đính kèm file";
+"photo_has_choosed" = "Hình này đã được chọn";
+"max_size_attach_2MB" = "Tổng dung lượng file đính kèm không được vượt quá 2MB";
+"page_order" = "Đơn đặt hàng";
+"distributor" = "Nhà phân phối";
+"order_address" = "Địa chỉ giao hàng";
+"infor_product" = "Thông tin hàng hoá";
+"date_created_order" = "Ngày lập hoá đơn";
+
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";
@@ -120,7 +130,7 @@
 "number" = "Số lượng";
 "revenue" = "Doanh số";
 "other_product" = "Sản phẩm khác";
-"unlisted_customer_list_for_30_days" = "DANH SÁCH KHÁCH ĐẶT HÀNG 30 NGÀY TRƯỚC";
+"unlisted_customer_list_for_30_days" = "DANH SÁCH KHÁCH ĐẶT HÀNG TRONG 30 NGÀY";
 "reminded" = "Nhắc nhở";
 "dashboard" = "BẢNG ĐIỀU KHIỂN";
 "title_tabbar_button_customer" = "KHÁCH HÀNG";

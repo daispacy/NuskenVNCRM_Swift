@@ -151,7 +151,7 @@ class CustomerBlockView: CViewSwitchLanguage {
         if !isShowNotOrder30 {
             BirthdayManager.saveBirthday(array: [["customer_id":data.id,"customer_local_id":data.local_id,"birthday":birth]])
         } else {
-            NotOrder30DOManager.saveRemind(array: [["customer_id":data.id,"customer_local_id":data.local_id,"date_remind":birth]])
+            NotOrder30DOManager.saveRemind(array: [["customer_id":data.id,"customer_local_id":data.local_id,"date_remind":Date.init(timeIntervalSinceNow: 0) as NSDate]])
         }
         self.needReloadData?()
     }

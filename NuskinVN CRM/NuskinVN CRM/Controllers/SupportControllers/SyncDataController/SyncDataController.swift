@@ -95,6 +95,7 @@ class SyncDataController: RootViewController {
     func startSync(_ isLoading:Bool? = false) {
         LocalService.shared.startSyncDataBackground(onComplete: {[weak self] in
             guard let _self = self else {return}
+            _self.timerTimeOut?.invalidate()
             _self.dismiss(animated: false, completion: nil)
             
         })
@@ -164,6 +165,7 @@ class SyncDataController: RootViewController {
                 didSyncedCustomer &&
                 didSyncedGroup &&
                 didSyncedOrderItem {
+                self.timerTimeOut?.invalidate()
                 dismiss(animated: false, completion: nil)
             }
             return
@@ -197,8 +199,10 @@ class SyncDataController: RootViewController {
     @IBAction func quit(_ sender: Any) {
         if self.isRoot {
             self.timer?.invalidate()
+            self.timerTimeOut?.invalidate()
             AppConfig.navigation.gotoDashboardAfterSigninSuccess()
         } else {
+            self.timerTimeOut?.invalidate()
             dismiss(animated: true, completion: nil)
         }
     }

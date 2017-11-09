@@ -309,7 +309,10 @@ public class OrderDO: NSManagedObject {
     }
     
     static func validateCode(code:String)->Bool {
-        guard let user = UserManager.currentUser() else { return false }
+        guard let user = UserManager.currentUser() else {
+            return false
+            
+        }
         if code.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 {
             return true
         }
@@ -317,14 +320,14 @@ public class OrderDO: NSManagedObject {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
         fetchRequest.returnsObjectsAsFaults = false
         
-        let predicate = NSPredicate(format: "code == %@ AND distributor_id == %d", code, user.id)
+        let predicate = NSPredicate(format: "code == %@ AND distributor_id IN %@", code, [user.id])
         
         fetchRequest.predicate = predicate
         do {
             
             let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
             
-            return results.count != 0
+            return results.count == 0
             
         } catch let error as NSError {
             

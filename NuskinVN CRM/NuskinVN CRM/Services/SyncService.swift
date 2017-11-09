@@ -857,7 +857,7 @@ final class SyncService: NSObject {
     }
     
     // MARK: - Other
-    func sendEmail(fullname:String?, from:String?, to:String?, subject:String?, body:String?, completion: @escaping ((NSString)->Void)) {
+    func sendEmail(fullname:String?, from:String?, to:String?, subject:String?, body:String?, attachs:[String]? = nil, completion: @escaping ((NSString)->Void)) {
         
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_email.rawValue)",
@@ -882,6 +882,16 @@ final class SyncService: NSObject {
         
         if let em = body {
             parameters["body"] = em
+        }
+        
+        if let attach = attachs {
+            if let theJSONData = try? JSONSerialization.data(
+                withJSONObject: attach,
+                options: []) {
+                let theJSONText = String(data: theJSONData,
+                                         encoding: .utf8)
+                parameters["attachs"] = theJSONText
+            }
         }
         
         Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
