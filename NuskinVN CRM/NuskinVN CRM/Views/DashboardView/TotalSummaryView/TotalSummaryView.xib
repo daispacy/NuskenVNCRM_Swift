@@ -66,18 +66,48 @@
                         </stackView>
                     </subviews>
                 </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="L9T-S5-KiL">
+                    <rect key="frame" x="0.0" y="10" width="400" height="73"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b0e-yA-v8P">
+                            <rect key="frame" x="0.0" y="0.0" width="133.33333333333334" height="73"/>
+                            <connections>
+                                <action selector="processEvent:" destination="iN0-l3-epB" eventType="touchUpInside" id="m8a-0f-sor"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jvF-cM-QPX">
+                            <rect key="frame" x="133.33333333333331" y="0.0" width="133.33333333333331" height="73"/>
+                            <connections>
+                                <action selector="processEvent:" destination="iN0-l3-epB" eventType="touchUpInside" id="LFS-fl-Iys"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Thx-YH-ysQ">
+                            <rect key="frame" x="266.66666666666669" y="0.0" width="133.33333333333331" height="73"/>
+                            <connections>
+                                <action selector="processEvent:" destination="iN0-l3-epB" eventType="touchUpInside" id="gti-H7-9FP"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="L9T-S5-KiL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="M8I-Aw-4cJ"/>
                 <constraint firstAttribute="bottom" secondItem="VBx-53-EJP" secondAttribute="bottom" constant="10" id="VHs-KC-mYL"/>
+                <constraint firstItem="L9T-S5-KiL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Xzf-aV-VBu"/>
                 <constraint firstItem="VBx-53-EJP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="Ycj-zr-6NJ"/>
+                <constraint firstAttribute="trailing" secondItem="L9T-S5-KiL" secondAttribute="trailing" id="acX-ZG-KuM"/>
                 <constraint firstItem="VBx-53-EJP" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="gR7-7e-75a"/>
                 <constraint firstItem="VBx-53-EJP" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="jVi-in-mz1"/>
+                <constraint firstAttribute="bottom" secondItem="L9T-S5-KiL" secondAttribute="bottom" constant="10" id="sOh-Bb-zjx"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="btnFirst" destination="b0e-yA-v8P" id="3ji-ed-gSC"/>
+                <outlet property="btnSecond" destination="jvF-cM-QPX" id="0jA-eR-6Tv"/>
+                <outlet property="btnThird" destination="Thx-YH-ysQ" id="s8Q-rd-MzV"/>
                 <outlet property="lblCustomer" destination="tyP-do-urt" id="KV7-Lg-ONv"/>
                 <outlet property="lblNumberCustomer" destination="b7p-1w-9nQ" id="Bed-JH-UiI"/>
                 <outlet property="lblNumberOrderUncomplete" destination="5JV-Xf-FQ0" id="Y46-aE-Tfo"/>

@@ -182,13 +182,22 @@ final class SyncService: NSObject {
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let json:JSON = jsonArray["data"] as? JSON{                                
-                                if let user:UserDO = UserManager.saveUserWith(dictionary: json) {
-                                    if user.status == 0 {
+                                let container = CoreDataStack.sharedInstance.persistentContainer
+                                container.performBackgroundTask() { (context) in
+                                    let user:UserDO = UserManager.saveUserWith(dictionary: json,context)!
+                                    do {
+                                        try context.save()
+                                        if user.status == 0 {
+                                            if let reason = GetDataFailureReason(rawValue: 0) {
+                                                completion(.failure(reason))
+                                            }
+                                        } else {
+                                            completion(.success(user))
+                                        }
+                                    } catch {
                                         if let reason = GetDataFailureReason(rawValue: 0) {
                                             completion(.failure(reason))
                                         }
-                                    } else {
-                                        completion(.success(user))
                                     }
                                 }
                             }
@@ -346,15 +355,26 @@ final class SyncService: NSObject {
                                         return
                                     }
                                 }
-                                if let user:UserDO = UserManager.saveUserWith(dictionary: json) {
-                                    if user.status == 0 {
+                                let container = CoreDataStack.sharedInstance.persistentContainer
+                                container.performBackgroundTask() { (context) in
+                                    let user:UserDO = UserManager.saveUserWith(dictionary: json,context)!
+                                    do {
+                                        try context.save()
+                                        if user.status == 0 {
+                                            if let reason = GetDataFailureReason(rawValue: 0) {
+                                                completion(.failure(reason))
+                                            }
+                                        } else {
+                                            completion(.success(user))
+                                        }
+                                    } catch {
                                         if let reason = GetDataFailureReason(rawValue: 0) {
                                             completion(.failure(reason))
                                         }
-                                    } else {
-                                        completion(.success(user))
+                                        fatalError("Failure to save context: \(error)")
                                     }
                                 }
+                                
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: (jsonArray["code"] as? Int) ?? 530) {
@@ -738,7 +758,7 @@ final class SyncService: NSObject {
     // MARK: - Product & Group Product
     typealias GetProductResult = Result<JSON, GetDataFailureReason>
     typealias GetProductCompletion = (_ result: GetProductResult) -> Void
-    func syncProducts(completion: @escaping GetProductCompletion) {
+    func syncProducts(_ completion: @escaping GetProductCompletion) {
         guard let user = UserManager.currentUser() else { return}
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_product.rawValue)",
@@ -778,12 +798,26 @@ final class SyncService: NSObject {
                         if error == 0 {
                             if let json:JSON = jsonArray["data"] as? JSON{
                                 if let jsonGroup:[JSON] = json["products"] as? [JSON]{
-                                    ProductManager.saveProducctWith(array: jsonGroup)
+                                    ProductManager.saveProducctWith(array: jsonGroup) {
+                                        if let jsonGroup:[JSON] = json["groups"] as? [JSON]{
+                                            ProductManager.saveGroupWith(array: jsonGroup) {
+                                                completion(.success(json))
+                                            }
+                                        } else {
+                                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                                completion(.failure(reason))
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if let reason = GetDataFailureReason(rawValue: 404) {
+                                        completion(.failure(reason))
+                                    }
                                 }
-                                if let jsonGroup:[JSON] = json["groups"] as? [JSON]{
-                                    ProductManager.saveGroupWith(array: jsonGroup)
+                            } else {
+                                if let reason = GetDataFailureReason(rawValue: 404) {
+                                    completion(.failure(reason))
                                 }
-                                completion(.success(json))
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {
@@ -838,8 +872,9 @@ final class SyncService: NSObject {
                                     }
                                 }
                                 print("SAVE MASTER DATA TO CORE DATA")
-                                MasterDataManager.saveDataWith(jsonArray)
-                                completion(.success(jsonArray))
+                                MasterDataManager.saveDataWith(jsonArray) {
+                                    completion(.success(jsonArray))
+                                }
                             }
                         } else {
                             if let reason = GetDataFailureReason(rawValue: 404) {

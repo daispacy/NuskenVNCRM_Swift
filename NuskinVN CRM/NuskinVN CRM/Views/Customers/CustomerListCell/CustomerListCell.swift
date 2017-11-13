@@ -82,6 +82,12 @@ class CustomerListCell: UITableViewCell {
                     }
                 }
                 
+                if let tel = obj.tel {
+                    if tel.characters.count > 0 {
+                        listFunction.append(["tag":9,"img":"ic_sms_72"])
+                    }
+                }
+                
                 if let email = obj.email {
                     if email.characters.count > 0 {
                         listFunction.append(["tag":7,"img":"ic_email_gradient"])
@@ -102,7 +108,7 @@ class CustomerListCell: UITableViewCell {
                 
                 if AppConfig.deeplink.zalo().characters.count > 0 {
                     if obj.zalo.characters.count > 0 {
-                        listFunction.append(["tag":6,"img":"ic_zalo_72"])
+                        listFunction.append(["tag":6,"img":"ic_zalo_128"])
                     }
                 }
                 
@@ -133,6 +139,9 @@ class CustomerListCell: UITableViewCell {
                     let vc = DashboardCustomerController(nibName: "DashboardCustomerController", bundle: Bundle.main)
                     vc.customer = obj
                     topVC.present(vc, animated: true, completion: nil)
+                }  else if identifier == 9/*"sms"*/ {
+                    guard let number = URL(string: "sms:" + obj.tel!) else { return }
+                    UIApplication.shared.open(number)
                 }
             }
             stackViewContainer.insertArrangedSubview(functionView, at: stackViewContainer.arrangedSubviews.count)

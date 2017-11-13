@@ -87,6 +87,9 @@
                             <state key="normal" title="Button">
                                 <color key="titleColor" red="0.89019607840000003" green="0.043137254899999998" blue="0.47843137250000001" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <connections>
+                                <action selector="moreProduct:" destination="iN0-l3-epB" eventType="touchUpInside" id="2gt-5P-s1T"/>
+                            </connections>
                         </button>
                     </subviews>
                     <viewLayoutGuide key="safeArea" id="do4-a6-oee"/>

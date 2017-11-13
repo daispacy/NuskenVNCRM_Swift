@@ -126,6 +126,12 @@ class PopupCustomerFunctionController: UIViewController {
             }
         }
         
+        if let tel = data.tel {
+            if tel.characters.count > 0 {
+                listFunction.append(["tag":9,"img":"ic_sms_72"])
+            }
+        }
+        
         if let email = data.email {
             if email.characters.count > 0 {
                 listFunction.append(["tag":7,"img":"ic_email_gradient"])
@@ -146,7 +152,7 @@ class PopupCustomerFunctionController: UIViewController {
         
         if AppConfig.deeplink.zalo().characters.count > 0 {
             if data.zalo.characters.count > 0 {
-                listFunction.append(["tag":6,"img":"ic_zalo_72"])
+                listFunction.append(["tag":6,"img":"ic_zalo_128"])
             }
         }
         
@@ -170,6 +176,9 @@ class PopupCustomerFunctionController: UIViewController {
             } else if identifier == 7/*"send email"*/ {
                 _self.dissMissView()
                 _self.involkeEmailView?(data)
+            }  else if identifier == 9/*"sms"*/ {
+                guard let number = URL(string: "sms:" + data.tel!) else { return }
+                UIApplication.shared.open(number)
             }
         }
         let uistackView = UIStackView(frame: CGRect.zero)

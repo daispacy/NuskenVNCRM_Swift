@@ -665,12 +665,12 @@ extension CustomerDetailController {
             let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
             self.avatar = strBase64            
         }
-        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
-        LocalService.shared.startSyncData()
+//        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
+//        LocalService.shared.startSyncData()
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
-        LocalService.shared.startSyncData()
+//        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
+//        LocalService.shared.startSyncData()
         picker.dismiss(animated: true) {
             
         }

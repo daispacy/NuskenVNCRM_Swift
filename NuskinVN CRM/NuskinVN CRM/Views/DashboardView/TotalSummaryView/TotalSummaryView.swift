@@ -17,6 +17,9 @@ class TotalSummaryView: CViewSwitchLanguage {
     @IBOutlet var lblNumberCustomer: UILabel!
     @IBOutlet var lblNumberOrdercomplete: UILabel!
     @IBOutlet var lblNumberOrderUncomplete: UILabel!
+    @IBOutlet weak var btnFirst: UIButton!
+    @IBOutlet weak var btnSecond: UIButton!
+    @IBOutlet weak var btnThird: UIButton!
     
     //sales
     @IBOutlet  var lineHorizontal: UIView!
@@ -37,6 +40,7 @@ class TotalSummaryView: CViewSwitchLanguage {
     
     var chartStatisticsCustomer:ChartStatisticsCustomer!
     var lblTotalCustomer:UILabel!
+    var gotoOrderList:((Int64)->Void)?
     
     let paragraph: NSMutableParagraphStyle = {
         let para = NSMutableParagraphStyle()
@@ -70,6 +74,22 @@ class TotalSummaryView: CViewSwitchLanguage {
     override func reloadTexts() {
         // set text here
     }
+    
+    // MARK: - event
+    @IBAction func processEvent(_ sender: UIButton) {
+        
+        var status:Int64 = -1
+        if sender.isEqual(self.btnFirst) {
+            status = 1
+        } else if sender.isEqual(self.btnSecond) {
+            status = 3
+        } else if sender.isEqual(self.btnThird) {
+            status = 0
+        }
+        if status == -1 {return}
+        self.gotoOrderList?(status)
+    }
+    
     
     // MARK: - INTERFACE
     func configSummary(totalCustomer:String? = nil, totalOrderComplete:String? = nil, totalOrderUnComplete:String? = nil) {
@@ -246,6 +266,34 @@ class TotalSummaryView: CViewSwitchLanguage {
         let attributeStringForTotalSales = NSMutableAttributedString(attributedString: attributedStringTotalSales)
         attributeStringForTotalSales.append(attributedStringNumberTotalSales)
         attributeStringForTotalSales.append(attributedStringUnitSales)
+        lblTotalSales.attributedText = attributeStringForTotalSales
+    }
+    
+    func loadTotalPV(total:String) {
+        if stackViewSub != nil {
+            stackViewSub.removeFromSuperview()
+        }
+        if vwStoreChart != nil {
+            vwStoreChart.removeFromSuperview()
+        }
+        self.layoutIfNeeded()
+        self.setNeedsDisplay()
+        
+//        attributedStringUnitSales.addAttribute(NSParagraphStyleAttributeName, value: paragraph, range: NSRangeFromString(attributedStringUnitSales.string))
+        
+        let size = "\(total)".size(attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.larger)!,NSParagraphStyleAttributeName:paragraph])
+        
+        // total sales
+        let attributedStringTotalSales = NSMutableAttributedString(string:"\("total_pv".localized())\n", attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)!,NSForegroundColorAttributeName:UIColor(hex:Theme.colorDBTotalChartNormal),NSParagraphStyleAttributeName:paragraph])
+        let attributedStringNumberTotalSales = NSMutableAttributedString(
+            string: "\(total)\n",
+            attributes: [NSFontAttributeName:UIFont(name: Theme.font.bold, size: Theme.fontSize.larger)!,
+                         NSForegroundColorAttributeName:UIColor(_gradient: Theme.colorGradient, frame: CGRect(x: 0, y: 0, width: size.width + 5, height: size.height), isReverse: false),
+                         NSParagraphStyleAttributeName:paragraph])
+        
+        let attributeStringForTotalSales = NSMutableAttributedString(attributedString: attributedStringTotalSales)
+        attributeStringForTotalSales.append(attributedStringNumberTotalSales)
+//        attributeStringForTotalSales.append(attributedStringUnitSales)
         lblTotalSales.attributedText = attributeStringForTotalSales
     }
 }

@@ -11,40 +11,45 @@ import CoreData
 
 class OrderManager: NSObject {
     
-    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil, onComplete:(([OrderDO])->Void)) {
+    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil,_ onComplete:@escaping (([OrderDO])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else { onComplete([]); return }
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-        fetchRequest.returnsObjectsAsFaults = false
-        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        var predicate2 = NSPredicate(format: "1 > 0")
-        if !isLifeTime {
-            if let from = fromDate,
-                let to = toDate {
-                predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
-            }
-        }
         
-        var predicate3 = NSPredicate(format: "1 > 0")
-        if let cus = customer {
-            predicate3 = NSPredicate(format: "customer_id IN %@",[cus.local_id,cus.id].filter{$0 != 0})
-        }
-        
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
-                                        NSSortDescriptor(key: "status", ascending: false)]
-        fetchRequest.predicate = predicateCompound
-        
-        do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[OrderDO] = []
-            list = result.flatMap({$0 as? OrderDO})
-            onComplete(list)
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+            fetchRequest.returnsObjectsAsFaults = false
+            var predicate2 = NSPredicate(format: "1 > 0")
             
-        } catch {
-            let fetchError = error as NSError
-            onComplete([])
-            print(fetchError)
+            var predicate3 = NSPredicate(format: "1 > 0")
+            if let cus = customer {
+                predicate3 = NSPredicate(format: "customer_id IN %@",[cus.local_id,cus.id].filter{$0 != 0})
+            }
+            
+            let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+            
+            if !isLifeTime {
+                if let from = fromDate,
+                    let to = toDate {
+                    predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+                }
+            }
+            
+            let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3])
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
+                                            NSSortDescriptor(key: "status", ascending: false)]
+            fetchRequest.predicate = predicateCompound
+            
+            do {
+                let result = try context.fetch(fetchRequest)
+                var list:[OrderDO] = []
+                list = result.flatMap({$0 as? OrderDO})
+                onComplete(list)
+            } catch {
+                let fetchError = error as NSError
+                onComplete([])
+                print(fetchError)
+            }
         }
     }
     
@@ -130,19 +135,40 @@ class OrderManager: NSObject {
         }
     }
     
-    static func saveOrderWith(array: [JSON]) {
+    static func saveOrderWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         OrderManager.clearData(array,onComplete: { array in
-            if array.count > 0 {
-                _ = array.map{OrderManager.createOrderEntityFrom(dictionary:$0)}
-            }
-            do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                for jsonObject in array {
+                    _ = OrderManager.createOrderEntityFrom(dictionary:jsonObject,context)
+                }
+                do {
+                    try context.save()
+                    onComplete()
+                } catch {
+                    onComplete()
+                    fatalError("Failure to save context: \(error)")
+                }
             }
         })
     }
     
+    static func markSynced(_ list:[Int64],_ done:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+                let entity = NSEntityDescription.entity(forEntityName: "OrderDO", in: context)
+                let batchRequest = NSBatchUpdateRequest(entity: entity!)
+                batchRequest.resultType = .statusOnlyResultType
+                batchRequest.predicate = NSPredicate(format: "id IN %@ OR local_id IN %@",list.filter{$0 != 0},list.filter{$0 != 0});
+                batchRequest.propertiesToUpdate = ["synced": true]
+                do {
+                    try context.execute(batchRequest)
+                    done()
+                } catch {
+                    done()
+                }
+        }
+    }
     static func updateOrderEntity(_ product:NSManagedObject, onComplete:(()->Void)) {
         let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
         do {
@@ -156,8 +182,7 @@ class OrderManager: NSObject {
         onComplete()
     }
     
-    static func createOrderEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createOrderEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "OrderDO", into: context) as? OrderDO {
             if let data = dictionary["id"] as? String {
                 object.id = Int64(data)!
@@ -291,73 +316,74 @@ class OrderManager: NSObject {
         return nil
     }
     
-    static func clearAllDataSynced(onComplete:(()->Void)) {
-        do {
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-            fetchRequest.returnsObjectsAsFaults = false
-            fetchRequest.predicate = NSPredicate(format: "synced == true")
+    static func clearAllDataSynced(_ onComplete:@escaping (()->Void)) {
+        
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
             do {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.predicate = NSPredicate(format: "synced == true")
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
-                
+                try context.save()
                 onComplete()
-                
-            } catch let error {
-                print("ERROR DELETING : \(error)")
+            } catch {
+                onComplete()
             }
         }
     }
     
-    static func clearData(_ fromList:[JSON], onComplete:(([JSON])->Void)) {
+    static func clearData(_ fromList:[JSON], onComplete:@escaping (([JSON])->Void)) {
         do {
             var list:[JSON] = []
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-            fetchRequest.returnsObjectsAsFaults = false
-            do {
-                let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
-                _ = objects.map {
-                    let obj = $0
-                    _ = fromList.contains(where: { (item) -> Bool in
-                        if let data = item["id"] as? String {
-                            if let id = Int64(data) {
-                                _ = obj.map{
-                                    let orderDO = $0 as! OrderDO
-                                    if id == orderDO.id {
-                                        list.append(item)
-                                        context.delete($0)
-                                    }
-                                }
-                            }
-                        }
-                        return false
-                    })
-                }
-                CoreDataStack.sharedInstance.saveContext()
-                list = fromList.filter {
-                    if let dt = $0["id"] as? String {
-                        if let hID = Int64(dt) {
-                            if list.count == 0 {
-                                return true
-                            }
-                            return list.contains(where: { (item) -> Bool in
-                                if let data = item["id"] as? String {
-                                    if let id = Int64(data) {
-                                        if id == hID {
-                                            return false
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                do {
+                    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+                    fetchRequest.returnsObjectsAsFaults = false
+                    let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
+                    _ = objects.map {
+                        let obj = $0
+                        _ = fromList.contains(where: { (item) -> Bool in
+                            if let data = item["id"] as? String {
+                                if let id = Int64(data) {
+                                    _ = obj.map{
+                                        let orderDO = $0 as! OrderDO
+                                        if id == orderDO.id {
+                                            list.append(item)
+                                            context.delete($0)
                                         }
                                     }
                                 }
-                                return true
-                            })
-                        }
+                            }
+                            return false
+                        })
                     }
-                    return true
+                    try context.save()
+                    list = fromList.filter {
+                        if let dt = $0["id"] as? String {
+                            if let hID = Int64(dt) {
+                                if list.count == 0 {
+                                    return true
+                                }
+                                return list.contains(where: { (item) -> Bool in
+                                    if let data = item["id"] as? String {
+                                        if let id = Int64(data) {
+                                            if id == hID {
+                                                return false
+                                            }
+                                        }
+                                    }
+                                    return true
+                                })
+                            }
+                        }
+                        return true
+                    }
+                    onComplete(list)
+                } catch {
                 }
-                onComplete(list)
-            } catch let error {
-                print("ERROR DELETING : \(error)")
             }
         }
     }

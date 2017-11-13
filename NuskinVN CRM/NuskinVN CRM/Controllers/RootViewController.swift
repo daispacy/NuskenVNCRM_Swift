@@ -110,6 +110,7 @@ class RootViewController: UIViewController {
             
             if( view.isEqual(leftButtonMenu) == true) {
                 Support.popup.showMenu(items: ["sync_data".localized(),
+                                               "support".localized(),
                                                "logout".localized()],
                                        sender: self,
                                        view: leftButtonMenu,
@@ -207,6 +208,7 @@ class RootViewController: UIViewController {
         
         if( sender.isEqual(leftButtonMenu) == true) {
             Support.popup.showMenu(items: ["sync_data".localized(),
+                                           "support".localized(),
                                            "logout".localized()],
                                    sender: self,
                                    view: sender,
@@ -245,6 +247,11 @@ class RootViewController: UIViewController {
             //                vc.startSync()
             //            })
             firstSyncData()
+        } else if menuItem.title == "support".localized() {
+            let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
+            Support.topVC!.present(vc1, animated: true, completion: {
+                vc1.show(from: "", to: "48hrs_reply_vietnam@nuskin.com")
+            })
         }
     }
     

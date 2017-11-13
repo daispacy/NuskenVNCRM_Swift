@@ -80,7 +80,7 @@
 "order_address" = "Địa chỉ giao hàng";
 "infor_product" = "Thông tin hàng hoá";
 "date_created_order" = "Ngày lập hoá đơn";
-
+"total_pv" = "TỔNG PV";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";
@@ -102,8 +102,11 @@
 "placeholder_email" = "Địa chỉ email";
 "placeholder_password" = " Mật khẩu";
 "remember_me" = "Ghi nhớ tài khoản";
-"reset_pw" = "Khôi phục mật khẩu";
+"register" = "Đăng ký";
+"reset_pw" = "Quên mật khẩu";
 "login" = "Đăng nhập";
+"support" = "Hỗ trợ kỹ thuật";
+"send_pw" = "Gửi mật khẩu";
 "msg_err_email" = "Địa chỉ email không hợp lệ";
 "msg_login_failed" = "Có lỗi khi đăng nhập";
 "ok" = "OK";
@@ -116,6 +119,10 @@
 "number_customer" = "Số lượng khách hàng";
 "order_completed" = "Đơn hàng đã thực hiện";
 "order_uncompleted" = "Đơn hàng chưa thực hiện";
+"value_order_process"= "Giá trị đơn hàng đã thực hiện";
+"value_order_unprocess" = "Giá trị đơn hàng chưa thực hiện";
+"order_process" = "Đơn hàng đã thực hiện";
+"order_unprocess" = "Đơn hàng chưa thực hiện";
 "total_revenue" = "TỔNG DOANH SỐ";
 "customer_has_order" = "KH đã đặt hàng";
 "customer_not_order_yet" = " KH chưa đặt hàng";
@@ -130,7 +137,7 @@
 "number" = "Số lượng";
 "revenue" = "Doanh số";
 "other_product" = "Sản phẩm khác";
-"unlisted_customer_list_for_30_days" = "DANH SÁCH KHÁCH ĐẶT HÀNG TRONG 30 NGÀY";
+"unlisted_customer_list_for_30_days" = "KHÁCH HÀNG ĐÃ ĐẶT HÀNG TRONG VÒNG 30 NGÀY";
 "reminded" = "Nhắc nhở";
 "dashboard" = "BẢNG ĐIỀU KHIỂN";
 "title_tabbar_button_customer" = "KHÁCH HÀNG";

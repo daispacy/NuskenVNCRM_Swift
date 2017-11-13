@@ -70,47 +70,41 @@ class ProductManager: NSObject {
         }
     }
     
-    static func saveProducctWith(array: [JSON]) {
+    static func saveProducctWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         ProductManager.clearDataProduct {
-            if array.count > 0 {
-                _ = array.map{ProductManager.createProductEntityFrom(dictionary: $0)}
-            }
-            do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                for jsonObject in array {
+                    _ = ProductManager.createProductEntityFrom(dictionary:jsonObject,context)
+                }
+                do {
+                    try context.save()
+                    onComplete()
+                } catch {
+                    onComplete()
+                }
             }
         }
     }
     
-    static func saveGroupWith(array: [JSON]) {
+    static func saveGroupWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         ProductManager.clearDataGroupProduct {
-            if array.count > 0 {
-                _ = array.map{ProductManager.createGroupEntityFrom(dictionary: $0)}
-            }
-            do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                for jsonObject in array {
+                    _ = ProductManager.createGroupEntityFrom(dictionary: jsonObject,context)
+                }
+                do {
+                    try context.save()
+                    onComplete()
+                } catch {
+                    onComplete()
+                }
             }
         }
     }
     
-    static func updateProductEntity(_ product:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
-        do {
-            try context.save()
-            print("product saved!")
-        } catch let error as NSError  {
-            print("Could not saved \(error), \(error.userInfo)")
-        } catch {
-            
-        }
-        onComplete()
-    }
-    
-    static func createProductEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createProductEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "ProductDO", into: context) as? ProductDO {
             if let data = dictionary["id"] as? String {
                 object.id = Int64(data)!
@@ -191,8 +185,7 @@ class ProductManager: NSObject {
         return nil
     }
     
-    static func createGroupEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createGroupEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "GroupProductDO", into: context) as? GroupProductDO {
             if let data = dictionary["id"] as? String {
                 object.id = Int64(data)!

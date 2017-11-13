@@ -176,6 +176,13 @@
 		D70CDDEA1FB4A4BD000258FA /* FormExportOrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70CDDE91FB4A4BD000258FA /* FormExportOrderDetailView.swift */; };
 		D70CDDEC1FB4A4D2000258FA /* FormExportOrderDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D70CDDEB1FB4A4D2000258FA /* FormExportOrderDetailView.xib */; };
 		D71BD8001FB44B81003C3D37 /* EmailAttachView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */; };
+		D73D79941FB4D9BC0091E746 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79921FB4D9BC0091E746 /* Messages.framework */; };
+		D73D79951FB4D9BC0091E746 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79931FB4D9BC0091E746 /* MessageUI.framework */; };
+		D7823B921FB8229E003888D1 /* ChartStatisticsPie.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */; };
+		D7823B931FB8229E003888D1 /* ChartStatisticsPie.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */; };
+		D7B6B52B1FB84673007884E9 /* ChartStatisticsCombined.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */; };
+		D7B6B52C1FB84673007884E9 /* ChartStatisticsCombined.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */; };
+		D7C23AD01FB4D75900486EF3 /* MessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -367,6 +374,13 @@
 		D70CDDE91FB4A4BD000258FA /* FormExportOrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormExportOrderDetailView.swift; sourceTree = "<group>"; };
 		D70CDDEB1FB4A4D2000258FA /* FormExportOrderDetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FormExportOrderDetailView.xib; sourceTree = "<group>"; };
 		D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmailAttachView.xib; sourceTree = "<group>"; };
+		D73D79921FB4D9BC0091E746 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = System/Library/Frameworks/Messages.framework; sourceTree = SDKROOT; };
+		D73D79931FB4D9BC0091E746 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsPie.swift; sourceTree = "<group>"; };
+		D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsPie.xib; sourceTree = "<group>"; };
+		D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsCombined.swift; sourceTree = "<group>"; };
+		D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsCombined.xib; sourceTree = "<group>"; };
+		D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposer.swift; sourceTree = "<group>"; };
 		E263CF41350414D7107F36B8 /* Pods-NuskinVN CRMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRMTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -376,6 +390,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D73D79941FB4D9BC0091E746 /* Messages.framework in Frameworks */,
+				D73D79951FB4D9BC0091E746 /* MessageUI.framework in Frameworks */,
 				23F68B111F90D243007B94EE /* libsqlite3.0.tbd in Frameworks */,
 				2338A2BF1F72ADB400B74AB4 /* libsqlite3.tbd in Frameworks */,
 				23853AA91F8B86B10039D653 /* Alamofire.framework in Frameworks */,
@@ -616,6 +632,8 @@
 		232F173C1F74C8F50053A87D /* DashboardView */ = {
 			isa = PBXGroup;
 			children = (
+				D7B6B5281FB84673007884E9 /* ChartStatisticsCombined */,
+				D7823B8B1FB82078003888D1 /* ChartStatisticsPie */,
 				234D77A01F826B7900CC4436 /* MenuDashboardView */,
 				23CA607D1F7F86E1007C3305 /* TopProductView */,
 				2365D4D91F77C81700673903 /* BirthdayCustomerListView */,
@@ -798,6 +816,7 @@
 				237F84B51F72DF73008B4822 /* LocalService.swift */,
 				23853AA51F8B30F50039D653 /* SyncService.swift */,
 				23D05A001FA4E28D003504B7 /* MasterDataManager.swift */,
+				D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1039,9 +1058,29 @@
 			path = PopupMenu;
 			sourceTree = "<group>";
 		};
+		D7823B8B1FB82078003888D1 /* ChartStatisticsPie */ = {
+			isa = PBXGroup;
+			children = (
+				D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */,
+				D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */,
+			);
+			path = ChartStatisticsPie;
+			sourceTree = "<group>";
+		};
+		D7B6B5281FB84673007884E9 /* ChartStatisticsCombined */ = {
+			isa = PBXGroup;
+			children = (
+				D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */,
+				D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */,
+			);
+			path = ChartStatisticsCombined;
+			sourceTree = "<group>";
+		};
 		E2E3A72B501FF952DC187C8F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D73D79921FB4D9BC0091E746 /* Messages.framework */,
+				D73D79931FB4D9BC0091E746 /* MessageUI.framework */,
 				23F68B101F90D243007B94EE /* libsqlite3.0.tbd */,
 				23853AAA1F8B86B20039D653 /* Alamofire.framework */,
 				2372E9861F7FD7E600B4F0AB /* Daysquare.framework */,
@@ -1155,9 +1194,11 @@
 			files = (
 				2323238E1F83452A00290926 /* GroupCustomerController.xib in Resources */,
 				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
+				D7B6B52C1FB84673007884E9 /* ChartStatisticsCombined.xib in Resources */,
 				23C9C6DE1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib in Resources */,
 				2303C28A1F97107C001F0A42 /* OrderProductListView.xib in Resources */,
 				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
+				D7823B931FB8229E003888D1 /* ChartStatisticsPie.xib in Resources */,
 				231D97EB1F95C7F2003E8DA3 /* OrderListController.xib in Resources */,
 				D71BD8001FB44B81003C3D37 /* EmailAttachView.xib in Resources */,
 				23D2FB961F8F79F6002EA64E /* SimpleListController.xib in Resources */,
@@ -1354,6 +1395,7 @@
 			files = (
 				232818E11F9C8D5300D57799 /* OrderItemDO+CoreDataClass.swift in Sources */,
 				231D97EA1F95C7F2003E8DA3 /* OrderListController.swift in Sources */,
+				D7823B921FB8229E003888D1 /* ChartStatisticsPie.swift in Sources */,
 				23EBBB011F98B3D600881FBA /* CRM.xcdatamodeld in Sources */,
 				234D77A81F82742500CC4436 /* PopupController.swift in Sources */,
 				230A91A71F99CD8A00761590 /* UserManager.swift in Sources */,
@@ -1361,6 +1403,7 @@
 				23EA78721F72184C0017E47E /* AuthenticView.swift in Sources */,
 				2382F84E1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift in Sources */,
 				231234041FB0AEC6006A9A49 /* BirthdayManager.swift in Sources */,
+				D7C23AD01FB4D75900486EF3 /* MessageComposer.swift in Sources */,
 				2346D8C11FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift in Sources */,
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
@@ -1404,6 +1447,7 @@
 				2372E98A1F7FD90300B4F0AB /* CalendarViewController.swift in Sources */,
 				23C85B941F9790F4004F0DCE /* Date+Wrap.swift in Sources */,
 				23810C311F85338400C0B5C7 /* LocalService.swift in Sources */,
+				D7B6B52B1FB84673007884E9 /* ChartStatisticsCombined.swift in Sources */,
 				232E18881FA4978000C52128 /* UserDO+CoreDataProperties.swift in Sources */,
 				23ED22641FA628C600D1F046 /* ChangePasswordController.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,

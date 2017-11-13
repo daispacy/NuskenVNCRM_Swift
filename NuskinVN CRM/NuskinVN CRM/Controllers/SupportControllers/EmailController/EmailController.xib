@@ -25,6 +25,7 @@
                 <outlet property="txtTo" destination="FSb-2z-XsQ" id="JZ1-IN-Ux0"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="vwAttach" destination="5Y5-tG-OzV" id="65T-lN-spw"/>
+                <outlet property="vwFromEmail" destination="IOj-l9-Xje" id="h9f-ii-D8L"/>
                 <outlet property="vwcontrol" destination="7og-GG-kdB" id="8ze-Rr-L9L"/>
                 <outletCollection property="collectLabelAddProruct" destination="DSp-Fb-ogS" collectionClass="NSMutableArray" id="Evz-8L-VUV"/>
                 <outletCollection property="collectLabelAddProruct" destination="xPB-vv-XDA" collectionClass="NSMutableArray" id="5Pc-sa-AcW"/>
@@ -91,7 +92,7 @@
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="bXg-FO-g92" secondAttribute="bottom" constant="5" id="39b-qD-jGX"/>
-                                                <constraint firstAttribute="height" constant="70" id="E3d-OM-FoC"/>
+                                                <constraint firstAttribute="height" priority="750" constant="70" id="E3d-OM-FoC"/>
                                                 <constraint firstItem="bXg-FO-g92" firstAttribute="top" secondItem="IOj-l9-Xje" secondAttribute="top" constant="5" id="GQ3-86-2Iw"/>
                                                 <constraint firstItem="bXg-FO-g92" firstAttribute="leading" secondItem="IOj-l9-Xje" secondAttribute="leading" id="Z1s-pE-3vd"/>
                                                 <constraint firstAttribute="trailing" secondItem="bXg-FO-g92" secondAttribute="trailing" id="gBm-9E-gmR"/>

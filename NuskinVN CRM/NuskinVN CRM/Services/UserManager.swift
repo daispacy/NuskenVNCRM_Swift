@@ -11,8 +11,8 @@ import CoreData
 
 class UserManager: NSObject {
     
-    static func getDataDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:((JSON)->Void)) {
-        CustomerManager.getReportCustomers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { list in
+    static func getDataDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:@escaping ((JSON)->Void)) {
+        CustomerManager.getReportCustomers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime){ list in
             var dict:JSON = [:]
             dict["total_customers"] = Int64(list.filter{$0.status == 1}.count)
             var ordered:Int64 = 0
@@ -33,7 +33,7 @@ class UserManager: NSObject {
             })
             dict["total_customers_ordered"] = ordered
             dict["total_customers_not_ordered"] = notorderd
-            GroupManager.getReportGroup(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { listGroup in
+            GroupManager.getReportGroup(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime,{ listGroup in
                 var listCustomer:[JSON] = []
                 _ = listGroup.map({
                     listCustomer.append(["id":$0.id,"name":$0.group_name ?? "","total":Double($0.customers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime).count)])
@@ -42,7 +42,8 @@ class UserManager: NSObject {
                 
                 //total_orders_amount
                 var listOrderitems:[OrderItemDO] = []
-                OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, onComplete: { listOrder in
+                
+                OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime){ listOrder in
                     _ = listOrder.map({
                         if $0.status != 0 { // invalid
                             totalAmountOrders += $0.totalPrice
@@ -89,11 +90,11 @@ class UserManager: NSObject {
                                 if index == -1 {
                                     listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
                                 }
-                            }                            
+                            }
                         })
                     }
                     if listTemp.count > 0 {
-                        top10Product = listTemp                        
+                        top10Product = listTemp
                     }
                     
                     dict["total_orders_processed"] = totaOrdersprocess.cleanValue
@@ -105,18 +106,105 @@ class UserManager: NSObject {
                     dict["top_ten_product"] = top10Product
                     // return result
                     onComplete(dict)
-                })
+                }
                 
                 
             })
             
-        })
+        }
     }
     
-    static func getDataCustomerDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil, onComplete:((JSON)->Void)) {
+    static func getDataOrderStatus(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true,_ customer:CustomerDO? = nil, onComplete:@escaping (([JSON])->Void)) {
+        var listDay:[JSON] = []
+        if let to = toDate as Date?{
+            let currentMonth = to.currentMonth
+            let currentYear = to.currentYear
+            
+            listDay.append(["month":currentMonth,"year":currentYear,"day":to.listDay])
+            for i in (1...2) {
+                var y = Int(currentYear)!
+                var m = Int(currentMonth)! - i
+                if m == 0 {
+                    m = 12
+                    y -= 1
+                } else if m < 0 {
+                    m = 12 + m
+                    y -= 1
+                }
+                let date = "\(y)-\(m)-\(01) 00:00:00".toDate2()
+                listDay.append(["month":"\(m)","year":"\(y)","day":date.listDay])
+            }
+        }
+        
+        var listResult:[JSON] = []
+        
+        var day = 0
+        for item in listDay {
+            if let m = item["month"], let y = item["year"], let listDa:[String] = item["day"] as? [String] {
+                var dict:JSON = [:]
+                //        dict["total_customers"] = Int64(list.filter{$0.status == 1}.count)
+                var totalPriceOrdersprocess:Double = 0
+                var totalPriceOrdersunprocess:Double = 0
+                var totaOrdersprocess:Double = 0
+                var totalOrdersunprocess:Double = 0
+                var totalOrdersinvalid:Double = 0
+                var totalOrdersPaid:Double = 0
+                var totalOrdersUnpaid:Double = 0
+                
+                let from = "\(y)-\(m)-\(listDa.first!) 00:00:00".toDate2() as NSDate
+                let to = "\(y)-\(m)-\(listDa.last!) 00:00:00".toDate2() as NSDate
+                
+                //total_orders_amount
+                var listOrderitems:[OrderItemDO] = []
+                
+                OrderManager.getReportOrders(fromDate: from, toDate: to, isLifeTime: false, customer: customer){ listOrder in
+                    _ = listOrder.map({
+                        if $0.status != 0 { // invalid
+                            if $0.status == 1 { // process
+                                totaOrdersprocess += 1
+                                totalPriceOrdersprocess += Double($0.totalPrice)
+                            } else if $0.status == 3 { // unprocess
+                                totalOrdersunprocess += 1
+                                totalPriceOrdersunprocess += Double($0.totalPrice )
+                            }
+                        } else {
+                            totalOrdersinvalid += 1
+                        }
+                        if $0.payment_status == 1 {
+                            totalOrdersPaid += 1
+                        } else if $0.payment_status == 2 {
+                            totalOrdersUnpaid += 1
+                        }
+                        if $0.orderItems().count > 0 {
+                            listOrderitems.append(contentsOf:$0.orderItems())
+                        }
+                    })
+                    
+                    dict["total_orders_processed"] = totaOrdersprocess.cleanValue
+                    dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
+                    dict["total_orders_invalid"] = totalOrdersinvalid.cleanValue
+                    dict["total_orders_no_charge"] = totalOrdersUnpaid.cleanValue
+                    dict["total_orders_money_collected"] = totalOrdersPaid.cleanValue
+                    dict["total_orders_price_process"] = totalPriceOrdersprocess.cleanValue
+                    dict["total_orders_price_unprocess"] = totalPriceOrdersunprocess.cleanValue
+                    listResult.append(["date":(to as Date).toString(dateFormat: "MM/yyyy") ,"data":dict])
+                    // return result
+                    if day == listDay.count - 1 {
+                        onComplete(listResult.sorted(by: {($0["date"] as! String).toDate3().compare(($1["date"] as! String).toDate3()) == .orderedAscending}))
+                    }
+                    day += 1
+                }
+                
+            }
+            
+        }
+    }
+    
+    static func getDataCustomerDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil, onComplete:@escaping ((JSON)->Void)) {
         guard let cus = customer else {onComplete([:]); return }
         var dict:JSON = [:]
         var totalAmountOrders:Int64 = 0
+        var totalPVOrders:Int64 = 0
         var totaOrdersprocess:Double = 0
         var totalOrdersunprocess:Double = 0
         var totalOrdersinvalid:Double = 0
@@ -128,10 +216,11 @@ class UserManager: NSObject {
         
         //total_orders_amount
         var listOrderitems:[OrderItemDO] = []
-        OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, customer:cus, onComplete: { listOrder in
+        OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, customer:cus,{ listOrder in
             _ = listOrder.map({
                 if $0.status != 0 { // invalid
                     totalAmountOrders += $0.totalPrice
+                    totalPVOrders += $0.totalPV
                     if $0.status == 1 { // process
                         totaOrdersprocess += 1
                     } else if $0.status == 3 { // unprocess
@@ -186,6 +275,7 @@ class UserManager: NSObject {
             dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
             dict["total_orders_invalid"] = totalOrdersinvalid.cleanValue
             dict["total_orders_amount"] = totalAmountOrders
+            dict["total_pv_amount"] = totalPVOrders
             dict["total_orders_no_charge"] = totalOrdersUnpaid.cleanValue
             dict["total_orders_money_collected"] = totalOrdersPaid.cleanValue
             dict["top_ten_product"] = top10Product
@@ -239,9 +329,8 @@ class UserManager: NSObject {
         }
     }
     
-    static func saveUserWith(dictionary: JSON) -> UserDO? {
+    static func saveUserWith(dictionary: JSON,_ context:NSManagedObjectContext) -> UserDO? {
         clearData([dictionary])
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
         if let object = NSEntityDescription.insertNewObject(forEntityName: "UserDO", into: context) as? UserDO {
             if let data = dictionary["id_card_no"] as? String {
                 object.id_card_no = Int64(data)!

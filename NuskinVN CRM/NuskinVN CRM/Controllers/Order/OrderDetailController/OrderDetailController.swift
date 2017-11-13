@@ -422,17 +422,24 @@ class OrderDetailController: RootViewController {
                         ord.synced = false
                         OrderManager.updateOrderEntity(ord, onComplete: {
                             OrderItemManager.clearData(from:ord.id, onComplete: {
-                                _ = _self.listProducts.map({
-                                    var dict = $0
-                                    dict["order_id"] = ord.id
-                                    dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                                    dict["quantity"] = dict["total"]
-                                    if let pro = dict["product"] as? ProductDO {
-                                        dict["product_id"] = pro.id
+                                let container = CoreDataStack.sharedInstance.persistentContainer
+                                container.performBackgroundTask() { (context) in
+                                    _ = _self.listProducts.map({
+                                        var dict = $0
+                                        dict["order_id"] = ord.id
+                                        dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
+                                        dict["quantity"] = dict["total"]
+                                        if let pro = dict["product"] as? ProductDO {
+                                            dict["product_id"] = pro.id
+                                        }
+                                        _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,context)
+                                    })
+                                    do {
+                                        try context.save()
+                                    } catch {
+                                        fatalError("Failure to save context: \(error)")
                                     }
-                                    _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict)
-                                    try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-                                })
+                                }
                             })
                             _self.onPop?()
                             _self.navigationController?.popViewController(animated: true)
@@ -478,19 +485,25 @@ class OrderDetailController: RootViewController {
 //                        ord.tempProducts = _self.listProducts
                         OrderManager.updateOrderEntity(ord, onComplete: {
                             OrderItemManager.clearData(from:ord.id, onComplete: {
-                                _ = _self.listProducts.map({
-                                    var dict = $0
-                                    dict["order_id"] = ord.id
-                                    dict["quantity"] = dict["total"]
-                                    dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                                    if let pro = dict["product"] as? ProductDO {
-                                        dict["product_id"] = pro.id
+                                let container = CoreDataStack.sharedInstance.persistentContainer
+                                container.performBackgroundTask() { (context) in
+                                    _ = _self.listProducts.map({
+                                        var dict = $0
+                                        dict["order_id"] = ord.id
+                                        dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
+                                        dict["quantity"] = dict["total"]
+                                        if let pro = dict["product"] as? ProductDO {
+                                            dict["product_id"] = pro.id
+                                        }
+                                        _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,context)
+                                    })
+                                    do {
+                                        try context.save()
+                                    } catch {
+                                        fatalError("Failure to save context: \(error)")
                                     }
-                                    _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict)
-                                    try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-                                })
+                                }
                             }) 
-                            try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
                             _self.onPop?()
                             _self.navigationController?.popViewController(animated: true)
                         })
@@ -735,29 +748,33 @@ extension OrderDetailController: UINavigationControllerDelegate, UIImagePickerCo
     func getImageOfScrollView(){
         
         let exportView = Bundle.main.loadNibNamed("FormExportOrderDetailView", owner: self, options: [:])?.first as! FormExportOrderDetailView
-        exportView.onReady = {[weak self] in
-            guard let _self = self else {return}
-            UIGraphicsBeginImageContext(exportView.frame.size)
-            
-            //        let savedContentOffset = scrollView.contentOffset
-            //        let savedFrame = scrollView.frame
-            
-            //        scrollView.contentOffset = CGPoint.zero
-            exportView.frame = CGRect(x: 0, y: 0, width: exportView.frame.size.width, height: exportView.frame.size.height)
-            exportView.layoutIfNeeded()
-            
-            exportView.layer.render(in: UIGraphicsGetCurrentContext()!)
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-            
-            //        scrollView.contentOffset = savedContentOffset
-            //        scrollView.frame = savedFrame
-            
-            UIGraphicsEndImageContext()
-            
-            UIImageWriteToSavedPhotosAlbum(image!, _self, #selector(_self.image(_:didFinishSavingWithError:contextInfo:)), nil)
-        }
+//        exportView.onReady = {[weak self] in
+//            guard let _self = self else {return}
+//
+//        }
         if !exportView.load(self.order) {return}
         exportView.layoutSubviews()
+        UIGraphicsBeginImageContext(exportView.frame.size)
+        let context = UIGraphicsGetCurrentContext()
+        //        let savedContentOffset = scrollView.contentOffset
+        //        let savedFrame = scrollView.frame
+        
+        //        scrollView.contentOffset = CGPoint.zero
+        exportView.frame = CGRect(x: 0, y: 0, width: exportView.frame.size.width, height: exportView.frame.size.height)
+        exportView.layoutIfNeeded()
+        
+        exportView.backgroundColor!.setFill()
+        context!.fill(exportView.frame)
+        
+        exportView.layer.render(in: context!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        
+        //        scrollView.contentOffset = savedContentOffset
+        //        scrollView.frame = savedFrame
+        
+        UIGraphicsEndImageContext()
+        
+        UIImageWriteToSavedPhotosAlbum(image!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     
     //MARK: - Add image to Library

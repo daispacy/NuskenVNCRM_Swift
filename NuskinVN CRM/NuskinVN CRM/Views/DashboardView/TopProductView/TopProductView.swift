@@ -18,7 +18,11 @@ class TopProductView: UIView {
     @IBOutlet var stackViewProductList: UIStackView!
     @IBOutlet var btnOtherProduct: UIButton!
     
+    var onMoreProduct:(()->Void)?
+    
     var dataReal:[JSON] = []
+    
+    var maxTopProduct:Int = 10
     
     var btnClicked:UIButton?
     // MARK: - init
@@ -53,7 +57,7 @@ class TopProductView: UIView {
         _ = stackViewProductList.arrangedSubviews.map{$0.removeFromSuperview()}
         var i = 0
         for item in dataReal {
-            if i < 10 {
+            if i < maxTopProduct {
                 let blockTop = Bundle.main.loadNibNamed("BlockTopProductView", owner: self, options: nil)?.first as! BlockTopProductView
                 stackViewProductList.insertArrangedSubview(blockTop, at: stackViewProductList.arrangedSubviews.count)
                 blockTop.loadData(json: item,isQuantity: bool)
@@ -62,9 +66,11 @@ class TopProductView: UIView {
             }
             i += 1
         }
-        if dataReal.count < 11 {
-            btnOtherProduct.removeFromSuperview()
-        }
+        
+        btnOtherProduct.removeFromSuperview()
+//        if maxTopProduct >= dataReal.count {
+//            btnOtherProduct.removeFromSuperview()
+//        }
     }
     
     // MARK: - event
@@ -72,6 +78,11 @@ class TopProductView: UIView {
         self.btnClicked = sender
         reloadData()
     }
+    
+    @IBAction func moreProduct(_ sender: Any) {
+        self.onMoreProduct?()
+    }
+    
     
     // MARK: - private
     func configView() {

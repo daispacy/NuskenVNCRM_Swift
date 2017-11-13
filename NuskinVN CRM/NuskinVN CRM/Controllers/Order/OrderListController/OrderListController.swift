@@ -49,6 +49,55 @@ UISearchBarDelegate{
     var toDate:NSDate? = nil
     var isLifeTime: Bool = true
     
+    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<OrderDO> = {
+        let user = UserManager.currentUser()!
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+        var predicate2 = NSPredicate(format: "1 > 0")
+        var predicate3 = NSPredicate(format: "1 > 0")
+        var predicate4 = NSPredicate(format: "1 > 0")
+        var predicate5 = NSPredicate(format: "1 > 0")
+        
+        if let text = self.searchText {
+            if text.characters.count > 0 {
+                predicate2 = NSPredicate(format: "code contains[cd] %@",text)
+            }
+        }
+        if let sta = self.status {
+            predicate3 = NSPredicate(format: "status IN %@",[sta])
+        }
+        if let psta = self.payment_status {
+            predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
+        }
+        
+        if (self.customer_id.filter{$0 != 0}).count > 0 {
+           predicate5 = NSPredicate(format: "customer_id IN %@",self.customer_id.filter{$0 != 0})
+        }
+        var predicate6 = NSPredicate(format: "1 > 0")
+        if !self.isLifeTime {
+            if let from = self.fromDate,
+                let to = self.toDate {
+                predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+            }
+        }
+        
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
+                                        NSSortDescriptor(key: "status", ascending: false)]
+        fetchRequest.predicate = predicateCompound
+        
+        // Create Fetched Results Controller
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Configure Fetched Results Controller
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController as! NSFetchedResultsController<OrderDO>
+    }()
+    
     // MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -175,6 +224,7 @@ UISearchBarDelegate{
         listOrder.removeAll()
         self.tableView.reloadData()
         
+        // setup filter customer
         let listCIDS = self.customer_id.filter{$0 != 0}
         if listCIDS.count > 0 {
             if listCustomer.count == 0 {
@@ -200,6 +250,35 @@ UISearchBarDelegate{
             self.btnFilterCustomer.setTitle("all".localized(), for: .normal)
         }
         
+        // setup status
+        if let sta = self.status {
+            _ = AppConfig.order.listStatus().map({item in
+                if item["id"] as! Int64 == sta {
+                    btnFilterStatus.setTitle(item["name"] as? String, for: .normal)
+                }
+            })
+        }
+        
+        // setup date
+        
+        
+//        do {
+//            try self.fetchedResultsController.performFetch()
+//            
+//            self.listOrder = self.fetchedResultsController.fetchedObjects!
+//            if listOrder.count > 0 {
+////                self.listOrder.append(contentsOf: list)
+//                self.tableView.reloadData()
+//                self.showLoading(isShow: false, isShowMessage: false)
+//            } else {
+//                self.showLoading(isShow: false, isShowMessage: true)
+//            }
+//            
+//        } catch {
+//            let fetchError = error as NSError
+//            print("Unable to Perform Fetch Request")
+//            print("\(fetchError), \(fetchError.localizedDescription)")
+//        }
         
         OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id,fromDate: self.fromDate,toDate: self.toDate,isLifeTime: self.isLifeTime) {[weak self] list in
             if let _self = self {
@@ -408,6 +487,9 @@ extension OrderListController {
         return listOrder.count
     }
 }
+
+// MARK: - FetchResultController delegate
+extension OrderListController: NSFetchedResultsControllerDelegate {}
 
 // MARK: - scrollview delegate
 extension OrderListController:UIScrollViewDelegate {

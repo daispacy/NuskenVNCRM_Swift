@@ -25,7 +25,6 @@ class FormExportOrderDetailView: UIView {
     @IBOutlet weak var lblCustomer: UILabel!
     @IBOutlet weak var lblCustomerPhone: UILabel!
     
-    @IBOutlet weak var lblAddressCustomer: UILabel!
     @IBOutlet weak var lblCityDistrictCustomer: UILabel!
     
     @IBOutlet weak var lblOrderAddress: UILabel!
@@ -38,12 +37,11 @@ class FormExportOrderDetailView: UIView {
     
     //list product
     @IBOutlet weak var stackListProducts: UIStackView!
-    
-    // summary
-    @IBOutlet var lblTotalPrice: UILabel!
-    @IBOutlet var lblTotalPV: UILabel!
-    @IBOutlet var lblTextTotalPriccce: UILabel!
-    @IBOutlet var lblTextTotalPV: UILabel!
+    @IBOutlet var collectTitlesTable: [UILabel]!
+    @IBOutlet weak var btlView: CViewBorder!
+    @IBOutlet weak var btView: CViewBorder!
+    @IBOutlet weak var btView1: CViewBorder!
+    @IBOutlet weak var btrView: CViewBorder!
     
     var isReady:Bool = false
     var onReady:(()->Void)?
@@ -96,13 +94,9 @@ class FormExportOrderDetailView: UIView {
             lblCustomerPhone.text = "\(lblCustomerPhone.text!): \(code)"
         }
         
-        if let code = customer.address {
-            lblAddressCustomer.text = "\(lblAddressCustomer.text!): \(code)"
-        }
-        
-        if let code = customer.city, let code1 = customer.county {
-            lblCityDistrictCustomer.text = "\("city".localized()): \(code)       \("district".localized()): \(code1)"
-        }
+        let code = item.city
+        let code1 = item.district
+        lblCityDistrictCustomer.text = "\("city".localized()): \(code)       \("district".localized()): \(code1)"
         
         if let code = item.address {
             lblOrderAddress.text = "\(lblOrderAddress.text!): \(code)"
@@ -157,23 +151,79 @@ class FormExportOrderDetailView: UIView {
                     
                     let stack = UIStackView(frame: CGRect.zero)
                     stack.axis = .horizontal
-                    stack.spacing = 30
-                    stack.distribution = .fillEqually
-                    let label = UILabel(frame: CGRect.zero)
-                    label.numberOfLines = 0
-                    label.textAlignment = .left
-                    configLabel(label)
-                    label.text = "\(i). \(product.name!)"
+                    stack.spacing = 0
+                    stack.alignment = .fill
+                    stack.distribution = .fill
                     
-                    let label1 = UILabel(frame: CGRect.zero)
-                    label1.numberOfLines = 0
-                    label1.textAlignment = .left
-                    configLabel(label1)
-                    label1.text = "\("quantity".localized()): \($0.quantity) \("unit".localized())\n\("price".localized()): \(($0.quantity*$0.price).toTextPrice()) \("price_unit".localized())\n\("pv".localized().uppercased()): \((product.pv * $0.quantity).toTextPrice())"
+                    // name
+                    var tn:[ViewBorderType] = [.left]
+                    if i == item.orderItems().count {
+                        tn = [.bottom,.left]
+                    }
+                    let viewProduct = CViewBorder(frame: CGRect.zero, tn)
+                    let name = UILabel(frame: CGRect.zero)
+                    name.numberOfLines = 0
+                    name.textAlignment = .left
+                    configLabel(name)
+                    name.text = "\(i). \(product.name!)"
+                    viewProduct.addSubview(name)
+                    addContraint(name,10,10)
                     
-                    stack.insertArrangedSubview(label, at: stack.arrangedSubviews.count)
-                    stack.insertArrangedSubview(label1, at: stack.arrangedSubviews.count)
-//                    stack.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                    // quantity
+                    var tq:[ViewBorderType] = [.left,.right]
+                    if i == item.orderItems().count {
+                        tq = [.bottom,.left,.right]
+                    }
+                    let viewQuantity = CViewBorder(frame: CGRect.zero, tq)
+                    let quantity = UILabel(frame: CGRect.zero)
+                    quantity.numberOfLines = 0
+                    quantity.textAlignment = .center
+                    configLabel(quantity)
+                    quantity.text = "\($0.quantity.toTextPrice()) \("unit".localized()) "
+                    viewQuantity.addSubview(quantity)
+                    addContraint(quantity)
+                    
+                    // price
+                    var tp:[ViewBorderType] = [.right]
+                    if i == item.orderItems().count {
+                        tp = [.bottom,.right]
+                    }
+                    let viewPrice = CViewBorder(frame: CGRect.zero, tp)
+                    let price = UILabel(frame: CGRect.zero)
+                    price.numberOfLines = 0
+                    price.textAlignment = .center
+                    configLabel(price)
+                    price.text = "\($0.price.toTextPrice()) \("price_unit".localized())"
+                    viewPrice.addSubview(price)
+                    addContraint(price)
+                    
+                    // price
+                    var tt:[ViewBorderType] = [.right]
+                    if i == item.orderItems().count {
+                        tt = [.bottom,.right]
+                    }
+                    let viewTotal = CViewBorder(frame: CGRect.zero, tt)
+                    let total = UILabel(frame: CGRect.zero)
+                    total.numberOfLines = 0
+                    total.textAlignment = .center
+                    configLabel(total)
+                    total.text = "\(($0.quantity*$0.price).toTextPrice()) \("price_unit".localized())"
+                    viewTotal.addSubview(total)
+                    addContraint(total)
+                    
+                    
+                    stack.insertArrangedSubview(viewProduct, at: stack.arrangedSubviews.count)
+                    stack.insertArrangedSubview(viewQuantity, at: stack.arrangedSubviews.count)
+                    viewQuantity.translatesAutoresizingMaskIntoConstraints = false
+                    viewQuantity.widthAnchor.constraint(equalToConstant: 150).isActive = true
+                    stack.insertArrangedSubview(viewPrice, at: stack.arrangedSubviews.count)
+                    viewPrice.translatesAutoresizingMaskIntoConstraints = false
+                    viewPrice.widthAnchor.constraint(equalToConstant: 200).isActive = true
+                    stack.insertArrangedSubview(viewTotal, at: stack.arrangedSubviews.count)
+                    viewTotal.translatesAutoresizingMaskIntoConstraints = false
+                    viewTotal.widthAnchor.constraint(equalToConstant: 300).isActive = true
+                    stack.translatesAutoresizingMaskIntoConstraints = false
+                    stack.heightAnchor.constraint(equalToConstant: 50).isActive = true
                     
                     stackListProducts.insertArrangedSubview(stack, at: stackListProducts.arrangedSubviews.count)
                     i += 1
@@ -181,11 +231,62 @@ class FormExportOrderDetailView: UIView {
             })
         }
         
-        lblTotalPrice.text = "\(price.toTextPrice()) \("price_unit".localized().uppercased())"
-        lblTotalPV.text = "\(pv.toTextPrice()) \("pv".localized().uppercased())"
+        let stack = UIStackView(frame: CGRect.zero)
+        stack.axis = .horizontal
+        stack.spacing = 0
+        stack.alignment = .fill
+        stack.distribution = .fill
+        
+        // name
+        let tn:[ViewBorderType] = [.bottom,.left]
+        let viewProduct = CViewBorder(frame: CGRect.zero, tn)
+        let name = UILabel(frame: CGRect.zero)
+        name.numberOfLines = 0
+        name.textAlignment = .left
+        name.textColor = UIColor(hex: Theme.colorNavigationBar)
+        name.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
+        name.text = "total_price".localized()
+        viewProduct.addSubview(name)
+        addContraint(name,10,10)
+        
+        // quantity
+        let tq:[ViewBorderType] = [.left,.bottom,.right]
+        let viewQuantity = CViewBorder(frame: CGRect.zero, tq)
+        
+        // price
+        let tp:[ViewBorderType] = [.bottom,.right]
+        let viewPrice = CViewBorder(frame: CGRect.zero, tp)
+        
+        // price
+        let tt:[ViewBorderType] = [.bottom,.right]
+        let viewTotal = CViewBorder(frame: CGRect.zero, tt)
+        let total = UILabel(frame: CGRect.zero)
+        total.numberOfLines = 0
+        total.textAlignment = .center
+        total.textColor = UIColor(hex: Theme.colorNavigationBar)
+        total.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
+        total.text = "\(price.toTextPrice()) \("price_unit".localized().uppercased())"
+        viewTotal.addSubview(total)
+        addContraint(total)
+        
+        
+        stack.insertArrangedSubview(viewProduct, at: stack.arrangedSubviews.count)
+        stack.insertArrangedSubview(viewQuantity, at: stack.arrangedSubviews.count)
+        viewQuantity.translatesAutoresizingMaskIntoConstraints = false
+        viewQuantity.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        stack.insertArrangedSubview(viewPrice, at: stack.arrangedSubviews.count)
+        viewPrice.translatesAutoresizingMaskIntoConstraints = false
+        viewPrice.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        stack.insertArrangedSubview(viewTotal, at: stack.arrangedSubviews.count)
+        viewTotal.translatesAutoresizingMaskIntoConstraints = false
+        viewTotal.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        stackListProducts.insertArrangedSubview(stack, at: stackListProducts.arrangedSubviews.count)
         
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.heightAnchor.constraint(equalToConstant: 650 + CGFloat(60*item.orderItems().count)).isActive = true
+        self.heightAnchor.constraint(equalToConstant: 600 + CGFloat(50*item.orderItems().count)).isActive = true
         self.layoutIfNeeded()
         self.setNeedsDisplay()
         isReady = true
@@ -193,6 +294,14 @@ class FormExportOrderDetailView: UIView {
     }
     
     // MARK: - private
+    func addContraint(_ label:UILabel,_ leading:CGFloat = 0,_ trailing:CGFloat = 0) {
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.topAnchor.constraint(equalTo: label.superview!.topAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: label.superview!.leadingAnchor,constant: leading).isActive = true
+        label.superview?.bottomAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
+        label.superview?.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: trailing).isActive = true
+    }
+    
     func configText() {
         lblTitle.text = "page_order".localized().uppercased()
         lblTitleProduct.text = "infor_product".localized().uppercased()
@@ -201,7 +310,6 @@ class FormExportOrderDetailView: UIView {
         lblDistributorPhone.text = "phone".localized()
         lblCustomer.text = "customer".localized()
         lblCustomerPhone.text = "phone".localized()
-        lblAddressCustomer.text = "address".localized()
         lblOrderAddress.text = "order_address".localized()
         
         lblOrderStatus.text = "order_status".localized()
@@ -210,23 +318,18 @@ class FormExportOrderDetailView: UIView {
         lblShipping.text = "transporter".localized()
         lblSVD.text = "transporter_id".localized()
         lblDateCreated.text = "date_created_order".localized()
-        
-        lblTextTotalPriccce.text = "total_price".localized()
-        lblTextTotalPV.text = "PV".localized()
     }
     
     func configView() {
         
-        _ = [lblOrderCode,lblDistributor,lblDistributorPhone,lblCustomer,lblCustomerPhone,lblAddressCustomer,lblCityDistrictCustomer,lblOrderAddress,lblOrderStatus,lblPaymentStatus,lblPaymentMethod,lblShipping,lblSVD,lblTitle,lblTitleProduct,lblDateCreated].map{configLabel($0)}
+        _ = [lblOrderCode,lblDistributor,lblDistributorPhone,lblCustomer,lblCustomerPhone,lblCityDistrictCustomer,lblOrderAddress,lblOrderStatus,lblPaymentStatus,lblPaymentMethod,lblShipping,lblSVD,lblTitle,lblTitleProduct,lblDateCreated].map{configLabel($0)}
         
-        lblTotalPV.textColor = UIColor(hex: Theme.colorNavigationBar)
-        lblTotalPV.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
-        lblTotalPrice.textColor = UIColor(hex: Theme.colorNavigationBar)
-        lblTotalPrice.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
-        lblTextTotalPV.textColor = UIColor(hex: Theme.color.customer.subGroup)
-        lblTextTotalPV.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
-        lblTextTotalPriccce.textColor = UIColor(hex: Theme.color.customer.subGroup)
-        lblTextTotalPriccce.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        _ = collectTitlesTable.map{configLabel($0)}
+        
+        btView.type = [.left,.bottom,.top]
+        btlView.type = [.bottom,.top,.left]
+        btView1.type = [.bottom,.top]
+        btrView.type = [.left,.bottom,.top,.right]
     }
     
     func configLabel(_ textfield:UILabel) {

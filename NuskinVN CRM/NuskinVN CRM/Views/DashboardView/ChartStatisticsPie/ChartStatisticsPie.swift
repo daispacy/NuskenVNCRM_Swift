@@ -10,12 +10,12 @@ import UIKit
 import Charts
 import Charts.Swift
 
-class ChartStatisticsOrder: CViewSwitchLanguage {
+class ChartStatisticsPie: CViewSwitchLanguage {
 
     var months: [String]!
     
     @IBOutlet var lblTitle: UILabel!
-    @IBOutlet var chartView: BarChartView!
+    @IBOutlet var chartView: PieChartView!
     
     @IBOutlet var lblTitleChart: UILabel!
     @IBOutlet var lblProcess: UILabel!
@@ -37,49 +37,42 @@ class ChartStatisticsOrder: CViewSwitchLanguage {
     
     // MARK: - INTERFACE
     func setChart(_ dataPoints: [String], values: [Double]) {
-        chartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
-        chartView.xAxis.labelCount = dataPoints.count;
+        chartView.noDataText = "no_data_chart_order".localized()
         
-        var dataEntries: [BarChartDataEntry] = []
+        var dataEntries: [PieChartDataEntry] = []
         
-        for i in 0..<values.count {
-            let dataEntry = BarChartDataEntry(x:Double(i), y:values[i])
+        for i in 0..<dataPoints.count {
+            let dataEntry = PieChartDataEntry(value: values[i], label: nil)
             dataEntries.append(dataEntry)
         }
         
-        var chartDataSet:BarChartDataSet = BarChartDataSet()
+        var chartDataSet:PieChartDataSet = PieChartDataSet()
         
         if let dt = chartView.data {
             if(dt.dataSetCount > 0) {
-                chartDataSet = chartView.data?.dataSets[0] as! BarChartDataSet
+                chartDataSet = chartView.data?.dataSets[0] as! PieChartDataSet
                 chartDataSet.values = dataEntries
             }
         }
         
         if(chartDataSet.values.count == 0) {
-            chartDataSet = BarChartDataSet(values: dataEntries, label:nil)
-            chartDataSet.highlightAlpha = 0
+            chartDataSet = PieChartDataSet(values: dataEntries, label:nil)
         }
         
-        chartDataSet.drawIconsEnabled = false
-        chartDataSet.colors = [UIColor(hex:"0x008ab0"),UIColor(hex:"0xe30b7a")]
-        if values.count == 3 {
-            chartDataSet.colors = [UIColor(hex:"0x008ab0"),UIColor(hex:"0xe30b7a"),UIColor(hex:"71757A")]
-        }
-        chartDataSet.stackLabels = [];
-        chartDataSet.highlightAlpha = 0
+        chartDataSet.sliceSpace = 1.0
+        chartDataSet.selectionShift = 1
+        chartView.holeRadiusPercent = 0
         
-        let chartData = BarChartData(dataSet: chartDataSet)
-        chartData.barWidth = 0.4
-        
+        let chartData = PieChartData(dataSet: chartDataSet)
+        chartData.setValueTextColor(UIColor.white)
+        chartData.setValueFont(UIFont(name: Theme.font.bold, size: Theme.fontSize.normal))
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         numberFormatter.locale = Locale.current
         let valuesNumberFormatter = ChartValueFormatter(numberFormatter: numberFormatter)
         chartData.setValueFormatter(valuesNumberFormatter)
         
-        chartData.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
-        chartData.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
+        chartDataSet.colors = [UIColor(hex:"0x008ab0"),UIColor(hex:"0xe30b7a")]
         
         chartView.data = chartData
         chartView.animate(yAxisDuration: 1.5)
@@ -94,6 +87,7 @@ class ChartStatisticsOrder: CViewSwitchLanguage {
             stackInvalid.removeFromSuperview()
         }
     }
+    
     // MARK: - PRIVATE
     private func configChart() {
         
@@ -111,42 +105,16 @@ class ChartStatisticsOrder: CViewSwitchLanguage {
         lblUnprocess.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
         lblUnprocess.textColor = UIColor(hex:Theme.colorDBTextNormal)
         
-        // setup chart
-        chartView.noDataText = "no_data_chart_summary_sales".localized()
-        
-        chartView.xAxis.drawAxisLineEnabled = false
-        chartView.xAxis.drawGridLinesEnabled = false
-        chartView.xAxis.labelPosition = .bottom
-        chartView.xAxis.granularityEnabled = false
-        chartView.xAxis.labelTextColor = UIColor(hex:Theme.colorDBTextNormal)
-        
-//        chartView.leftAxis.enabled = true
-        chartView.leftAxis.drawAxisLineEnabled = false
-        chartView.leftAxis.drawGridLinesEnabled = true
-        chartView.leftAxis.labelTextColor = UIColor.clear
-        
-        chartView.rightAxis.enabled = false
-
-        
-        chartView.legend.horizontalAlignment = .center
+        chartView.legend.horizontalAlignment = .left
         chartView.legend.verticalAlignment = .bottom
+        chartView.legend.orientation = .vertical
         chartView.legend.drawInside = false
+        chartView.legend.xEntrySpace = 0.0
+        chartView.legend.yEntrySpace = 0.0
+        chartView.legend.yOffset = 0.0
         chartView.legend.form = .empty
-        chartView.legend.orientation = .horizontal
-        chartView.legend.xEntrySpace = 1.0
-        chartView.legend.stackSpace = 0.1
         
-        chartView.drawBordersEnabled = false
-        chartView.drawValueAboveBarEnabled = true
-        chartView.drawGridBackgroundEnabled = false
-        chartView.drawValueAboveBarEnabled = true
-        chartView.drawBarShadowEnabled = false
-        
-        chartView.backgroundColor = UIColor.white
-        chartView.pinchZoomEnabled = false
-        chartView.fitBars = false
-        chartView.scaleXEnabled = false
-        chartView.scaleYEnabled = false
+        backgroundColor = UIColor.white
         
         chartView.chartDescription?.text = ""
     }

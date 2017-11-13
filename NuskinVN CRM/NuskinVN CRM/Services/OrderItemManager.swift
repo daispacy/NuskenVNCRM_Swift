@@ -11,17 +11,22 @@ import CoreData
 
 class OrderItemManager: NSObject {
     
-    static func saveOrderItemWith(orerID:Int64? = 0, array: [JSON]) {
-        clearData(orerID,fromList: array,onComplete: { array in
-            if let array = array {
-                _ = array.map{OrderItemManager.createOrderItemEntityFrom(dictionary: $0)}
+    static func saveOrderItemWith(orerID:Int64? = 0, array: [JSON],_  onComplete:@escaping (()->Void)) {
+        OrderItemManager.resetData {
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                for jsonObject in array {
+                    _ = OrderItemManager.createOrderItemEntityFrom(dictionary: jsonObject,context)
+                }
+                do {
+                    try context.save()
+                    onComplete()
+                } catch {
+                    onComplete()
+                    fatalError("Failure to save context: \(error)")
+                }
             }
-            do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
-            }
-        })
+        }
     }
     
     static func getAllOrderItem(_ orderID:Int64 = 0, localID:Int64 = 0, onComplete:(([OrderItemDO])->Void)) {
@@ -77,8 +82,7 @@ class OrderItemManager: NSObject {
         onComplete()
     }
     
-    static func createOrderItemEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createOrderItemEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "OrderItemDO", into: context) as? OrderItemDO {
             
             object.synced = false
@@ -154,19 +158,19 @@ class OrderItemManager: NSObject {
         }
     }
     
-    static func resetData(onComplete:(()->Void)) {
-        do {
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func resetData(_ onComplete:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
             fetchRequest.returnsObjectsAsFaults = false
+            
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
-                
+                try context.save()
                 onComplete()
-                
-            } catch let error {
-                print("ERROR DELETING : \(error)")
+            } catch {
+                onComplete()
             }
         }
     }

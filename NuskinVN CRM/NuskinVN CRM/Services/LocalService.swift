@@ -8,6 +8,7 @@
 
 import Foundation
 import SystemConfiguration
+import CoreData
 
 enum LocalServiceType: Int {
     case customer = 1
@@ -61,14 +62,8 @@ final class LocalService: NSObject {
                 return
             }
         }
-        DispatchQueue.global(qos: .background).async {
             self.syncUser{
-                self.syncMasterData{
-                    self.syncGroups {
-                        self.syncCustomers {
-                            SyncService.shared.syncProducts(completion: {_ in
-                                self.syncOrders {
-                                    self.syncOrdersItems {
+                self.syncMasterData{self.syncGroups {self.syncCustomers {SyncService.shared.syncProducts{_ in self.syncOrders{self.syncOrdersItems {
                                         DispatchQueue.main.async {
                                             print("SYNC DATA COMPLETE")
                                             onComplete?()
@@ -78,12 +73,11 @@ final class LocalService: NSObject {
                                         }
                                     }
                                 }
-                            })
+                            }
                         }
                     }
                 }
             }
-        }
     }
     
     @objc private func syncToServer() {
@@ -172,13 +166,20 @@ final class LocalService: NSObject {
                 OrderItemManager.resetData {
                     if data.count > 0 {
                         print("SAVE ORDERITEM TO CORE DATA")
-                        OrderItemManager.saveOrderItemWith(array:data)
-                    }
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                        OrderItemManager.saveOrderItemWith(array:data) {
+                            onComplete?()
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                            }
+                        }
+                    } else {
+                        onComplete?()
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                        }
                     }
                 }
-                onComplete?()
+                
             case .failure(_):
                 onComplete?()
                 DispatchQueue.main.async {
@@ -213,24 +214,27 @@ final class LocalService: NSObject {
                             return
                         }
                     }
-                    
-                    _ = list.map({
-                        let group = $0
-                        group.synced = true
-                        do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{onComplete?()}
-                        
-                    })
-                    
-                    OrderManager.clearAllDataSynced {
-                        if data.count > 0 {
-                            print("SAVE ORDER TO CORE DATA")
-                            OrderManager.saveOrderWith(array:data)
-                        }
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
-                        }
+                    var list1:[Int64] = [0]
+                    if listDictionaryOrders.count > 0 {
+                        list1.append(contentsOf: listDictionaryOrders.flatMap{$0["id"] as? Int64})
+                        list1.append(contentsOf: listDictionaryOrders.flatMap{$0["local_id"] as? Int64})
                     }
-                    onComplete?()
+                    OrderManager.markSynced(list1, {
+                        OrderManager.clearAllDataSynced {
+                            if data.count > 0 {
+                                print("SAVE ORDER TO CORE DATA")
+                                OrderManager.saveOrderWith(array:data) {
+                                    onComplete?()
+                                    DispatchQueue.main.async {
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                                    }
+                                }
+                            } else {
+                                onComplete?()
+                            }
+                        }
+                    })
+                   
                 case .failure(_):
                     onComplete?()
                     DispatchQueue.main.async {
@@ -250,7 +254,7 @@ final class LocalService: NSObject {
                 NotificationCenter.default.post(name:Notification.Name("SyncData:StartCustomer"),object:nil)
             }
             print("*******\nSTART SYNC CUSTOMERS: \(listDictionaryCustomer.count)\n*******")
-            SyncService.shared.postAllCustomerToServer(list: listDictionaryCustomer, completion: { (result) in
+            SyncService.shared.postAllCustomerToServer(list:listDictionaryCustomer, completion: { (result) in
                 switch result {
                 case .success(let data):
                     if let bool = LocalService.shared.isShouldSyncData?() {
@@ -263,23 +267,29 @@ final class LocalService: NSObject {
                         }
                     }
                     // change state to synced true
-                    _ = list.map({
-                        let group = $0
-                        group.synced = true
-                        do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
-                        
-                        
-                    })
-                    CustomerManager.clearAllDataSynced {
-                        if data.count > 0 {
-                            print("SAVE CUSTOMER TO CORE DATA")
-                            CustomerManager.saveCustomerWith(array: data)
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                    var list1:[Int64] = [0]
+                    if listDictionaryCustomer.count > 0 {
+                         list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["id"] as? Int64})
+                        list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["local_id"] as? Int64})
+                    }
+                    CustomerManager.markSynced(list1, {
+                        CustomerManager.clearAllDataSynced {
+                            if data.count > 0 {
+                                print("SAVE CUSTOMER TO CORE DATA")
+                                CustomerManager.saveCustomerWith(array: data) {
+                                    onComplete?()
+                                    DispatchQueue.main.async {
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                                    }
+                                }
+                            } else {
+                                onComplete?()
+                                DispatchQueue.main.async {
+                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                                }
                             }
                         }
-                    }
-                    onComplete?()
+                    })
                 case .failure(_):
                     onComplete?()
                     DispatchQueue.main.async {
@@ -323,22 +333,30 @@ final class LocalService: NSObject {
                                 return
                             }
                         }
-                        _ = list.map({
-                            let group = $0
-                            group.synced = true
-                            do{try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()}catch{}
-                        })
-                        print("SAVE GROUP TO CORE DATA")
-                        GroupManager.clearAllDataSynced {
-                            if data.count > 0 {
-                                GroupManager.saveGroupWith(array: data)
-                            }
-                            
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
-                            }
+                        
+                        var list1:[Int64] = [0]
+                        if listDictionaryGroup.count > 0 {
+                            list1.append(contentsOf: listDictionaryGroup.flatMap{$0["id"] as? Int64})
+                            list1.append(contentsOf: listDictionaryGroup.flatMap{$0["local_id"] as? Int64})
                         }
-                        onComplete?()
+                        GroupManager.markSynced(list1, {
+                            print("SAVE GROUP TO CORE DATA")
+                            GroupManager.clearAllDataSynced {
+                                if data.count > 0 {
+                                    GroupManager.saveGroupWith(array: data) {
+                                        DispatchQueue.main.async {
+                                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                                        }
+                                        onComplete?()
+                                    }
+                                } else {
+                                    onComplete?()
+                                    DispatchQueue.main.async {
+                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                                    }
+                                }
+                            }
+                        })
                     case .failure(_):
                         onComplete?()
                         DispatchQueue.main.async {

@@ -18,14 +18,17 @@ class DashboardCustomerController: UIViewController {
     var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
     var totalSummaryView:TotalSummaryView!
     var totalSalesView:TotalSummaryView!
+    var totalPVView:TotalSummaryView!
     var chartStatisticsOrder:ChartStatisticsOrder!
-    var chartStatisticsOrder1:ChartStatisticsOrder!
+    var chartStatisticsOrder1:ChartStatisticsPie!
+    var chartQuarter:ChartStatisticsCombined!
     var topProductView: TopProductView!
     
     // properties
     var fromDate:NSDate? = nil
     var toDate:NSDate? = nil
     var isLifeTime: Bool = true
+    var maxTopProduct:Int = 10
     
     var customer:CustomerDO?
     
@@ -80,7 +83,9 @@ class DashboardCustomerController: UIViewController {
         
         UserManager.getDataCustomerDashboard(self.fromDate, toDate: self.toDate, isLifeTime: self.isLifeTime, customer: cus) {[weak self] data in
             guard let _self = self else {return}
-            _self.reload(data)
+            DispatchQueue.main.async {
+                _self.reload(data)
+            }
         }
     }
     
@@ -92,14 +97,26 @@ class DashboardCustomerController: UIViewController {
         // block total
         totalSalesView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
         
+        // block total PV
+        totalPVView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
+        
         //block chart order
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
         
         //block chart order
-        chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
+        chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsPie.self), owner: self, options: nil)!.first as! ChartStatisticsPie
+        
+        //block chart quarter
+        chartQuarter = Bundle.main.loadNibNamed(String(describing: ChartStatisticsCombined.self), owner: self, options: nil)!.first as! ChartStatisticsCombined
         
         //block top product
         topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
+        topProductView.onMoreProduct = {[weak self] in
+            guard let _self = self else {return}
+            _self.maxTopProduct += 10
+            _self.topProductView.maxTopProduct = _self.maxTopProduct
+            _self.topProductView.reloadData()
+        }
         
         lblNam.textColor = UIColor.white
         lblNam.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
@@ -133,6 +150,13 @@ class DashboardCustomerController: UIViewController {
             totalSalesView.removeFromSuperview()
         }
         
+        if let data = data["total_pv_amount"] as? Int64{
+            stackView.insertArrangedSubview(totalPVView, at: stackView.arrangedSubviews.count)
+            totalPVView.loadTotalPV(total: "\(data.toTextPrice())")
+        } else {
+            totalPVView.removeFromSuperview()
+        }
+        
         if let data2 = data["total_orders_processed"],
             let data3 = data["total_orders_not_processed"],
             let totalCustomer = data["total_orders_invalid"]{
@@ -152,6 +176,19 @@ class DashboardCustomerController: UIViewController {
             chartStatisticsOrder1.setChart(["",""], values: [Double(data3 as! String)!,Double(data2 as! String)!])
         } else {
             chartStatisticsOrder1.removeFromSuperview()
+        }
+        
+        //block quarter of year for status order
+        stackView.insertArrangedSubview(chartQuarter, at: stackView.arrangedSubviews.count)
+        chartQuarter.loadData(self.fromDate!,self.toDate!,self.isLifeTime,self.customer)
+        
+        // top 10 product
+        if let data2 = data["top_ten_product"] as? [JSON]{
+            stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
+            topProductView.maxTopProduct = self.maxTopProduct
+            topProductView.loadData(data: data2)
+        } else {
+            topProductView.removeFromSuperview()
         }
         
         // top 10 product

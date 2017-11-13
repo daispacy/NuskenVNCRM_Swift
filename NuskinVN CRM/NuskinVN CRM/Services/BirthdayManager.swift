@@ -88,20 +88,19 @@ class BirthdayManager: NSObject {
         return nil
     }
     
-    static func clearData(onComplete:(()->Void)) {
-        do {
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func clearData(_ onComplete:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "BirthdayDO")
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.predicate = NSPredicate(format: "birthday > %@ AND birthday < %@",Date(timeIntervalSinceNow: 0) as NSDate,Date(timeIntervalSinceNow: 0) as NSDate)
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
-                
-                onComplete()
-                
-            } catch let error {
-                print("ERROR DELETING : \(error)")
+                try context.save()
+                 onComplete()
+            } catch {
+                 onComplete()
             }
         }
     }

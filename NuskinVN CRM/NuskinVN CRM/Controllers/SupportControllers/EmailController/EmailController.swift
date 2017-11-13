@@ -27,6 +27,7 @@ class EmailController: UIViewController {
     @IBOutlet var vwcontrol: UIView!
     @IBOutlet weak var stackAttach: UIStackView!
     @IBOutlet weak var vwAttach: UIView!
+    @IBOutlet weak var vwFromEmail: UIView!
     
     let disposeBag = DisposeBag()
     
@@ -76,6 +77,10 @@ class EmailController: UIViewController {
     func show(from:String, to:String) {
         txtFrom.text = from
         txtTo.text = to
+        if from.characters.count == 0 {
+            vwFromEmail.isHidden = true
+            txtTo.isEnabled = false
+        }
         guard let user = UserManager.currentUser() else { return }
         if let name = user.fullname {
             txtFromName.text = name

@@ -234,11 +234,11 @@ extension PopupController {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.dissMissView()
         if self.isObject {
             onSelectObject?(listObject![indexPath.row])
         } else {
             onSelect?(listData![indexPath.row],indexPath.row)
         }
-        self.dissMissView()
     }
 }

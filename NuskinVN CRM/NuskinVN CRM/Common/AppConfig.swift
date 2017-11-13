@@ -156,24 +156,26 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             LocalNotification.registerForLocalNotification(on: UIApplication.shared)
-            BirthdayManager.clearData {}
-            //start service if signin Success
-            LocalService.shared.startSyncData()
-            
-            let vc:UITabBarController = UITabBarController.init()
-            let dashboardC:DashboardViewController =  DashboardViewController()
-            dashboardC.isSyncWithLoading = true
-            let uinaviVC1 = UINavigationController.init(rootViewController:dashboardC)
-            let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
-            
-            vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)
-            
-            let itemTabbar2 = UITabBarItem(title: "title_tabbar_button_order".localized().uppercased(), image: UIImage(named: "tabbar_order"), selectedImage: nil)
-            itemTabbar2.tag = 1
-            
-            uinaviVC2.tabBarItem  = itemTabbar2
-           
-            AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
+            BirthdayManager.clearData {
+                //start service if signin Success
+                //            LocalService.shared.startSyncData()
+                DispatchQueue.main.async {
+                    let vc:UITabBarController = UITabBarController.init()
+                    let dashboardC:DashboardViewController =  DashboardViewController()
+                    dashboardC.isSyncWithLoading = true
+                    let uinaviVC1 = UINavigationController.init(rootViewController:dashboardC)
+                    let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
+                    
+                    vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)
+                    
+                    let itemTabbar2 = UITabBarItem(title: "title_tabbar_button_order".localized().uppercased(), image: UIImage(named: "tabbar_order"), selectedImage: nil)
+                    itemTabbar2.tag = 1
+                    
+                    uinaviVC2.tabBarItem  = itemTabbar2
+                    
+                    AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
+                }
+            }
         }
         
         static func changeRootControllerTo(viewcontroller:UIViewController, animated:Bool? = false) {

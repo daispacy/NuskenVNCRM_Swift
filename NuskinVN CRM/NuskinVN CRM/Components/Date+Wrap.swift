@@ -34,4 +34,32 @@ extension Date {
     func addedBy(minutes:Int) -> Date {
         return Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
+    
+    var currentMonth:String {
+        let calendar = Calendar.autoupdatingCurrent
+        let components = calendar.dateComponents([.month], from: self)
+        return "\(components.month!)"
+    }
+    
+    var currentYear:String {
+        let calendar = Calendar.autoupdatingCurrent
+        let components = calendar.dateComponents([.year], from: self)
+        return "\(components.year!)"
+    }
+    
+    var listDay:[String] {
+        
+        let calendar = Calendar.current
+        var numDays = 32
+        let startFrom = 1
+        
+        let range = calendar.range(of: .day, in: .month, for: self)!
+        numDays = range.count + 1
+        
+        var data:[String] = []
+        for i in startFrom ..< numDays {
+            data.append("\(i)".localized())
+        }
+        return data
+    }
 }

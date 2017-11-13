@@ -146,6 +146,19 @@ class MenuDashboardView: CViewSwitchLanguage {
         }
     }
     
+    // MARK: - interface
+    func setDate(_ year:String,_ month:String,_ week:String,_ day:String) {
+        btnSelectYear.setTitle(year, for: .normal)
+        btnDay.setTitle(day, for: .normal)
+        btnWeek.setTitle(week, for: .normal)
+        btnMonth.setTitle(month, for: .normal)
+        self.year = year
+        self.week = week
+        self.month = month
+        self.day = day
+        self.convertToDateAndInvolve()
+    }
+    
     // MARK: - private
     func updateControlsYear(_ isUp:Bool?) {
         if let text = btnSelectYear.titleLabel?.text {

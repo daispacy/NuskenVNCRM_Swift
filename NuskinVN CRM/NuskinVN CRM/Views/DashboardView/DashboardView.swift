@@ -14,9 +14,11 @@ class DashboardView: CViewSwitchLanguage {
     
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var scrollView: UIScrollView!
+    @IBOutlet weak var indicatorLoading: UIActivityIndicatorView!
     
     var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
     var involkeFunctionView:((CustomerDO,Bool)->Void)?
+    var gotoOrderList:((Int64)->Void)?
     
     //custom view
     var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
@@ -24,10 +26,16 @@ class DashboardView: CViewSwitchLanguage {
     var totalSalesView:TotalSummaryView!
     var totalSummaryCustomerView:TotalSummaryView!
     var chartStatisticsOrder:ChartStatisticsOrder!
-    var chartStatisticsOrder1:ChartStatisticsOrder!
+    var chartStatisticsOrder1:ChartStatisticsPie!
+    var chartQuarter:ChartStatisticsCombined!
     var topProductView: TopProductView!
     var birthdayCustomerListView:BirthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
     var birthdayDontOrder30:BirthdayCustomerListView = Bundle.main.loadNibNamed("BirthdayCustomerListView", owner: self, options: nil)!.first as! BirthdayCustomerListView
+    
+    var maxTopProduct:Int = 10
+    var fromDate:NSDate? = nil
+    var toDate:NSDate? = nil
+    var isLifeTime: Bool = true
     
     // MARK: - INIT
     override func awakeFromNib() {
@@ -38,11 +46,14 @@ class DashboardView: CViewSwitchLanguage {
         // block menu
         menuDashboard.onSelectFilter = {[weak self] from,to,lifetime in
             guard let _self = self else {return}
+            _self.fromDate = from
+            _self.toDate = to
+            _self.isLifeTime = lifetime
             _self.onSelectFilter?(from,to,lifetime)
         }
         
         // menu
-        stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
+        stackView.insertArrangedSubview(menuDashboard, at: 0)
         menuDashboard.updateControlsYear(nil)
     }
     
@@ -55,6 +66,10 @@ class DashboardView: CViewSwitchLanguage {
         
         // block summary
         totalSummaryView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)?.first as! TotalSummaryView
+        totalSummaryView.gotoOrderList = {[weak self] status in
+            guard let _self = self else {return}
+            _self.gotoOrderList?(status)
+        }
         
         // block total
         totalSalesView = Bundle.main.loadNibNamed(String(describing: TotalSummaryView.self), owner: self, options: nil)!.last as! TotalSummaryView
@@ -66,10 +81,19 @@ class DashboardView: CViewSwitchLanguage {
         chartStatisticsOrder = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
         
         //block chart order
-        chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsOrder.self), owner: self, options: nil)!.first as! ChartStatisticsOrder
+        chartStatisticsOrder1 = Bundle.main.loadNibNamed(String(describing: ChartStatisticsPie.self), owner: self, options: nil)!.first as! ChartStatisticsPie
+        
+        //block chart quarter
+        chartQuarter = Bundle.main.loadNibNamed(String(describing: ChartStatisticsCombined.self), owner: self, options: nil)!.first as! ChartStatisticsCombined
 
         //block top product
         topProductView = Bundle.main.loadNibNamed("TopProductView", owner: self, options: nil)!.first as! TopProductView
+        topProductView.onMoreProduct = {[weak self] in
+            guard let _self = self else {return}
+            _self.maxTopProduct += 10
+            _self.topProductView.maxTopProduct = _self.maxTopProduct
+            _self.topProductView.reloadData()
+        }
     }
     
     // MARK: - interface
@@ -77,7 +101,7 @@ class DashboardView: CViewSwitchLanguage {
         
         if stackView.arrangedSubviews.count > 0 {
             _ = stackView.arrangedSubviews.map({
-                if !$0.isEqual(menuDashboard) {
+                if !$0.isEqual(menuDashboard) && !$0.isEqual(indicatorLoading){
                     $0.removeFromSuperview()
                 }
             })
@@ -130,14 +154,19 @@ class DashboardView: CViewSwitchLanguage {
             chartStatisticsOrder1.reload(data)
             stackView.insertArrangedSubview(chartStatisticsOrder1, at: stackView.arrangedSubviews.count)
             chartStatisticsOrder1.setTitleOption(one: "money_collected".localized(), two: "no_charge".localized())
-            chartStatisticsOrder1.setChart(["",""], values: [Double(data3 as! String)!,Double(data2 as! String)!])
+            chartStatisticsOrder1.setChart(["money_collected".localized(),"no_charge".localized()], values: [Double(data3 as! String)!,Double(data2 as! String)!])
         } else {
             chartStatisticsOrder1.removeFromSuperview()
         }
+
+        //block quarter of year for status order
+        stackView.insertArrangedSubview(chartQuarter, at: stackView.arrangedSubviews.count)
+        chartQuarter.loadData(self.fromDate!,self.toDate!,self.isLifeTime)
         
         // top 10 product
         if let data2 = data["top_ten_product"] as? [JSON]{
             stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
+            topProductView.maxTopProduct = self.maxTopProduct
             topProductView.loadData(data: data2)
         } else {
             topProductView.removeFromSuperview()
@@ -166,6 +195,27 @@ class DashboardView: CViewSwitchLanguage {
             guard let _self = self else {return}
             _self.birthdayCustomerListView.reloadData(false,forceRemoveButtonCheck: true)
         }
+    }
+    
+    func loading(_ isLoading:Bool = false) {
+        if indicatorLoading == nil {
+//            onAwake = {[weak self] in
+//                guard let _self = self else {return}
+//                if isLoading {
+//                    _self.indicatorLoading.startAnimating()
+//                } else {
+//                    _self.indicatorLoading.stopAnimating()
+//                }
+//
+//            }
+        } else {
+            if isLoading {
+                indicatorLoading.startAnimating()
+            } else {
+                indicatorLoading.stopAnimating()
+            }
+        }
+        
     }
     
     override func reloadTexts() {

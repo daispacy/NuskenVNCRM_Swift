@@ -11,47 +11,48 @@ import CoreData
 
 class CustomerManager: NSObject {
     
-    static func getReportCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:GroupDO? = nil,onComplete:(([CustomerDO])->Void)) {
+    static func getReportCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:GroupDO? = nil,_ onComplete:@escaping (([CustomerDO])->Void)) {
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.returnsObjectsAsFaults = false
-        var predicate1 = NSPredicate(format: "1 > 0")
-        if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        }
-        let predicate3 = NSPredicate(format: "status == 1")
-        
-        var predicate2 = NSPredicate(format: "1 > 0")
-        if !isLifeTime {
-            if let from = fromDate,
-                let to = toDate {
-                predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+            fetchRequest.returnsObjectsAsFaults = false
+            var predicate1 = NSPredicate(format: "1 > 0")
+            if let user = UserManager.currentUser() {
+                predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
             }
-        }
-        var predicate4 = NSPredicate(format: "1 > 0")
-        if let gr = group {
-            if gr.id == 0 {
-                if let group_name = gr.group_name {
-                    predicate4 = NSPredicate(format: "group_name == %@",group_name)
-                }
-            } else {
-                predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
-            }
-        }
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
-        fetchRequest.predicate = predicateCompound
-        
-        do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[CustomerDO] = []
-            list = result.flatMap({$0 as? CustomerDO})
-            onComplete(list)
+            let predicate3 = NSPredicate(format: "status == 1")
             
-        } catch {
-            let fetchError = error as NSError
-            onComplete([])
-            print(fetchError)
+            var predicate2 = NSPredicate(format: "1 > 0")
+            if !isLifeTime {
+                if let from = fromDate,
+                    let to = toDate {
+                    predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+                }
+            }
+            var predicate4 = NSPredicate(format: "1 > 0")
+            if let gr = group {
+                if gr.id == 0 {
+                    if let group_name = gr.group_name {
+                        predicate4 = NSPredicate(format: "group_name == %@",group_name)
+                    }
+                } else {
+                    predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
+                }
+            }
+            let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+            fetchRequest.predicate = predicateCompound
+            do {
+                let result = try context.fetch(fetchRequest)
+                var list:[CustomerDO] = []
+                list = result.flatMap({$0 as? CustomerDO})
+                onComplete(list)
+            } catch {
+                let fetchError = error as NSError
+                onComplete([])
+                print(fetchError)
+            }
         }
     }
     
@@ -116,7 +117,7 @@ class CustomerManager: NSObject {
         }
         let predicate3 = NSPredicate(format: "status == 1")
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate3])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "birthday", ascending: true)]
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "birthday", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
         do {
@@ -129,6 +130,17 @@ class CustomerManager: NSObject {
                     let components = calendar.dateComponents([.month], from: Date())
                     let components1 = calendar.dateComponents([.month], from: birthday)
                     return components.month! == components1.month!
+                }
+                return false
+            }
+            data = data.sorted{ item1, item2 in
+                if let birthday1 = item1.birthday as Date?,
+                    let birthday2 = item2.birthday as Date?{
+                    let calendar = Calendar.autoupdatingCurrent
+                    let components = calendar.dateComponents([.day], from: birthday1)
+                    let components1 = calendar.dateComponents([.day], from: birthday2)
+                    
+                    return components.day! <= components1.day!
                 }
                 return false
             }
@@ -183,7 +195,7 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func getAllCustomersNotSynced(onComplete:(([CustomerDO])->Void)) {
+    static func getAllCustomersNotSynced(onComplete:@escaping (([CustomerDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
         fetchRequest.returnsObjectsAsFaults = false
@@ -197,30 +209,55 @@ class CustomerManager: NSObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
-        do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[CustomerDO] = []
-            list = result.flatMap({$0 as? CustomerDO})
-            onComplete(list)
-            
-        } catch {
-            let fetchError = error as NSError
-            onComplete([])
-            print(fetchError)
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            do {
+                let result = try context.fetch(fetchRequest)
+                var list:[CustomerDO] = []
+                list = result.flatMap({$0 as? CustomerDO})
+                onComplete(list)
+                
+            } catch {
+                let fetchError = error as NSError
+                onComplete([])
+                print(fetchError)
+            }
         }
     }
     
-    static func saveCustomerWith(array: [JSON]) {
-//        CustomerManager.clearData(array,onComplete: { array in
-        if array.count > 0 {
-            _ = array.map{CustomerManager.createCustomerEntityFrom(dictionary: $0)}
+    static func markSynced(_ list:[Int64],_ done:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            let entity = NSEntityDescription.entity(forEntityName: "CustomerDO", in: context)
+            let batchRequest = NSBatchUpdateRequest(entity: entity!)
+            batchRequest.resultType = .statusOnlyResultType
+            batchRequest.predicate = NSPredicate(format: "id IN %@ OR local_id IN %@",list.filter{$0 != 0},list.filter{$0 != 0});
+            batchRequest.propertiesToUpdate = ["synced": true]
+            do {
+                try context.execute(batchRequest)
+                done()
+            } catch {
+                done()
+                print(error)
+            }
+            
+            
         }
-        do {
-            try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-        } catch let error {
-            print(error)
+    }
+    
+    static func saveCustomerWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            for jsonObject in array {
+                _ = CustomerManager.createCustomerEntityFrom(dictionary: jsonObject,context)
+            }
+            do {
+                try context.save()
+                onComplete()
+            } catch {
+                onComplete()
+            }
         }
-//        })
     }
     
     static func updateCustomerEntity(_ customer:NSManagedObject, onComplete:(()->Void)) {
@@ -263,8 +300,7 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func createCustomerEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createCustomerEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: context) as? CustomerDO {
             if let data = dictionary["id"] as? String {
                 object.id = Int64(data)!
@@ -390,20 +426,19 @@ class CustomerManager: NSObject {
         return nil
     }
     
-    static func clearAllDataSynced(onComplete:(()->Void)) {
-        do {
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-            fetchRequest.returnsObjectsAsFaults = false
-            fetchRequest.predicate = NSPredicate(format: "synced == true")
+    static func clearAllDataSynced(_ onComplete:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
             do {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.predicate = NSPredicate(format: "synced == true")
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
-                
+                try context.save()
                 onComplete()
-                
-            } catch let error {
-                print("ERROR DELETING : \(error)")
+            } catch {
+                onComplete()
             }
         }
     }

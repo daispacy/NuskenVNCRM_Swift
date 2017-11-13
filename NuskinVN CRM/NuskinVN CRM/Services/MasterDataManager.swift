@@ -10,15 +10,20 @@ import Foundation
 import CoreData
 
 class MasterDataManager: NSObject {
-    static func saveDataWith(_ array: [JSON]) {
+    static func saveDataWith(_ array: [JSON],_ onComplete:@escaping (()->Void)) {
         MasterDataManager.clearData({
-            if array.count > 0 {
-                _ = array.map{MasterDataManager.createDataEntityFrom(dictionary: $0)}
-            }
-            do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                for jsonObject in array {
+                    _ = MasterDataManager.createDataEntityFrom(dictionary: jsonObject,context)
+                }
+                do {
+                    try context.save()
+                    onComplete()
+                } catch {
+                    onComplete()
+                    fatalError("Failure to save context: \(error)")
+                }
             }
         })
     }
@@ -46,8 +51,7 @@ class MasterDataManager: NSObject {
         }
     }
     
-    static func createDataEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createDataEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "MasterDataDO", into: context) as? MasterDataDO {
             
             if let data = dictionary["id"] as? String {
@@ -85,22 +89,24 @@ class MasterDataManager: NSObject {
         return nil
     }
     
-    static func clearData(_ complete:(()->Void)) {
+    static func clearData(_ complete:@escaping (()->Void)) {
         do {
             
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterDataDO")
             fetchRequest.returnsObjectsAsFaults = false
-            do {
-                let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
-                _ = objects.map {
-                    $0.map({context.delete($0)})
+            let container = CoreDataStack.sharedInstance.persistentContainer
+            container.performBackgroundTask() { (context) in
+                do {
+                    let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
+                    _ = objects.map {
+                        $0.map({context.delete($0)})
+                    }
+                    try context.save()
+                    complete()
+                } catch {
+                    complete()
+                    fatalError("Failure to save context: \(error)")
                 }
-                CoreDataStack.sharedInstance.saveContext()
-                complete()
-            } catch let error {
-                print("ERROR DELETING : \(error)")
-                complete()
             }
         }
     }
