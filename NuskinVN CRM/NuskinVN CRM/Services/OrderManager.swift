@@ -53,59 +53,63 @@ class OrderManager: NSObject {
         }
     }
     
-    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil,fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:(([OrderDO])->Void)) {
+    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil,fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:@escaping (([OrderDO])->Void)) {
         guard let user = UserManager.currentUser() else {onComplete([]); return}
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-        fetchRequest.returnsObjectsAsFaults = false
-        
-        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        var predicate2 = NSPredicate(format: "1 > 0")
-        var predicate3 = NSPredicate(format: "1 > 0")
-        var predicate4 = NSPredicate(format: "1 > 0")
-        var predicate5 = NSPredicate(format: "1 > 0")
-        
-        if let text = search {
-            if text.characters.count > 0 {
-                predicate2 = NSPredicate(format: "code contains[cd] %@",text)
-            }
-        }
-        if let sta = status {
-            predicate3 = NSPredicate(format: "status IN %@",[sta])
-        }
-        if let psta = paymentStatus {
-            predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
-        }
-        
-        if let psta = customer_id {
-            if psta.count > 0 {
-                predicate5 = NSPredicate(format: "customer_id IN %@",psta)
-            }
-        }
-        var predicate6 = NSPredicate(format: "1 > 0")
-        if !isLifeTime {
-            if let from = fromDate,
-                let to = toDate {
-                predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
-            }
-        }
-        
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
-        NSSortDescriptor(key: "status", ascending: false)]
-        fetchRequest.predicate = predicateCompound
-        
-        do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[OrderDO] = []
-            list = result.flatMap({$0 as? OrderDO})
-            onComplete(list)
+        let container = CoreDataStack.sharedInstance.persistentContainer
+//        container.performBackgroundTask() { (context) in
+            let fetchRequest = NSFetchRequest<OrderDO>(entityName: "OrderDO")
+            fetchRequest.returnsObjectsAsFaults = false
             
-        } catch {
-            let fetchError = error as NSError
-            onComplete([])
-            print(fetchError)
-        }
+            let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+            var predicate2 = NSPredicate(format: "1 > 0")
+            var predicate3 = NSPredicate(format: "1 > 0")
+            var predicate4 = NSPredicate(format: "1 > 0")
+            var predicate5 = NSPredicate(format: "1 > 0")
+            
+            if let text = search {
+                if text.characters.count > 0 {
+                    predicate2 = NSPredicate(format: "code contains[cd] %@",text)
+                }
+            }
+            if let sta = status {
+                predicate3 = NSPredicate(format: "status IN %@",[sta])
+            }
+            if let psta = paymentStatus {
+                predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
+            }
+            
+            if let psta = customer_id {
+                if psta.count > 0 {
+                    predicate5 = NSPredicate(format: "customer_id IN %@",psta.filter{$0 != 0})
+                }
+            }
+            var predicate6 = NSPredicate(format: "1 > 0")
+            if !isLifeTime {
+                if let from = fromDate,
+                    let to = toDate {
+                    predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+                }
+            }
+            
+            let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
+                                            NSSortDescriptor(key: "status", ascending: false)]
+            fetchRequest.predicate = predicateCompound
+            
+            do {
+                let result = try container.viewContext.fetch(fetchRequest)
+                var list:[OrderDO] = []
+                list = result.flatMap({$0})
+                DispatchQueue.main.async {
+                    onComplete(list)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    onComplete([])
+                }
+            }
+//        }
     }
     
     static func getAllOrdersNotSynced(onComplete:(([OrderDO])->Void)) {
@@ -136,7 +140,7 @@ class OrderManager: NSObject {
     }
     
     static func saveOrderWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
-        OrderManager.clearData(array,onComplete: { array in
+        OrderManager.clearAllDataSynced {
             let container = CoreDataStack.sharedInstance.persistentContainer
             container.performBackgroundTask() { (context) in
                 for jsonObject in array {
@@ -150,7 +154,7 @@ class OrderManager: NSObject {
                     fatalError("Failure to save context: \(error)")
                 }
             }
-        })
+        }
     }
     
     static func markSynced(_ list:[Int64],_ done:@escaping (()->Void)) {

@@ -328,7 +328,7 @@ class FormExportOrderDetailView: UIView {
         
         btView.type = [.left,.bottom,.top]
         btlView.type = [.bottom,.top,.left]
-        btView1.type = [.bottom,.top]
+        btView1.type = [.left,.bottom,.top]
         btrView.type = [.left,.bottom,.top,.right]
     }
     

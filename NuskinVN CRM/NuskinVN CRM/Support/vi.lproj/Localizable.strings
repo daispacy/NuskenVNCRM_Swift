@@ -81,6 +81,9 @@
 "infor_product" = "Thông tin hàng hoá";
 "date_created_order" = "Ngày lập hoá đơn";
 "total_pv" = "TỔNG PV";
+"develop_by_dera" = "Phát triển bởi: Derasoft";
+"version" = "Phiên bản";
+"version_newest" = "Phiên bản mới nhất";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

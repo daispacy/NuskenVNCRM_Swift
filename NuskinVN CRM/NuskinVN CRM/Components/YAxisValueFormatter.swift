@@ -50,6 +50,6 @@ class ChartValueFormatter: NSObject, IValueFormatter {
             else {
                 return ""
         }
-        return numberFormatter.string(for: value)!
+        return numberFormatter.string(for: value)!.replacingOccurrences(of: ",", with: ".")
     }
 }

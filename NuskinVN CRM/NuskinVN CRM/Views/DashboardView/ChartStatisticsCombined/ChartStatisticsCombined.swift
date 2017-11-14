@@ -17,6 +17,7 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
     @IBOutlet var lblTitle: UILabel!
     @IBOutlet var chartView: CombinedChartView!
     @IBOutlet weak var chartViewSales: CombinedChartView!
+    @IBOutlet weak var chartViewSales1: CombinedChartView!
     
     @IBOutlet var lblTitleChart: UILabel!
     @IBOutlet var lblProcess: UILabel!
@@ -98,19 +99,39 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         chartView.data = chartData
         chartView.animate(yAxisDuration: 1.5)
         
-        // line
-        let lineData = self.generateLineData(valuesSales.flatMap{$0.first!}, valuesSales.flatMap{$0.last!})
+        // line1
+        let lineData1 = self.generateLineData(valuesSales.flatMap{$0.first!})
         
         let chartData1 = CombinedChartData()
-        chartData1.lineData = lineData
+        chartData1.lineData = lineData1
         
-        lineData.setValueFormatter(valuesNumberFormatter)
+        lineData1.setValueFormatter(valuesNumberFormatter)
         
         chartData1.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
         chartData1.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
         
         chartViewSales.data = chartData1
         chartViewSales.animate(yAxisDuration: 1.5)
+        
+        // line2
+        let lineData2 = self.generateLineData2(valuesSales.flatMap{$0.last!})
+        
+        let chartData2 = CombinedChartData()
+        chartData2.lineData = lineData2
+        
+        lineData2.setValueFormatter(valuesNumberFormatter)
+        
+        chartData2.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
+        chartData2.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
+        
+        chartViewSales1.data = chartData2
+        chartViewSales1.animate(yAxisDuration: 1.5)
+        
+        if chartViewSales.data!.yMax > chartViewSales1.data!.yMax {
+            chartViewSales1.leftAxis.axisMaximum = chartViewSales.data!.yMax
+        } else {
+            chartViewSales.leftAxis.axisMaximum = chartViewSales1.data!.yMax
+        }
     }
     
     func setTitleOption(one:String,two:String, three:String) {
@@ -119,11 +140,10 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         lblThird.text = three
     }
     // MARK: - PRIVATE
-    func generateLineData(_ values1:[Double],_ values2:[Double]) -> LineChartData {
+    func generateLineData(_ values1:[Double]) -> LineChartData {
         let d:LineChartData = LineChartData()
         
         var entries:[ChartDataEntry] = []
-        var entries1:[ChartDataEntry] = []
         
         var i:Double = 0
         for item in values1 {
@@ -131,40 +151,63 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
             i += 1
         }
         
-        i = 0
-        for item in values2 {
-            entries1.append(ChartDataEntry(x: i, y: item))
-            i += 1
-        }
-        
         let set:LineChartDataSet = LineChartDataSet(values: entries, label: "")
         set.setColor(UIColor(hex:"0x008ab0"))
-        set.lineWidth = 2.5
+        set.lineWidth = 1.5
         set.setCircleColor(UIColor(hex:"0x008ab0"))
         set.circleRadius = 1.0
         set.circleHoleRadius = 0.5
         set.fillColor = UIColor(hex:"0x008ab0")
-        set.mode = .linear
-        set.drawValuesEnabled = false
+        set.mode = .cubicBezier
+        set.cubicIntensity = 0.1
+        set.drawValuesEnabled = true
         set.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
         set.valueTextColor = UIColor.black
         set.axisDependency = .left
-        
-        let set1:LineChartDataSet = LineChartDataSet(values: entries1, label: "")
-        set1.setColor(UIColor(hex:"0xe30b7a"))
-        set1.lineWidth = 2.5
-        set1.setCircleColor(UIColor(hex:"0xe30b7a"))
-        set1.circleRadius = 1.0
-        set1.circleHoleRadius = 0.5
-        set1.fillColor = UIColor(hex:"0xe30b7a")
-        set1.mode = .linear
-        set1.drawValuesEnabled = false
-        set1.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
-        set1.valueTextColor = UIColor.black
-        set1.axisDependency = .right
+        set.values = entries
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.locale = Locale.current
+        let valuesNumberFormatter = ChartValueFormatter(numberFormatter: numberFormatter)
+        set.valueFormatter = valuesNumberFormatter
         
         d.addDataSet(set)
-        d.addDataSet(set1)
+        
+        return d
+    }
+    
+    func generateLineData2(_ values1:[Double]) -> LineChartData {
+        let d:LineChartData = LineChartData()
+        
+        var entries:[ChartDataEntry] = []
+        
+        var i:Double = 0
+        for item in values1 {
+            entries.append(ChartDataEntry(x: i, y: item))
+            i += 1
+        }
+        
+        let set:LineChartDataSet = LineChartDataSet(values: entries, label: "")
+        set.setColor(UIColor(hex:"0xe30b7a"))
+        set.lineWidth = 1.5
+        set.setCircleColor(UIColor(hex:"0xe30b7a"))
+        set.circleRadius = 1.0
+        set.circleHoleRadius = 0.5
+        set.fillColor = UIColor(hex:"0xe30b7a")
+        set.cubicIntensity = 0.1
+        set.mode = .cubicBezier
+        set.drawValuesEnabled = true
+        set.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
+        set.valueTextColor = UIColor.black
+        set.axisDependency = .left
+        set.values = entries
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.locale = Locale.current
+        let valuesNumberFormatter = ChartValueFormatter(numberFormatter: numberFormatter)
+        set.valueFormatter = valuesNumberFormatter
+        
+        d.addDataSet(set)
         
         return d
     }
@@ -284,50 +327,59 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         chartView.pinchZoomEnabled = false
         chartView.scaleXEnabled = false
         chartView.scaleYEnabled = false
+        chartView.backgroundColor = UIColor.clear
         
         chartView.chartDescription?.text = ""
         
         // setup chart
-        chartViewSales.noDataText = "no_data_chart_summary_sales".localized()
+        configChart(chart: chartViewSales)
+        configChart(chart: chartViewSales1)
+    }
+    
+    func configChart(chart:CombinedChartView) {
+        // setup chart
+        chart.noDataText = "no_data_chart_summary_sales".localized()
         
-        chartViewSales.drawOrder = [
+        chart.drawOrder = [
             DrawOrder.line.rawValue
         ]
         
-        chartViewSales.xAxis.drawAxisLineEnabled = false
-        chartViewSales.xAxis.drawGridLinesEnabled = false
-        chartViewSales.xAxis.labelPosition = .bottom
-        chartViewSales.xAxis.granularityEnabled = false
-        chartViewSales.xAxis.labelTextColor = UIColor(hex:Theme.colorDBTextNormal)
+        chart.xAxis.drawAxisLineEnabled = false
+        chart.xAxis.drawGridLinesEnabled = false
+        chart.xAxis.labelPosition = .bottomInside
+        chart.xAxis.granularityEnabled = false
+        chart.xAxis.labelTextColor = UIColor.clear
         
-        chartViewSales.leftAxis.enabled = false
-        chartViewSales.leftAxis.drawAxisLineEnabled = false
-        chartViewSales.leftAxis.drawGridLinesEnabled = false
-        chartViewSales.leftAxis.labelTextColor = UIColor(hex:Theme.colorDBTextNormal)
+        chart.leftAxis.enabled = false
+        chart.leftAxis.drawAxisLineEnabled = false
+        chart.leftAxis.drawGridLinesEnabled = false
+        chart.leftAxis.labelTextColor = UIColor.clear
         
-        chartViewSales.rightAxis.enabled = false
+        chart.rightAxis.enabled = false
         
         
-        chartViewSales.legend.horizontalAlignment = .center
-        chartViewSales.legend.verticalAlignment = .bottom
-        chartViewSales.legend.drawInside = false
-        chartViewSales.legend.form = .empty
-        chartViewSales.legend.orientation = .horizontal
-        chartViewSales.legend.xEntrySpace = 1.0
-        chartViewSales.legend.stackSpace = 0.1
-        chartViewSales.extraBottomOffset = -40
+        chart.legend.horizontalAlignment = .center
+        chart.legend.verticalAlignment = .bottom
+        chart.legend.drawInside = false
+        chart.legend.form = .empty
+        chart.legend.orientation = .horizontal
+        chart.legend.xEntrySpace = 1.0
+        chart.legend.stackSpace = 0.1
+        chart.extraBottomOffset = 0
         
-        chartViewSales.drawBordersEnabled = false
-        chartViewSales.drawValueAboveBarEnabled = true
-        chartViewSales.drawGridBackgroundEnabled = false
-        chartViewSales.drawValueAboveBarEnabled = true
-        chartViewSales.drawBarShadowEnabled = false
+        chart.drawBordersEnabled = false
+        chart.drawValueAboveBarEnabled = true
+        chart.drawGridBackgroundEnabled = false
+        chart.drawValueAboveBarEnabled = true
+        chart.drawBarShadowEnabled = false
         
-        chartViewSales.pinchZoomEnabled = false
-        chartViewSales.scaleXEnabled = false
-        chartViewSales.scaleYEnabled = false
+        chart.pinchZoomEnabled = false
+        chart.scaleXEnabled = false
+        chart.scaleYEnabled = false
+        chart.leftAxis.drawZeroLineEnabled = false
+        chart.backgroundColor = UIColor.clear
         
-        chartViewSales.chartDescription?.text = ""
+        chart.chartDescription?.text = ""
     }
 }
 

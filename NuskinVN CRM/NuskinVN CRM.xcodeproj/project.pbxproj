@@ -178,6 +178,8 @@
 		D71BD8001FB44B81003C3D37 /* EmailAttachView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */; };
 		D73D79941FB4D9BC0091E746 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79921FB4D9BC0091E746 /* Messages.framework */; };
 		D73D79951FB4D9BC0091E746 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79931FB4D9BC0091E746 /* MessageUI.framework */; };
+		D74094AA1FBB26BE00116F6A /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74094A81FBB26BE00116F6A /* AboutController.swift */; };
+		D74094AB1FBB26BE00116F6A /* AboutController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D74094A91FBB26BE00116F6A /* AboutController.xib */; };
 		D7823B921FB8229E003888D1 /* ChartStatisticsPie.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */; };
 		D7823B931FB8229E003888D1 /* ChartStatisticsPie.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */; };
 		D7B6B52B1FB84673007884E9 /* ChartStatisticsCombined.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */; };
@@ -376,6 +378,8 @@
 		D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmailAttachView.xib; sourceTree = "<group>"; };
 		D73D79921FB4D9BC0091E746 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = System/Library/Frameworks/Messages.framework; sourceTree = SDKROOT; };
 		D73D79931FB4D9BC0091E746 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		D74094A81FBB26BE00116F6A /* AboutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = "<group>"; };
+		D74094A91FBB26BE00116F6A /* AboutController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutController.xib; sourceTree = "<group>"; };
 		D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsPie.swift; sourceTree = "<group>"; };
 		D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsPie.xib; sourceTree = "<group>"; };
 		D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsCombined.swift; sourceTree = "<group>"; };
@@ -1007,6 +1011,7 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D74094A71FBB267B00116F6A /* AboutController */,
 				23ED22601FA628A000D1F046 /* ChangePasswordController */,
 				231D97E61F95C78F003E8DA3 /* SupportControllers */,
 				232E18801FA47D2800C52128 /* UserProfileController */,
@@ -1056,6 +1061,15 @@
 				23F09A1F1F780BB1005654F0 /* PoupMenu.swift */,
 			);
 			path = PopupMenu;
+			sourceTree = "<group>";
+		};
+		D74094A71FBB267B00116F6A /* AboutController */ = {
+			isa = PBXGroup;
+			children = (
+				D74094A81FBB26BE00116F6A /* AboutController.swift */,
+				D74094A91FBB26BE00116F6A /* AboutController.xib */,
+			);
+			path = AboutController;
 			sourceTree = "<group>";
 		};
 		D7823B8B1FB82078003888D1 /* ChartStatisticsPie */ = {
@@ -1241,6 +1255,7 @@
 				23776B0E1F9BCCD1003EE5BF /* ProductListController.xib in Resources */,
 				2386CBDD1F865A81005B5F23 /* CustomerListCell.xib in Resources */,
 				2365D4DF1F77D50E00673903 /* CustomerBlockView.xib in Resources */,
+				D74094AB1FBB26BE00116F6A /* AboutController.xib in Resources */,
 				23544BBA1F96758E00FA81A5 /* OrderCustomerView.xib in Resources */,
 				2365D4D81F77B41300673903 /* ChartStatisticsCustomer.xib in Resources */,
 				2357222E1F7D58170096A636 /* Roboto-Thin.ttf in Resources */,
@@ -1482,6 +1497,7 @@
 				234747291F991A650068F70A /* CustomerManager.swift in Sources */,
 				23544BB81F96758500FA81A5 /* OrderCustomerView.swift in Sources */,
 				236650011F9F161F00CCFF4B /* GroupDO+CoreDataProperties.swift in Sources */,
+				D74094AA1FBB26BE00116F6A /* AboutController.swift in Sources */,
 				2346D8C01FA309D100E3EEDD /* GroupProductDO+CoreDataClass.swift in Sources */,
 				23D2FB951F8F79F5002EA64E /* SimpleListController.swift in Sources */,
 				232818E21F9C8D5300D57799 /* OrderItemDO+CoreDataProperties.swift in Sources */,

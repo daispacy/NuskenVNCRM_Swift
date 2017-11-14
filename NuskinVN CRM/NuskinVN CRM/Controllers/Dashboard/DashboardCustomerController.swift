@@ -64,7 +64,7 @@ class DashboardCustomerController: UIViewController {
         // menu
         stackView.insertArrangedSubview(menuDashboard, at: stackView.arrangedSubviews.count)
         
-        menuDashboard.updateControlsYear(nil)
+        menuDashboard.convertToDateAndInvolve()
     }
     
     // MARK: - event
@@ -80,7 +80,7 @@ class DashboardCustomerController: UIViewController {
         } else {
             lblNam.text = ""
         }
-        
+        print("fuck \(self.fromDate!) \(self.toDate!) \(self.isLifeTime) \(cus)")
         UserManager.getDataCustomerDashboard(self.fromDate, toDate: self.toDate, isLifeTime: self.isLifeTime, customer: cus) {[weak self] data in
             guard let _self = self else {return}
             DispatchQueue.main.async {

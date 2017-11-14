@@ -98,7 +98,7 @@ class DashboardView: CViewSwitchLanguage {
     
     // MARK: - interface
     override func reload(_ data:JSON) {
-        
+                
         if stackView.arrangedSubviews.count > 0 {
             _ = stackView.arrangedSubviews.map({
                 if !$0.isEqual(menuDashboard) && !$0.isEqual(indicatorLoading){

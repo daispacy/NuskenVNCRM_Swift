@@ -27,6 +27,7 @@ enum Server:String {
     case act_user = "user"
     case act_master_data = "master_data"
     case act_email = "email"
+    case act_version = "version"
 }
 
 protocol SyncServiceDelegate:class {
@@ -760,6 +761,7 @@ final class SyncService: NSObject {
     typealias GetProductCompletion = (_ result: GetProductResult) -> Void
     func syncProducts(_ completion: @escaping GetProductCompletion) {
         guard let user = UserManager.currentUser() else { return}
+        
         var parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_product.rawValue)",
             "ver":"\(Server.ver.rawValue)",
@@ -947,6 +949,45 @@ final class SyncService: NSObject {
                     }
                 case .failure(_):
                     completion("error")
+                }
+        }
+    }
+    
+    // start service
+    func getVersion(_ onComplete:@escaping ((String,String)->Void)) {
+        let parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_version.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        print("Cant get version from server 0")
+                        onComplete("","")
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let json = jsonArray["data"] as? JSON {
+                                var version = ""
+                                var link = ""
+                                if let ver = json["ver"] as? String {
+                                    version = ver
+                                }
+                                if let ver = json["link"] as? String {
+                                    link = ver
+                                }
+                               onComplete(version,link)
+                            }
+                        }
+                    }
+                case .failure(_):
+                    onComplete("","")
+                    print("Cant get version from server 1")
                 }
         }
     }

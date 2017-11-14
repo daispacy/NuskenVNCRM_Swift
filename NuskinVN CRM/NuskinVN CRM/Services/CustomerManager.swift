@@ -56,54 +56,57 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func getAllCustomers(search:String? = nil,group:GroupDO? = nil,onComplete:(([CustomerDO])->Void)) {
+    static func getAllCustomers(search:String? = nil,group:GroupDO? = nil,onComplete:@escaping (([CustomerDO])->Void)) {
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.returnsObjectsAsFaults = false
-        var predicate1 = NSPredicate(format: "1 > 0")
-        if let user = UserManager.currentUser() {
-            predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        }
-        var predicate2 = NSPredicate(format: "1 > 0")
-        var predicate4 = NSPredicate(format: "1 > 0")
-        let predicate3 = NSPredicate(format: "status == 1")
-        if let text = search {
-            if text.characters.count > 0 {
-                predicate2 = NSPredicate(format: "fullname contains[cd] %@",text)
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+            fetchRequest.returnsObjectsAsFaults = false
+            var predicate1 = NSPredicate(format: "1 > 0")
+            if let user = UserManager.currentUser() {
+                predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
             }
-        }
-        if let gr = group {
-            if gr.id == 0 {
-                if let group_name = gr.group_name {
-                    predicate4 = NSPredicate(format: "group_name == %@",group_name)
+            var predicate2 = NSPredicate(format: "1 > 0")
+            var predicate4 = NSPredicate(format: "1 > 0")
+            let predicate3 = NSPredicate(format: "status == 1")
+            if let text = search {
+                if text.characters.count > 0 {
+                    predicate2 = NSPredicate(format: "fullname contains[cd] %@",text)
                 }
-            } else {
-                predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
             }
-        }
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
-        fetchRequest.predicate = predicateCompound
-        
-        do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[CustomerDO] = []
-            list = result.flatMap({$0 as? CustomerDO})
-            onComplete(list)
-            
-        } catch {
-            let fetchError = error as NSError
-            onComplete([])
-            print(fetchError)
+            if let gr = group {
+                if gr.id == 0 {
+                    if let group_name = gr.group_name {
+                        predicate4 = NSPredicate(format: "group_name == %@",group_name)
+                    }
+                } else {
+                    predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
+                }
+            }
+            let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+            fetchRequest.predicate = predicateCompound
+            do {
+                let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+                var list:[CustomerDO] = []
+                list = result.flatMap({$0 as? CustomerDO})
+                DispatchQueue.main.async {
+                    onComplete(list)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    onComplete([])
+                }
+            }
         }
     }
     
-    static func getCustomersDontHaveOrder30Day (onComplete:(([CustomerDO])->Void)) {
+    static func getCustomersDontHaveOrder30Day (onComplete:@escaping (([CustomerDO])->Void)) {
         var list:[CustomerDO] = []
         CustomerManager.getAllCustomers { data in
             list = data.filter{$0.checkNotOrderOn30Day()}
+            onComplete(list)
         }
-        onComplete(list)
     }
     
     static func getCustomersBirthday(onComplete:(([CustomerDO])->Void)) {

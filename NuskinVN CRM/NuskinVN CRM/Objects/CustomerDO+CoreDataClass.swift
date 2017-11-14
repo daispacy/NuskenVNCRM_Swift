@@ -314,7 +314,7 @@ public class CustomerDO: NSManagedObject {
         fetchRequest.returnsObjectsAsFaults = false
         var predicate = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
-            predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@ AND date_created > %@", [id],[local_id],[user.id],Date(timeIntervalSinceNow: -2592000) as NSDate)
+            predicate = NSPredicate(format: "customer_id in %@ AND distributor_id IN %@ AND date_created > %@", [id,local_id].filter{$0 != 0},[user.id],Date(timeIntervalSinceNow: -2592000) as NSDate)
         }
         
         fetchRequest.predicate = predicate
@@ -322,7 +322,6 @@ public class CustomerDO: NSManagedObject {
         do {
             
             let results = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest) as! [OrderDO]
-            listlistOrdersManager = results
             return results.count > 0
             
         } catch {

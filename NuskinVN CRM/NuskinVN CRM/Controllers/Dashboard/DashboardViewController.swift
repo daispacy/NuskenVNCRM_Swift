@@ -48,6 +48,9 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
         let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
         itemTabbar.tag = 10
         tabBarItem  = itemTabbar
+        
+        dashboardView.scrollView.setContentOffset(CGPoint.zero, animated: true)
+        
         if isSyncWithLoading {
             isSyncWithLoading = false
             firstSyncData()
@@ -134,6 +137,17 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
                     print("REMOVE PREVENT SYNC DATA")
                     LocalService.shared.isShouldSyncData = nil
                 }
+            }
+            
+            vc.gotoOrderList = {customer in
+                let itemTabbar = UITabBarItem(title: "title_tabbar_button_dashboard".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
+                itemTabbar.tag = 9
+                _self.tabBarItem  = itemTabbar
+                let nv = _self.tabBarController?.viewControllers![1] as! UINavigationController
+                let vc = nv.viewControllers[0] as! OrderListController
+                vc.isGotoFromCustomerList = true
+                vc.customer_id = [customer.id,customer.local_id]
+                _self.tabBarController?.selectedIndex = 1
             }
             
             // remove prevent sync when this controller has deinit

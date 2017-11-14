@@ -14,6 +14,7 @@ class PopupCustomerFunctionController: UIViewController {
     var ondeinitial:(() -> Void)?
     var onSelect:((String,Int) -> Void)?
     var onSelectObject:((JSON) -> Void)?
+    var gotoOrderList:((CustomerDO)->Void)?
     var onDismiss:(() -> Void)?
     
     let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
@@ -112,7 +113,7 @@ class PopupCustomerFunctionController: UIViewController {
         
         customerBlock.showInfoCustomer(customer: data,self.is30)
         
-        var listFunction:[JSON] = [] // default is order
+        var listFunction:[JSON] = [["tag":1,"img":"ic_order_list_gradient_72"]] // default is order
         
         if AppConfig.deeplink.facebook().characters.count > 0 {
             if data.facebook.characters.count > 0 {
@@ -179,6 +180,9 @@ class PopupCustomerFunctionController: UIViewController {
             }  else if identifier == 9/*"sms"*/ {
                 guard let number = URL(string: "sms:" + data.tel!) else { return }
                 UIApplication.shared.open(number)
+            } else if identifier == 1/*"order list"*/ {
+                _self.dissMissView()
+                _self.gotoOrderList?(data)
             }
         }
         let uistackView = UIStackView(frame: CGRect.zero)

@@ -49,54 +49,54 @@ UISearchBarDelegate{
     var toDate:NSDate? = nil
     var isLifeTime: Bool = true
     
-    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<OrderDO> = {
-        let user = UserManager.currentUser()!
-        // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-        fetchRequest.returnsObjectsAsFaults = false
-        
-        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-        var predicate2 = NSPredicate(format: "1 > 0")
-        var predicate3 = NSPredicate(format: "1 > 0")
-        var predicate4 = NSPredicate(format: "1 > 0")
-        var predicate5 = NSPredicate(format: "1 > 0")
-        
-        if let text = self.searchText {
-            if text.characters.count > 0 {
-                predicate2 = NSPredicate(format: "code contains[cd] %@",text)
-            }
-        }
-        if let sta = self.status {
-            predicate3 = NSPredicate(format: "status IN %@",[sta])
-        }
-        if let psta = self.payment_status {
-            predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
-        }
-        
-        if (self.customer_id.filter{$0 != 0}).count > 0 {
-           predicate5 = NSPredicate(format: "customer_id IN %@",self.customer_id.filter{$0 != 0})
-        }
-        var predicate6 = NSPredicate(format: "1 > 0")
-        if !self.isLifeTime {
-            if let from = self.fromDate,
-                let to = self.toDate {
-                predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
-            }
-        }
-        
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
-                                        NSSortDescriptor(key: "status", ascending: false)]
-        fetchRequest.predicate = predicateCompound
-        
-        // Create Fetched Results Controller
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        
-        // Configure Fetched Results Controller
-        fetchedResultsController.delegate = self
-        
-        return fetchedResultsController as! NSFetchedResultsController<OrderDO>
-    }()
+//    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<OrderDO> = {
+//        let user = UserManager.currentUser()!
+//        // Initialize Fetch Request
+//        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+//        fetchRequest.returnsObjectsAsFaults = false
+//        
+//        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+//        var predicate2 = NSPredicate(format: "1 > 0")
+//        var predicate3 = NSPredicate(format: "1 > 0")
+//        var predicate4 = NSPredicate(format: "1 > 0")
+//        var predicate5 = NSPredicate(format: "1 > 0")
+//        
+//        if let text = self.searchText {
+//            if text.characters.count > 0 {
+//                predicate2 = NSPredicate(format: "code contains[cd] %@",text)
+//            }
+//        }
+//        if let sta = self.status {
+//            predicate3 = NSPredicate(format: "status IN %@",[sta])
+//        }
+//        if let psta = self.payment_status {
+//            predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
+//        }
+//        
+//        if (self.customer_id.filter{$0 != 0}).count > 0 {
+//           predicate5 = NSPredicate(format: "customer_id IN %@",self.customer_id.filter{$0 != 0})
+//        }
+//        var predicate6 = NSPredicate(format: "1 > 0")
+//        if !self.isLifeTime {
+//            if let from = self.fromDate,
+//                let to = self.toDate {
+//                predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+//            }
+//        }
+//        
+//        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
+//                                        NSSortDescriptor(key: "status", ascending: false)]
+//        fetchRequest.predicate = predicateCompound
+//        
+//        // Create Fetched Results Controller
+//        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+//        
+//        // Configure Fetched Results Controller
+//        fetchedResultsController.delegate = self
+//        
+//        return fetchedResultsController as! NSFetchedResultsController<OrderDO>
+//    }()
     
     // MARK: - init
     override func viewDidLoad() {
@@ -111,8 +111,8 @@ UISearchBarDelegate{
         tapGesture?.cancelsTouchesInView = false
         self.tableView.addGestureRecognizer(tapGesture!)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 86.4
         
@@ -191,8 +191,13 @@ UISearchBarDelegate{
         listStatus = AppConfig.order.listStatus()
         listPaymentStatus = AppConfig.order.listPaymentStatus()
         
-        refreshListOrder()
+//        refreshListOrder()
 //        self.showTabbar()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        refreshListOrder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -221,8 +226,8 @@ UISearchBarDelegate{
     
     // MARK: - private
     func refreshListOrder() {
-        listOrder.removeAll()
-        self.tableView.reloadData()
+//        listOrder.removeAll()
+//        self.tableView.reloadData()
         
         // setup filter customer
         let listCIDS = self.customer_id.filter{$0 != 0}
@@ -281,13 +286,17 @@ UISearchBarDelegate{
 //        }
         
         OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id,fromDate: self.fromDate,toDate: self.toDate,isLifeTime: self.isLifeTime) {[weak self] list in
+            DispatchQueue.main.async {
             if let _self = self {
-                if list.count > 0 {
-                    _self.listOrder.append(contentsOf: list)
-                    _self.tableView.reloadData()
-                    _self.showLoading(isShow: false, isShowMessage: false)
-                } else {
-                    _self.showLoading(isShow: false, isShowMessage: true)
+                _self.listOrder.removeAll()
+                _self.tableView.reloadData()
+                    if list.count > 0 {
+                        _self.listOrder.append(contentsOf: list)
+                        _self.tableView.reloadData()
+                        _self.showLoading(isShow: false, isShowMessage: false)
+                    } else {
+                        _self.showLoading(isShow: false, isShowMessage: true)
+                    }
                 }
             }
         }
