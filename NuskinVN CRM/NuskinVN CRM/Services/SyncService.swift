@@ -28,6 +28,7 @@ enum Server:String {
     case act_master_data = "master_data"
     case act_email = "email"
     case act_version = "version"
+    case act_news = "news"
 }
 
 protocol SyncServiceDelegate:class {
@@ -136,6 +137,11 @@ final class SyncService: NSObject {
                                 if let deeplink:String = json["skype_link_itunes"] as? String {
                                     print("LINK SKYPE ITUNES: \(deeplink)")
                                     AppConfig.deeplink.setSkypeLinkItunes(str: deeplink)
+                                }
+                                
+                                if let deeplink:String = json["email_support"] as? String {
+                                    print("Email Support: \(deeplink)")
+                                    AppConfig.setting.setEmailSupport(str: deeplink)
                                 }
                             }
                         }
@@ -953,7 +959,6 @@ final class SyncService: NSObject {
         }
     }
     
-    // start service
     func getVersion(_ onComplete:@escaping ((String,String)->Void)) {
         let parameters: Parameters = ["op":"\(Server.op.rawValue)",
             "act":"\(Server.act_version.rawValue)",
@@ -987,6 +992,38 @@ final class SyncService: NSObject {
                     }
                 case .failure(_):
                     onComplete("","")
+                    print("Cant get version from server 1")
+                }
+        }
+    }
+    
+    func getNews(_ onComplete:@escaping (([JSON])->Void)) {
+        guard let user = UserManager.currentUser() else {onComplete([]); return }
+        let parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_news.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)",
+            "store_id":user.store_id]
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        print("Cant get version from server 0")
+                        onComplete([])
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let json = jsonArray["data"] as? [JSON] {
+                                onComplete(json)
+                            }
+                        }
+                    }
+                case .failure(_):
+                    onComplete([])
                     print("Cant get version from server 1")
                 }
         }

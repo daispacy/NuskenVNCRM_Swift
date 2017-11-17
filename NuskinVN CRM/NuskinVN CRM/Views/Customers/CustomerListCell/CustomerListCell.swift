@@ -28,6 +28,7 @@ class CustomerListCell: UITableViewCell {
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
+    var isRemoveFunctionRelateToOrder:Bool = false
     
     // MARK: - init
     override func awakeFromNib() {
@@ -112,6 +113,10 @@ class CustomerListCell: UITableViewCell {
                     }
                 }
                 
+                if isRemoveFunctionRelateToOrder {
+                    listFunction.remove(at: 1)
+                    listFunction.remove(at: 0)
+                }
             }
             let topVC = Support.topVC!
             functionView.loadListFunction(json: listFunction)
@@ -176,9 +181,9 @@ class CustomerListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+    func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool,_ isRemoveFunctionRelateOrder:Bool = false) {
         object = customer
-        
+        self.isRemoveFunctionRelateToOrder = isRemoveFunctionRelateOrder
         self.isEdit = isEdit
         self.isSelect = isSelect
         self.isChecked = isChecked
@@ -191,7 +196,7 @@ class CustomerListCell: UITableViewCell {
             if let urlAvatar = cus.urlAvatar {
                 if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                     if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
                     } else {
                         if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                             let decodedimage = UIImage(data: dataDecoded)

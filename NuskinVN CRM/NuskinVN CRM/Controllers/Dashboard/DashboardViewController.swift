@@ -54,8 +54,13 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
         if isSyncWithLoading {
             isSyncWithLoading = false
             firstSyncData()
+            if !Support.connectivity.isConnectedToInternet() {
+                self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+            }
         } else {
-            self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+            if shouldReloadDashboardData {
+                self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+            }
         }
         
 //        if let timer = LocalService.shared.timerSyncToServer {
@@ -109,6 +114,18 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
                 vc.isLifeTime = _self.isLifeTime
                 vc.menuDashboard.setDate(_self.dashboardView.menuDashboard.year,_self.dashboardView.menuDashboard.month, _self.dashboardView.menuDashboard.week, _self.dashboardView.menuDashboard.day)
             }
+            _self.tabBarController?.selectedIndex = 1
+        }
+        
+        dashboardView.gotoOrderListByCustomerID = {[weak self] listIDs in
+            guard let _self = self else {return}
+            let itemTabbar = UITabBarItem(title: "title_tabbar_button_dashboard".localized().uppercased(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
+            itemTabbar.tag = 9
+            _self.tabBarItem  = itemTabbar
+            let nv = _self.tabBarController?.viewControllers![1] as! UINavigationController
+            let vc = nv.viewControllers[0] as! OrderListController
+            vc.isGotoFromCustomerList = true
+            vc.customer_id = listIDs
             _self.tabBarController?.selectedIndex = 1
         }
         

@@ -191,7 +191,7 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
     @IBAction func processSupport(_ sender: Any) {
         let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
         Support.topVC!.present(vc1, animated: true, completion: {
-            vc1.show(from: "", to: "48hrs_reply_vietnam@nuskin.com")
+            vc1.show(from: "", to: AppConfig.setting.emailSupport())
         })
     }
     

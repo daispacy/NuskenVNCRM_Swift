@@ -121,6 +121,26 @@ public class OrderDO: NSManagedObject {
         return list
     }
     
+    func numberOrderItems() -> Int64 {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
+        //            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "(order_id IN %@ OR order_id IN %@)", [id],[local_id])
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        do {
+            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.count(for:fetchRequest)
+            return Int64(result)
+            
+            
+        } catch {
+            let fetchError = error as NSError
+            print(fetchError)
+        }
+        
+        return 0
+    }
+    
     func orderItems() -> [OrderItemDO] {
         
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")

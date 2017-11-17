@@ -19,6 +19,7 @@ class DashboardView: CViewSwitchLanguage {
     var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
     var involkeFunctionView:((CustomerDO,Bool)->Void)?
     var gotoOrderList:((Int64)->Void)?
+    var gotoOrderListByCustomerID:(([Int64])->Void)?
     
     //custom view
     var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
@@ -132,6 +133,21 @@ class DashboardView: CViewSwitchLanguage {
                 totalSummaryCustomerView.reload(data)
                 stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
                 totalSummaryCustomerView.loadChartCustomer(totalOrdered: "\(data2)", totalNotOrderd: "\(data3)")
+                
+                let tVC = Support.topVC
+                totalSummaryCustomerView.presentCustomerList = { isOrdered in
+                    if let topVC = tVC {
+                        let vc = CustomerStatusController(nibName: "CustomerStatusController", bundle: Bundle.main)
+                        let nv = UINavigationController(rootViewController: vc)
+                        topVC.present(nv, animated: true, completion: { isDone in
+                            vc.load(isOrdered)
+                        })
+                        vc.onGotoOrderList = {[weak self] listIDs in
+                            guard let _self = self else {return}
+                            _self.gotoOrderListByCustomerID?(listIDs)
+                        }
+                    }
+                }
             }
         } else {
             totalSummaryCustomerView.removeFromSuperview()

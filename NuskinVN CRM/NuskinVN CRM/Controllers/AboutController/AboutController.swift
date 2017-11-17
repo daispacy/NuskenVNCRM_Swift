@@ -60,7 +60,7 @@ class AboutController: UIViewController {
                 _self.btnUpdate.stopAnimation()
                 _self.linkItunes = link
                 if let verApp = Bundle.main.releaseVersionNumber {
-                    if ver != verApp {
+                    if ver != verApp && ver.characters.count > 0 {
                         _self.lblNewVersion.isHidden = false
                         _self.lblNewVersion.text = "\("version_newest".localized()): \(ver)"
                     } else {

@@ -19,7 +19,9 @@ class RootViewController: UIViewController {
     let disposeBag:DisposeBag = DisposeBag()
     var leftButtonMenu:UIButton!
     var rightButtonMenu:UIButton!
+    var btnNotification:UIButton!
     var isTabbarShow:Bool = true
+    var shouldReloadDashboardData:Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +71,7 @@ class RootViewController: UIViewController {
                     rightButtonMenu.imageView!.layer.cornerRadius = 15;
                     if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                            imageView.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                            imageView.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
                         } else {
                             if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                                 let decodedimage = UIImage(data: dataDecoded)
@@ -163,7 +165,6 @@ class RootViewController: UIViewController {
         self.navigationItem.leftBarButtonItem  = item1
         
         if !onlyLeft {
-            // Do any additional setup after loading the view.
             rightButtonMenu = UIButton(type: .custom)
             let imageView:UIImageView = UIImageView(image: UIImage(named: "menu_profile_white_76"))
             imageView.tag = 1111
@@ -175,7 +176,7 @@ class RootViewController: UIViewController {
                     if let urlAvatar = user.urlAvatar {                        
                         if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                             if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                                imageView.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                                imageView.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
                             } else {
                                 if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                                     let decodedimage = UIImage(data: dataDecoded)
@@ -201,12 +202,32 @@ class RootViewController: UIViewController {
             rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
             rightButtonMenu.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
             let item2 = UIBarButtonItem(customView: rightButtonMenu)
-            self.navigationItem.rightBarButtonItem  = item2
+            
+            btnNotification = UIButton(type: .custom)
+            let notificationView:UIImageView = UIImageView(image: UIImage(named: "ic_notification_white_76"))
+            notificationView.tag = 1111
+            notificationView.contentMode = .scaleAspectFill
+            notificationView.layer.masksToBounds = true
+            notificationView.layer.cornerRadius = 15
+            
+            
+            btnNotification.addSubview(notificationView)
+            btnNotification.translatesAutoresizingMaskIntoConstraints = false
+            btnNotification.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            btnNotification.heightAnchor.constraint(equalToConstant: 30).isActive = true
+            btnNotification.centerXAnchor.constraint(equalTo: btnNotification.centerXAnchor).isActive = true
+            btnNotification.centerYAnchor.constraint(equalTo: btnNotification.centerYAnchor).isActive = true
+            
+            btnNotification.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+            btnNotification.addTarget(self, action: #selector(self.menuPress(sender:)), for: .touchUpInside)
+            let itemNotification = UIBarButtonItem(customView: btnNotification)
+            
+            self.navigationItem.rightBarButtonItems  = [item2,itemNotification]
         }
     }
     
     @objc func menuPress(sender:UIButton) {
-        
+        shouldReloadDashboardData = false
         if( sender.isEqual(leftButtonMenu) == true) {
             Support.popup.showMenu(items: ["sync_data".localized(),
                                            "support".localized(),
@@ -215,7 +236,7 @@ class RootViewController: UIViewController {
                                    sender: self,
                                    view: sender,
                                    selector: #selector(self.menuItemLeftPress(menuItem:)))
-        } else {
+        } else if sender.isEqual(rightButtonMenu){
             let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
             let nv = UINavigationController(rootViewController: vc)
             Support.topVC?.present(nv, animated: true, completion: {[weak self] in
@@ -232,6 +253,10 @@ class RootViewController: UIViewController {
                 _self.showTabbar(true)
                 _self.refreshAvatar()
             }
+        } else if sender.isEqual(btnNotification) {
+            let vc = NewsController(nibName: "NewsController", bundle: Bundle.main)
+            let nv = UINavigationController(rootViewController: vc)
+            Support.topVC!.present(nv, animated: true, completion: nil)
         }
         
         objc_setAssociatedObject(self, &BlockCustomerView_associated, sender, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -252,7 +277,7 @@ class RootViewController: UIViewController {
         } else if menuItem.title == "support".localized() {
             let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
             Support.topVC!.present(vc1, animated: true, completion: {
-                vc1.show(from: "", to: "48hrs_reply_vietnam@nuskin.com")
+                vc1.show(from: "", to: AppConfig.setting.emailSupport())
             })
         } else if menuItem.title == "version".localized() {
             let vc1 = AboutController(nibName: "AboutController", bundle: Bundle.main)

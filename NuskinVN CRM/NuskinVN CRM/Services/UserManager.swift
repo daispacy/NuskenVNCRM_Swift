@@ -25,7 +25,7 @@ class UserManager: NSObject {
             var totalOrdersUnpaid:Double = 0
             var top10Product:[JSON] = []
             _ = list.map({
-                if $0.listOrders().count == 0 {
+                if $0.getNumberOrders() == 0 {
                     notorderd += 1
                 } else {
                     ordered += 1
@@ -60,7 +60,7 @@ class UserManager: NSObject {
                         } else if $0.payment_status == 2 {
                             totalOrdersUnpaid += 1
                         }
-                        if $0.orderItems().count > 0 {
+                        if $0.numberOrderItems() > 0 {
                             listOrderitems.append(contentsOf:$0.orderItems())
                         }
                     })
@@ -131,7 +131,7 @@ class UserManager: NSObject {
                     m = 12 + m
                     y -= 1
                 }
-                let date = "\(y)-\(m)-\(01) 00:00:00".toDate2()
+                let date = "\(y)-\(m)-\(15) 00:00:00".toDate2()
                 listDay.append(["month":"\(m)","year":"\(y)","day":date.listDay])
             }
         }
@@ -175,7 +175,7 @@ class UserManager: NSObject {
                         } else if $0.payment_status == 2 {
                             totalOrdersUnpaid += 1
                         }
-                        if $0.orderItems().count > 0 {
+                        if $0.numberOrderItems() > 0 {
                             listOrderitems.append(contentsOf:$0.orderItems())
                         }
                     })
@@ -234,7 +234,7 @@ class UserManager: NSObject {
                 } else if $0.payment_status == 2 {
                     totalOrdersUnpaid += 1
                 }
-                if $0.orderItems().count > 0 {
+                if $0.numberOrderItems() > 0 {
                     listOrderitems.append(contentsOf:$0.orderItems())
                 }
             })

@@ -21,6 +21,8 @@ class TotalSummaryView: CViewSwitchLanguage {
     @IBOutlet weak var btnSecond: UIButton!
     @IBOutlet weak var btnThird: UIButton!
     
+    @IBOutlet weak var btnCustomerOrdered: UIButton!
+    @IBOutlet weak var btnCustomerNotOrdered: UIButton!
     //sales
     @IBOutlet  var lineHorizontal: UIView!
     @IBOutlet  var lineVertical: UIView!
@@ -38,9 +40,11 @@ class TotalSummaryView: CViewSwitchLanguage {
     @IBOutlet weak var lblOther:UILabel!
     @IBOutlet weak var lblNumberOther:UILabel!
     
+    
     var chartStatisticsCustomer:ChartStatisticsCustomer!
     var lblTotalCustomer:UILabel!
     var gotoOrderList:((Int64)->Void)?
+    var presentCustomerList:((Bool)->Void)?
     
     let paragraph: NSMutableParagraphStyle = {
         let para = NSMutableParagraphStyle()
@@ -88,6 +92,14 @@ class TotalSummaryView: CViewSwitchLanguage {
         }
         if status == -1 {return}
         self.gotoOrderList?(status)
+    }
+    
+    @IBAction func processDisplayCustomer(_ sender: UIButton) {
+        if sender.isEqual(btnCustomerOrdered) {
+            self.presentCustomerList?(true)
+        } else if sender.isEqual(btnCustomerNotOrdered) {
+            self.presentCustomerList?(false)
+        }
     }
     
     

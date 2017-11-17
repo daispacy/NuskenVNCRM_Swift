@@ -178,10 +178,21 @@ UISearchBarDelegate{
         
         let vc = OrderDetailController(nibName: "OrderDetailController", bundle: Bundle.main)
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.onPop = {
-            [weak self] in
+        vc.onPop = {[weak self] customer in
             guard let _self = self else {return}
-            _self.customer_id = []
+            if let cus = customer {
+                Support.popup.showAlert(message: "\("would_you_like_to_filter_this_customer".localized()): \(cus.fullname ?? "")", buttons: ["no".localized(),"yes".localized()], vc: _self.navigationController!, onAction: {index in
+                    if index == 1 {
+                        _self.customer_id = [cus.id, cus.local_id].filter{$0 != 0}
+                    } else {
+                        _self.customer_id = []
+                    }
+                    _self.refreshListOrder()
+                },nil)
+            } else {
+                _self.customer_id = []
+            }
+            _self.refreshListOrder()
         }
     }
     
@@ -483,7 +494,23 @@ extension OrderListController {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = OrderDetailController(nibName: "OrderDetailController", bundle: Bundle.main)
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.edit(self.listOrder[indexPath.row])        
+        vc.edit(self.listOrder[indexPath.row])
+        vc.onPop = {[weak self] customer in
+            guard let _self = self else {return}
+            if let cus = customer {
+                Support.popup.showAlert(message: "\("would_you_like_to_filter_this_customer".localized()): \(cus.fullname ?? "")", buttons: ["no".localized(),"yes".localized()], vc: _self.navigationController!, onAction: {index in
+                    if index == 1 {
+                        _self.customer_id = [cus.id, cus.local_id].filter{$0 != 0}
+                    } else {
+                        _self.customer_id = []
+                    }
+                    _self.refreshListOrder()
+                },nil)
+            } else {
+                _self.customer_id = []
+            }
+            _self.refreshListOrder()
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

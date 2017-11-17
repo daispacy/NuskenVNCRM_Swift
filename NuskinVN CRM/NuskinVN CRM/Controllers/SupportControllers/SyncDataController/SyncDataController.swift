@@ -97,7 +97,7 @@ class SyncDataController: RootViewController {
             guard let _self = self else {return}
             _self.timerTimeOut?.invalidate()
             _self.dismiss(animated: false, completion: nil)
-            
+            return
         })
         if let bool = isLoading {
             self.isLoading = bool

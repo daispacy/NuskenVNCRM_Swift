@@ -44,7 +44,7 @@ class GroupCollectCustomerCell: UICollectionViewCell {
         }
         
         
-        lblSubtitle.text = "\(data.customers().count) \("member".localized())"
+        lblSubtitle.text = "\(data.numberCustomers()) \("member".localized())"
 
         if lblSubtitle.text?.characters.count == 0 {
             lblSubtitle.isHidden = true

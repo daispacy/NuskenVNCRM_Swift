@@ -142,7 +142,7 @@ class FormExportOrderDetailView: UIView {
         var price:Int64 = 0
         var pv:Int64 = 0
         
-        if item.orderItems().count > 0 {
+        if item.numberOrderItems() > 0 {
             var i = 1
             _ = item.orderItems().map({
                 if let product = $0.product() {
@@ -157,7 +157,7 @@ class FormExportOrderDetailView: UIView {
                     
                     // name
                     var tn:[ViewBorderType] = [.left]
-                    if i == item.orderItems().count {
+                    if i == item.numberOrderItems() {
                         tn = [.bottom,.left]
                     }
                     let viewProduct = CViewBorder(frame: CGRect.zero, tn)
@@ -171,7 +171,7 @@ class FormExportOrderDetailView: UIView {
                     
                     // quantity
                     var tq:[ViewBorderType] = [.left,.right]
-                    if i == item.orderItems().count {
+                    if i == item.numberOrderItems() {
                         tq = [.bottom,.left,.right]
                     }
                     let viewQuantity = CViewBorder(frame: CGRect.zero, tq)
@@ -185,7 +185,7 @@ class FormExportOrderDetailView: UIView {
                     
                     // price
                     var tp:[ViewBorderType] = [.right]
-                    if i == item.orderItems().count {
+                    if i == item.numberOrderItems() {
                         tp = [.bottom,.right]
                     }
                     let viewPrice = CViewBorder(frame: CGRect.zero, tp)
@@ -199,7 +199,7 @@ class FormExportOrderDetailView: UIView {
                     
                     // price
                     var tt:[ViewBorderType] = [.right]
-                    if i == item.orderItems().count {
+                    if i == item.numberOrderItems() {
                         tt = [.bottom,.right]
                     }
                     let viewTotal = CViewBorder(frame: CGRect.zero, tt)
@@ -286,7 +286,7 @@ class FormExportOrderDetailView: UIView {
         stackListProducts.insertArrangedSubview(stack, at: stackListProducts.arrangedSubviews.count)
         
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.heightAnchor.constraint(equalToConstant: 600 + CGFloat(50*item.orderItems().count)).isActive = true
+        self.heightAnchor.constraint(equalToConstant: 600 + CGFloat(50*item.numberOrderItems())).isActive = true
         self.layoutIfNeeded()
         self.setNeedsDisplay()
         isReady = true

@@ -96,7 +96,7 @@ class CustomerSelectedListCell: UITableViewCell {
         
         lblName.text = customer.fullname
        
-        if customer.listOrders().count > 0 {
+        if customer.getNumberOrders() > 0 {
             self.btnCheck.isEnabled = false
         }
         
@@ -105,7 +105,7 @@ class CustomerSelectedListCell: UITableViewCell {
             if let urlAvatar = cus.urlAvatar {
                 if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                     if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
                     } else {
                         if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                             let decodedimage = UIImage(data: dataDecoded)
@@ -126,7 +126,7 @@ class CustomerSelectedListCell: UITableViewCell {
     
     func setSelect() {
         guard let customer = object else { return}
-        if customer.listOrders().count > 0 {
+        if customer.getNumberOrders() > 0 {
             guard let vc = self.viewcontroller else {return}
             Support.popup.showAlert(message: "this_customer_have_order_cant_delete".localized(), buttons: ["ok".localized()], vc: vc, onAction: {i in
                 

@@ -42,7 +42,16 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
     
     // MARK: - INTERFACE
     func loadData(_ from:NSDate? = nil,_ to:NSDate? = nil,_ lifetime:Bool = true,_ customer:CustomerDO? = nil) {
-        UserManager.getDataOrderStatus(from, toDate: to, isLifeTime: lifetime,customer) {[weak self] data in
+        
+        let calendar = Calendar.current
+        // Calculate start and end of the current year (or month with `.month`):
+        let days1 = calendar.dateComponents([.day], from: from! as Date, to: to! as Date)
+        var toDate = to
+        if Int(days1.day!) > 300 && (toDate! as Date).currentYear == Date().currentYear{
+            toDate = Date() as NSDate
+        }
+        
+        UserManager.getDataOrderStatus(from, toDate: toDate, isLifeTime: lifetime,customer) {[weak self] data in
             guard let _self = self else {return}
             DispatchQueue.main.async {
                 var valuesOrders:[[Double]] = []
@@ -78,8 +87,8 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
     func setChart(_ dataPoints: [String], values: [[Double]], valuesSales:[[Double]]) {
         chartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
         chartView.xAxis.labelCount = dataPoints.count;
-        chartViewSales.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
-        chartViewSales.xAxis.labelCount = dataPoints.count;
+//        chartViewSales.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
+//        chartViewSales.xAxis.labelCount = dataPoints.count;
        
         // line
         let barData = self.generateBarData(values.flatMap{$0.first!}, values.flatMap{$0.last!})
@@ -104,14 +113,14 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         
         let chartData1 = CombinedChartData()
         chartData1.lineData = lineData1
-        
-        lineData1.setValueFormatter(valuesNumberFormatter)
+        let lineFormatter = PriceValueFormatter(numberFormatter: numberFormatter)
+        lineData1.setValueFormatter(lineFormatter)
         
         chartData1.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
         chartData1.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
         
         chartViewSales.data = chartData1
-        chartViewSales.animate(yAxisDuration: 1.5)
+        chartViewSales.animate(xAxisDuration: 1.5)
         
         // line2
         let lineData2 = self.generateLineData2(valuesSales.flatMap{$0.last!})
@@ -119,13 +128,13 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         let chartData2 = CombinedChartData()
         chartData2.lineData = lineData2
         
-        lineData2.setValueFormatter(valuesNumberFormatter)
+        lineData2.setValueFormatter(lineFormatter)
         
         chartData2.setValueTextColor(UIColor(hex:Theme.colorDBTextNormal))
         chartData2.setValueFont(UIFont(name: Theme.font.normal, size: Theme.fontSize.normal))
         
         chartViewSales1.data = chartData2
-        chartViewSales1.animate(yAxisDuration: 1.5)
+        chartViewSales1.animate(xAxisDuration: 1.5)
         
         if chartViewSales.data!.yMax > chartViewSales1.data!.yMax {
             chartViewSales1.leftAxis.axisMaximum = chartViewSales.data!.yMax
@@ -147,7 +156,7 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         
         var i:Double = 0
         for item in values1 {
-            entries.append(ChartDataEntry(x: i, y: item))
+            entries.append(ChartDataEntry(x: i, y: item/1000000))
             i += 1
         }
         
@@ -161,15 +170,15 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         set.mode = .cubicBezier
         set.cubicIntensity = 0.1
         set.drawValuesEnabled = true
-        set.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
-        set.valueTextColor = UIColor.black
+        set.valueFont = UIFont(name:Theme.font.normal,size:Theme.fontSize.small)!
+        set.valueTextColor = UIColor(hex:"0x008ab0")
         set.axisDependency = .left
         set.values = entries
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.locale = Locale.current
-        let valuesNumberFormatter = ChartValueFormatter(numberFormatter: numberFormatter)
-        set.valueFormatter = valuesNumberFormatter
+//        let numberFormatter = NumberFormatter()
+//        numberFormatter.numberStyle = .decimal
+//        numberFormatter.locale = Locale.current
+//        let valuesNumberFormatter = PriceValueFormatter(numberFormatter: numberFormatter)
+//        set.valueFormatter = valuesNumberFormatter
         
         d.addDataSet(set)
         
@@ -183,7 +192,7 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         
         var i:Double = 0
         for item in values1 {
-            entries.append(ChartDataEntry(x: i, y: item))
+            entries.append(ChartDataEntry(x: i, y: item/1000000))
             i += 1
         }
         
@@ -197,15 +206,15 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         set.cubicIntensity = 0.1
         set.mode = .cubicBezier
         set.drawValuesEnabled = true
-        set.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
-        set.valueTextColor = UIColor.black
+        set.valueFont = UIFont(name:Theme.font.normal,size:Theme.fontSize.small)!
+        set.valueTextColor = UIColor(hex:"0xe30b7a")
         set.axisDependency = .left
         set.values = entries
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.locale = Locale.current
-        let valuesNumberFormatter = ChartValueFormatter(numberFormatter: numberFormatter)
-        set.valueFormatter = valuesNumberFormatter
+//        let numberFormatter = NumberFormatter()
+//        numberFormatter.numberStyle = .decimal
+//        numberFormatter.locale = Locale.current
+//        let valuesNumberFormatter = PriceValueFormatter(numberFormatter: numberFormatter)
+//        set.valueFormatter = valuesNumberFormatter
         
         d.addDataSet(set)
         
@@ -232,18 +241,18 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         let set1 = BarChartDataSet(values: entries1, label: "")
         set1.setColor(UIColor(hex:"0x008ab0"))
         set1.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
-        set1.valueTextColor = UIColor.white
+        set1.valueTextColor = UIColor(hex:"0x008ab0")
         set1.axisDependency = .left
         
         let set2 = BarChartDataSet(values: entries2, label: "")
         set2.setColor(UIColor(hex:"0xe30b7a"))
         set2.valueFont = UIFont(name:Theme.font.bold,size:Theme.fontSize.small)!
-        set2.valueTextColor = UIColor.white
+        set2.valueTextColor = UIColor(hex:"0xe30b7a")
         set2.axisDependency = .left
         
-        let groupSpace = 0.01
+        let groupSpace = 0.25
         let barSpace = 0.02 // x2 dataset
-        let barWidth = 0.3 // x2 dataset
+        let barWidth = 0.2 // x2 dataset
         // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
         
         let d = BarChartData(dataSets: [set1,set2])
@@ -296,7 +305,7 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         
         chartView.xAxis.drawAxisLineEnabled = false
         chartView.xAxis.drawGridLinesEnabled = false
-        chartView.xAxis.labelPosition = .bottom
+        chartView.xAxis.labelPosition = .topInside
         chartView.xAxis.granularityEnabled = false
         chartView.xAxis.labelTextColor = UIColor(hex:Theme.colorDBTextNormal)
         
@@ -304,7 +313,6 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         chartView.leftAxis.drawAxisLineEnabled = false
         chartView.leftAxis.drawGridLinesEnabled = false
         chartView.leftAxis.labelTextColor = UIColor(hex:Theme.colorDBTextNormal)
-        
         chartView.rightAxis.enabled = false
 
         
@@ -323,11 +331,11 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         chartView.drawValueAboveBarEnabled = true
         chartView.drawBarShadowEnabled = false
         
-        chartView.backgroundColor = UIColor.white
         chartView.pinchZoomEnabled = false
         chartView.scaleXEnabled = false
         chartView.scaleYEnabled = false
         chartView.backgroundColor = UIColor.clear
+        chartView.barData?.highlightEnabled = false
         
         chartView.chartDescription?.text = ""
         
@@ -338,7 +346,7 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
     
     func configChart(chart:CombinedChartView) {
         // setup chart
-        chart.noDataText = "no_data_chart_summary_sales".localized()
+        chart.noDataText = "".localized()
         
         chart.drawOrder = [
             DrawOrder.line.rawValue
@@ -350,28 +358,31 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
         chart.xAxis.granularityEnabled = false
         chart.xAxis.labelTextColor = UIColor.clear
         
-        chart.leftAxis.enabled = false
+        chart.leftAxis.enabled = true
         chart.leftAxis.drawAxisLineEnabled = false
         chart.leftAxis.drawGridLinesEnabled = false
         chart.leftAxis.labelTextColor = UIColor.clear
         
-        chart.rightAxis.enabled = false
+        chart.rightAxis.enabled = true
+        chart.rightAxis.drawAxisLineEnabled = false
+        chart.rightAxis.drawGridLinesEnabled = false
+        chart.rightAxis.labelTextColor = UIColor.clear
         
-        
-        chart.legend.horizontalAlignment = .center
+        chart.legend.horizontalAlignment = .right
         chart.legend.verticalAlignment = .bottom
         chart.legend.drawInside = false
         chart.legend.form = .empty
         chart.legend.orientation = .horizontal
         chart.legend.xEntrySpace = 1.0
         chart.legend.stackSpace = 0.1
-        chart.extraBottomOffset = 0
+        chart.extraBottomOffset = -30
         
         chart.drawBordersEnabled = false
         chart.drawValueAboveBarEnabled = true
         chart.drawGridBackgroundEnabled = false
         chart.drawValueAboveBarEnabled = true
         chart.drawBarShadowEnabled = false
+        chart.barData?.highlightEnabled = false
         
         chart.pinchZoomEnabled = false
         chart.scaleXEnabled = false

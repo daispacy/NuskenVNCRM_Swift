@@ -62,6 +62,15 @@ final class LocalService: NSObject {
                 return
             }
         }
+        
+        if !Support.connectivity.isConnectedToInternet() {
+            // Device doesn't have internet connection
+            print("Internet Offline")
+            onComplete?()
+            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+            return
+        }
+        
             self.syncUser{
                 self.syncMasterData{self.syncGroups {self.syncCustomers {SyncService.shared.syncProducts{_ in self.syncOrders{self.syncOrdersItems {
                                         DispatchQueue.main.async {

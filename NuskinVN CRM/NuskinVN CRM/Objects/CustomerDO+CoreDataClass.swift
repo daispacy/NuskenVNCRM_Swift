@@ -330,7 +330,7 @@ public class CustomerDO: NSManagedObject {
     }
     
     func lastDateOrder() -> String {
-        if listOrders().count > 0 {
+        if getNumberOrders() > 0 {
             if let order = listOrders().first {
                 if let date = order.date_created {
                     return (date as Date).toString(dateFormat: "dd/MM/yyyy\nHH:mm:ss")
@@ -338,6 +338,31 @@ public class CustomerDO: NSManagedObject {
             }
         }
         return ""
+    }
+    
+    func getNumberOrders() -> Int64 {
+        
+        //        if let list = listlistOrdersManager {
+        //            return list
+        //        }
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
+        fetchRequest.returnsObjectsAsFaults = false
+        var predicate = NSPredicate(format: "1 > 0")
+        if let user = UserManager.currentUser() {
+            predicate = NSPredicate(format: "(customer_id in %@ OR customer_id in %@) AND distributor_id IN %@", [id],[local_id],[user.id])
+        }
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date_created", ascending: false)]
+        fetchRequest.predicate = predicate
+        
+        do {
+            let results = try? CoreDataStack.sharedInstance.persistentContainer.viewContext.count(for: fetchRequest)
+            if results != nil {
+                return Int64(results!)
+            }
+        }
+        
+        return 0
     }
     
     func listOrders() -> [OrderDO] {

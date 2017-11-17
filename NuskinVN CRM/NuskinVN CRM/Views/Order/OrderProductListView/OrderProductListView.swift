@@ -87,7 +87,7 @@ class OrderProductListView: UIView {
         if self.listOrderItem.count == 0 && !isFirstLoaded{
             isFirstLoaded = true
             if let order = self.order {
-                if order.orderItems().count == 0 {
+                if order.numberOrderItems() == 0 {
                     return
                 }
                 self.listOrderItem.append(contentsOf: order.orderItems().flatMap({
@@ -309,7 +309,7 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
             lblName.text = pro.name
             if let imgStr = pro.avatar {
                 if imgStr.characters.count > 0 {
-                    imgProduct.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+                    imgProduct.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)",size:nil, placeHolder: UIImage(named:"ic_top_product_block"))
                 }
             }
         }

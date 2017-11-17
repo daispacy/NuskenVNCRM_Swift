@@ -84,6 +84,9 @@
 "develop_by_dera" = "Phát triển bởi: Derasoft";
 "version" = "Phiên bản";
 "version_newest" = "Phiên bản mới nhất";
+"close" = "Đóng";
+"news" = "Tin khuyễn mãi";
+"would_you_like_to_filter_this_customer" = "Chỉ hiển thị những đơn hàng của khách hàng";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

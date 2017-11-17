@@ -339,13 +339,15 @@ extension CustomerListController {
             if expandRow == indexPath.row {
                 // reset expand
                 expandRow = -1
-                self.tableView.reloadData()
+//                self.tableView.reloadData()
             } else {
                 expandRow = indexPath.row
-                self.tableView.beginUpdates()
-                self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
-                self.tableView.endUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .fade)
+//                self.tableView.beginUpdates()
+//                self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
+//                self.tableView.endUpdates()
             }
+            self.tableView.reloadRows(at: [indexPath], with: .fade)
         }
     }
     

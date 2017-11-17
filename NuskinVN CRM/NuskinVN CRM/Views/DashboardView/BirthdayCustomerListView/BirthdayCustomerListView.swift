@@ -107,7 +107,7 @@ class CustomerBlockView: CViewSwitchLanguage {
             if let urlAvatar = data.urlAvatar {
                 if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                     if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imgvAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                        imgvAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
                     } else {
                         if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                             let decodedimage = UIImage(data: dataDecoded)

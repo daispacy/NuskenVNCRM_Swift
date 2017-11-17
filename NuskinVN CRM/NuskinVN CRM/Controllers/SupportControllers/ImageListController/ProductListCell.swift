@@ -32,7 +32,7 @@ class ProductListCell: UITableViewCell {
        
         if let imgStr = product.avatar {
             if imgStr.characters.count > 0 {
-                avatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+                avatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)",size:nil, placeHolder: UIImage(named:"ic_top_product_block"))
             }
         }
         

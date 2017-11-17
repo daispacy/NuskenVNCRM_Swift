@@ -23,6 +23,17 @@ class AppConfig: NSObject {
             }
             return false
         }
+        
+        static func setEmailSupport(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "App:EmailSupport")
+            
+        }
+        static func emailSupport() -> String {
+            if let str = UserDefaults.standard.value(forKey: "App:EmailSupport") {
+                return str as! String
+            }
+            return "lhuynh@nuskin.com"
+        }
     }
     
     // MARK: - deeplink

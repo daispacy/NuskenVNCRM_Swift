@@ -56,6 +56,46 @@ class CustomerManager: NSObject {
         }
     }
     
+    static func getCountCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:GroupDO? = nil,_ onComplete:@escaping ((Int64)->Void)) {
+        // Initialize Fetch Request
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
+            fetchRequest.returnsObjectsAsFaults = false
+            var predicate1 = NSPredicate(format: "1 > 0")
+            if let user = UserManager.currentUser() {
+                predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
+            }
+            let predicate3 = NSPredicate(format: "status == 1")
+            
+            var predicate2 = NSPredicate(format: "1 > 0")
+            if !isLifeTime {
+                if let from = fromDate,
+                    let to = toDate {
+                    predicate2 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
+                }
+            }
+            var predicate4 = NSPredicate(format: "1 > 0")
+            if let gr = group {
+                if gr.id == 0 {
+                    if let group_name = gr.group_name {
+                        predicate4 = NSPredicate(format: "group_name == %@",group_name)
+                    }
+                } else {
+                    predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
+                }
+            }
+            let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+            fetchRequest.predicate = predicateCompound
+            do {
+                let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.count(for:fetchRequest)
+                onComplete(Int64(result))
+            } catch {
+                let fetchError = error as NSError
+                onComplete(0)
+                print(fetchError)
+            }
+    }
+    
     static func getAllCustomers(search:String? = nil,group:GroupDO? = nil,onComplete:@escaping (([CustomerDO])->Void)) {
         // Initialize Fetch Request
         let container = CoreDataStack.sharedInstance.persistentContainer
@@ -188,7 +228,7 @@ class CustomerManager: NSObject {
             let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
             var list:[CustomerDO] = []
             list = result.flatMap({$0 as? CustomerDO})
-            list = list.filter{$0.listOrders().count > 0}
+            list = list.filter{$0.getNumberOrders() > 0}
             onComplete(list)
             
         } catch {

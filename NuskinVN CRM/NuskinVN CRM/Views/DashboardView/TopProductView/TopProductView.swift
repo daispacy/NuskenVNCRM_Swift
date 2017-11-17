@@ -144,7 +144,7 @@ class BlockTopProductView: CViewSwitchLanguage {
             
             if let imgStr = pro.avatar {
                 if imgStr.characters.count > 0 {
-                    icon.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
+                    icon.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)",size:nil, placeHolder: UIImage(named:"ic_top_product_block"))
                 }
             }            
             if let n = pro.name {

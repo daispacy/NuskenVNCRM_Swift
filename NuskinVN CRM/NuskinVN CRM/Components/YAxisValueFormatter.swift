@@ -39,16 +39,49 @@ class YAxisValueFormatter: NSObject, IAxisValueFormatter {
 
 class ChartValueFormatter: NSObject, IValueFormatter {
     fileprivate var numberFormatter: NumberFormatter?
+    fileprivate var showUnit:Bool = false
     
-    convenience init(numberFormatter: NumberFormatter) {
+    convenience init(numberFormatter: NumberFormatter,_ showUnit:Bool? = nil) {
         self.init()
         self.numberFormatter = numberFormatter
+        if let show = showUnit {
+            self.showUnit = show
+        }
     }
     
     func stringForValue(_ value: Double, entry: ChartDataEntry, dataSetIndex: Int, viewPortHandler: ViewPortHandler?) -> String {
         guard let numberFormatter = numberFormatter
             else {
                 return ""
+        }
+        
+        return numberFormatter.string(for: value)!.replacingOccurrences(of: ",", with: ".")
+    }
+}
+
+class PriceValueFormatter: NSObject, IValueFormatter {
+    fileprivate var numberFormatter: NumberFormatter?
+    fileprivate var showUnit:Bool = false
+    
+    convenience init(numberFormatter: NumberFormatter,_ showUnit:Bool? = nil) {
+        self.init()
+        self.numberFormatter = numberFormatter
+        if let show = showUnit {
+            self.showUnit = show
+        }
+    }
+    
+    func stringForValue(_ value: Double, entry: ChartDataEntry, dataSetIndex: Int, viewPortHandler: ViewPortHandler?) -> String {
+        guard let numberFormatter = numberFormatter
+            else {
+                return ""
+        }
+        if value >= 1000 && value < 1000000{
+            return "~\(numberFormatter.string(for: round(value/1000))!.replacingOccurrences(of: ",", with: ".")) tỷ"
+        } else if value > 1 && value < 1000 {
+            return "\(numberFormatter.string(for: value)!.replacingOccurrences(of: ",", with: ".")) triệu"
+        } else if value >= 1000000 {
+            return "~\(numberFormatter.string(for: round(value/1000000))!.replacingOccurrences(of: ",", with: ".")) nghìn tỷ"
         }
         return numberFormatter.string(for: value)!.replacingOccurrences(of: ",", with: ".")
     }

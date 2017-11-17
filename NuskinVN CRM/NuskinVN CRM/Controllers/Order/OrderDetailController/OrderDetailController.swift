@@ -47,7 +47,7 @@ class OrderDetailController: RootViewController {
     var transporter_id:String = ""
     var order_code:String = ""
     var listProducts:[JSON] = []
-    var onPop:(()->Void)?
+    var onPop:((CustomerDO?)->Void)?
     
     var listStatus:[JSON] = AppConfig.order.listStatus()
     var listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus()
@@ -441,8 +441,8 @@ class OrderDetailController: RootViewController {
                                     }
                                 }
                             })
-                            _self.onPop?()
                             _self.navigationController?.popViewController(animated: true)
+                            _self.onPop?(customer)
                         })
                         
                     } else {
@@ -504,8 +504,8 @@ class OrderDetailController: RootViewController {
                                     }
                                 }
                             }) 
-                            _self.onPop?()
                             _self.navigationController?.popViewController(animated: true)
+                            _self.onPop?(customer)
                         })
                     }
                 }

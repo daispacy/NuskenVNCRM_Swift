@@ -180,11 +180,15 @@
 		D73D79951FB4D9BC0091E746 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79931FB4D9BC0091E746 /* MessageUI.framework */; };
 		D74094AA1FBB26BE00116F6A /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74094A81FBB26BE00116F6A /* AboutController.swift */; };
 		D74094AB1FBB26BE00116F6A /* AboutController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D74094A91FBB26BE00116F6A /* AboutController.xib */; };
+		D76A953A1FBDD93500CA64E1 /* CustomerStatusController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D76A95381FBDD93500CA64E1 /* CustomerStatusController.xib */; };
+		D76A953B1FBDD93500CA64E1 /* CustomerStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76A95391FBDD93500CA64E1 /* CustomerStatusController.swift */; };
 		D7823B921FB8229E003888D1 /* ChartStatisticsPie.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */; };
 		D7823B931FB8229E003888D1 /* ChartStatisticsPie.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */; };
 		D7B6B52B1FB84673007884E9 /* ChartStatisticsCombined.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */; };
 		D7B6B52C1FB84673007884E9 /* ChartStatisticsCombined.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */; };
 		D7C23AD01FB4D75900486EF3 /* MessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */; };
+		D7DC30281FBC826A00EF76B4 /* NewsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DC30261FBC826A00EF76B4 /* NewsController.swift */; };
+		D7DC30291FBC826A00EF76B4 /* NewsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7DC30271FBC826A00EF76B4 /* NewsController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -380,11 +384,15 @@
 		D73D79931FB4D9BC0091E746 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		D74094A81FBB26BE00116F6A /* AboutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = "<group>"; };
 		D74094A91FBB26BE00116F6A /* AboutController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutController.xib; sourceTree = "<group>"; };
+		D76A95381FBDD93500CA64E1 /* CustomerStatusController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerStatusController.xib; sourceTree = "<group>"; };
+		D76A95391FBDD93500CA64E1 /* CustomerStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerStatusController.swift; sourceTree = "<group>"; };
 		D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsPie.swift; sourceTree = "<group>"; };
 		D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsPie.xib; sourceTree = "<group>"; };
 		D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsCombined.swift; sourceTree = "<group>"; };
 		D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsCombined.xib; sourceTree = "<group>"; };
 		D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposer.swift; sourceTree = "<group>"; };
+		D7DC30261FBC826A00EF76B4 /* NewsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsController.swift; sourceTree = "<group>"; };
+		D7DC30271FBC826A00EF76B4 /* NewsController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsController.xib; sourceTree = "<group>"; };
 		E263CF41350414D7107F36B8 /* Pods-NuskinVN CRMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRMTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1011,6 +1019,8 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D76A95371FBDD93500CA64E1 /* CustomerStatusController */,
+				D7DC30251FBC823000EF76B4 /* NewsController */,
 				D74094A71FBB267B00116F6A /* AboutController */,
 				23ED22601FA628A000D1F046 /* ChangePasswordController */,
 				231D97E61F95C78F003E8DA3 /* SupportControllers */,
@@ -1072,6 +1082,15 @@
 			path = AboutController;
 			sourceTree = "<group>";
 		};
+		D76A95371FBDD93500CA64E1 /* CustomerStatusController */ = {
+			isa = PBXGroup;
+			children = (
+				D76A95381FBDD93500CA64E1 /* CustomerStatusController.xib */,
+				D76A95391FBDD93500CA64E1 /* CustomerStatusController.swift */,
+			);
+			path = CustomerStatusController;
+			sourceTree = "<group>";
+		};
 		D7823B8B1FB82078003888D1 /* ChartStatisticsPie */ = {
 			isa = PBXGroup;
 			children = (
@@ -1088,6 +1107,15 @@
 				D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */,
 			);
 			path = ChartStatisticsCombined;
+			sourceTree = "<group>";
+		};
+		D7DC30251FBC823000EF76B4 /* NewsController */ = {
+			isa = PBXGroup;
+			children = (
+				D7DC30261FBC826A00EF76B4 /* NewsController.swift */,
+				D7DC30271FBC826A00EF76B4 /* NewsController.xib */,
+			);
+			path = NewsController;
 			sourceTree = "<group>";
 		};
 		E2E3A72B501FF952DC187C8F /* Frameworks */ = {
@@ -1250,6 +1278,7 @@
 				235722271F7D58170096A636 /* Roboto-ThinItalic.ttf in Resources */,
 				2372E98B1F7FD90300B4F0AB /* CalendarViewController.xib in Resources */,
 				2357222A1F7D58170096A636 /* Roboto-LightItalic.ttf in Resources */,
+				D76A953A1FBDD93500CA64E1 /* CustomerStatusController.xib in Resources */,
 				231D97F11F95C836003E8DA3 /* OrderListCell.xib in Resources */,
 				232F174C1F74CA250053A87D /* MenuListView.xib in Resources */,
 				23776B0E1F9BCCD1003EE5BF /* ProductListController.xib in Resources */,
@@ -1258,6 +1287,7 @@
 				D74094AB1FBB26BE00116F6A /* AboutController.xib in Resources */,
 				23544BBA1F96758E00FA81A5 /* OrderCustomerView.xib in Resources */,
 				2365D4D81F77B41300673903 /* ChartStatisticsCustomer.xib in Resources */,
+				D7DC30291FBC826A00EF76B4 /* NewsController.xib in Resources */,
 				2357222E1F7D58170096A636 /* Roboto-Thin.ttf in Resources */,
 				2337CBA11FAF21FB00EFA6BA /* EmailController.xib in Resources */,
 				235722201F7D58170096A636 /* RobotoCondensed-Bold.ttf in Resources */,
@@ -1446,6 +1476,7 @@
 				232F174A1F74CA170053A87D /* MenuListView.swift in Sources */,
 				232D2D041F76CB5200B93B45 /* Theme.swift in Sources */,
 				232818DE1F9C89FF00D57799 /* OrderItemManager.swift in Sources */,
+				D7DC30281FBC826A00EF76B4 /* NewsController.swift in Sources */,
 				23DEDE391F72CBD7003D4097 /* AppConfig.swift in Sources */,
 				23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */,
 				2323238D1F83452A00290926 /* GroupCustomerController.swift in Sources */,
@@ -1481,6 +1512,7 @@
 				23853AA61F8B30F50039D653 /* SyncService.swift in Sources */,
 				233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
+				D76A953B1FBDD93500CA64E1 /* CustomerStatusController.swift in Sources */,
 				23208F251FA1BAA800B2EDFF /* LocalNotification.swift in Sources */,
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
 				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,

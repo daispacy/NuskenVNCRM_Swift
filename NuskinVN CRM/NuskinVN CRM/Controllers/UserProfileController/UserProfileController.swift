@@ -304,7 +304,7 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
             if let urlAvatar = user.urlAvatar {
                 if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                     if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imvAvatar.loadImageUsingCacheWithURLString(urlAvatar, placeHolder: nil)
+                        imvAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
                     } else {
                         if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
                             let decodedimage = UIImage(data: dataDecoded)
