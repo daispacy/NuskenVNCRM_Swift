@@ -52,3 +52,12 @@ extension Bundle {
         return infoDictionary?["CFBundleVersion"] as? String
     }
 }
+
+extension UINavigationController {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        self.providesPresentationContextTransitionStyle = true
+        self.definesPresentationContext = true
+        self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
+    }
+}

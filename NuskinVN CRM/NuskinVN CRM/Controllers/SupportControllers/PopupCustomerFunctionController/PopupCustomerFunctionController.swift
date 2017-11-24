@@ -38,7 +38,6 @@ class PopupCustomerFunctionController: UIViewController {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        
     }
     
     required init?(coder aDecoder: NSCoder) {

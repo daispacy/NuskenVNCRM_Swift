@@ -59,7 +59,19 @@ public class GroupDO: NSManagedObject {
             print(fetchError)
             return 0
         }
-        return 0
+    }
+    
+    func getListEmailCustomers() -> String {
+        var emails = ""
+        let list = customers().flatMap{$0.email}
+        for item in list {
+            if emails.characters.count > 0 {
+                emails.append("; " + item)
+            } else {
+                emails.append(item)
+            }
+        }
+        return emails
     }
     
     func customers(fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true)->[CustomerDO] {

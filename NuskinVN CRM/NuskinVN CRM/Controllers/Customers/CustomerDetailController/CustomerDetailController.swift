@@ -388,7 +388,6 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         }
                         customer.distributor_id = user.id
                         customer.store_id = user.store_id
-                        
                         CustomerManager.updateCustomerEntity(customer, onComplete: {
                             _self.navigationController?.popToRootViewController(animated: true)
                         })
@@ -661,7 +660,7 @@ extension CustomerDetailController {
             let imgScale = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
             imvAvatar.image = imgScale
             picker.dismiss(animated: true, completion: nil)
-            let imageData:NSData = UIImagePNGRepresentation(imgScale)! as NSData
+            let imageData:NSData = UIImageJPEGRepresentation(imgScale, 0.5)! as NSData
             let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
             self.avatar = strBase64            
         }

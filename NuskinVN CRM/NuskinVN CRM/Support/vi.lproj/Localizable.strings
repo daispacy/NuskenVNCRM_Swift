@@ -85,8 +85,12 @@
 "version" = "Phiên bản";
 "version_newest" = "Phiên bản mới nhất";
 "close" = "Đóng";
-"news" = "Tin khuyễn mãi";
+"news" = "Tin khuyến mãi";
 "would_you_like_to_filter_this_customer" = "Chỉ hiển thị những đơn hàng của khách hàng";
+"photo_saved_success" = "Lưu ảnh thành công";
+"would_you_like_delete_group" = "Bạn có muốn xoá nhóm KH này?";
+"send_email" = "Gửi email";
+"add_user" = "Thêm khách hàng";
 
 "placeholder_name_group" = "Tên nhóm";
 "choose_group_color" = "Màu";

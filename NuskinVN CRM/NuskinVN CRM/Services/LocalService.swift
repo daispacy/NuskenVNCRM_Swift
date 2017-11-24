@@ -138,13 +138,13 @@ final class LocalService: NSObject {
         
     }
     
-    private func syncMasterData(_ onComplete:(()->Void)? = nil) {
+    func syncMasterData(_ onComplete:(()->Void)? = nil) {
         SyncService.shared.getMasterData { _ in
             onComplete?()
         }
     }
     
-    private func syncUser(_ onComplete:(()->Void)? = nil) {
+    func syncUser(_ onComplete:(()->Void)? = nil) {
         guard let _ = UserManager.currentUser() else { onComplete?(); return }
 //        if user.synced == false {
             SyncService.shared.syncUser({ _ in
@@ -153,7 +153,7 @@ final class LocalService: NSObject {
 //        }
     }
     
-    private func syncOrdersItems(_ onComplete:(()->Void)? = nil) {
+    func syncOrdersItems(_ onComplete:(()->Void)? = nil) {
             print("*******\nSTART SYNC ORDERITEMS\n*******")
         
         DispatchQueue.main.async {
@@ -200,7 +200,7 @@ final class LocalService: NSObject {
         })
     }
     
-    private func syncOrders(_ onComplete:(()->Void)? = nil) {
+    func syncOrders(_ onComplete:(()->Void)? = nil) {
         
         OrderManager.getAllOrdersNotSynced { list in
             let listDictionaryOrders:[JSON] = list.flatMap({$0.toDictionary})
@@ -256,7 +256,7 @@ final class LocalService: NSObject {
         }
     }
     
-    private func syncCustomers(_ onComplete:(()->Void)? = nil) {
+    func syncCustomers(_ onComplete:(()->Void)? = nil) {
         CustomerManager.getAllCustomersNotSynced { list in
             let listDictionaryCustomer:[JSON] = list.flatMap({$0.toDictionary})
             DispatchQueue.main.async {

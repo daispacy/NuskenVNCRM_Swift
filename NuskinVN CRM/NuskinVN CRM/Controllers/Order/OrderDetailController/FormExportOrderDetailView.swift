@@ -179,7 +179,7 @@ class FormExportOrderDetailView: UIView {
                     quantity.numberOfLines = 0
                     quantity.textAlignment = .center
                     configLabel(quantity)
-                    quantity.text = "\($0.quantity.toTextPrice()) \("unit".localized()) "
+                    quantity.text = "\($0.quantity.toTextPrice()) \("unit".localized())"
                     viewQuantity.addSubview(quantity)
                     addContraint(quantity)
                     
@@ -191,11 +191,11 @@ class FormExportOrderDetailView: UIView {
                     let viewPrice = CViewBorder(frame: CGRect.zero, tp)
                     let price = UILabel(frame: CGRect.zero)
                     price.numberOfLines = 0
-                    price.textAlignment = .center
+                    price.textAlignment = .right
                     configLabel(price)
                     price.text = "\($0.price.toTextPrice()) \("price_unit".localized())"
                     viewPrice.addSubview(price)
-                    addContraint(price)
+                    addContraint(price,0,10)
                     
                     // price
                     var tt:[ViewBorderType] = [.right]
@@ -205,11 +205,11 @@ class FormExportOrderDetailView: UIView {
                     let viewTotal = CViewBorder(frame: CGRect.zero, tt)
                     let total = UILabel(frame: CGRect.zero)
                     total.numberOfLines = 0
-                    total.textAlignment = .center
+                    total.textAlignment = .right
                     configLabel(total)
                     total.text = "\(($0.quantity*$0.price).toTextPrice()) \("price_unit".localized())"
                     viewTotal.addSubview(total)
-                    addContraint(total)
+                    addContraint(total,0,10)
                     
                     
                     stack.insertArrangedSubview(viewProduct, at: stack.arrangedSubviews.count)
@@ -262,12 +262,12 @@ class FormExportOrderDetailView: UIView {
         let viewTotal = CViewBorder(frame: CGRect.zero, tt)
         let total = UILabel(frame: CGRect.zero)
         total.numberOfLines = 0
-        total.textAlignment = .center
+        total.textAlignment = .right
         total.textColor = UIColor(hex: Theme.colorNavigationBar)
         total.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.medium)
         total.text = "\(price.toTextPrice()) \("price_unit".localized().uppercased())"
         viewTotal.addSubview(total)
-        addContraint(total)
+        addContraint(total,0,10)
         
         
         stack.insertArrangedSubview(viewProduct, at: stack.arrangedSubviews.count)

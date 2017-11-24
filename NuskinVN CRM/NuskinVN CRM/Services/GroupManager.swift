@@ -279,7 +279,6 @@ class GroupManager: NSObject {
                         return false
                     })
                 }
-                CoreDataStack.sharedInstance.saveContext()
                 list = fromList.filter {
                     if let dt = $0["id"] as? String {
                         if let hID = Int64(dt) {

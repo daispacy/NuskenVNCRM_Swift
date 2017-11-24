@@ -135,9 +135,10 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
             guard let user = UserManager.currentUser() else {return}
             
             let vc = PopupCustomerFunctionController(nibName: "PopupCustomerFunctionController", bundle: Bundle.main)
-            
+            let nv = UINavigationController(rootViewController: vc)
+            vc.navigationController?.setNavigationBarHidden(true, animated: false)
             _self.preventSyncData()
-            topVC.present(vc, animated: false, completion: {
+            topVC.present(nv, animated: false, completion: {
                 // load customer, is30: mean display text for block customer have order higher 30 day
                 vc.show(customer, is30:is30)
             })
@@ -146,7 +147,9 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
             vc.involkeEmailView = { customer in
                 let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
                 _self.preventSyncData()
-                topVC.present(vc1, animated: true, completion: {
+                let nv = UINavigationController(rootViewController: vc1)
+                vc1.navigationController?.setNavigationBarHidden(true, animated: false)
+                topVC.present(nv, animated: true, completion: {
                     vc1.show(from: user.email!, to: customer.email!)
                 })
                 vc1.onDismissComplete = {[weak self] in

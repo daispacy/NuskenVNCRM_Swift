@@ -68,9 +68,9 @@ class GroupCollectCustomerCell: UICollectionViewCell {
             }
         }
         
-        if ((object.distributor_id == 0 && object.id > 0) || object.isTemp) {
+//        if ((object.distributor_id == 0 && object.id > 0) || object.isTemp) {
             btnOption.isHidden = true
-        }        
+//        }        
     }
     
     // MARK: - event

@@ -71,8 +71,6 @@ class OrderDetailController: RootViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        
-        
     }
     
     deinit {
@@ -157,6 +155,7 @@ class OrderDetailController: RootViewController {
         
         onDidLoad = {[weak self] in
             if let _self = self  {
+                _self.btnSaveOrder.isHidden = false
                 _self.orderProductView.show(order: order)
                 _self.orderCustomerView.show(order: order)
                 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13770" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13770"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -380,25 +380,25 @@
                                     <rect key="frame" x="0.0" y="533" width="375" height="80"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="T3D-Hm-QFB">
-                                            <rect key="frame" x="103" y="0.0" width="169" height="80"/>
+                                            <rect key="frame" x="157.5" y="0.0" width="60" height="80"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cxj-Rc-1Fr" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="20" width="66" height="40"/>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cxj-Rc-1Fr" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="20" width="0.0" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="v5m-QE-8zK"/>
+                                                        <constraint firstAttribute="height" priority="750" constant="40" id="v5m-QE-8zK"/>
                                                     </constraints>
                                                     <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                                 <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJ3-oE-8fx" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="86" y="20" width="20" height="40"/>
+                                                    <rect key="frame" x="0.0" y="20" width="20" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="KOd-Re-sqs"/>
                                                     </constraints>
                                                     <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                                 </button>
                                                 <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ywC-H2-UVG" customClass="CButtonAlert" customModule="NuskinVN_CRM" customModuleProvider="target">
-                                                    <rect key="frame" x="149" y="20" width="20" height="40"/>
+                                                    <rect key="frame" x="40" y="20" width="20" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="fu8-Du-5qk"/>
                                                     </constraints>

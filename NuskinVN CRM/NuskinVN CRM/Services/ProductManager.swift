@@ -263,7 +263,7 @@ class ProductManager: NSObject {
                 _ = objects.map {
                     $0.map({context.delete($0)})
                 }
-                CoreDataStack.sharedInstance.saveContext()
+                
                 complete()
             } catch let error {
                 print("ERROR DELETING : \(error)")
@@ -283,7 +283,6 @@ class ProductManager: NSObject {
                 _ = objects.map {
                     $0.map({context.delete($0)})
                 }
-                CoreDataStack.sharedInstance.saveContext()
                 complete()
             } catch let error {
                 print("ERROR DELETING : \(error)")

@@ -29,6 +29,7 @@ UITabBarControllerDelegate {
     var groupSelected:GroupDO?// group filter
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
+    var oldExpandRow:NSInteger = -1 // row expand
     var listCustomerSelected:[CustomerDO] = [] //list customer select to remove
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     var onSelectCustomer:((NSManagedObject)->Void)?
@@ -51,8 +52,6 @@ UITabBarControllerDelegate {
         tapGesture?.cancelsTouchesInView = false
         self.tableView.addGestureRecognizer(tapGesture!)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedCustomer(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedGroup(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 50
         
@@ -98,24 +97,49 @@ UITabBarControllerDelegate {
         }
         reload()
         
+        if let bool = LocalService.shared.isShouldSyncData?() {
+            if bool == false {
+                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                self.getDataFromLocal()
+                return
+            }
+        }
+        
+        if !Support.connectivity.isConnectedToInternet() {
+            // Device doesn't have internet connection
+            print("Internet Offline")
+            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+            self.getDataFromLocal()
+            return
+        }
+        
+        showLoading(isShow: true, isShowMessage: false)
+        
+        LocalService.shared.syncCustomers {[weak self] in
+            guard let _self = self else {return}
+            _self.getDataFromLocal()
+        }
+    }
+    
+    func getDataFromLocal() {
         GroupManager.getAllGroup(onComplete: {[weak self] list in
             if let _self = self {
                 _self.listGroup = list
             }
         })
         
-        showLoading(isShow: true, isShowMessage: false)
-        
         CustomerManager.getAllCustomers(search: self.searchText, group: self.groupSelected) {[weak self] list in
             if let _self = self {
-            
+                
                 _self.listCustomer.append(contentsOf: list)
                 if list.count > 0 {
                     _self.showLoading(isShow: false, isShowMessage: false)
                 } else {
                     _self.showLoading(isShow: false, isShowMessage: true)
                 }
-            
+                
                 _self.reload()
             }
         }
@@ -132,17 +156,6 @@ UITabBarControllerDelegate {
         lblMessageData.text = "customer_not_found".localized()
         btnFilterGroup.setTitle("choose_group".localized(), for: .normal)
         searchBar.placeholder = "search".localized()
-    }
-    
-    func didSyncedGroup(notification:Notification) {
-        GroupManager.getAllGroup(onComplete: {[weak self] list in
-            if let _self = self {
-                _self.listGroup = list
-            }
-        })
-    }
-    func didSyncedCustomer(notification:Notification) {
-        updateTableContent()
     }
     
     func hideKeyboard() {
@@ -252,7 +265,11 @@ extension CustomerListController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cellSelected") as! CustomerSelectedListCell
             let isCheked = self.listCustomerSelected.filter({($0).email == (listCustomer[indexPath.row]).email}).count > 0
             cell.viewcontroller = self
-            cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: isCheked)
+            var check = expandRow == indexPath.row
+            if cell.isSelect {
+                check = false
+            }
+            cell.show(customer: customer, isEdit: isEdit, isSelect:check, isChecked: isCheked)
             cell.onSelectCustomer = {[weak self] customer, isAdd in
                 if let _self = self {
                     if isAdd {
@@ -283,7 +300,11 @@ extension CustomerListController {
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
-            cell.show(customer: customer, isEdit: isEdit, isSelect:expandRow == indexPath.row, isChecked: false)
+            var check = expandRow == indexPath.row
+            if oldExpandRow == indexPath.row {
+                check = false
+            }
+            cell.show(customer: customer, isEdit: isEdit, isSelect:check, isChecked: false)
             
             cell.onEditCustomer = {[weak self]
                 customer in
@@ -308,7 +329,7 @@ extension CustomerListController {
                 _self.tabBarController?.selectedIndex = 1
             }
             cell.involkeEmailView = {[weak self] customer in
-                guard let _self = self else {return}
+                guard let _ = self else {return}
                 guard let user = UserManager.currentUser() else {return}
                 let vc = EmailController(nibName: "EmailController", bundle: Bundle.main)
 //                _self.showTabbar(false)
@@ -331,6 +352,7 @@ extension CustomerListController {
             onSelectCustomer?(listCustomer[indexPath.row])
             return
         }
+        
         if isEdit {
             let cell = tableView.cellForRow(at: indexPath) as! CustomerSelectedListCell
             cell.setSelect()
@@ -339,15 +361,11 @@ extension CustomerListController {
             if expandRow == indexPath.row {
                 // reset expand
                 expandRow = -1
-//                self.tableView.reloadData()
             } else {
+                oldExpandRow = expandRow
                 expandRow = indexPath.row
-                self.tableView.reloadRows(at: [indexPath], with: .fade)
-//                self.tableView.beginUpdates()
-//                self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.automatic)
-//                self.tableView.endUpdates()
             }
-            self.tableView.reloadRows(at: [indexPath], with: .fade)
+            self.tableView.reloadRows(at: [indexPath,IndexPath(row: oldExpandRow, section: 0)], with: .fade)
         }
     }
     

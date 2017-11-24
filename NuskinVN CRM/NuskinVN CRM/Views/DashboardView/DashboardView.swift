@@ -134,9 +134,8 @@ class DashboardView: CViewSwitchLanguage {
                 stackView.insertArrangedSubview(totalSummaryCustomerView, at: stackView.arrangedSubviews.count)
                 totalSummaryCustomerView.loadChartCustomer(totalOrdered: "\(data2)", totalNotOrderd: "\(data3)")
                 
-                let tVC = Support.topVC
                 totalSummaryCustomerView.presentCustomerList = { isOrdered in
-                    if let topVC = tVC {
+                    if let topVC = Support.topVC {
                         let vc = CustomerStatusController(nibName: "CustomerStatusController", bundle: Bundle.main)
                         let nv = UINavigationController(rootViewController: vc)
                         topVC.present(nv, animated: true, completion: { isDone in

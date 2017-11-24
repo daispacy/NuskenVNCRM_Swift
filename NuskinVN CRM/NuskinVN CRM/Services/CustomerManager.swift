@@ -304,9 +304,8 @@ class CustomerManager: NSObject {
     }
     
     static func updateCustomerEntity(_ customer:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
         do {
-            try context.save()
+            try customer.managedObjectContext?.save()
             print("customer saved!")
         } catch let error as NSError  {
             print("Could not saved \(error), \(error.userInfo)")
@@ -511,7 +510,6 @@ class CustomerManager: NSObject {
                         return false
                     })
                 }
-                CoreDataStack.sharedInstance.saveContext()
                 list = fromList.filter {
                     if let dt = $0["id"] as? String {
                         if let hID = Int64(dt) {

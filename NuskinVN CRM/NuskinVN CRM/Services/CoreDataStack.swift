@@ -66,8 +66,16 @@ extension CoreDataStack {
     
     func applicationDocumentsDirectory() {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "yo.BlogReaderApp" in the application's documents directory.
-        if let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).last {
+        if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).last {
             print(url.absoluteString)
+            let checkDeletaOldData = UserDefaults.standard.bool(forKey: "App:DeleteOldCoreData")
+            if !checkDeletaOldData {
+                let storeURL: URL = url.appendingPathComponent("/CRM.sqlite") as URL
+                do {
+                    try? FileManager.default.removeItem(at: storeURL)
+                    UserDefaults.standard.set(true, forKey: "App:DeleteOldCoreData")
+                }
+            }
         }
     }
 }

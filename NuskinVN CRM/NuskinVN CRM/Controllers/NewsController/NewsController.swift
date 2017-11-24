@@ -65,6 +65,41 @@ class NewsController: UIViewController {
     func createImageView() -> UIImageView {
         let imv = UIImageView(frame: CGRect.zero)
         imv.contentMode = .scaleAspectFill
+        imv.addEvent {[weak self] in
+            guard let _self = self else {return}
+            if let img = imv.image {
+                _self.savePhoto(img: img)
+            }
+        }
         return imv
+    }
+    
+//MARK: - Add image to Library
+    func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let _ = error {
+            // we got back an error!
+            Support.popup.showAlert(message: "error_save_to_photo".localized(), buttons: ["ok".localized()], vc: self.navigationController!, onAction: {index in
+                
+            },nil)
+        } else {
+            Support.popup.showAlert(message: "photo_saved_success".localized(), buttons: ["ok".localized()], vc: self.navigationController!, onAction: {index in
+                
+            },nil)
+        }
+    }
+    
+    func savePhoto(img:UIImage) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
+            alertController.dismiss(animated: true, completion: nil)
+        }
+        let okAction = UIAlertAction(title: "save_photo".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+            
+            UIImageWriteToSavedPhotosAlbum(img, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+            
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(okAction)
+        Support.topVC?.present(alertController, animated: true, completion: nil)
     }
 }

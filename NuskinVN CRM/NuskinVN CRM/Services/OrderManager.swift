@@ -174,9 +174,8 @@ class OrderManager: NSObject {
         }
     }
     static func updateOrderEntity(_ product:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
         do {
-            try context.save()
+            try product.managedObjectContext?.save()
             print("order saved!")
         } catch let error as NSError  {
             print("Could not saved \(error), \(error.userInfo)")

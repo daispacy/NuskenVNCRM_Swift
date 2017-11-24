@@ -49,55 +49,6 @@ UISearchBarDelegate{
     var toDate:NSDate? = nil
     var isLifeTime: Bool = true
     
-//    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<OrderDO> = {
-//        let user = UserManager.currentUser()!
-//        // Initialize Fetch Request
-//        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-//        fetchRequest.returnsObjectsAsFaults = false
-//        
-//        let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
-//        var predicate2 = NSPredicate(format: "1 > 0")
-//        var predicate3 = NSPredicate(format: "1 > 0")
-//        var predicate4 = NSPredicate(format: "1 > 0")
-//        var predicate5 = NSPredicate(format: "1 > 0")
-//        
-//        if let text = self.searchText {
-//            if text.characters.count > 0 {
-//                predicate2 = NSPredicate(format: "code contains[cd] %@",text)
-//            }
-//        }
-//        if let sta = self.status {
-//            predicate3 = NSPredicate(format: "status IN %@",[sta])
-//        }
-//        if let psta = self.payment_status {
-//            predicate4 = NSPredicate(format: "payment_status IN %@",[psta])
-//        }
-//        
-//        if (self.customer_id.filter{$0 != 0}).count > 0 {
-//           predicate5 = NSPredicate(format: "customer_id IN %@",self.customer_id.filter{$0 != 0})
-//        }
-//        var predicate6 = NSPredicate(format: "1 > 0")
-//        if !self.isLifeTime {
-//            if let from = self.fromDate,
-//                let to = self.toDate {
-//                predicate6 = NSPredicate(format: "date_created >= %@ AND date_created <= %@",from,to)
-//            }
-//        }
-//        
-//        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate2,predicate1,predicate3,predicate4,predicate5,predicate6])
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "last_updated", ascending: false),
-//                                        NSSortDescriptor(key: "status", ascending: false)]
-//        fetchRequest.predicate = predicateCompound
-//        
-//        // Create Fetched Results Controller
-//        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-//        
-//        // Configure Fetched Results Controller
-//        fetchedResultsController.delegate = self
-//        
-//        return fetchedResultsController as! NSFetchedResultsController<OrderDO>
-//    }()
-    
     // MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,8 +62,6 @@ UISearchBarDelegate{
         tapGesture?.cancelsTouchesInView = false
         self.tableView.addGestureRecognizer(tapGesture!)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedData(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 86.4
         
@@ -170,7 +119,7 @@ UISearchBarDelegate{
     func menuFitlerPress(_ sender:UIBarButtonItem) {
         UIView.animate(withDuration: 0.2) {
             self.vwFilter.isHidden = !self.vwFilter.isHidden
-            self.menuDashboard.isHidden = !self.menuDashboard.isHidden
+            self.menuDashboard.isHidden = self.vwFilter.isHidden
         }
     }
     
@@ -187,12 +136,13 @@ UISearchBarDelegate{
                     } else {
                         _self.customer_id = []
                     }
-                    _self.refreshListOrder()
+                    _self.syncIfCan()
                 },nil)
+                return
             } else {
                 _self.customer_id = []
             }
-            _self.refreshListOrder()
+            _self.syncIfCan()
         }
     }
     
@@ -201,9 +151,6 @@ UISearchBarDelegate{
         
         listStatus = AppConfig.order.listStatus()
         listPaymentStatus = AppConfig.order.listPaymentStatus()
-        
-//        refreshListOrder()
-//        self.showTabbar()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -237,8 +184,6 @@ UISearchBarDelegate{
     
     // MARK: - private
     func refreshListOrder() {
-//        listOrder.removeAll()
-//        self.tableView.reloadData()
         
         // setup filter customer
         let listCIDS = self.customer_id.filter{$0 != 0}
@@ -274,27 +219,6 @@ UISearchBarDelegate{
                 }
             })
         }
-        
-        // setup date
-        
-        
-//        do {
-//            try self.fetchedResultsController.performFetch()
-//            
-//            self.listOrder = self.fetchedResultsController.fetchedObjects!
-//            if listOrder.count > 0 {
-////                self.listOrder.append(contentsOf: list)
-//                self.tableView.reloadData()
-//                self.showLoading(isShow: false, isShowMessage: false)
-//            } else {
-//                self.showLoading(isShow: false, isShowMessage: true)
-//            }
-//            
-//        } catch {
-//            let fetchError = error as NSError
-//            print("Unable to Perform Fetch Request")
-//            print("\(fetchError), \(fetchError.localizedDescription)")
-//        }
         
         OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id,fromDate: self.fromDate,toDate: self.toDate,isLifeTime: self.isLifeTime) {[weak self] list in
             DispatchQueue.main.async {
@@ -468,12 +392,38 @@ UISearchBarDelegate{
         }
     }
     
-    func didSyncedData(notification:Notification) {
-        refreshListOrder()
-    }
-    
     func hideKeyboard() {
         self.searchBar.resignFirstResponder()
+    }
+    
+    // MARK: - sync & reload
+    func syncIfCan() {
+        if let bool = LocalService.shared.isShouldSyncData?() {
+            if bool == false {
+                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                self.refreshListOrder()
+                return
+            }
+        }
+        
+        if !Support.connectivity.isConnectedToInternet() {
+            // Device doesn't have internet connection
+            print("Internet Offline")
+            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+            self.refreshListOrder()
+            return
+        }
+        
+        LocalService.shared.syncOrders { [weak self] in
+            guard let _self = self else {return}
+            LocalService.shared.syncOrdersItems {
+                DispatchQueue.main.async {
+                    _self.refreshListOrder()
+                }
+            }
+        }
     }
 }
 
@@ -504,12 +454,13 @@ extension OrderListController {
                     } else {
                         _self.customer_id = []
                     }
-                    _self.refreshListOrder()
+                    _self.syncIfCan()
                 },nil)
+                return
             } else {
                 _self.customer_id = []
             }
-            _self.refreshListOrder()
+            _self.syncIfCan()
         }
     }
     

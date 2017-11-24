@@ -22,6 +22,7 @@ class CustomerStatusController:UIViewController,
     var listCustomer:[CustomerDO] = [] // list customer for tableview
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
+    var oldExpandRow:NSInteger = -1 // row expand
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     var onSelectCustomer:((NSManagedObject)->Void)?
     var onGotoOrderList:(([Int64])->Void)?
@@ -133,7 +134,12 @@ extension CustomerStatusController {
         
        
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomerListCell
-            cell.show(customer: customer, isEdit: false, isSelect:expandRow == indexPath.row, isChecked: false)
+        
+        var check = expandRow == indexPath.row
+        if oldExpandRow == indexPath.row {
+            check = false
+        }
+            cell.show(customer: customer, isEdit: false, isSelect:check, isChecked: false)
             
             cell.onEditCustomer = {[weak self]
                 customer in
@@ -177,9 +183,10 @@ extension CustomerStatusController {
             // reset expand
             expandRow = -1
         } else {
+            oldExpandRow = expandRow
             expandRow = indexPath.row
         }
-        self.tableView.reloadRows(at: [indexPath], with: .fade)
+        self.tableView.reloadRows(at: [indexPath,IndexPath(row: oldExpandRow, section: 0)], with: .fade)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

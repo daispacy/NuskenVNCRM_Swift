@@ -116,13 +116,15 @@ class PopupOptionGroupController: UIViewController{
                 btn.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
                 btn.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
                 btn.setImage(UIImage(named:$0.icon), for: .normal)
+                btn.contentMode = .center
                 btn.tag = $0.tag
                 btn.contentHorizontalAlignment = .left
-                btn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+                btn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
                 btn.addTarget(self, action: #selector(self.optionPress(_:)), for: .touchUpInside)
                 tableView.insertArrangedSubview(btn, at: tableView.arrangedSubviews.count)
                 btn.translatesAutoresizingMaskIntoConstraints = false
                 btn.heightAnchor.constraint(equalToConstant: 50)
+                btn.widthAnchor.constraint(equalToConstant: 50)
             })
             
             var newframe:CGRect = fromView.frame

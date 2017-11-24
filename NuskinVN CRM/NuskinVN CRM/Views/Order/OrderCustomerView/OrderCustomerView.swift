@@ -71,6 +71,7 @@ class OrderCustomerView: UIView {
     // MARK: - interface
     func show(order:OrderDO) {
         self.order = order
+        self.btnChooseCustomer.isEnabled = false
         self.customerSelected = order.customer()
         if let code = order.code {
             self.orderCode = code
