@@ -30,7 +30,7 @@ class DashboardCustomerController: UIViewController {
     var isLifeTime: Bool = true
     var maxTopProduct:Int = 10
     
-    var customer:CustomerDO?
+    var customer:Customer?
     
     // MARK: - INIT
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -75,12 +75,8 @@ class DashboardCustomerController: UIViewController {
     // MARK: - private
     func getReport() {
         guard let cus = self.customer else {self.dismiss(animated: true, completion: nil); return}
-        if let name = cus.fullname {
+        let name = cus.fullname
             lblNam.text = name.uppercased()
-        } else {
-            lblNam.text = ""
-        }
-        print("fuck \(self.fromDate!) \(self.toDate!) \(self.isLifeTime) \(cus)")
         UserManager.getDataCustomerDashboard(self.fromDate, toDate: self.toDate, isLifeTime: self.isLifeTime, customer: cus) {[weak self] data in
             guard let _self = self else {return}
             DispatchQueue.main.async {

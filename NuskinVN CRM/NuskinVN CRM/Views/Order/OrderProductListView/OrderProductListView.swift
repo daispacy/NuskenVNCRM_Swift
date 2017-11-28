@@ -16,10 +16,8 @@ class OrderProductListView: UIView {
     @IBOutlet var stackViewContainer: UIStackView!
     @IBOutlet var lbltitle: CLabelGradient!
     @IBOutlet var btnAddProduct: UIButton!
-    var order:OrderDO?
+    var order:Order?
     var disposeBage = DisposeBag()
-//    var listOrderItem:[OrderItemDO] = []
-//    var listEditProduct:[OrderItemDO] = []
     var listOrderItem:[JSON] = []
     var onUpdateProducts:(([JSON])->Void)?
     var isFirstLoaded:Bool = false
@@ -37,7 +35,7 @@ class OrderProductListView: UIView {
     }
     
     // MARK: - interface
-    func show(order:OrderDO) {
+    func show(order:Order) {
         self.order = order
         refreshData()
     }
@@ -111,8 +109,8 @@ class OrderProductListView: UIView {
                                 Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: _self.navigationController!, onAction: {index in
                                     if index == 1 {
                                         if let index = _self.listOrderItem.index(where: {
-                                            if let pro = $0["product"] as? ProductDO,
-                                                let pro1 = data["product"] as? ProductDO{
+                                            if let pro = $0["product"] as? Product,
+                                                let pro1 = data["product"] as? Product{
                                                 return pro.name == pro1.name
                                             }
                                             return false
@@ -146,8 +144,8 @@ class OrderProductListView: UIView {
                         Support.popup.showAlert(message: "would_you_like_to_delete_product".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self.navigationController!, onAction: {index in
                             if index == 1 {
                                 if let index = self.listOrderItem.index(where: {
-                                    if let pro = $0["product"] as? ProductDO,
-                                        let pro1 = data["product"] as? ProductDO{
+                                    if let pro = $0["product"] as? Product,
+                                        let pro1 = data["product"] as? Product{
                                         return pro.name == pro1.name
                                     }
                                     return false
@@ -171,7 +169,7 @@ class OrderProductListView: UIView {
         self.onUpdateProducts?(listOrderItem)
     }
     
-    func handleProduct(product:ProductDO? = nil, json:JSON? = nil, order:OrderItemDO? = nil) {
+    func handleProduct(product:Product? = nil, json:JSON? = nil, order:OrderItem? = nil) {
        
         let vc = AddProductController(nibName: "AddProductController", bundle: Bundle.main)
         var topVC = UIApplication.shared.keyWindow?.rootViewController
@@ -192,7 +190,7 @@ class OrderProductListView: UIView {
         vc.onCheckProductExist = {
             product in
             if let index = self.listOrderItem.index(where: {
-                if let pro = $0["product"] as? ProductDO {
+                if let pro = $0["product"] as? Product {
                    return pro.name == product.name
                 }
                 
@@ -207,8 +205,8 @@ class OrderProductListView: UIView {
             data, isEdit in
             if isEdit {
                 if let index = self.listOrderItem.index(where: {
-                    if let pro = $0["product"] as? ProductDO,
-                        let pro1 = data["product"] as? ProductDO{
+                    if let pro = $0["product"] as? Product,
+                        let pro1 = data["product"] as? Product{
                         return pro.name == pro1.name
                     }
                     return false
@@ -262,11 +260,11 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
     @IBOutlet var imgProduct: UIImageView!
     
     var tapGesture:UITapGestureRecognizer!
-    var onSelectEdit:((OrderItemDO)->Void)?
-    var onSelectDelete:((OrderItemDO)->Void)?
+    var onSelectEdit:((OrderItem)->Void)?
+    var onSelectDelete:((OrderItem)->Void)?
     var onSelectEditJSON:((JSON)->Void)?
     var onSelectDeleteJSON:((JSON)->Void)?
-    var product:OrderItemDO?
+    var product:OrderItem?
     var json:JSON?
     var isIgnoreTouh:Bool = false
     
@@ -288,7 +286,7 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
     }
     
     // MARK: - interface
-    func show(product:OrderItemDO) {
+    func show(product:OrderItem) {
         self.product = product
         
         lblName.text = product.name
@@ -305,13 +303,12 @@ class BlockOrderProductView: UIView, UIGestureRecognizerDelegate {
     
     func show(json:JSON) {
         self.json = json
-        if let pro = json["product"] as? ProductDO{
+        if let pro = json["product"] as? Product{
             lblName.text = pro.name
-            if let imgStr = pro.avatar {
+           let imgStr = pro.avatar
                 if imgStr.characters.count > 0 {
                     imgProduct.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)",size:nil, placeHolder: UIImage(named:"ic_top_product_block"))
                 }
-            }
         }
         if let quantity = Int64("\(json["total"] ?? 0)"),
             let price = Int64("\(json["price"] ?? 0)")

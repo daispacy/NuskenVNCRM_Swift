@@ -14,7 +14,7 @@ enum Server:String {
     case domain = "https://nuskinvncrm.com/mobile.php"
     case domainImage = "https://nuskinvncrm.com"
     case op = "mobile"
-    case ver = "1.2"
+    case ver = "1.3"
     case act_authentic = "authentic"
     case act_resetpw = "resetpw"
     case act_customers = "customers"
@@ -353,9 +353,7 @@ final class SyncService: NSObject {
                             if let json:JSON = jsonArray["data"] as? JSON{
                                 if let bool = LocalService.shared.isShouldSyncData?() {
                                     if bool == false {
-                                        print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                        print("APP IN STATE BUSY, SO WILL SYNCED LATER")                                        
                                         if let reason = GetDataFailureReason(rawValue: (jsonArray["code"] as? Int) ?? 530) {
                                             completion(.failure(reason))
                                         }
@@ -458,6 +456,58 @@ final class SyncService: NSObject {
         guard let user = UserManager.currentUser() else { return}
         parameters["store_id"] = user.store_id
         parameters["type"] = "sync"
+        parameters["distributor_id"] = user.id
+        if let theJSONData = try? JSONSerialization.data(
+            withJSONObject: list,
+            options: []) {
+            let theJSONText = String(data: theJSONData,
+                                     encoding: .utf8)
+            parameters["list_customer"] = theJSONText
+        }
+        
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:[JSON] = jsonArray["data"] as? [JSON]{
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
+    func postCustomersTypeOne(list:[[String:Any]],completion: @escaping GetCustomerDOCompletion) {
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_customers.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
+        parameters["type"] = "syncone"
         parameters["distributor_id"] = user.id
         if let theJSONData = try? JSONSerialization.data(
             withJSONObject: list,
@@ -667,6 +717,66 @@ final class SyncService: NSObject {
         }
     }
     
+    typealias GetSingleResult = Result<JSON, GetDataFailureReason>
+    typealias GetSingleCompletion = (_ result: GetSingleResult) -> Void
+    func postOrdersAndOrderItemsTypeOne(list:[[String:Any]],completion: @escaping GetSingleCompletion) {
+        
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        configuration.timeoutIntervalForResource = 10
+        _ = Alamofire.SessionManager(configuration: configuration)
+        
+        var parameters: Parameters = ["op":"\(Server.op.rawValue)",
+            "act":"\(Server.act_order.rawValue)",
+            "ver":"\(Server.ver.rawValue)",
+            "app_key":"\(Server.app_key.rawValue)"]
+        guard let user = UserManager.currentUser() else { return}
+        parameters["store_id"] = user.store_id
+        parameters["type"] = "syncone"
+        parameters["distributor_id"] = user.id
+        if let theJSONData = try? JSONSerialization.data(
+            withJSONObject: list,
+            options: []) {
+            let theJSONText = String(data: theJSONData,
+                                     encoding: .utf8)
+            parameters["list_items"] = theJSONText
+        }
+        
+        if let updated = user.last_login as Date?{
+            parameters["from_date"] = updated.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+        }
+        
+        Alamofire.request("\(Server.domain.rawValue)", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: [:])
+            .responseString { response in
+                switch response.result {
+                case .success:
+                    
+                    guard let jsonArray = response.result.value?.convertToJSON() else {
+                        if let reason = GetDataFailureReason(rawValue: 404) {
+                            completion(.failure(reason))
+                        }
+                        return
+                    }
+                    if let error = jsonArray["error"] as? Int{
+                        if error == 0 {
+                            if let jsonArray:JSON = jsonArray["data"] as? JSON{
+                                completion(.success(jsonArray))
+                            }
+                        } else {
+                            if let reason = GetDataFailureReason(rawValue: 404) {
+                                completion(.failure(reason))
+                            }
+                        }
+                    }
+                case .failure(_):
+                    if let reason = GetDataFailureReason(rawValue: 404) {
+                        print("\(reason)")
+                        //                        completion(.failure(reason))
+                    }
+                }
+        }
+    }
+    
     func getOrderItems(completion: @escaping GetGroupCompletion) {
         
         let configuration = URLSessionConfiguration.default
@@ -797,18 +907,18 @@ final class SyncService: NSObject {
                                 completion(.failure(reason))
                             }
                             print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+//                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+//                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                             return
                         }
                     }
                     if let error = jsonArray["error"] as? Int{
                         if error == 0 {
                             if let json:JSON = jsonArray["data"] as? JSON{
-                                if let jsonGroup:[JSON] = json["products"] as? [JSON]{
-                                    ProductManager.saveProducctWith(array: jsonGroup) {
-                                        if let jsonGroup:[JSON] = json["groups"] as? [JSON]{
-                                            ProductManager.saveGroupWith(array: jsonGroup) {
+                                if let jsonGroup:[JSON] = json["groups"] as? [JSON]{
+                                    ProductManager.saveGroupWith(array: jsonGroup) {
+                                        if let jsonGroup:[JSON] = json["products"] as? [JSON]{
+                                            ProductManager.saveProducctWith(array: jsonGroup) {
                                                 completion(.success(json))
                                             }
                                         } else {
@@ -874,8 +984,8 @@ final class SyncService: NSObject {
                                             completion(.failure(reason))
                                         }
                                         print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+//                                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+//                                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                                         return
                                     }
                                 }

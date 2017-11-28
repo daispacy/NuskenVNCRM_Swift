@@ -34,7 +34,7 @@ class BirthdayManager: NSObject {
             }
         }
         do {
-            try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
+            try CoreDataStack.sharedInstance.saveManagedObjectContext.save()
         } catch let error {
             print(error)
         }
@@ -44,7 +44,7 @@ class BirthdayManager: NSObject {
         if customerID.count == 0 {return true}
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "BirthdayDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         let predicate3 = NSPredicate(format: "(customer_id IN %@ OR customer_local_id IN %@)",customerID,customerID)
         
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate3])
@@ -52,7 +52,7 @@ class BirthdayManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
             return result.count == 0
             
             
@@ -64,7 +64,7 @@ class BirthdayManager: NSObject {
     
     
     static func createBirthdayEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
         if let object = NSEntityDescription.insertNewObject(forEntityName: "BirthdayDO", into: context) as? BirthdayDO {
             
             if let data = dictionary["customer_id"] as? String {
@@ -92,7 +92,7 @@ class BirthdayManager: NSObject {
         let container = CoreDataStack.sharedInstance.persistentContainer
         container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "BirthdayDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             fetchRequest.predicate = NSPredicate(format: "birthday > %@ AND birthday < %@",Date(timeIntervalSinceNow: 0) as NSDate,Date(timeIntervalSinceNow: 0) as NSDate)
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]

@@ -25,9 +25,9 @@ class CustomerBlockView: CViewSwitchLanguage {
     @IBOutlet var vwCongrat: UIView!
     
     var tapOpenPopup:UITapGestureRecognizer?
-    var involkeFunctionView:((CustomerDO,UIView)->Void)?
+    var involkeFunctionView:((Customer,UIView)->Void)?
     var needReloadData:(()->Void)?
-    var object:CustomerDO?
+    var object:Customer?
     
     var isShowNotOrder30:Bool = false,forceRemoveButtonCheck:Bool = false
     
@@ -56,7 +56,7 @@ class CustomerBlockView: CViewSwitchLanguage {
     }
     
     // MARK: - INTERFACE
-    func showInfoCustomer(customer:CustomerDO?,_ is30:Bool = false, forceRemoveButtonCheck:Bool = false) {
+    func showInfoCustomer(customer:Customer?,_ is30:Bool = false, forceRemoveButtonCheck:Bool = false) {
         isShowNotOrder30 = is30
         guard let data = customer else { return }
         
@@ -66,8 +66,8 @@ class CustomerBlockView: CViewSwitchLanguage {
         
         object = data
        
-        if let name = data.fullname {
-            lblName.text = name
+        if data.fullname.characters.count > 0 {
+            lblName.text = data.fullname
         } else {
             lblName.text = ""
         }
@@ -103,7 +103,7 @@ class CustomerBlockView: CViewSwitchLanguage {
         
         lblStatus.textColor = vwStatus.backgroundColor
         
-        if let avaStr = data.avatar {
+        let avaStr = data.avatar
             if let urlAvatar = data.urlAvatar {
                 if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                     if avaStr.contains(".jpg") || avaStr.contains(".png"){
@@ -120,7 +120,6 @@ class CustomerBlockView: CViewSwitchLanguage {
                     let decodedimage = UIImage(data: dataDecoded)
                     imgvAvatar.image = decodedimage
                 }
-            }
         }
         
     }
@@ -181,9 +180,9 @@ class BirthdayCustomerListView: CViewSwitchLanguage {
     @IBOutlet var lblTitle: CLabelGradient!
     @IBOutlet var stackListCustomer: UIStackView!
     
-    fileprivate var customerSelected:CustomerDO?
+    fileprivate var customerSelected:Customer?
     
-    var involkeFunctionView:((CustomerDO,UIView)->Void)?
+    var involkeFunctionView:((Customer,UIView)->Void)?
     var needReloadData:(()->Void)?
     
     var isShowNotOrder30:Bool = false,forceRemoveButtonCheck:Bool = false
@@ -214,7 +213,7 @@ class BirthdayCustomerListView: CViewSwitchLanguage {
     }
     
     // MARK: - INTERFACE
-    func reloadListCustomer(_ listCustomers:[CustomerDO]?) {
+    func reloadListCustomer(_ listCustomers:[Customer]?) {
         guard let data = listCustomers else { return }
         
         if data.count == 0 {
@@ -263,7 +262,7 @@ class BirthdayCustomerListView: CViewSwitchLanguage {
 }
 
 extension BirthdayCustomerListView {
-    func CustomerBlockView(didSelect: CustomerBlockView, customer:CustomerDO) {
+    func CustomerBlockView(didSelect: CustomerBlockView, customer:Customer) {
         customerSelected = customer        
         
         Support.popup.showMenu(items: ["popup_menu_item_send_birthday".localized()],

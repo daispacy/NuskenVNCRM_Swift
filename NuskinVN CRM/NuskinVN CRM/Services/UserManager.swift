@@ -33,88 +33,94 @@ class UserManager: NSObject {
             })
             dict["total_customers_ordered"] = ordered
             dict["total_customers_not_ordered"] = notorderd
-            GroupManager.getReportGroup(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime,{ listGroup in
-                var listCustomer:[JSON] = []
-                _ = listGroup.map({
-                    listCustomer.append(["id":$0.id,"name":$0.group_name ?? "","total":Double($0.customers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime).count)])
-                })
-                dict["customers"] = listCustomer
-                
-                //total_orders_amount
-                var listOrderitems:[OrderItemDO] = []
-                
-                OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime){ listOrder in
-                    _ = listOrder.map({
-                        if $0.status != 0 { // invalid
-                            totalAmountOrders += $0.totalPrice
-                            if $0.status == 1 { // process
-                                totaOrdersprocess += 1
-                            } else if $0.status == 3 { // unprocess
-                                totalOrdersunprocess += 1
-                            }
-                        } else {
-                            totalOrdersinvalid += 1
-                        }
-                        if $0.payment_status == 1 {
-                            totalOrdersPaid += 1
-                        } else if $0.payment_status == 2 {
-                            totalOrdersUnpaid += 1
-                        }
-                        if $0.numberOrderItems() > 0 {
-                            listOrderitems.append(contentsOf:$0.orderItems())
-                        }
+            DispatchQueue.main.async {
+                GroupManager.getReportGroup(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime,{ listGroup in
+                    var listCustomer:[JSON] = []
+                    _ = listGroup.map({
+                        listCustomer.append(["id":$0.id,"name":$0.group_name,"total":Double($0.customers(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime).count)])
                     })
+                    dict["customers"] = listCustomer
                     
-                    //hanlde product
-                    var listTemp:[[String:Any]] = []
-                    if listOrderitems.count > 0 {
-                        _ = listOrderitems.map({item  in
-                            // check listTemp has store this product
-                            var index = -1
-                            var i = 0
-                            if listTemp.count == 0 {
-                                listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
+                    //total_orders_amount
+                    var listOrderitems:[OrderItem] = []
+                     DispatchQueue.main.async {
+                    OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime){ listOrder in
+                        _ = listOrder.map({
+                            if $0.status != 0 { // invalid
+                                totalAmountOrders += $0.totalPrice
+                                if $0.status == 1 { // process
+                                    totaOrdersprocess += 1
+                                } else if $0.status == 3 { // unprocess
+                                    totalOrdersunprocess += 1
+                                }
                             } else {
-                                for it in listTemp {
-                                    if let pr = it["product"] as? ProductDO,
-                                        let pr1 = item.product(){
-                                        if pr.id == pr1.id {
-                                            index = i
-                                            listTemp[index]["total"] = Int64(listTemp[index]["total"] as! Int64) + item.price*item.quantity
-                                            listTemp[index]["quantity"] = Int64(listTemp[index]["quantity"] as! Int64) + item.quantity
-                                            break
-                                        }
-                                    }
-                                    i += 1
-                                }
-                                if index == -1 {
-                                    listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
-                                }
+                                totalOrdersinvalid += 1
+                            }
+                            if $0.payment_status == 1 {
+                                totalOrdersPaid += 1
+                            } else if $0.payment_status == 2 {
+                                totalOrdersUnpaid += 1
+                            }
+                            if $0.numberOrderItems() > 0 {
+                                listOrderitems.append(contentsOf:$0.orderItems())
                             }
                         })
-                    }
-                    if listTemp.count > 0 {
-                        top10Product = listTemp
+                        
+                        //hanlde product
+                        var listTemp:[[String:Any]] = []
+                        if listOrderitems.count > 0 {
+                            _ = listOrderitems.map({item  in
+                                // check listTemp has store this product
+                                var index = -1
+                                var i = 0
+                                if listTemp.count == 0 {
+                                    if let pro = item.product() {
+                                        listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":pro])
+                                    } else {
+                                        print("fuck")
+                                    }
+                                } else {
+                                    for it in listTemp {
+                                        if let pr = it["product"] as? Product,
+                                            let pr1 = item.product(){
+                                            if pr.id == pr1.id {
+                                                index = i
+                                                listTemp[index]["total"] = Int64(listTemp[index]["total"] as! Int64) + item.price*item.quantity
+                                                listTemp[index]["quantity"] = Int64(listTemp[index]["quantity"] as! Int64) + item.quantity
+                                                break
+                                            }
+                                        }
+                                        i += 1
+                                    }
+                                    if index == -1 {
+                                        listTemp.append(["total":item.price*item.quantity,"quantity":item.quantity,"product":item.product()!])
+                                    }
+                                }
+                            })
+                            
+                        }
+                        if listTemp.count > 0 {
+                            top10Product = listTemp
+                        }
+                        
+                        dict["total_orders_processed"] = totaOrdersprocess.cleanValue
+                        dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
+                        dict["total_orders_invalid"] = totalOrdersinvalid.cleanValue
+                        dict["total_orders_amount"] = totalAmountOrders
+                        dict["total_orders_no_charge"] = totalOrdersUnpaid.cleanValue
+                        dict["total_orders_money_collected"] = totalOrdersPaid.cleanValue
+                        dict["top_ten_product"] = top10Product
+                        // return result
+                        onComplete(dict)
                     }
                     
-                    dict["total_orders_processed"] = totaOrdersprocess.cleanValue
-                    dict["total_orders_not_processed"] = totalOrdersunprocess.cleanValue
-                    dict["total_orders_invalid"] = totalOrdersinvalid.cleanValue
-                    dict["total_orders_amount"] = totalAmountOrders
-                    dict["total_orders_no_charge"] = totalOrdersUnpaid.cleanValue
-                    dict["total_orders_money_collected"] = totalOrdersPaid.cleanValue
-                    dict["top_ten_product"] = top10Product
-                    // return result
-                    onComplete(dict)
                 }
-                
-                
-            })
-            
+                })
+            }
         }
     }
     
-    static func getDataOrderStatus(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true,_ customer:CustomerDO? = nil, onComplete:@escaping (([JSON])->Void)) {
+    static func getDataOrderStatus(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true,_ customer:Customer? = nil, onComplete:@escaping (([JSON])->Void)) {
         var listDay:[JSON] = []
         if let to = toDate as Date?{
             let currentMonth = to.currentMonth
@@ -155,7 +161,7 @@ class UserManager: NSObject {
                 let to = "\(y)-\(m)-\(listDa.last!) 00:00:00".toDate2() as NSDate
                 
                 //total_orders_amount
-                var listOrderitems:[OrderItemDO] = []
+                var listOrderitems:[OrderItem] = []
                 
                 OrderManager.getReportOrders(fromDate: from, toDate: to, isLifeTime: false, customer: customer){ listOrder in
                     _ = listOrder.map({
@@ -200,7 +206,7 @@ class UserManager: NSObject {
         }
     }
     
-    static func getDataCustomerDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil, onComplete:@escaping ((JSON)->Void)) {
+    static func getDataCustomerDashboard(_ fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, customer:Customer? = nil, onComplete:@escaping ((JSON)->Void)) {
         guard let cus = customer else {onComplete([:]); return }
         var dict:JSON = [:]
         var totalAmountOrders:Int64 = 0
@@ -215,7 +221,7 @@ class UserManager: NSObject {
         
         
         //total_orders_amount
-        var listOrderitems:[OrderItemDO] = []
+        var listOrderitems:[OrderItem] = []
         OrderManager.getReportOrders(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime, customer:cus,{ listOrder in
             _ = listOrder.map({
                 if $0.status != 0 { // invalid
@@ -250,7 +256,7 @@ class UserManager: NSObject {
                         var index = -1
                         var i = 0
                         for it in listTemp {
-                            if let pr = it["product"] as? ProductDO,
+                            if let pr = it["product"] as? Product,
                                 let pr1 = item.product(){
                                 if pr.id == pr1.id {
                                     index = i
@@ -287,11 +293,8 @@ class UserManager: NSObject {
     static func currentUser() -> UserDO? {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
-        
-        fetchRequest.returnsObjectsAsFaults = false
-        
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
             var list:[UserDO] = []
             list = result.flatMap({$0 as? UserDO})
             if list.count > 0 {
@@ -308,7 +311,7 @@ class UserManager: NSObject {
     }
     
     static func save() {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
         do {
             try context.save()
         } catch {
@@ -317,9 +320,9 @@ class UserManager: NSObject {
     }
     
     static func reset() {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {
@@ -359,7 +362,7 @@ class UserManager: NSObject {
             if let data = dictionary["username"] as? String {
                 object.username = data
             }
-
+            
             if let data = dictionary["fullname"] as? String {
                 object.fullname = data
             }
@@ -419,9 +422,9 @@ class UserManager: NSObject {
     static func clearData(_ fromList:[JSON]) {
         do {
             
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {

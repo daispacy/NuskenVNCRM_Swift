@@ -29,11 +29,11 @@ class AddProductController: UIViewController {
     
     var ondeinitial:(()->Void)?
     var onAddData:((JSON,Bool)->Void)?
-    var onCheckProductExist:((ProductDO)->Bool)?
-    var onChangeOrderItem:((OrderItemDO)->Void)?
+    var onCheckProductExist:((Product)->Bool)?
+    var onChangeOrderItem:((OrderItem)->Void)?
     var tapGesture:UITapGestureRecognizer!
-    var product:ProductDO?
-    var orderItem:OrderItemDO?
+    var product:Product?
+    var orderItem:OrderItem?
     var disposeBag = DisposeBag()
     var isEdit:Bool = false
     
@@ -122,7 +122,7 @@ class AddProductController: UIViewController {
     }
     
     // MARK: - INTERFACE
-    func showProduct(_ product:ProductDO) {
+    func showProduct(_ product:Product) {
         self.product = product
         txtName.text = product.name
         txtSugguestPrice.text = "\(product.retail_price.toTextPrice())"
@@ -136,7 +136,7 @@ class AddProductController: UIViewController {
     
     func edit(json:JSON) {
         self.isEdit = true
-        guard let pro = json["product"] as? ProductDO else { return}
+        guard let pro = json["product"] as? Product else { return}
         
         self.product = pro
         txtName.text = pro.name
@@ -162,7 +162,7 @@ class AddProductController: UIViewController {
         }
     }
     
-    func edit(orderItem:OrderItemDO) {
+    func edit(orderItem:OrderItem) {
         self.isEdit = true
         self.orderItem = orderItem
         //        txtName.text = product.name
@@ -207,7 +207,7 @@ class AddProductController: UIViewController {
                         return
                     }
                     
-                    if let orderItem = self.orderItem {
+                    if var orderItem = self.orderItem {
                         orderItem.price = price
                         orderItem.quantity = total
                         self.onChangeOrderItem?(orderItem)

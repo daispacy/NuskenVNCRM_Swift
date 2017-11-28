@@ -172,9 +172,8 @@ class AppConfig: NSObject {
                 //            LocalService.shared.startSyncData()
                 DispatchQueue.main.async {
                     let vc:UITabBarController = UITabBarController.init()
-                    let dashboardC:DashboardViewController =  DashboardViewController()
-                    dashboardC.isSyncWithLoading = true
-                    let uinaviVC1 = UINavigationController.init(rootViewController:dashboardC)
+                    let tempController = DashboardViewController()
+                    let uinaviVC1 = UINavigationController.init(rootViewController:tempController)
                     let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
                     
                     vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)

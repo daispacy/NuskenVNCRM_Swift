@@ -11,9 +11,9 @@ import CoreData
 
 class GroupCollectCustomerCell: UICollectionViewCell {
     
-    var object:GroupDO!
+    var object:Group!
     
-    var onSelectOption: ((Any,GroupDO) -> Void)?
+    var onSelectOption: ((Any,Group) -> Void)?
     
     @IBOutlet var icon: CImageViewRoundGradient!
     @IBOutlet var lblTitle: UILabel!
@@ -27,11 +27,11 @@ class GroupCollectCustomerCell: UICollectionViewCell {
     }
     
     // MARK: - INTERFACE
-    func show(data:GroupDO) {
+    func show(data:Group) {
         
         object = data
         
-        if let name = object.group_name {
+        let name = object.group_name
         lblTitle.text = name.uppercased()
         if name == "add_group".localized() {
             backgroundColor = UIColor.clear
@@ -39,10 +39,6 @@ class GroupCollectCustomerCell: UICollectionViewCell {
             btnOption.isHidden = true
             lblSubtitle.isHidden = true
         }
-        } else {
-            lblTitle.text = ""
-        }
-        
         
         lblSubtitle.text = "\(data.numberCustomers()) \("member".localized())"
 

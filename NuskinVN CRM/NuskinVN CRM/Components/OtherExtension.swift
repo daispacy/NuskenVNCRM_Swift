@@ -42,6 +42,25 @@ extension UIView {
         UIGraphicsEndImageContext()
         return image
     }
+    
+    func startLoading(activityIndicatorStyle:UIActivityIndicatorViewStyle) {
+        stopLoading()
+        
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: activityIndicatorStyle)
+        self.addSubview(indicator)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        indicator.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        indicator.startAnimating()
+    }
+    
+    func stopLoading() {
+        _ = self.subviews.map({
+            if $0.isKind(of:UIActivityIndicatorView.self) {
+                $0.removeFromSuperview()
+            }
+        })
+    }
 }
 
 extension Bundle {

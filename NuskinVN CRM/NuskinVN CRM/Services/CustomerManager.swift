@@ -11,12 +11,12 @@ import CoreData
 
 class CustomerManager: NSObject {
     
-    static func getReportCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:GroupDO? = nil,_ onComplete:@escaping (([CustomerDO])->Void)) {
+    static func getReportCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:Group? = nil,_ onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
         let container = CoreDataStack.sharedInstance.persistentContainer
         container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             var predicate1 = NSPredicate(format: "1 > 0")
             if let user = UserManager.currentUser() {
                 predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
@@ -32,21 +32,15 @@ class CustomerManager: NSObject {
             }
             var predicate4 = NSPredicate(format: "1 > 0")
             if let gr = group {
-                if gr.id == 0 {
-                    if let group_name = gr.group_name {
-                        predicate4 = NSPredicate(format: "group_name == %@",group_name)
-                    }
-                } else {
-                    predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
-                }
+                predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
             }
             let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
             fetchRequest.predicate = predicateCompound
             do {
                 let result = try context.fetch(fetchRequest)
-                var list:[CustomerDO] = []
-                list = result.flatMap({$0 as? CustomerDO})
+                var list:[Customer] = []
+                list = result.flatMap({$0 as? CustomerDO}).flatMap{Customer.parse($0.toDictionary)}
                 onComplete(list)
             } catch {
                 let fetchError = error as NSError
@@ -56,10 +50,10 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func getCountCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:GroupDO? = nil,_ onComplete:@escaping ((Int64)->Void)) {
+    static func getCountCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:Group? = nil,_ onComplete:@escaping ((Int64)->Void)) {
         // Initialize Fetch Request
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             var predicate1 = NSPredicate(format: "1 > 0")
             if let user = UserManager.currentUser() {
                 predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
@@ -75,19 +69,14 @@ class CustomerManager: NSObject {
             }
             var predicate4 = NSPredicate(format: "1 > 0")
             if let gr = group {
-                if gr.id == 0 {
-                    if let group_name = gr.group_name {
-                        predicate4 = NSPredicate(format: "group_name == %@",group_name)
-                    }
-                } else {
+                
                     predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
-                }
             }
             let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
             fetchRequest.predicate = predicateCompound
             do {
-                let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.count(for:fetchRequest)
+                let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.count(for:fetchRequest)
                 onComplete(Int64(result))
             } catch {
                 let fetchError = error as NSError
@@ -96,12 +85,12 @@ class CustomerManager: NSObject {
             }
     }
     
-    static func getAllCustomers(search:String? = nil,group:GroupDO? = nil,onComplete:@escaping (([CustomerDO])->Void)) {
+    static func getAllCustomers(search:String? = nil,group:Group? = nil,onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
         let container = CoreDataStack.sharedInstance.persistentContainer
         container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             var predicate1 = NSPredicate(format: "1 > 0")
             if let user = UserManager.currentUser() {
                 predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
@@ -115,21 +104,18 @@ class CustomerManager: NSObject {
                 }
             }
             if let gr = group {
-                if gr.id == 0 {
-                    if let group_name = gr.group_name {
-                        predicate4 = NSPredicate(format: "group_name == %@",group_name)
-                    }
-                } else {
+                
                     predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
-                }
+                
             }
             let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: false)]
             fetchRequest.predicate = predicateCompound
             do {
-                let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-                var list:[CustomerDO] = []
-                list = result.flatMap({$0 as? CustomerDO})
+                let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+                var list:[Customer] = []
+                let temp = result.flatMap({$0 as? CustomerDO})
+                list = temp.flatMap{Customer.parse($0.toDictionary)}
                 DispatchQueue.main.async {
                     onComplete(list)
                 }
@@ -141,19 +127,19 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func getCustomersDontHaveOrder30Day (onComplete:@escaping (([CustomerDO])->Void)) {
-        var list:[CustomerDO] = []
+    static func getCustomersDontHaveOrder30Day (onComplete:@escaping (([Customer])->Void)) {
+        var list:[Customer] = []
         CustomerManager.getAllCustomers { data in
             list = data.filter{$0.checkNotOrderOn30Day()}
             onComplete(list)
         }
     }
     
-    static func getCustomersBirthday(onComplete:(([CustomerDO])->Void)) {
+    static func getCustomersBirthday(onComplete:(([Customer])->Void)) {
         // Initialize Fetch Request
-        var data:[CustomerDO] = []
+        var data:[Customer] = []
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
             predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
@@ -164,9 +150,10 @@ class CustomerManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[CustomerDO] = []
-            list = result.flatMap({$0 as? CustomerDO})
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            var list:[Customer] = []
+            let temp = result.flatMap({$0 as? CustomerDO})
+            list = temp.flatMap{Customer.parse($0.toDictionary)}
             data = list.filter {
                 if let birthday = $0.birthday as Date?{
                     let calendar = Calendar.autoupdatingCurrent
@@ -196,11 +183,11 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func getAllCustomersOrdered(search:String? = nil,group:GroupDO? = nil,onComplete:(([CustomerDO])->Void)) {
+    static func getAllCustomersOrdered(search:String? = nil,group:Group? = nil,onComplete:(([Customer])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else {onComplete([]); return }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         
         let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
         var predicate2 = NSPredicate(format: "1 > 0")
@@ -212,23 +199,19 @@ class CustomerManager: NSObject {
             }
         }
         if let gr = group {
-            if gr.id == 0 {
-                if let group_name = gr.group_name {
-                    predicate4 = NSPredicate(format: "group_name == %@",group_name)
-                }
-            } else {
+           
                 predicate4 = NSPredicate(format: "(group_id IN %@ OR group_id IN %@)",[gr.id],[gr.local_id])
-            }
+            
         }
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate1,predicate2,predicate3,predicate4])
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[CustomerDO] = []
-            list = result.flatMap({$0 as? CustomerDO})
-            list = list.filter{$0.getNumberOrders() > 0}
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            var list:[Customer] = []
+            let temp = result.flatMap({$0 as? CustomerDO}).flatMap{Customer.parse($0.toDictionary)}
+            list = temp.filter{$0.getNumberOrders() > 0}
             onComplete(list)
             
         } catch {
@@ -238,10 +221,10 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func getAllCustomersNotSynced(onComplete:@escaping (([CustomerDO])->Void)) {
+    static func getAllCustomersNotSynced(onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
             predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
@@ -256,8 +239,8 @@ class CustomerManager: NSObject {
         container.performBackgroundTask() { (context) in
             do {
                 let result = try context.fetch(fetchRequest)
-                var list:[CustomerDO] = []
-                list = result.flatMap({$0 as? CustomerDO})
+                var list:[Customer] = []
+                list = result.flatMap({$0 as? CustomerDO}).flatMap{Customer.parse($0.toDictionary)}
                 onComplete(list)
                 
             } catch {
@@ -288,14 +271,56 @@ class CustomerManager: NSObject {
         }
     }
     
+    static func update(_ list:[JSON],_ done:@escaping (()->Void)) {
+        if list.count == 0 {
+            done()
+            return
+        }
+        
+        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        container.perform {
+            var i =  1
+            for item in list {
+                
+                let customer = Customer.parse(item)
+                
+                let listIDS = [customer.id].filter{$0 != 0}
+                
+                if listIDS.count == 0 {
+                    print("WARNING: UPDATE CUSTOMER WITH ID == 0. IT'S PREVENTED !!!!")
+                    return
+                }
+                
+                let entity = NSEntityDescription.entity(forEntityName: "CustomerDO", in: container)
+                let batchRequest = NSBatchUpdateRequest(entity: entity!)
+                batchRequest.resultType = .statusOnlyResultType
+                batchRequest.predicate = NSPredicate(format: "id IN %@",[customer.id]);
+                batchRequest.propertiesToUpdate = customer.toDO
+                do {
+                    try container.execute(batchRequest)
+                    if i == list.count {
+                        done()
+                    }
+                } catch {
+                    if i == list.count {
+                        done()
+                    }
+                    i += 1
+                    print(error)
+                }
+                i += 1
+            }
+        }
+    }
+    
     static func saveCustomerWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
-            for jsonObject in array {
-                _ = CustomerManager.createCustomerEntityFrom(dictionary: jsonObject,context)
+        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        container.perform {
+            for jsonObject in array.reversed() {
+                _ = CustomerManager.createCustomerEntityFrom(dictionary: jsonObject,container)
             }
             do {
-                try context.save()
+                try container.save()
                 onComplete()
             } catch {
                 onComplete()
@@ -303,36 +328,23 @@ class CustomerManager: NSObject {
         }
     }
     
-    static func updateCustomerEntity(_ customer:NSManagedObject, onComplete:(()->Void)) {
-        do {
-            try customer.managedObjectContext?.save()
-            print("customer saved!")
-        } catch let error as NSError  {
-            print("Could not saved \(error), \(error.userInfo)")
-        } catch {
-            
-        }
-        onComplete()
-    }
-    
     static func invalidCustomerEntity(_ ids:[Int64]? = nil, onComplete:(()->Void)) {
         guard let listIDS = ids else { return }
         guard listIDS.count > 0 else { return }
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         let predicate1 = NSPredicate(format: "id IN %@",[listIDS])
         fetchRequest.predicate = predicate1
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[CustomerDO] = []
-            list = result.flatMap({$0 as? CustomerDO})
-            _ = list.map({
+            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let result = try context.fetch(fetchRequest)
+            _ = result.flatMap({$0 as? CustomerDO}).map({
                 $0.status = 0
                 $0.synced = false
             })
-            try! CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
+            try? context.save()
             onComplete()
             
         } catch {
@@ -372,6 +384,13 @@ class CustomerManager: NSObject {
             } else if let data = dictionary["area_id"] as? Int64 {
                 object.area_id = data
             }
+            
+            if let data = dictionary["city_id"] as? String {
+                object.city_id = Int64(data)!
+            } else if let data = dictionary["city_id"] as? Int64 {
+                object.city_id = data
+            }
+            
             if let data = dictionary["type"] as? String {
                 object.type = Int64(data)!
             } else if let data = dictionary["type"] as? Int64 {
@@ -418,18 +437,10 @@ class CustomerManager: NSObject {
             if let data = dictionary["tel"] as? String {
                 object.tel = data
             }
-//            if let data = dictionary["skype"] as? String {
-//                object.skype = data
-//            }
-//            if let data = dictionary["facebook"] as? String {
-//                object.facebook = data
-//            }
-//            if let data = dictionary["viber"] as? String {
-//                object.viber = data
-//            }
-//            if let data = dictionary["zalo"] as? String {
-//                object.zalo = data
-//            }
+            
+            if let data = dictionary["synced"] as? Bool {
+                object.synced = data
+            }
 
             if let data = dictionary["date_created"] as? String {
                 let dateFormatter = DateFormatter()
@@ -437,13 +448,32 @@ class CustomerManager: NSObject {
                 if let myDate = dateFormatter.date(from: data) {
                     object.date_created = myDate as NSDate
                 }
+            } else if let data = dictionary["date_created"] as? NSDate {
+                object.date_created = data
             }
+            
             if let data = dictionary["last_login"] as? String {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 if let myDate = dateFormatter.date(from: data) {
                     object.last_login = myDate as NSDate
                 }
+            } else if let data = dictionary["last_login"] as? NSDate {
+                object.last_login = data
+            }
+            
+            if let data = dictionary["avatar"] as? String {
+                object.avatar = data
+            }
+            
+            if let data = dictionary["birthday"] as? String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                if let myDate = dateFormatter.date(from: data) {
+                    object.birthday = myDate as NSDate
+                }
+            } else if let data = dictionary["birthday"] as? NSDate {
+                object.birthday = data
             }
             
             if let properties = dictionary["properties"] as? JSON {
@@ -451,16 +481,8 @@ class CustomerManager: NSObject {
                 if let pro = String(data: jsonData, encoding: .utf8) {
                     object.properties = pro
                 }
-                if let avatar = properties["avatar"] as? String {
-                    object.avatar = avatar
-                }
-                if let data = properties["birthday"] as? String {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    if let myDate = dateFormatter.date(from: data) {
-                        object.birthday = myDate as NSDate
-                    }
-                }
+            } else if let properties = dictionary["properties"] as? String {
+                object.properties = properties
             }
             
             return object
@@ -473,7 +495,7 @@ class CustomerManager: NSObject {
         container.performBackgroundTask() { (context) in
             do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-                fetchRequest.returnsObjectsAsFaults = false
+                
                 fetchRequest.predicate = NSPredicate(format: "synced == true")
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
@@ -488,9 +510,9 @@ class CustomerManager: NSObject {
     static func clearData(_ fromList:[JSON], onComplete:(([JSON])->Void)) {
         do {
             var list:[JSON] = []
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-                    fetchRequest.returnsObjectsAsFaults = false
+                    
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {

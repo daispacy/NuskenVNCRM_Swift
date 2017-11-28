@@ -43,10 +43,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     var isEdit:Bool = false
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
-    var customer:CustomerDO?
+    var customer:Customer?
     var listCountry:[City] = []
     
-    var groupSelected:GroupDO?
+    var groupSelected:Group?
     var birthday:Date?
     var gender:Int64 = 0
     var city_id:Int64 = 0
@@ -122,7 +122,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     }
     
     // MARK: - interface
-    func edit(customer:CustomerDO) {
+    func edit(customer:Customer) {
         self.customer = customer
         self.isEdit = true
         self.avatar = customer.avatar
@@ -145,7 +145,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         
     }
     
-    func setGroupSelected(group:GroupDO) {
+    func setGroupSelected(group:Group) {
         self.groupSelected = group
         onDidLoad = { [weak self] in
             if let _self = self {
@@ -165,11 +165,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             if let _self = self {
                 var oldemail = ""
                 if let cus = _self.customer {
-                    oldemail = cus.email!
+                    oldemail = cus.email
                 }
                 _self.lblErrorEmail.isHidden = true
                 
-                if CustomerDO.isExist(email:$0, oldEmail: oldemail,except:_self.isEdit) {
+                if Customer.isExist(email:$0, oldEmail: oldemail,except:_self.isEdit) {
                     _self.lblErrorEmail.text = "email_has_exist".localized()
                 } else {
                     _self.lblErrorEmail.text = "invalid_email".localized()
@@ -361,18 +361,18 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     
                     if _self.customer == nil {
                         
-                        let customer = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! CustomerDO
+                        var customer = Customer()
                         customer.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                         customer.status = 1
                         customer.date_created = Date.init(timeIntervalSinceNow: 0) as NSDate
-                        customer.email = _self.txtEmail.text
-                        customer.fullname = _self.txtName.text
-                        customer.address = _self.txtAddress.text
-                        customer.avatar = _self.avatar
-                        customer.city = _self.btnCity.titleLabel?.text
-                        customer.county  = _self.btnDistrict.titleLabel?.text
+                        customer.email = _self.txtEmail.text ?? ""
+                        customer.fullname = _self.txtName.text ?? ""
+                        customer.address = _self.txtAddress.text ?? ""
+                        customer.avatar = _self.avatar ?? ""
+                        customer.city = _self.btnCity.titleLabel?.text ?? ""
+                        customer.county  = _self.btnDistrict.titleLabel?.text ?? ""
                         customer.gender = _self.gender
-                        customer.tel = _self.txtPhone.text
+                        customer.tel = _self.txtPhone.text ?? ""
                         customer.setSkype(_self.txtSkype.text ?? "")
                         customer.setFacebook(_self.txtFacebook.text ?? "")
                         customer.setZalo(_self.txtZalo.text ?? "")
@@ -388,19 +388,21 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         }
                         customer.distributor_id = user.id
                         customer.store_id = user.store_id
-                        CustomerManager.updateCustomerEntity(customer, onComplete: {
-                            _self.navigationController?.popToRootViewController(animated: true)
-                        })
+                        CustomerManager.saveCustomerWith(array: [customer.toDO]) {
+                            DispatchQueue.main.async {
+                                _self.navigationController?.popToRootViewController(animated: true)
+                            }
+                        }
                     } else {
-                        if let customerUpdate = _self.customer {
-                            customerUpdate.email = _self.txtEmail.text
-                            customerUpdate.fullname = _self.txtName.text
-                            customerUpdate.address = _self.txtAddress.text
-                            customerUpdate.avatar = _self.avatar
-                            customerUpdate.city = _self.btnCity.titleLabel?.text
-                            customerUpdate.county  = _self.btnDistrict.titleLabel?.text
+                        if var customerUpdate = _self.customer {
+                            customerUpdate.email = _self.txtEmail.text ?? ""
+                            customerUpdate.fullname = _self.txtName.text ?? ""
+                            customerUpdate.address = _self.txtAddress.text ?? ""
+                            customerUpdate.avatar = _self.avatar ?? ""
+                            customerUpdate.city = _self.btnCity.titleLabel?.text ?? ""
+                            customerUpdate.county  = _self.btnDistrict.titleLabel?.text ?? ""
                             customerUpdate.gender = _self.gender
-                            customerUpdate.tel = _self.txtPhone.text
+                            customerUpdate.tel = _self.txtPhone.text ?? ""
                             customerUpdate.setSkype(_self.txtSkype.text ?? "")
                             customerUpdate.setFacebook(_self.txtFacebook.text ?? "")
                             customerUpdate.setZalo(_self.txtZalo.text ?? "")
@@ -417,9 +419,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                             if let group = _self.groupSelected {
                                 customerUpdate.group_id = group.id
                             }
-                            CustomerManager.updateCustomerEntity(customerUpdate, onComplete: {
-                                _self.navigationController?.popToRootViewController(animated: true)
-                            })
+                            CustomerManager.update([customerUpdate.toDO]) {
+                                DispatchQueue.main.async {
+                                    _self.navigationController?.popToRootViewController(animated: true)
+                                }
+                            }
                         }
                     }
                 }
@@ -440,9 +444,9 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         guard let email = self.txtEmail.text, let name = self.txtName.text else { return false }
         var oldemail = ""
         if let cus = self.customer {
-            oldemail = cus.email!
+            oldemail = cus.email
         }
-        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !CustomerDO.isExist(email:email,oldEmail: oldemail,except:self.isEdit)
+        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !Customer.isExist(email:email,oldEmail: oldemail,except:self.isEdit)
         let checkName = name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0
         lblErrorEmail.isHidden = checkEmail
         lblErrorName.isHidden = checkName
@@ -522,12 +526,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         
         
             if let group = self.groupSelected {
-                if let group_name = group.group_name {
+                let group_name = group.group_name
                     if group_name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         self.btnGroup.setTitle(group_name, for: .normal)
                         self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
-                }
             }
         
         
@@ -550,20 +553,18 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             }
             if let cus = self.customer {
 
-                if let city = cus.city {
+                let city = cus.city
                     if city.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         btnCity.setTitle(city, for: .normal)
                         self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                         btnDistrict.isEnabled = true
                     }
-                }
                 
-                if let country = cus.county {
+                let country = cus.county
                     if country.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         btnDistrict.setTitle(country, for: .normal)
                         self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
-                }
                 
                 if let birth = cus.birthday as Date? {
                     self.btnBirthday.setTitle(birth.toString(dateFormat: "dd/MM/yyyy"), for: .normal)
@@ -591,13 +592,9 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
         btnCity.setTitle("placeholder_city".localized(), for: .normal)
         if let group = self.groupSelected {
-            if let group_name = group.group_name {
+            let group_name = group.group_name
                 self.btnGroup.setTitle(group_name, for: .normal)
                 self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-            } else {
-                btnGroup.setTitle("placeholder_group".localized(), for: .normal)
-                self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
-            }
         } else {
              btnGroup.setTitle("placeholder_group".localized(), for: .normal)
             self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
@@ -621,7 +618,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         })
         
         if let cus = customer {
-            if let avaStr = cus.avatar {
+            let avaStr = cus.avatar
                 if let urlAvatar = cus.urlAvatar {
                     if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         if avaStr.contains(".jpg") || avaStr.contains(".png"){
@@ -639,7 +636,6 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         imvAvatar.image = decodedimage
                     }
                 }
-            }
         }
     }
     

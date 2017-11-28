@@ -21,8 +21,6 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     // MARK: - INIT
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:AllDone"), object: nil)
         
         configText()
         
@@ -37,10 +35,16 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func reloadAfterSynced(notification:Notification) {
-        
-        self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
-        
+    override func reloadAfterSynced(notification:Notification) {
+        if let tabbarController = self.tabBarController {
+            if let vc = tabbarController.selectedViewController as? UINavigationController{
+                if let vChild = vc.viewControllers.first {
+                    if vChild.isEqual(self) {
+                        self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+                    }
+                }
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -51,22 +55,30 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
         
         dashboardView.scrollView.setContentOffset(CGPoint.zero, animated: true)
         
-        if isSyncWithLoading {
-            isSyncWithLoading = false
-            firstSyncData()
-            if !Support.connectivity.isConnectedToInternet() {
-                self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
-            }
-        } else {
-            if shouldReloadDashboardData {
-                self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
-            }
-        }
+//        if isSyncWithLoading {
+//            isSyncWithLoading = false
+////            firstSyncData()
+//            if !Support.connectivity.isConnectedToInternet() {
+//                self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+//            }
+//        } else {
+//        if shouldReloadDashboardData {
+//            self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+//        }
+//        }
         
 //        if let timer = LocalService.shared.timerSyncToServer {
 //            if !timer.isValid {
 //                LocalService.shared.startSyncData()
 //            }
+//        }
+        self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+//        if shouldReloadDashboardData {
+//
 //        }
     }
     
@@ -150,7 +162,7 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
                 let nv = UINavigationController(rootViewController: vc1)
                 vc1.navigationController?.setNavigationBarHidden(true, animated: false)
                 topVC.present(nv, animated: true, completion: {
-                    vc1.show(from: user.email!, to: customer.email!)
+                    vc1.show(from: user.email!, to: customer.email)
                 })
                 vc1.onDismissComplete = {[weak self] in
                     guard let _ = self else {return}

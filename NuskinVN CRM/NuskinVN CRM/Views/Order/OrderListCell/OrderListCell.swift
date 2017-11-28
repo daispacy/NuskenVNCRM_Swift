@@ -27,13 +27,13 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var vwStatus: UIView!
     
     var isEdit:Bool = false
-    var object:OrderDO!
+    var object:Order!
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
     
-    var onSelectOrder:((OrderDO, Bool) -> Void)?
-    var onEditOrder:((OrderDO) -> Void)?
+    var onSelectOrder:((Order, Bool) -> Void)?
+    var onEditOrder:((Order) -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -64,7 +64,7 @@ class OrderListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(_ order:OrderDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+    func show(_ order:Order, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = order
         self.isEdit = isEdit
         self.isSelect = isSelect
@@ -73,9 +73,7 @@ class OrderListCell: UITableViewCell {
         configView()
         
         if let customer = order.customer() {
-            if let fullname = customer.fullname {
-                lblNameCustomer.text = fullname
-            }
+            lblNameCustomer.text = customer.fullname
         }else {
             lblNameCustomer.text = "unknown".localized()
         }
@@ -88,6 +86,12 @@ class OrderListCell: UITableViewCell {
         }
         
         lblCode.text = order.code
+        
+        if let user = UserManager.currentUser() {
+            if user.username == "phamdaiit" {
+                lblCode.text = lblCode.text?.appending(" [\(order.id)]")
+            }
+        }
         
         _ = AppConfig.order.listStatus().map({[weak self] item in
             if let _self = self {

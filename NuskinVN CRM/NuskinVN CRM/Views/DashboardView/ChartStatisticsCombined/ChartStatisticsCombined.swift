@@ -41,7 +41,7 @@ class ChartStatisticsCombined: CViewSwitchLanguage {
     }
     
     // MARK: - INTERFACE
-    func loadData(_ from:NSDate? = nil,_ to:NSDate? = nil,_ lifetime:Bool = true,_ customer:CustomerDO? = nil) {
+    func loadData(_ from:NSDate? = nil,_ to:NSDate? = nil,_ lifetime:Bool = true,_ customer:Customer? = nil) {
         
         let calendar = Calendar.current
         // Calculate start and end of the current year (or month with `.month`):

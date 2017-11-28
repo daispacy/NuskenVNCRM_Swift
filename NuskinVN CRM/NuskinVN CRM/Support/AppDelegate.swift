@@ -47,11 +47,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let ww = window {
             
             if UserManager.currentUser() != nil && AppConfig.setting.isRememberUser(){
-                AppConfig.navigation.gotoDashboardAfterSigninSuccess()
+                AppConfig.navigation.changeRootControllerTo(viewcontroller: LaunchController(nibName: "LaunchController", bundle: Bundle.main))
             } else {
                 let vc:AuthenticViewController = AuthenticViewController.init(type: .AUTH_LOGIN)
                 ww.rootViewController = vc
                 ww.makeKeyAndVisible()
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "NSManagedObjectContextDidSaveNotification"), object: nil, queue: nil) { (note) in
+            let main = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let other:NSManagedObjectContext = note.object as! NSManagedObjectContext
+            if other.persistentStoreCoordinator == main.persistentStoreCoordinator {
+                if (other != main) {
+                    main.perform {
+                        print("😱😱😱😱😱😱😱😱")
+                        main.mergeChanges(fromContextDidSave: note)
+                    }
+                }
             }
         }
         
@@ -93,16 +106,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let aps = userInfo["aps"] as! [String: AnyObject]
         
         // 1
-        if aps["content-available"] as? Int == 1 {
-            print("start fecth from remote notification")
-            LocalService.shared.startSyncDataBackground {
-//                LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())
-                completionHandler(.newData)
-                print("end fecth from remote notification")
-            }
-        } else  {
+//        if aps["content-available"] as? Int == 1 {
+//            print("start fecth from remote notification")
+//            LocalService.shared.startSyncDataBackground {
+////                LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())
+//                completionHandler(.newData)
+//                print("end fecth from remote notification")
+//            }
+//        } else  {
             completionHandler(.newData)
-        }
+//        }
     }
     
     func application(_ application: UIApplication,
@@ -137,7 +150,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-        LocalService.shared.startSyncDataBackground{}
+        if UserManager.currentUser() != nil && AppConfig.setting.isRememberUser(){
+            AppConfig.navigation.changeRootControllerTo(viewcontroller: LaunchController(nibName: "LaunchController", bundle: Bundle.main))
+        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

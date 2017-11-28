@@ -33,13 +33,13 @@ UISearchBarDelegate{
     
     var menuDashboard:MenuDashboardView = Bundle.main.loadNibNamed("MenuDashboardView", owner: self, options: nil)?.first as! MenuDashboardView
         
-    var listOrder:[OrderDO] = []
+    var listOrder:[Order] = []
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
     var status:Int64?
     var payment_status:Int64?
     var customer_id:[Int64] = []
     var searchText:String?
-    var listCustomer:[CustomerDO] = []
+    var listCustomer:[Customer] = []
     var isGotoFromCustomerList:Bool = false
     
     var listStatus:[JSON] = AppConfig.order.listStatus()
@@ -104,6 +104,10 @@ UISearchBarDelegate{
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
+     func reloadSynced(notification:Notification) {
+            self.refreshListOrder()
+    }
+    
     func keyboardWillShow(notification: NSNotification) {
         UIView.animate(withDuration: 0.2) {
             self.menuDashboard.isHidden = true
@@ -148,6 +152,8 @@ UISearchBarDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadSynced(notification:)), name: Notification.Name("SyncData:OrderOne"), object: nil)
         
         listStatus = AppConfig.order.listStatus()
         listPaymentStatus = AppConfig.order.listPaymentStatus()
@@ -220,11 +226,14 @@ UISearchBarDelegate{
             })
         }
         
+        self.showLoading(isShow: true, isShowMessage: false)
+        
         OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id,fromDate: self.fromDate,toDate: self.toDate,isLifeTime: self.isLifeTime) {[weak self] list in
             DispatchQueue.main.async {
             if let _self = self {
                 _self.listOrder.removeAll()
                 _self.tableView.reloadData()
+                
                     if list.count > 0 {
                         _self.listOrder.append(contentsOf: list)
                         _self.tableView.reloadData()
@@ -311,7 +320,7 @@ UISearchBarDelegate{
         btnFilterCustomer.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    var listCustomers:[CustomerDO] = []
+                    var listCustomers:[Customer] = []
                     CustomerManager.getAllCustomers(onComplete: { (list) in
                         listCustomers = list
                         _self.listCustomer = list
@@ -398,6 +407,10 @@ UISearchBarDelegate{
     
     // MARK: - sync & reload
     func syncIfCan() {
+        
+        self.refreshListOrder()
+        return
+        
         if let bool = LocalService.shared.isShouldSyncData?() {
             if bool == false {
                 print("APP IN STATE BUSY, SO WILL SYNCED LATER")
@@ -416,13 +429,13 @@ UISearchBarDelegate{
             return
         }
         
-        LocalService.shared.syncOrders { [weak self] in
+        LocalService.shared.syncOrders(true) { [weak self] in
             guard let _self = self else {return}
-            LocalService.shared.syncOrdersItems {
+//            LocalService.shared.syncOrdersItems {
                 DispatchQueue.main.async {
                     _self.refreshListOrder()
                 }
-            }
+//            }
         }
     }
 }
@@ -448,7 +461,7 @@ extension OrderListController {
         vc.onPop = {[weak self] customer in
             guard let _self = self else {return}
             if let cus = customer {
-                Support.popup.showAlert(message: "\("would_you_like_to_filter_this_customer".localized()): \(cus.fullname ?? "")", buttons: ["no".localized(),"yes".localized()], vc: _self.navigationController!, onAction: {index in
+                Support.popup.showAlert(message: "\("would_you_like_to_filter_this_customer".localized()): \(cus.fullname)", buttons: ["no".localized(),"yes".localized()], vc: _self.navigationController!, onAction: {index in
                     if index == 1 {
                         _self.customer_id = [cus.id, cus.local_id].filter{$0 != 0}
                     } else {

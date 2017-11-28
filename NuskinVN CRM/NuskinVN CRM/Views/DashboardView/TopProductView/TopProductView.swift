@@ -138,18 +138,16 @@ class BlockTopProductView: CViewSwitchLanguage {
     
     // MARK: - interface
     func loadData(json:JSON, isQuantity:Bool = false) {
-        if let pro = json["product"] as? ProductDO,
+        if let pro = json["product"] as? Product,
             let total = json["total"] as? Int64,
             let quantity = json["quantity"] as? Int64 {
             
-            if let imgStr = pro.avatar {
+            let imgStr = pro.avatar
                 if imgStr.characters.count > 0 {
                     icon.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)",size:nil, placeHolder: UIImage(named:"ic_top_product_block"))
                 }
-            }            
-            if let n = pro.name {
+            let n = pro.name
                 lblName.text = n
-            }
             if isQuantity {
                 lblSub.text = "\(quantity.toTextPrice()) \("unit".localized())"
             } else {

@@ -12,13 +12,13 @@ import CoreData
 class MasterDataManager: NSObject {
     static func saveDataWith(_ array: [JSON],_ onComplete:@escaping (()->Void)) {
         MasterDataManager.clearData({
-            let container = CoreDataStack.sharedInstance.persistentContainer
-            container.performBackgroundTask() { (context) in
+            let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+            container.perform {
                 for jsonObject in array {
-                    _ = MasterDataManager.createDataEntityFrom(dictionary: jsonObject,context)
+                    _ = MasterDataManager.createDataEntityFrom(dictionary: jsonObject,container)
                 }
                 do {
-                    try context.save()
+                    try container.save()
                     onComplete()
                 } catch {
                     onComplete()
@@ -31,7 +31,7 @@ class MasterDataManager: NSObject {
     static func getData(_ type:String) -> [MasterDataDO]{
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterDataDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         let predicate3 = NSPredicate(format: "data_type == %@ AND status == 1",type)
         
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate3])
@@ -39,7 +39,7 @@ class MasterDataManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
             var list:[MasterDataDO] = []
             list = result.flatMap({$0 as? MasterDataDO})
             return list
@@ -93,7 +93,7 @@ class MasterDataManager: NSObject {
         do {
             
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterDataDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             let container = CoreDataStack.sharedInstance.persistentContainer
             container.performBackgroundTask() { (context) in
                 do {

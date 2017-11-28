@@ -61,7 +61,7 @@ class FormExportOrderDetailView: UIView {
     }
     
     // MARK: - interface
-    func load(_ order:OrderDO? = nil) -> Bool {
+    func load(_ order:Order? = nil) -> Bool {
         guard let user = UserManager.currentUser(),
               let item = order else {return false}
         guard let customer = item.customer() else { return false}
@@ -69,7 +69,8 @@ class FormExportOrderDetailView: UIView {
         configView()
         configText()
         
-        if let code = item.code {
+        let code = item.code
+        if code.characters.count > 0 {
             lblOrderCode.text = "\(lblOrderCode.text!): \(code)"
         }
         
@@ -86,21 +87,21 @@ class FormExportOrderDetailView: UIView {
             lblDistributorPhone.text = "\(lblDistributorPhone.text!): \(code)"
         }
         
-        if let code = customer.fullname {
-            lblCustomer.text = "\(lblCustomer.text!): \(code)"
+        let fullname = customer.fullname
+        if fullname.characters.count > 0 {
+            lblCustomer.text = "\(lblCustomer.text!): \(fullname)"
         }
         
-        if let code = customer.tel {
+        let tel = customer.tel
+        if tel.characters.count > 0 {
             lblCustomerPhone.text = "\(lblCustomerPhone.text!): \(code)"
         }
         
-        let code = item.city
+        let codee = item.city
         let code1 = item.district
-        lblCityDistrictCustomer.text = "\("city".localized()): \(code)       \("district".localized()): \(code1)"
+        lblCityDistrictCustomer.text = "\("city".localized()): \(codee)       \("district".localized()): \(code1)"
         
-        if let code = item.address {
-            lblOrderAddress.text = "\(lblOrderAddress.text!): \(code)"
-        }
+        lblOrderAddress.text = "\(lblOrderAddress.text!): \(item.address)"
         
         _ = AppConfig.order.listPaymentMethod().map({[weak self] i in
             if let _self = self {
@@ -135,9 +136,7 @@ class FormExportOrderDetailView: UIView {
             lblShipping.text = "\(lblShipping.text!): \(ortherShipping)"
         }
         
-        if let code = item.svd {
-            lblSVD.text = "\(lblSVD.text!): \(code)"
-        }
+        lblSVD.text = "\(lblSVD.text!): \(item.svd)"
         
         var price:Int64 = 0
         var pv:Int64 = 0
@@ -165,7 +164,7 @@ class FormExportOrderDetailView: UIView {
                     name.numberOfLines = 0
                     name.textAlignment = .left
                     configLabel(name)
-                    name.text = "\(i). \(product.name!)"
+                    name.text = "\(i). \(product.name)"
                     viewProduct.addSubview(name)
                     addContraint(name,10,10)
                     

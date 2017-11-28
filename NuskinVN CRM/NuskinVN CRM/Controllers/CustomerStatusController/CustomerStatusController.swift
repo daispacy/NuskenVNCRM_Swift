@@ -19,12 +19,12 @@ class CustomerStatusController:UIViewController,
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet var tableView: UITableView!
     
-    var listCustomer:[CustomerDO] = [] // list customer for tableview
+    var listCustomer:[Customer] = [] // list customer for tableview
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
     var oldExpandRow:NSInteger = -1 // row expand
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
-    var onSelectCustomer:((NSManagedObject)->Void)?
+    var onSelectCustomer:((Customer)->Void)?
     var onGotoOrderList:(([Int64])->Void)?
     var isOrdered:Bool?
     
@@ -85,7 +85,7 @@ class CustomerStatusController:UIViewController,
         CustomerManager.getAllCustomers(search: self.searchText, group: nil) {[weak self] list in
             if let _self = self {
             
-                var listTemp:[CustomerDO] = []
+                var listTemp:[Customer] = []
                 if _self.isOrdered! {
                     listTemp = list.filter{$0.getNumberOrders() > 0}
                 } else {
@@ -163,7 +163,7 @@ extension CustomerStatusController {
                 let vc = EmailController(nibName: "EmailController", bundle: Bundle.main)
 //                _self.showTabbar(false)
                 Support.topVC?.present(vc, animated: true, completion: {
-                    vc.show(from: user.email!, to: customer.email!)
+                    vc.show(from: user.email!, to: customer.email)
                 })
                 vc.onDismissComplete = {[weak self] in
                     guard let _ = self else {return}

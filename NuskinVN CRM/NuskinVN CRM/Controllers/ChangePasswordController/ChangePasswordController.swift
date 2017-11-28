@@ -27,7 +27,7 @@ class ChangePasswordController: RootViewController {
     
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
-    var customer:CustomerDO?
+    var customer:Customer?
     var onDismissComplete:(()->Void)?
     var deinitial:(()->Void)?
     var onDidRotate:(()->Void)?

@@ -17,8 +17,8 @@ UISearchBarDelegate{
     @IBOutlet var tableView: UITableView!
     @IBOutlet var btnGroupProduct: CButtonWithImageRight!
     
-    var onSelectData:((ProductDO)->Void)?
-    var listData:[ProductDO] = []
+    var onSelectData:((Product)->Void)?
+    var listData:[Product] = []
     var listGroup:[GroupProductDO] = []
     var searchText:String = ""
     var tapGesture:UITapGestureRecognizer?

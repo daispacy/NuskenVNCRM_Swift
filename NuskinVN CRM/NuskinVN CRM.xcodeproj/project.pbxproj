@@ -176,16 +176,24 @@
 		D70CDDEA1FB4A4BD000258FA /* FormExportOrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70CDDE91FB4A4BD000258FA /* FormExportOrderDetailView.swift */; };
 		D70CDDEC1FB4A4D2000258FA /* FormExportOrderDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D70CDDEB1FB4A4D2000258FA /* FormExportOrderDetailView.xib */; };
 		D71BD8001FB44B81003C3D37 /* EmailAttachView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */; };
+		D73AF34C1FCAA99600D78D40 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73AF34B1FCAA99600D78D40 /* Customer.swift */; };
+		D73AF34E1FCABD6D00D78D40 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73AF34D1FCABD6D00D78D40 /* Order.swift */; };
 		D73D79941FB4D9BC0091E746 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79921FB4D9BC0091E746 /* Messages.framework */; };
 		D73D79951FB4D9BC0091E746 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79931FB4D9BC0091E746 /* MessageUI.framework */; };
 		D74094AA1FBB26BE00116F6A /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74094A81FBB26BE00116F6A /* AboutController.swift */; };
 		D74094AB1FBB26BE00116F6A /* AboutController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D74094A91FBB26BE00116F6A /* AboutController.xib */; };
+		D7481C571FCB1C5B00689F0E /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7481C561FCB1C5B00689F0E /* Group.swift */; };
+		D7481C591FCB1F4600689F0E /* OrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7481C581FCB1F4600689F0E /* OrderItem.swift */; };
+		D7481C5B1FCB21D100689F0E /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7481C5A1FCB21D100689F0E /* Product.swift */; };
 		D76A953A1FBDD93500CA64E1 /* CustomerStatusController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D76A95381FBDD93500CA64E1 /* CustomerStatusController.xib */; };
 		D76A953B1FBDD93500CA64E1 /* CustomerStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76A95391FBDD93500CA64E1 /* CustomerStatusController.swift */; };
 		D7823B921FB8229E003888D1 /* ChartStatisticsPie.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */; };
 		D7823B931FB8229E003888D1 /* ChartStatisticsPie.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */; };
+		D79B61AD1FCD664D00D475C7 /* LaunchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79B61AB1FCD664D00D475C7 /* LaunchController.swift */; };
+		D79B61AE1FCD664D00D475C7 /* LaunchController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D79B61AC1FCD664D00D475C7 /* LaunchController.xib */; };
 		D7B6B52B1FB84673007884E9 /* ChartStatisticsCombined.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */; };
 		D7B6B52C1FB84673007884E9 /* ChartStatisticsCombined.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */; };
+		D7BC447A1FCDB2FD00BFEDE3 /* TempController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BC44791FCDB2FD00BFEDE3 /* TempController.swift */; };
 		D7C23AD01FB4D75900486EF3 /* MessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */; };
 		D7DC30281FBC826A00EF76B4 /* NewsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DC30261FBC826A00EF76B4 /* NewsController.swift */; };
 		D7DC30291FBC826A00EF76B4 /* NewsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7DC30271FBC826A00EF76B4 /* NewsController.xib */; };
@@ -380,16 +388,24 @@
 		D70CDDE91FB4A4BD000258FA /* FormExportOrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormExportOrderDetailView.swift; sourceTree = "<group>"; };
 		D70CDDEB1FB4A4D2000258FA /* FormExportOrderDetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FormExportOrderDetailView.xib; sourceTree = "<group>"; };
 		D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmailAttachView.xib; sourceTree = "<group>"; };
+		D73AF34B1FCAA99600D78D40 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
+		D73AF34D1FCABD6D00D78D40 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		D73D79921FB4D9BC0091E746 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = System/Library/Frameworks/Messages.framework; sourceTree = SDKROOT; };
 		D73D79931FB4D9BC0091E746 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		D74094A81FBB26BE00116F6A /* AboutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = "<group>"; };
 		D74094A91FBB26BE00116F6A /* AboutController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutController.xib; sourceTree = "<group>"; };
+		D7481C561FCB1C5B00689F0E /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		D7481C581FCB1F4600689F0E /* OrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItem.swift; sourceTree = "<group>"; };
+		D7481C5A1FCB21D100689F0E /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		D76A95381FBDD93500CA64E1 /* CustomerStatusController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerStatusController.xib; sourceTree = "<group>"; };
 		D76A95391FBDD93500CA64E1 /* CustomerStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerStatusController.swift; sourceTree = "<group>"; };
 		D7823B901FB8229E003888D1 /* ChartStatisticsPie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsPie.swift; sourceTree = "<group>"; };
 		D7823B911FB8229E003888D1 /* ChartStatisticsPie.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsPie.xib; sourceTree = "<group>"; };
+		D79B61AB1FCD664D00D475C7 /* LaunchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchController.swift; sourceTree = "<group>"; };
+		D79B61AC1FCD664D00D475C7 /* LaunchController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchController.xib; sourceTree = "<group>"; };
 		D7B6B5291FB84673007884E9 /* ChartStatisticsCombined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartStatisticsCombined.swift; sourceTree = "<group>"; };
 		D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartStatisticsCombined.xib; sourceTree = "<group>"; };
+		D7BC44791FCDB2FD00BFEDE3 /* TempController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempController.swift; sourceTree = "<group>"; };
 		D7C23ACF1FB4D75900486EF3 /* MessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposer.swift; sourceTree = "<group>"; };
 		D7DC30261FBC826A00EF76B4 /* NewsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsController.swift; sourceTree = "<group>"; };
 		D7DC30271FBC826A00EF76B4 /* NewsController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsController.xib; sourceTree = "<group>"; };
@@ -744,6 +760,11 @@
 				2382F84C1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift */,
 				2365131B1F8FD4DE006076BF /* City.swift */,
 				2365131D1F8FE2DF006076BF /* DeepLink.swift */,
+				D73AF34B1FCAA99600D78D40 /* Customer.swift */,
+				D73AF34D1FCABD6D00D78D40 /* Order.swift */,
+				D7481C561FCB1C5B00689F0E /* Group.swift */,
+				D7481C581FCB1F4600689F0E /* OrderItem.swift */,
+				D7481C5A1FCB21D100689F0E /* Product.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -1019,6 +1040,8 @@
 		23E1ACBB1F7215F50042DD44 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D7BC44781FCDB2E100BFEDE3 /* TempController */,
+				D79B61AA1FCD662B00D475C7 /* LaunchController */,
 				D76A95371FBDD93500CA64E1 /* CustomerStatusController */,
 				D7DC30251FBC823000EF76B4 /* NewsController */,
 				D74094A71FBB267B00116F6A /* AboutController */,
@@ -1100,6 +1123,15 @@
 			path = ChartStatisticsPie;
 			sourceTree = "<group>";
 		};
+		D79B61AA1FCD662B00D475C7 /* LaunchController */ = {
+			isa = PBXGroup;
+			children = (
+				D79B61AB1FCD664D00D475C7 /* LaunchController.swift */,
+				D79B61AC1FCD664D00D475C7 /* LaunchController.xib */,
+			);
+			path = LaunchController;
+			sourceTree = "<group>";
+		};
 		D7B6B5281FB84673007884E9 /* ChartStatisticsCombined */ = {
 			isa = PBXGroup;
 			children = (
@@ -1107,6 +1139,14 @@
 				D7B6B52A1FB84673007884E9 /* ChartStatisticsCombined.xib */,
 			);
 			path = ChartStatisticsCombined;
+			sourceTree = "<group>";
+		};
+		D7BC44781FCDB2E100BFEDE3 /* TempController */ = {
+			isa = PBXGroup;
+			children = (
+				D7BC44791FCDB2FD00BFEDE3 /* TempController.swift */,
+			);
+			path = TempController;
 			sourceTree = "<group>";
 		};
 		D7DC30251FBC823000EF76B4 /* NewsController */ = {
@@ -1238,6 +1278,7 @@
 				23CA60841F7F8742007C3305 /* BlockTopProductView.xib in Resources */,
 				D7B6B52C1FB84673007884E9 /* ChartStatisticsCombined.xib in Resources */,
 				23C9C6DE1FB19D9700C1C5B3 /* PopupCustomerFunctionController.xib in Resources */,
+				D79B61AE1FCD664D00D475C7 /* LaunchController.xib in Resources */,
 				2303C28A1F97107C001F0A42 /* OrderProductListView.xib in Resources */,
 				23CA60811F7F8716007C3305 /* TopProductView.xib in Resources */,
 				D7823B931FB8229E003888D1 /* ChartStatisticsPie.xib in Resources */,
@@ -1449,6 +1490,7 @@
 				2382F84E1F9A6114001FF122 /* CustomerDO+CoreDataProperties.swift in Sources */,
 				231234041FB0AEC6006A9A49 /* BirthdayManager.swift in Sources */,
 				D7C23AD01FB4D75900486EF3 /* MessageComposer.swift in Sources */,
+				D7481C591FCB1F4600689F0E /* OrderItem.swift in Sources */,
 				2346D8C11FA309D100E3EEDD /* GroupProductDO+CoreDataProperties.swift in Sources */,
 				23BB51B51F761ED9005FC2C7 /* TotalSummaryView.swift in Sources */,
 				232F174E1F74F7140053A87D /* DashboardView.swift in Sources */,
@@ -1462,6 +1504,7 @@
 				232537EF1F84BC5E0072F68F /* AddGroupController.swift in Sources */,
 				239CB0E01F7EB88800E42781 /* CView.swift in Sources */,
 				2396401E1FACBF16003BB83B /* OtherExtension.swift in Sources */,
+				D7481C5B1FCB21D100689F0E /* Product.swift in Sources */,
 				235AB34E1F81F6940036ADFA /* Protocols.swift in Sources */,
 				235754731F863D8D003C8B1F /* CustomerListController.swift in Sources */,
 				231234061FB0DF0E006A9A49 /* NotOrder30DOManager.swift in Sources */,
@@ -1497,6 +1540,7 @@
 				232E18881FA4978000C52128 /* UserDO+CoreDataProperties.swift in Sources */,
 				23ED22641FA628C600D1F046 /* ChangePasswordController.swift in Sources */,
 				2302487A1F753CAD00177679 /* CInput.swift in Sources */,
+				D79B61AD1FCD664D00D475C7 /* LaunchController.swift in Sources */,
 				232818E51F9C8EDA00D57799 /* ProductDO+CoreDataClass.swift in Sources */,
 				23B906501FA07BE500FF24C2 /* CustomerSelectedListCell.swift in Sources */,
 				23CA60861F7FA86F007C3305 /* CLabelGradient.swift in Sources */,
@@ -1507,13 +1551,16 @@
 				232D2D021F76C83400B93B45 /* ChartStatisticsSales.swift in Sources */,
 				23D31D041F7BE4BA00BCD198 /* OrderManageView.swift in Sources */,
 				234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */,
+				D7481C571FCB1C5B00689F0E /* Group.swift in Sources */,
 				232818E61F9C8EDA00D57799 /* ProductDO+CoreDataProperties.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
+				D73AF34C1FCAA99600D78D40 /* Customer.swift in Sources */,
 				23853AA61F8B30F50039D653 /* SyncService.swift in Sources */,
 				233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				D76A953B1FBDD93500CA64E1 /* CustomerStatusController.swift in Sources */,
 				23208F251FA1BAA800B2EDFF /* LocalNotification.swift in Sources */,
+				D7BC447A1FCDB2FD00BFEDE3 /* TempController.swift in Sources */,
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
 				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,
 				230A91A51F99C10D00761590 /* GroupManager.swift in Sources */,
@@ -1523,6 +1570,7 @@
 				23776B181F9BE946003EE5BF /* OrderManager.swift in Sources */,
 				23CAF8141F7207FC0016DBDF /* AppDelegate.swift in Sources */,
 				2365D4D11F77A9C700673903 /* CButtonChart.swift in Sources */,
+				D73AF34E1FCABD6D00D78D40 /* Order.swift in Sources */,
 				232323911F834B6E00290926 /* GroupCollectCustomerCell.swift in Sources */,
 				23776B1C1F9BEDB3003EE5BF /* OrderDO+CoreDataProperties.swift in Sources */,
 				2365131C1F8FD4DE006076BF /* City.swift in Sources */,

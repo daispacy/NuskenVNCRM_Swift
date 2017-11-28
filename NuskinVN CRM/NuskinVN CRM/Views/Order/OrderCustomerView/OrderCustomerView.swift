@@ -33,15 +33,15 @@ class OrderCustomerView: UIView {
     @IBOutlet var vwDistricct: UIView!
     
     
-    var customerSelected:CustomerDO?
+    var customerSelected:Customer?
     var orderCode:String = ""
     var orderAddress:String = ""
     var disposeBag = DisposeBag()
     var navigationController:UINavigationController?
-    var listCustomer:[CustomerDO] = []
-    var onUpdateData:((CustomerDO?,String,String,String,String)->Void)?
-    var onSelectCustomer:((CustomerDO?)->Void)?
-    var order:OrderDO?
+    var listCustomer:[Customer] = []
+    var onUpdateData:((Customer?,String,String,String,String)->Void)?
+    var onSelectCustomer:((Customer?)->Void)?
+    var order:Order?
     var listCountry:[City] = []
     var city:String = ""
     var district:String = ""
@@ -69,19 +69,15 @@ class OrderCustomerView: UIView {
     }
     
     // MARK: - interface
-    func show(order:OrderDO) {
+    func show(order:Order) {
         self.order = order
         self.btnChooseCustomer.isEnabled = false
         self.customerSelected = order.customer()
-        if let code = order.code {
-            self.orderCode = code
-            self.txtOrderCode.text = code
-        }
+            self.orderCode = order.code
+            self.txtOrderCode.text = order.code
         
-        if let code = order.address {
-            self.orderAddress = code
-            self.txtAddressOrder.text = code
-        }
+            self.orderAddress = order.address
+            self.txtAddressOrder.text = order.address
         
         if order.district.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
             let code1 = order.district
@@ -101,25 +97,13 @@ class OrderCustomerView: UIView {
             self.btnChooseCustomer.setTitle(customer.fullname, for: .normal)
             self.btnChooseCustomer.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
             
-            if let tel = customer.tel {
-                self.txtTel.text = tel
-            }
+                self.txtTel.text = order.tel
             
-            if let address = customer.address {
-                self.txtAddress.text = address
-            }
+                self.txtAddress.text = order.address
             
-            if let email = customer.email {
-                self.txtEmail.text = email
-            }
-            
-            if let email = customer.county {
-                self.txtCustomerDistrict.text = email
-            }
-            
-            if let email = customer.city {
-                self.txtCustomerCity.text = email
-            }
+                self.txtEmail.text = order.email
+                self.txtCustomerDistrict.text = order.district
+                self.txtCustomerCity.text = order.city
         }
         UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
             self.vwTel.alpha = 1
@@ -258,11 +242,10 @@ class OrderCustomerView: UIView {
                 vc.title = "choose_customer".localized().uppercased()
                 var listData:[String] = []
                 _ = _self.listCustomer.map({
-                    if let fullname = $0.fullname {
+                    let fullname = $0.fullname
                         listData.append(fullname)
-                    }
                 })
-                vc.showData(data: listData.sorted(by: {$0 < $1}))                
+                vc.showData(data: listData.sorted(by: {$0 > $1}))                
                 
                 vc.onSelectData = {[weak self] name in
                     if let _self = self {

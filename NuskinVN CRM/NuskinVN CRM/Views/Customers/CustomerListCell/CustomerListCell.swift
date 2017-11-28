@@ -18,13 +18,13 @@ class CustomerListCell: UITableViewCell {
     @IBOutlet var btnEdit: UIButton!
     @IBOutlet var stackViewContainer: UIStackView!
     
-    var onSelectCustomer:((CustomerDO, Bool) -> Void)?
-    var onEditCustomer:((CustomerDO) -> Void)?
-    var gotoOrderList:((CustomerDO)->Void)?
-    var involkeEmailView:((CustomerDO)->Void)?
+    var onSelectCustomer:((Customer, Bool) -> Void)?
+    var onEditCustomer:((Customer) -> Void)?
+    var gotoOrderList:((Customer)->Void)?
+    var involkeEmailView:((Customer)->Void)?
     
     var isEdit:Bool = false
-    var object:CustomerDO?
+    var object:Customer?
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
@@ -77,23 +77,17 @@ class CustomerListCell: UITableViewCell {
                     }
                 }
                 
-                if let tel = obj.tel {
-                    if tel.characters.count > 0 {
+                    if obj.tel.characters.count > 0 {
                         listFunction.append(["tag":4,"img":"ic_phone_gradient_48"])
                     }
-                }
                 
-                if let tel = obj.tel {
-                    if tel.characters.count > 0 {
+                    if obj.tel.characters.count > 0 {
                         listFunction.append(["tag":9,"img":"ic_sms_72"])
                     }
-                }
                 
-                if let email = obj.email {
-                    if email.characters.count > 0 {
+                    if obj.email.characters.count > 0 {
                         listFunction.append(["tag":7,"img":"ic_email_gradient"])
                     }
-                }
                 
                 if AppConfig.deeplink.skype().characters.count > 0 {
                     if obj.skype.characters.count > 0 {
@@ -132,7 +126,7 @@ class CustomerListCell: UITableViewCell {
                 } else if identifier == 2/*"viber"*/ {
                     _self.openDeepLink(link: AppConfig.deeplink.viber().replacingOccurrences(of: "[|id|]", with: obj.viber), linkItunes: AppConfig.deeplink.viberLinkItunes())
                 } else if identifier == 4/*"tel"*/ {
-                    guard let number = URL(string: "tel://" + obj.tel!) else { return }
+                    guard let number = URL(string: "tel://" + obj.tel) else { return }
                     UIApplication.shared.open(number)
                 } else if identifier == 6/*"zalo"*/ {
                     _self.openDeepLink(link: AppConfig.deeplink.zalo().replacingOccurrences(of: "[|id|]", with: obj.zalo), linkItunes: AppConfig.deeplink.zaloLinkItunes())
@@ -145,7 +139,7 @@ class CustomerListCell: UITableViewCell {
                     vc.customer = obj
                     topVC.present(vc, animated: true, completion: nil)
                 }  else if identifier == 9/*"sms"*/ {
-                    guard let number = URL(string: "sms:" + obj.tel!) else { return }
+                    guard let number = URL(string: "sms:" + obj.tel) else { return }
                     UIApplication.shared.open(number)
                 }
             }
@@ -181,7 +175,7 @@ class CustomerListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool,_ isRemoveFunctionRelateOrder:Bool = false) {
+    func show(customer:Customer, isEdit:Bool,isSelect:Bool, isChecked:Bool,_ isRemoveFunctionRelateOrder:Bool = false) {
         object = customer
         self.isRemoveFunctionRelateToOrder = isRemoveFunctionRelateOrder
         self.isEdit = isEdit
@@ -192,23 +186,22 @@ class CustomerListCell: UITableViewCell {
         lblName.text = customer.fullname
        
         let cus = customer
-        if let avaStr = cus.avatar {
-            if let urlAvatar = cus.urlAvatar {
-                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
-                    } else {
-                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                            let decodedimage = UIImage(data: dataDecoded)
-                            imgAvatar.image = decodedimage
-                        }
+        let avaStr = cus.avatar
+        if let urlAvatar = cus.urlAvatar {
+            if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                    imgAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
+                } else {
+                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                        let decodedimage = UIImage(data: dataDecoded)
+                        imgAvatar.image = decodedimage
                     }
                 }
-            } else {
-                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                    let decodedimage = UIImage(data: dataDecoded)
-                    imgAvatar.image = decodedimage
-                }
+            }
+        } else {
+            if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                let decodedimage = UIImage(data: dataDecoded)
+                imgAvatar.image = decodedimage
             }
         }
         

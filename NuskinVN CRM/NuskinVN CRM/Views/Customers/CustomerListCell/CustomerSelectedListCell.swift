@@ -20,12 +20,12 @@ class CustomerSelectedListCell: UITableViewCell {
     @IBOutlet var stackViewContainer: UIStackView!
     var viewcontroller:UIViewController?
     
-    var onSelectCustomer:((CustomerDO, Bool) -> Void)?
-    var onEditCustomer:((CustomerDO) -> Void)?
+    var onSelectCustomer:((Customer, Bool) -> Void)?
+    var onEditCustomer:((Customer) -> Void)?
     var onRegisterAgainPreventSync:(()->Void)?
     
     var isEdit:Bool = false
-    var object:CustomerDO?
+    var object:Customer?
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
@@ -87,7 +87,7 @@ class CustomerSelectedListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(customer:CustomerDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+    func show(customer:Customer, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = customer
         self.isEdit = isEdit
         self.isSelect = isSelect
@@ -95,32 +95,30 @@ class CustomerSelectedListCell: UITableViewCell {
         configView()
         
         lblName.text = customer.fullname
-       
+        
         if customer.getNumberOrders() > 0 {
             self.btnCheck.isEnabled = false
         }
         
         let cus = customer
-        if let avaStr = cus.avatar {
-            if let urlAvatar = cus.urlAvatar {
-                if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                    if avaStr.contains(".jpg") || avaStr.contains(".png"){
-                        imgAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
-                    } else {
-                        if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                            let decodedimage = UIImage(data: dataDecoded)
-                            imgAvatar.image = decodedimage
-                        }
+        let avaStr = cus.avatar
+        if let urlAvatar = cus.urlAvatar {
+            if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                    imgAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
+                } else {
+                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                        let decodedimage = UIImage(data: dataDecoded)
+                        imgAvatar.image = decodedimage
                     }
                 }
-            } else {
-                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                    let decodedimage = UIImage(data: dataDecoded)
-                    imgAvatar.image = decodedimage
-                }
+            }
+        } else {
+            if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                let decodedimage = UIImage(data: dataDecoded)
+                imgAvatar.image = decodedimage
             }
         }
-        
         
     }
     

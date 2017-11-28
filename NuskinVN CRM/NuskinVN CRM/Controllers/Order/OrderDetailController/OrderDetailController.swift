@@ -35,8 +35,8 @@ class OrderDetailController: RootViewController {
     @IBOutlet var btnCancel: CButtonAlert!
     @IBOutlet var vwOtherTransporter: UIView!
     
-    var order:OrderDO?
-    var customerSelected:CustomerDO?
+    var order:Order?
+    var customerSelected:Customer?
     var status:Int64 = 0
     var payment_status:Int64 = 1
     var payment_method:Int64 = 1
@@ -47,7 +47,7 @@ class OrderDetailController: RootViewController {
     var transporter_id:String = ""
     var order_code:String = ""
     var listProducts:[JSON] = []
-    var onPop:((CustomerDO?)->Void)?
+    var onPop:((Customer?)->Void)?
     
     var listStatus:[JSON] = AppConfig.order.listStatus()
     var listPaymentStatus:[JSON] = AppConfig.order.listPaymentStatus()
@@ -89,12 +89,10 @@ class OrderDetailController: RootViewController {
     }
     
     // MARK: - interface
-    func edit(_ order:OrderDO) {
+    func edit(_ order:Order) {
         self.order = order
         self.customerSelected = order.customer()
-        if let address = order.address {
-            self.address_order = address
-        }
+        self.address_order = order.address
         
         self.district = order.district
         self.city = order.city
@@ -112,7 +110,8 @@ class OrderDetailController: RootViewController {
             if let _self = self {
                 _self.customerSelected = customer
                 if let cus = customer {
-                    if let add = cus.address {
+                    let add = cus.address
+                    if add.characters.count > 0 {
                         Support.popup.showAlert(message: "same_address_customer".localized(), buttons: ["no".localized(),"    \("yes".localized())    "], vc: _self.navigationController!, onAction: {[weak self] index in
                             if let _self = self {                                
                                 if index == 1 {
@@ -120,10 +119,10 @@ class OrderDetailController: RootViewController {
                                     _self.address_order = add
                                     _self.orderCustomerView.orderAddress = add
                                     _self.orderCustomerView.txtAddressOrder.text = add
-                                    _self.city = cus.city ?? ""
-                                    _self.district = cus.county ?? ""
-                                    _self.orderCustomerView.city = cus.city ?? ""
-                                    _self.orderCustomerView.district = cus.county ?? ""
+                                    _self.city = cus.city
+                                    _self.district = cus.county
+                                    _self.orderCustomerView.city = cus.city
+                                    _self.orderCustomerView.district = cus.county
                                     _self.orderCustomerView.reloadCityDistrict(false)
                                 } else {
                                     _self.addressOrder.text = ""
@@ -170,13 +169,8 @@ class OrderDetailController: RootViewController {
                 _self.transporter = order.shipping_unit
                 _self.vwOtherTransporter.isHidden = _self.transporter != 4
                 
-                if let svd = order.svd {
-                    _self.transporter_id = svd
-                }
-                
-                if let code = order.code {
-                    _self.order_code = code
-                }
+                _self.transporter_id = order.svd
+                _self.order_code = order.code
                 _self.configText()
                 _ = AppConfig.order.listStatus().map({[weak self] item in
                     if let _self = self {
@@ -388,9 +382,9 @@ class OrderDetailController: RootViewController {
 //                        return
 //                    }
                     
-                    if let ord = _self.order {
+                    if var ord = _self.order {
                         // update
-                        if !ord.validateCode(code: _self.order_code, oldCode: ord.code!, except: true) {
+                        if !ord.validateCode(code: _self.order_code, oldCode: ord.code, except: true) {
                             _self.orderCustomerView.lblErrorCode.isHidden = false
                             Support.popup.showAlert(message: "order_code_is_exist".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                                 
@@ -419,7 +413,7 @@ class OrderDetailController: RootViewController {
                         ord.tel = customer.tel
                         ord.email = customer.email
                         ord.synced = false
-                        OrderManager.updateOrderEntity(ord, onComplete: {
+                        OrderManager.update([ord.toDO]) {
                             OrderItemManager.clearData(from:ord.id, onComplete: {
                                 let container = CoreDataStack.sharedInstance.persistentContainer
                                 container.performBackgroundTask() { (context) in
@@ -428,7 +422,7 @@ class OrderDetailController: RootViewController {
                                         dict["order_id"] = ord.id
                                         dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                                         dict["quantity"] = dict["total"]
-                                        if let pro = dict["product"] as? ProductDO {
+                                        if let pro = dict["product"] as? Product {
                                             dict["product_id"] = pro.id
                                         }
                                         _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,context)
@@ -438,17 +432,19 @@ class OrderDetailController: RootViewController {
                                     } catch {
                                         fatalError("Failure to save context: \(error)")
                                     }
+                                    DispatchQueue.main.async {
+                                        _self.navigationController?.popViewController(animated: true)
+                                        _self.onPop?(customer)
+                                    }
                                 }
                             })
-                            _self.navigationController?.popViewController(animated: true)
-                            _self.onPop?(customer)
-                        })
+                        }
                         
                     } else {
                         // add
-                        let ord = NSEntityDescription.insertNewObject(forEntityName: "OrderDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! OrderDO
+                        var ord = Order()
                         
-                        if !OrderDO.validateCode(code: _self.order_code) {
+                        if !Order.validateCode(code: _self.order_code) {
                             _self.orderCustomerView.lblErrorCode.isHidden = false
                             Support.popup.showAlert(message: "order_code_is_exist".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
                                 
@@ -481,31 +477,26 @@ class OrderDetailController: RootViewController {
                         if let orther = _self.txtOtherTransporter.text {
                             ord.setOtherTransporter(orther)
                         }
-//                        ord.tempProducts = _self.listProducts
-                        OrderManager.updateOrderEntity(ord, onComplete: {
-                            OrderItemManager.clearData(from:ord.id, onComplete: {
-                                let container = CoreDataStack.sharedInstance.persistentContainer
-                                container.performBackgroundTask() { (context) in
-                                    _ = _self.listProducts.map({
-                                        var dict = $0
-                                        dict["order_id"] = ord.id
-                                        dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                                        dict["quantity"] = dict["total"]
-                                        if let pro = dict["product"] as? ProductDO {
-                                            dict["product_id"] = pro.id
-                                        }
-                                        _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,context)
-                                    })
-                                    do {
-                                        try context.save()
-                                    } catch {
-                                        fatalError("Failure to save context: \(error)")
+                        //                        ord.tempProducts = _self.listProducts
+                        OrderManager.saveOrderWith(array: [ord.toDO]) {
+                            let container = CoreDataStack.sharedInstance.managedObjectContext
+                            container.perform {
+                                _ = _self.listProducts.map({
+                                    var dict = $0
+                                    dict["order_id"] = ord.id
+                                    dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
+                                    dict["quantity"] = dict["total"]
+                                    if let pro = dict["product"] as? Product {
+                                        dict["product_id"] = pro.id
                                     }
+                                    OrderItemManager.createOrderItemEntityFrom(dictionary: dict,container)
+                                })
+                                DispatchQueue.main.async {
+                                    _self.navigationController?.popViewController(animated: true)
+                                    _self.onPop?(customer)
                                 }
-                            }) 
-                            _self.navigationController?.popViewController(animated: true)
-                            _self.onPop?(customer)
-                        })
+                            }
+                        }
                     }
                 }
             }).addDisposableTo(disposeBag)
@@ -581,7 +572,7 @@ class OrderDetailController: RootViewController {
             _ = self.listProducts.map({
                 var dict = $0
                 if let pr = dict["price"] as? Int64,
-                    let product = dict["product"] as? ProductDO,
+                    let product = dict["product"] as? Product,
                     let quantity = dict["total"] as? Int64 {
                     price += (pr * quantity)
                     pv += (product.pv * quantity)
@@ -634,7 +625,8 @@ class OrderDetailController: RootViewController {
                 if let _self = self {
                     _self.customerSelected = customer
                     if let cus = customer {
-                        if let add = cus.address {
+                        let add = cus.address
+                        if add.characters.count > 0 {
                             Support.popup.showAlert(message: "same_address_customer".localized(), buttons: ["no".localized(),"    \("yes".localized())    "], vc: _self.navigationController!, onAction: {[weak self] index in
                                 if let _self = self {
                                     if index == 1 {
@@ -642,10 +634,10 @@ class OrderDetailController: RootViewController {
                                         _self.address_order = add
                                         _self.orderCustomerView.orderAddress = add
                                         _self.orderCustomerView.txtAddressOrder.text = add
-                                        _self.city = cus.city ?? ""
-                                        _self.district = cus.county ?? ""
-                                        _self.orderCustomerView.city = cus.city ?? ""
-                                        _self.orderCustomerView.district = cus.county ?? ""
+                                        _self.city = cus.city
+                                        _self.district = cus.county
+                                        _self.orderCustomerView.city = cus.city
+                                        _self.orderCustomerView.district = cus.county
                                         _self.orderCustomerView.reloadCityDistrict(false)
                                     } else {
                                         _self.addressOrder.text = ""

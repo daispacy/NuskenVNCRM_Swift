@@ -28,9 +28,20 @@ public class ProductDO: NSManagedObject {
     var toDictionary:[String:Any] {
         
         return [
-            "id": id,
+            "id":id,
+            "store_id":store_id,
+            "cat_id":cat_id,
+            "series":series,
+            "sku":sku ?? "",
+            "pv":pv,
+            "price":price,
+            "retail_price":retail_price,
+            "status":status,
             "name":name ?? "",
-            "avatar":avatar ?? ""
+            "avatar":avatar ?? "",
+            "date_created":date_created as Any,
+            "updated":updated_ as Any,
+            "properties":properties ?? ""
         ]
     }
 }

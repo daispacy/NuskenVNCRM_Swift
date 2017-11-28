@@ -14,7 +14,7 @@ class PopupCustomerFunctionController: UIViewController {
     var ondeinitial:(() -> Void)?
     var onSelect:((String,Int) -> Void)?
     var onSelectObject:((JSON) -> Void)?
-    var gotoOrderList:((CustomerDO)->Void)?
+    var gotoOrderList:((Customer)->Void)?
     var onDismiss:(() -> Void)?
     
     let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
@@ -23,10 +23,10 @@ class PopupCustomerFunctionController: UIViewController {
     var tapGesture:UITapGestureRecognizer!
     var hostView: UIView?
     
-    var involkeEmailView:((CustomerDO)->Void)?
+    var involkeEmailView:((Customer)->Void)?
     var needReloadData:(()->Void)?
     
-    var object:CustomerDO?
+    var object:Customer?
     var is30:Bool = false
     
     let maxHeight:CGFloat = 250
@@ -93,7 +93,7 @@ class PopupCustomerFunctionController: UIViewController {
 //    }
     
     // MARK:  - INTERFACE
-    func show(_ customer:CustomerDO, is30:Bool = false) {
+    func show(_ customer:Customer, is30:Bool = false) {
         object = customer
         
         self.is30 = is30
@@ -120,23 +120,14 @@ class PopupCustomerFunctionController: UIViewController {
             }
         }
         
-        if let tel = data.tel {
-            if tel.characters.count > 0 {
+            if data.tel.characters.count > 0 {
                 listFunction.append(["tag":4,"img":"ic_phone_gradient_48"])
-            }
-        }
-        
-        if let tel = data.tel {
-            if tel.characters.count > 0 {
                 listFunction.append(["tag":9,"img":"ic_sms_72"])
             }
-        }
         
-        if let email = data.email {
-            if email.characters.count > 0 {
+            if data.email.characters.count > 0 {
                 listFunction.append(["tag":7,"img":"ic_email_gradient"])
             }
-        }
         
         if AppConfig.deeplink.skype().characters.count > 0 {
             if data.skype.characters.count > 0 {
@@ -169,7 +160,7 @@ class PopupCustomerFunctionController: UIViewController {
             } else if identifier == 2/*"viber"*/ {
                 _self.openDeepLink(link: AppConfig.deeplink.viber().replacingOccurrences(of: "[|id|]", with: data.viber), linkItunes: AppConfig.deeplink.viberLinkItunes())
             } else if identifier == 4/*"tel"*/ {
-                guard let number = URL(string: "tel://" + data.tel!) else { return }
+                guard let number = URL(string: "tel://" + data.tel) else { return }
                 UIApplication.shared.open(number)
             } else if identifier == 6/*"zalo"*/ {
                 _self.openDeepLink(link: AppConfig.deeplink.zalo().replacingOccurrences(of: "[|id|]", with: data.zalo), linkItunes: AppConfig.deeplink.zaloLinkItunes())
@@ -177,7 +168,7 @@ class PopupCustomerFunctionController: UIViewController {
                 _self.dissMissView()
                 _self.involkeEmailView?(data)
             }  else if identifier == 9/*"sms"*/ {
-                guard let number = URL(string: "sms:" + data.tel!) else { return }
+                guard let number = URL(string: "sms:" + data.tel) else { return }
                 UIApplication.shared.open(number)
             } else if identifier == 1/*"order list"*/ {
                 _self.dissMissView()

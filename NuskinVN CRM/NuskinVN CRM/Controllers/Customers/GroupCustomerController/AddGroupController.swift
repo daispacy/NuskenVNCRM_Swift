@@ -12,7 +12,7 @@ import CoreData
 class AddGroupController: UIViewController {
     
     // block event
-    var onAddGroup:((GroupDO) -> Void)?
+    var onAddGroup:((Group) -> Void)?
     var onDismiss:(() -> Void)?
     
     @IBOutlet var vwOverlay: UIView!
@@ -31,7 +31,7 @@ class AddGroupController: UIViewController {
     @IBOutlet var containerView: UIView!
     
     var isEdit: Bool!
-    var group:GroupDO?
+    var group:Group?
     var name:String = ""
     var position:Int64 = 1
     var group_color:String = "gradient"
@@ -134,7 +134,7 @@ class AddGroupController: UIViewController {
             
             dismissView()
             if !isEdit {
-                group = GroupDO(needSave: true, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+                group = Group()
                 group?.status = 1
                 group?.synced = false
                 group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
@@ -143,7 +143,15 @@ class AddGroupController: UIViewController {
             group?.synced = false
             group?.setColor(group_color)
             group?.group_name = name
-            onAddGroup?(group!)
+            if !isEdit {
+                GroupManager.saveGroupWith(array: [group!.toDO], {
+                    DispatchQueue.main.async {
+                        self.onAddGroup?(self.group!)
+                    }
+                })
+            } else {
+                onAddGroup?(group!)
+            }
             
         }
     }
@@ -179,7 +187,7 @@ class AddGroupController: UIViewController {
     }
     
     // MARK: - properties
-    func setEditGroup(gr:GroupDO) {
+    func setEditGroup(gr:Group) {
         group = gr
         isEdit = true
         configText()

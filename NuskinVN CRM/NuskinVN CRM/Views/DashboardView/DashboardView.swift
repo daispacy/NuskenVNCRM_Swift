@@ -17,7 +17,7 @@ class DashboardView: CViewSwitchLanguage {
     @IBOutlet weak var indicatorLoading: UIActivityIndicatorView!
     
     var onSelectFilter:((NSDate,NSDate,Bool)->Void)? /*fromDate, toDate, isGetAll*/
-    var involkeFunctionView:((CustomerDO,Bool)->Void)?
+    var involkeFunctionView:((Customer,Bool)->Void)?
     var gotoOrderList:((Int64)->Void)?
     var gotoOrderListByCustomerID:(([Int64])->Void)?
     

@@ -27,19 +27,24 @@ class RootViewController: UIViewController {
         super.viewDidLoad()
         _ = onDidLoad?()
         self.navigationController?.hidesBottomBarWhenPushed = true
+        
     }
     
+    func reloadAfterSynced(notification:Notification) {
+        
+    }
     
     // Add an observer for LCLLanguageChangeNotification on viewWillAppear. This is posted whenever a language changes and allows the viewcontroller to make the necessary UI updated. Very useful for places in your app when a language change might happen.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterSynced(notification:)), name: Notification.Name("SyncData:AllDone"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(configText), name: NSNotification.Name( LCLLanguageChangeNotification), object: nil)
     }
     
     // Remove the LCLLanguageChangeNotification on viewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("SyncData:AllDone"), object: nil)
         if LocalService.shared.isShouldSyncData != nil{
             print("REMOVE CHECK PREVENT SYNC")
             LocalService.shared.isShouldSyncData = nil
@@ -52,6 +57,7 @@ class RootViewController: UIViewController {
     
     deinit {
         print("\(String(describing: self.self)) dealloc")
+        NotificationCenter.default.removeObserver(self)
     }
 
     func refreshAvatar() {
@@ -148,11 +154,18 @@ class RootViewController: UIViewController {
     }
     
     func firstSyncData() {
-        
+        leftButtonMenu.startAnimation(activityIndicatorStyle: .white)
         let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
         Support.topVC?.present(vc, animated: false, completion: {
             vc.startSync(true)
-        })        
+        })
+        vc.onReloadData = {[weak self] in
+            guard let _self = self else {return}
+            NotificationCenter.default.post(name: NSNotification.Name("SyncData:AllDone"), object: nil)
+            _self.leftButtonMenu.stopAnimation()
+        }
+//        let vc = LaunchController(nibName: "LaunchController", bundle: Bundle.main)
+//        AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
     }
     
     func addDefaultMenu (_ onlyLeft:Bool = false) {

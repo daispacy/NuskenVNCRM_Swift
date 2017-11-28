@@ -33,7 +33,7 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
     
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
-    var customer:CustomerDO?
+    var customer:Customer?
     var onDismissComplete:(()->Void)?
     var onDidRotate:(()->Void)?
 

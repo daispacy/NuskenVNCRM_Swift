@@ -43,10 +43,26 @@ class CoreDataStack: NSObject {
         return container
     }()
     
+    
+    lazy var managedObjectContext:NSManagedObjectContext = {
+        let write = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.mainQueueConcurrencyType)
+        write.parent = self.saveManagedObjectContext
+        
+        return write
+    }()
+    
+    lazy var saveManagedObjectContext:NSManagedObjectContext = {
+        let coordinator = self.persistentContainer.persistentStoreCoordinator
+        let write = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.privateQueueConcurrencyType)
+        write.persistentStoreCoordinator = coordinator
+        return write
+    }()
+    
     // MARK: - Core Data Saving support
     
     func saveContext () {
         let context = persistentContainer.viewContext
+        
         if context.hasChanges {
             do {
                 try context.save()

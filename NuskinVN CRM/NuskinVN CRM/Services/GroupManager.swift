@@ -13,13 +13,13 @@ class GroupManager: NSObject {
     
     static func saveGroupWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         GroupManager.clearData(array,onComplete: { array in
-            let container = CoreDataStack.sharedInstance.persistentContainer
-            container.performBackgroundTask() { (context) in
-                for jsonObject in array {
-                    _ = GroupManager.createGroupEntityFrom(dictionary: jsonObject, context)
+            let save = CoreDataStack.sharedInstance.saveManagedObjectContext
+            save.perform {
+                for jsonObject in array.reversed() {
+                    _ = GroupManager.createGroupEntityFrom(dictionary: jsonObject, save)
                 }
                 do {
-                    try context.save()
+                    try save.save()
                     onComplete()
                 } catch {
                     onComplete()
@@ -45,7 +45,7 @@ class GroupManager: NSObject {
         }
     }
     
-    static func getReportGroup(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,_ onComplete:@escaping (([GroupDO])->Void)) {
+    static func getReportGroup(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,_ onComplete:@escaping (([Group])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else {onComplete([]);  return}
         
@@ -53,7 +53,7 @@ class GroupManager: NSObject {
         container.performBackgroundTask() { (context) in
             do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
-                fetchRequest.returnsObjectsAsFaults = false
+                
                 
                 let predicate3 = NSPredicate(format: "status == 1")
                 let predicate2 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id])
@@ -63,8 +63,8 @@ class GroupManager: NSObject {
                 fetchRequest.predicate = predicateCompound
                 
                 let result = try context.fetch(fetchRequest)
-                var list:[GroupDO] = []
-                list = result.flatMap({$0 as? GroupDO})
+                var list:[Group] = []
+                list = result.flatMap({$0 as? GroupDO}).flatMap{Group.parse($0.toDictionary)}
                 onComplete(list)
             } catch {
                 onComplete([])
@@ -84,10 +84,10 @@ class GroupManager: NSObject {
         
     }
     
-    static func getAllGroup(onComplete:(([GroupDO])->Void)) {
+    static func getAllGroup(onComplete:(([Group])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
             predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id])
@@ -99,9 +99,11 @@ class GroupManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[GroupDO] = []
-            list = result.flatMap({$0 as? GroupDO})
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            var list:[Group] = []
+            let temp = result.flatMap({$0 as? GroupDO})
+            list = temp.flatMap{Group.parse($0.toDictionary)}
+            
             onComplete(list)
             
         } catch {
@@ -111,10 +113,10 @@ class GroupManager: NSObject {
         }
     }
     
-    static func getAllGroupSynced(onComplete:@escaping (([GroupDO])->Void)) {
+    static func getAllGroupSynced(onComplete:@escaping (([Group])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
             predicate1 = NSPredicate(format: "distributor_id IN %@ OR distributor_id == 0", [user.id])
@@ -129,8 +131,8 @@ class GroupManager: NSObject {
         container.performBackgroundTask() { (context) in
             do {
                 let result = try context.fetch(fetchRequest)
-                var list:[GroupDO] = []
-                list = result.flatMap({$0 as? GroupDO})
+                var list:[Group] = []
+                list = result.flatMap({$0 as? GroupDO}).flatMap{Group.parse($0.toDictionary)}
                 
                 onComplete(list)
             } catch {
@@ -141,8 +143,55 @@ class GroupManager: NSObject {
         }
     }
     
+    static func update(_ list:[JSON],_ done:@escaping (()->Void)) {
+        if list.count == 0 {
+            done()
+            return
+        }
+        
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            var i =  1
+            for item in list {
+                
+                let group = Group.parse(item)
+                
+                let listIDS = [group.id].filter{$0 != 0}
+                
+                if listIDS.count == 0 {
+                    print("WARNING: UPDATE GroupDO WITH ID == 0. IT'S PREVENTED !!!!")
+                    return
+                }
+                
+                let entity = NSEntityDescription.entity(forEntityName: "GroupDO", in: context)
+                let batchRequest = NSBatchUpdateRequest(entity: entity!)
+                batchRequest.resultType = .statusOnlyResultType
+                batchRequest.predicate = NSPredicate(format: "id IN %@",[group.id]);
+                batchRequest.propertiesToUpdate = group.toDO
+                do {
+                    try context.execute(batchRequest)
+                    if i == list.count {
+                        try context.save()
+                        DispatchQueue.main.sync {
+                            done()
+                        }
+                    }
+                } catch {
+                    if i == list.count {
+                        DispatchQueue.main.sync {
+                            done()
+                        }
+                    }
+                    i += 1
+                    print(error)
+                }
+                i += 1
+            }
+        }
+    }
+    
     static func updateGroupEntity(_ group:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext        
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext        
         do {
             try context.save()
             print("group saved!")
@@ -155,7 +204,7 @@ class GroupManager: NSObject {
     }
     
     static func deleteGroupEntity(_ group:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
         
         do {
             context.delete(group)
@@ -230,7 +279,6 @@ class GroupManager: NSObject {
                     object.properties = pro
                 }
             }
-            
             return object
         }
         return nil
@@ -242,7 +290,7 @@ class GroupManager: NSObject {
         container.performBackgroundTask() { (context) in
             do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
-                fetchRequest.returnsObjectsAsFaults = false
+                
                 fetchRequest.predicate = NSPredicate(format: "1 > 0")
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
@@ -257,9 +305,9 @@ class GroupManager: NSObject {
     static func clearData(_ fromList:[JSON], onComplete:(([JSON])->Void)) {
         do {
             var list:[JSON] = []
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {

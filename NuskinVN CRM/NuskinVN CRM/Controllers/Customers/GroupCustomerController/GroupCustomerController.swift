@@ -19,12 +19,13 @@ UICollectionViewDelegateFlowLayout {
     @IBOutlet var vwOverlay: UIView!
     @IBOutlet var collectView: UICollectionView!
     
-    var onSelectGroup:((GroupDO)->Void)?
+    var onSelectGroup:((Group)->Void)?
     var gotoFromCustomerList:Bool = false
     
-    var listGroups:[GroupDO]!
-    let defaultItem:GroupDO = {
-        let group = GroupDO(needSave: false, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+    var listGroups:[Group]!
+    let defaultItem:Group = {
+        var group = Group()
+        group.isTemp = true
         group.group_name = "add_group".localized()
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: ["color":"0xbec2c5"])
@@ -98,7 +99,7 @@ UICollectionViewDelegateFlowLayout {
         })
     }
     
-    func showPopupGroup(object:GroupDO? = nil) {
+    func showPopupGroup(object:Group? = nil) {
         let vc = AddGroupController(nibName: "AddGroupController", bundle: Bundle.main)
         
         present(vc, animated: false, completion: {done in
@@ -108,22 +109,23 @@ UICollectionViewDelegateFlowLayout {
         })
         vc.onAddGroup = {[weak self] group in
             if let _self = self {
-                group.synced = false
-                GroupManager.updateGroupEntity(group, onComplete: {
+                var obj = group
+                obj.synced = false
+                GroupManager.update([obj.toDO]) {
                     _self.refreshList()
-                })
+                }
             }
         }
     }
     
-    func selectAction(obj:GroupDO) {
+    func selectAction(obj:Group) {
         
         if obj.isTemp == true {
             showPopupGroup()
             return
         }
         
-        let alertController = UIAlertController(title: nil, message: "\("group".localized().uppercased()): \(obj.group_name?.uppercased() ?? "")", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let alertController = UIAlertController(title: nil, message: "\("group".localized().uppercased()): \(obj.group_name.uppercased())", preferredStyle: UIAlertControllerStyle.actionSheet)
         let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
             alertController.dismiss(animated: true, completion: nil)
         }
@@ -143,19 +145,22 @@ UICollectionViewDelegateFlowLayout {
                 i in
                 if let _self = self {
                     if i == 1 {
-                        let gr = obj
+                        var gr = obj
                         gr.status = 0
                         gr.synced = false
-                        // delete if group not synced
-                        if gr.id == 0 {
-                            GroupManager.deleteGroupEntity(gr, onComplete: {
-                                _self.refreshList()
-                            })
-                        } else {
-                            GroupManager.updateGroupEntity(gr, onComplete: {
-                                _self.refreshList()
-                            })
+                        GroupManager.update([gr.toDictionary]){
+                            _self.refreshList()
                         }
+//                        // delete if group not synced
+//                        if gr.id == 0 {
+//                            GroupManager.update([gr.toDictionary]){
+//                                _self.refreshList()
+//                            }
+//                        } else {
+//                            GroupManager.update(gr, onComplete: {
+//                                _self.refreshList()
+//                            })
+//                        }
                     }
                 }
                 },nil)
@@ -201,7 +206,7 @@ extension GroupCustomerController {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let obj:GroupDO = listGroups[indexPath.row]
+        let obj:Group = listGroups[indexPath.row]
         if self.gotoFromCustomerList {
             self.selectAction(obj: obj)
         } else {

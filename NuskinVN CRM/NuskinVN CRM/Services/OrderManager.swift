@@ -11,14 +11,14 @@ import CoreData
 
 class OrderManager: NSObject {
     
-    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, customer:CustomerDO? = nil,_ onComplete:@escaping (([OrderDO])->Void)) {
+    static func getReportOrders(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true, customer:Customer? = nil,_ onComplete:@escaping (([Order])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else { onComplete([]); return }
         
         let container = CoreDataStack.sharedInstance.persistentContainer
         container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             var predicate2 = NSPredicate(format: "1 > 0")
             
             var predicate3 = NSPredicate(format: "1 > 0")
@@ -42,8 +42,8 @@ class OrderManager: NSObject {
             
             do {
                 let result = try context.fetch(fetchRequest)
-                var list:[OrderDO] = []
-                list = result.flatMap({$0 as? OrderDO})
+                var list:[Order] = []
+                list = result.flatMap({$0 as? OrderDO}).flatMap{Order.parse(dictionary: $0.toDictionary)}
                 onComplete(list)
             } catch {
                 let fetchError = error as NSError
@@ -53,13 +53,13 @@ class OrderManager: NSObject {
         }
     }
     
-    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil,fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:@escaping (([OrderDO])->Void)) {
+    static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil,fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:@escaping (([Order])->Void)) {
         guard let user = UserManager.currentUser() else {onComplete([]); return}
         // Initialize Fetch Request
         let container = CoreDataStack.sharedInstance.persistentContainer
-//        container.performBackgroundTask() { (context) in
+        container.performBackgroundTask() { (context) in
             let fetchRequest = NSFetchRequest<OrderDO>(entityName: "OrderDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             
             let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
             var predicate2 = NSPredicate(format: "1 > 0")
@@ -98,9 +98,9 @@ class OrderManager: NSObject {
             fetchRequest.predicate = predicateCompound
             
             do {
-                let result = try container.viewContext.fetch(fetchRequest)
-                var list:[OrderDO] = []
-                list = result.flatMap({$0})
+                let result = try context.fetch(fetchRequest)
+                var list:[Order] = []
+                list = result.flatMap({$0}).flatMap({Order.parse(dictionary: $0.toDictionary)})
                 DispatchQueue.main.async {
                     onComplete(list)
                 }
@@ -109,13 +109,13 @@ class OrderManager: NSObject {
                     onComplete([])
                 }
             }
-//        }
+        }
     }
     
-    static func getAllOrdersNotSynced(onComplete:(([OrderDO])->Void)) {
+    static func getAllOrdersNotSynced(onComplete:(([Order])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-        fetchRequest.returnsObjectsAsFaults = false
+        
         var predicate1 = NSPredicate(format: "1 > 0")
         if let user = UserManager.currentUser() {
             predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
@@ -127,9 +127,9 @@ class OrderManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-            var list:[OrderDO] = []
-            list = result.flatMap({$0 as? OrderDO})
+            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            var list:[Order] = []
+            list = result.flatMap({$0 as? OrderDO}).flatMap({Order.parse(dictionary: $0.toDictionary)})
             onComplete(list)
             
         } catch {
@@ -140,24 +140,22 @@ class OrderManager: NSObject {
     }
     
     static func saveOrderWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
-        OrderManager.clearAllDataSynced {
-            let container = CoreDataStack.sharedInstance.persistentContainer
-            container.performBackgroundTask() { (context) in
-                for jsonObject in array {
-                    _ = OrderManager.createOrderEntityFrom(dictionary:jsonObject,context)
-                }
-                do {
-                    try context.save()
-                    onComplete()
-                } catch {
-                    onComplete()
-                    fatalError("Failure to save context: \(error)")
-                }
+        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        container.perform {
+            for jsonObject in array {
+                OrderManager.createOrderEntityFrom(dictionary:jsonObject,container)
             }
+            onComplete()
         }
+        
     }
     
     static func markSynced(_ list:[Int64],_ done:@escaping (()->Void)) {
+        if list.count == 0 {
+            done()
+            return
+        }
+        
         let container = CoreDataStack.sharedInstance.persistentContainer
         container.performBackgroundTask() { (context) in
                 let entity = NSEntityDescription.entity(forEntityName: "OrderDO", in: context)
@@ -173,19 +171,61 @@ class OrderManager: NSObject {
                 }
         }
     }
+    
+    static func update(_ list:[JSON],_ done:@escaping (()->Void)) {
+        if list.count == 0 {
+            done()
+            return
+        }
+        
+        let container = CoreDataStack.sharedInstance.persistentContainer
+        container.performBackgroundTask() { (context) in
+            var i =  1
+            for item in list {
+                
+                let order = Order.parse(dictionary: item)
+                
+                let listIDS = [order.id].filter{$0 != 0}
+                
+                if listIDS.count == 0 {
+                    print("WARNING: UPDATE ORDER WITH ID == 0. IT'S PREVENTED !!!!")
+                    return
+                }
+                
+                let entity = NSEntityDescription.entity(forEntityName: "OrderDO", in: context)
+                let batchRequest = NSBatchUpdateRequest(entity: entity!)
+                batchRequest.resultType = .statusOnlyResultType
+                batchRequest.predicate = NSPredicate(format: "id IN %@",listIDS);
+                batchRequest.propertiesToUpdate = order.toDO
+                do {
+                    try context.execute(batchRequest)
+                    if i == list.count {
+                        done()
+                    }
+                } catch {
+                    if i == list.count {
+                        done()
+                    }
+                    i += 1
+                    print(error)
+                }
+                i += 1
+            }
+        }
+    }
+    
     static func updateOrderEntity(_ product:NSManagedObject, onComplete:(()->Void)) {
+        product.managedObjectContext?.mergePolicy = NSMergePolicy(merge: NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType)
         do {
-            try product.managedObjectContext?.save()
+            try! product.managedObjectContext?.save()
             print("order saved!")
-        } catch let error as NSError  {
-            print("Could not saved \(error), \(error.userInfo)")
         } catch {
             
         }
         onComplete()
     }
     
-    static func createOrderEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) -> NSManagedObject? {
+    static func createOrderEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext) {
         if let object = NSEntityDescription.insertNewObject(forEntityName: "OrderDO", into: context) as? OrderDO {
             if let data = dictionary["id"] as? String {
                 object.id = Int64(data)!
@@ -232,7 +272,7 @@ class OrderManager: NSObject {
             if let data = dictionary["email"] as? String {
                 object.email = data
             }
-            if let data = dictionary["raddress"] as? String {
+            if let data = dictionary["address"] as? String {
                 object.address = data
             }
             if let data = dictionary["tel"] as? String {
@@ -242,9 +282,6 @@ class OrderManager: NSObject {
                 object.cell = data
             }
             
-            if let data = dictionary["svd"] as? String {
-                object.svd = data
-            }
             if let data = dictionary["status"] as? String {
                 object.status = Int64(data)!
             } else if let data = dictionary["status"] as? Int64 {
@@ -270,20 +307,27 @@ class OrderManager: NSObject {
                 if let myDate = dateFormatter.date(from: data) {
                     object.date_created = myDate as NSDate
                 }
+            } else if let data = dictionary["date_created"] as? NSDate {
+                object.date_created = data
             }
+            
             if let data = dictionary["last_updated"] as? String {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 if let myDate = dateFormatter.date(from: data) {
                     object.last_updated = myDate as NSDate
                 }
+            } else if let data = dictionary["last_updated"] as? NSDate {
+                object.last_updated = data
             }
             
             if let properties = dictionary["properties"] as? JSON {
                 let jsonData = try! JSONSerialization.data(withJSONObject: properties)
+                
                 if let pro = String(data: jsonData, encoding: .utf8) {
                     object.properties = pro
                 }
+                
                 if let add = properties["ship_address"] as? String {
                     object.address = add
                 }
@@ -298,25 +342,39 @@ class OrderManager: NSObject {
                 } else if let data = properties["shiping"] as? Int64 {
                     object.shipping_unit = data
                 }
+                
                 if let data = properties["svd"] as? String {
                     object.svd = data
                 }
-                if let data = properties["city"] as? String {
-                    object.setCity(data)
-                }
-                
-                if let data = properties["district"] as? String {
-                    object.setDistrict(data)
-                }
-                
-                if let data = properties["transporter_other"] as? String {
-                    object.setOtherTransporter(data)
-                }
+            } else if let properties = dictionary["properties"] as? String{
+                object.properties = properties
             }
             
-            return object
+            if let data = dictionary["synced"] as? Bool {
+                object.synced = data
+            }
+            
+            if let add = dictionary["ship_address"] as? String {
+                object.address = add
+            }
+            if let data = dictionary["payment_option"] as? String {
+                object.payment_option = Int64(data)!
+            } else if let data = dictionary["payment_option"] as? Int64 {
+                object.payment_option = data
+            }
+            
+            if let data = dictionary["shiping"] as? String {
+                object.shipping_unit = Int64(data)!
+            } else if let data = dictionary["shiping"] as? Int64 {
+                object.shipping_unit = data
+            }
+            
+            if let data = dictionary["svd"] as? String {
+                object.svd = data
+            }
+            
+            do {try? context.save()}
         }
-        return nil
     }
     
     static func clearAllDataSynced(_ onComplete:@escaping (()->Void)) {
@@ -325,7 +383,7 @@ class OrderManager: NSObject {
         container.performBackgroundTask() { (context) in
             do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-                fetchRequest.returnsObjectsAsFaults = false
+                
                 fetchRequest.predicate = NSPredicate(format: "synced == true")
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
@@ -344,7 +402,7 @@ class OrderManager: NSObject {
             container.performBackgroundTask() { (context) in
                 do {
                     let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
-                    fetchRequest.returnsObjectsAsFaults = false
+                    
                     let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                     _ = objects.map {
                         let obj = $0

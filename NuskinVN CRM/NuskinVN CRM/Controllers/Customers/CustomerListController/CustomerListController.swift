@@ -24,15 +24,15 @@ UITabBarControllerDelegate {
     @IBOutlet var btnCheckOrDelete: UIButton!
     
     var isEdit: Bool = false
-    var listCustomer:[CustomerDO] = [] // list customer for tableview
-    var listGroup:[GroupDO] = [] // list group for combobox
-    var groupSelected:GroupDO?// group filter
+    var listCustomer:[Customer] = [] // list customer for tableview
+    var listGroup:[Group] = [] // list group for combobox
+    var groupSelected:Group?// group filter
     var searchText:String! = "" // search text
     var expandRow:NSInteger = -1 // row expand
     var oldExpandRow:NSInteger = -1 // row expand
-    var listCustomerSelected:[CustomerDO] = [] //list customer select to remove
+    var listCustomerSelected:[Customer] = [] //list customer select to remove
     var tapGesture:UITapGestureRecognizer? // tap hide keyboard search bar
-    var onSelectCustomer:((NSManagedObject)->Void)?
+    var onSelectCustomer:((Customer)->Void)?
     var isJumpToOrderList:Bool = false
     
     override func viewDidLoad() {
@@ -90,6 +90,10 @@ UITabBarControllerDelegate {
         }
     }
     
+    override func reloadAfterSynced(notification:Notification) {
+        updateTableContent()
+    }
+    
     func updateTableContent() {
         self.listCustomer.removeAll()
         if !self.isEdit {
@@ -101,7 +105,7 @@ UITabBarControllerDelegate {
             if bool == false {
                 print("APP IN STATE BUSY, SO WILL SYNCED LATER")
                 NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+//                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                 self.getDataFromLocal()
                 return
             }
@@ -117,7 +121,7 @@ UITabBarControllerDelegate {
         
         showLoading(isShow: true, isShowMessage: false)
         
-        LocalService.shared.syncCustomers {[weak self] in
+        LocalService.shared.syncCustomers(true) {[weak self] in
             guard let _self = self else {return}
             _self.getDataFromLocal()
         }
@@ -132,7 +136,7 @@ UITabBarControllerDelegate {
         
         CustomerManager.getAllCustomers(search: self.searchText, group: self.groupSelected) {[weak self] list in
             if let _self = self {
-                
+                _self.listCustomer.removeAll()
                 _self.listCustomer.append(contentsOf: list)
                 if list.count > 0 {
                     _self.showLoading(isShow: false, isShowMessage: false)
@@ -187,9 +191,7 @@ UITabBarControllerDelegate {
         var listData:[String] = ["all".localized()]
         if listGroup.count > 0 {
             _ = listGroup.map({
-                if let name = $0.group_name {
-                    listData.append(name)
-                }
+                listData.append($0.group_name)
             })
         }
         popupC.show(data: listData, fromView: sender)
@@ -228,15 +230,27 @@ UITabBarControllerDelegate {
                     
                     if i == 1 {
                         _ = self.listCustomerSelected.map({
-                            
-                            let cus = $0
+                            var cus = $0
                             cus.status = 0
                             cus.synced = false
-                            CustomerManager.updateCustomerEntity(cus, onComplete: {})
                         })
-                        self.listCustomerSelected.removeAll()
-                        self.configView()
-                        self.updateTableContent()
+                        
+                        var list:[Customer] = []
+                        _ = self.listCustomerSelected.map {
+                            var obj = $0
+                            obj.synced = false
+                            obj.status = 0
+                            list.append(obj)
+                        }
+                        
+                        CustomerManager.update(list.flatMap({$0.toDO}), {[weak self] _ in
+                            guard let _self = self else {return}
+                            DispatchQueue.main.async {
+                                _self.listCustomerSelected.removeAll()
+                                _self.configView()
+                                _self.updateTableContent()
+                            }
+                        })
                         return
                     } else {
                         self.configView()
@@ -334,7 +348,7 @@ extension CustomerListController {
                 let vc = EmailController(nibName: "EmailController", bundle: Bundle.main)
 //                _self.showTabbar(false)
                 Support.topVC?.present(vc, animated: true, completion: {
-                    vc.show(from: user.email!, to: customer.email!)
+                    vc.show(from: user.email!, to: customer.email)
                 })
                 vc.onDismissComplete = {[weak self] in
                     guard let _self = self else {return}

@@ -22,6 +22,8 @@ class SyncDataController: RootViewController {
     var timer:Timer?
     var timerTimeOut:Timer?
     var didAppBusy:Bool = false
+    var didSyncedProduct:Bool = false
+    var didSyncedMasterData:Bool = false
     var didSyncedOrder:Bool = false
     var didSyncedOrderItem:Bool = false
     var didSyncedCustomer:Bool = false
@@ -64,6 +66,10 @@ class SyncDataController: RootViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.willSyncedOrder(notification:)), name: Notification.Name("SyncData:StartOrder"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willSyncedOrderItem(notification:)), name: Notification.Name("SyncData:StartOrderItem"), object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.forceQuit(notification:)), name: Notification.Name("SyncData:FOREOUTSYNC"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedMasterData(notification:)), name: Notification.Name("SyncData:MasterData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedProduct(notification:)), name: Notification.Name("SyncData:Product"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedCustomer(notification:)), name: Notification.Name("SyncData:Customer"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedGroup(notification:)), name: Notification.Name("SyncData:Group"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.didSyncedOrder(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
@@ -151,6 +157,14 @@ class SyncDataController: RootViewController {
         lblStatus.text?.append("start_sync_order_items".localized() + ".................OK\n")
         updateStatus()
     }
+    func didSyncedMasterData(notification:Notification) {
+        didSyncedMasterData = true
+        updateStatus()
+    }
+    func didSyncedProduct (notification:Notification) {
+        didSyncedProduct = true
+        updateStatus()
+    }
     func appBusy(notification:Notification) {
         didAppBusy = true
         updateStatus()
@@ -166,6 +180,7 @@ class SyncDataController: RootViewController {
                 didSyncedGroup &&
                 didSyncedOrderItem {
                 self.timerTimeOut?.invalidate()
+                self.onReloadData?()
                 dismiss(animated: false, completion: nil)
             }
             return
@@ -181,7 +196,7 @@ class SyncDataController: RootViewController {
             lblStatus.text = "app_is_busy_try_again_later".localized().uppercased()
             return
         }
-        if (didSyncedOrder && didSyncedCustomer && didSyncedGroup && didSyncedOrderItem) {
+        if (didSyncedOrder && didSyncedCustomer && didSyncedGroup && didSyncedOrderItem && didSyncedProduct && didSyncedMasterData) {
             indicator.stopAnimating()
             let date = Date.init(timeIntervalSinceNow: 0)
             lblStatus.text?.append("----------\("complete".localized().uppercased()): \(date.toString(dateFormat: "yyyy-MM-dd HH:mm:ss"))----------\n\n")

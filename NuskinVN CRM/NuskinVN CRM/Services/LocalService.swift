@@ -42,7 +42,7 @@ final class LocalService: NSObject {
         }
         print("START SERVICE SYNC DATA")
         // first
-//        self.syncToServer()
+        //        self.syncToServer()
         
         if let bool = self.timerSyncToServer?.isValid {
             if bool {self.timerSyncToServer?.invalidate()}
@@ -71,22 +71,43 @@ final class LocalService: NSObject {
             return
         }
         
-            self.syncUser{
-                self.syncMasterData{self.syncGroups {self.syncCustomers {SyncService.shared.syncProducts{_ in self.syncOrders{self.syncOrdersItems {
-                                        DispatchQueue.main.async {
-                                            print("SYNC DATA COMPLETE")
-                                            onComplete?()
-                                            DispatchQueue.main.async {
-                                                NotificationCenter.default.post(name:Notification.Name("SyncData:AllDone"),object:nil)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+        SyncService.shared.syncProducts {_ in print("SYNC products COMPLETED".uppercased())
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:Notification.Name("SyncData:Product"),object:nil)
+            }
+            self.syncUser{print("SYNC MASTERDATA COMPLETED".uppercased())}
+            self.syncMasterData{print("SYNC master data COMPLETED".uppercased())}
+            self.syncGroups {print("SYNC groups COMPLETED".uppercased())
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
                 }
             }
+            
+            self.syncCustomers {print("SYNC customer COMPLETED".uppercased())
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                }
+            }
+            
+            self.syncOrders{print("SYNC orders COMPLETED".uppercased())
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                }
+            }
+            
+            self.syncOrdersItems {print("SYNC orderitems COMPLETED".uppercased())
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                }
+            }
+            
+            //        DispatchQueue.main.async {
+            //            print("\n ====> SYNC DATA COMPLETE")
+            onComplete?()
+            //            DispatchQueue.main.async {
+            //                NotificationCenter.default.post(name:Notification.Name("SyncData:AllDone"),object:nil)
+            //            }
+        }
     }
     
     @objc private func syncToServer() {
@@ -110,55 +131,60 @@ final class LocalService: NSObject {
         self.startSyncDataBackground(onComplete: nil)
         
         /*
-        return
-        
-        // user
-        self.syncUser()
-        
-        //master data
-        self.syncMasterData()
-        
-        // groups
-        self.syncGroups()
-        
-        // customers
-        self.syncCustomers()
-        
-        // products
-        SyncService.shared.syncProducts(completion: {_ in
-            NotificationCenter.default.post(name:Notification.Name("SyncData:Group&Product"),object:nil)
-        })
-        
-        // orders
-        self.syncOrders()
-        
-        // order items
-        self.syncOrdersItems()
- */
+         return
+         
+         // user
+         self.syncUser()
+         
+         //master data
+         self.syncMasterData()
+         
+         // groups
+         self.syncGroups()
+         
+         // customers
+         self.syncCustomers()
+         
+         // products
+         SyncService.shared.syncProducts(completion: {_ in
+         NotificationCenter.default.post(name:Notification.Name("SyncData:Group&Product"),object:nil)
+         })
+         
+         // orders
+         self.syncOrders()
+         
+         // order items
+         self.syncOrdersItems()
+         */
         
     }
     
     func syncMasterData(_ onComplete:(()->Void)? = nil) {
         SyncService.shared.getMasterData { _ in
-            onComplete?()
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:Notification.Name("SyncData:MasterData"),object:nil)
+                onComplete?()
+            }
         }
     }
     
     func syncUser(_ onComplete:(()->Void)? = nil) {
+        
         guard let _ = UserManager.currentUser() else { onComplete?(); return }
-//        if user.synced == false {
-            SyncService.shared.syncUser({ _ in
+        SyncService.shared.syncUser({ _ in
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
                 onComplete?()
-            })
-//        }
+            }
+        })
     }
     
     func syncOrdersItems(_ onComplete:(()->Void)? = nil) {
-            print("*******\nSTART SYNC ORDERITEMS\n*******")
+        print("*******\nSTART SYNC ORDERITEMS\n*******")
         
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrderItem"),object:nil)
-        }
+        //        DispatchQueue.main.async {
+        //            NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrderItem"),object:nil)
+        //        }
         
         SyncService.shared.getOrderItems(completion: { (result) in
             switch result {
@@ -167,8 +193,8 @@ final class LocalService: NSObject {
                     if bool == false {
                         onComplete?()
                         print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                        //                        NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                        //                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         return
                     }
                 }
@@ -177,39 +203,110 @@ final class LocalService: NSObject {
                         print("SAVE ORDERITEM TO CORE DATA")
                         OrderItemManager.saveOrderItemWith(array:data) {
                             onComplete?()
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
-                            }
+                            //                            DispatchQueue.main.async {
+                            //                                NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                            //                            }
                         }
                     } else {
                         onComplete?()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
-                        }
+                        //                        DispatchQueue.main.async {
+                        //                            NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                        //                        }
                     }
                 }
                 
             case .failure(_):
                 onComplete?()
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                }
+                //                DispatchQueue.main.async {
+                //                    NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                //                }
                 print("Error: cant get orderitem from server 2")
                 break
             }
         })
     }
     
-    func syncOrders(_ onComplete:(()->Void)? = nil) {
+    func syncOrders(_ one:Bool = false,_ onComplete:(()->Void)? = nil) {
         
         OrderManager.getAllOrdersNotSynced { list in
             let listDictionaryOrders:[JSON] = list.flatMap({$0.toDictionary})
-            print("*******\nSTART SYNC ORDERS: \(listDictionaryOrders.count)\n*******")
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrder"),object:nil)
+            print("*******\nSTART SYNC ORDERS: \(listDictionaryOrders)\n*******")
+            //            DispatchQueue.main.async {
+            //                NotificationCenter.default.post(name:Notification.Name("SyncData:StartOrder"),object:nil)
+            //            }
+            
+            if one {
+                SyncService.shared.postOrdersAndOrderItemsTypeOne(list: listDictionaryOrders, completion: { (result) in
+                    switch result {
+                    case .success(let data):
+                        print("*******\n GOT ORDERS: \(data)\n*******")
+                        // change state to synced true
+                        if let bool = LocalService.shared.isShouldSyncData?() {
+                            if bool == false {
+                                onComplete?()
+                                DispatchQueue.main.async {
+                                    NotificationCenter.default.post(name:Notification.Name("SyncData:OrderOne"),object:nil)
+                                }
+                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                //                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                return
+                            }
+                        }
+                        var list1:[Int64] = [0]
+                        if listDictionaryOrders.count > 0 {
+                            list1.append(contentsOf: listDictionaryOrders.flatMap{$0["id"] as? Int64})
+                            list1.append(contentsOf: listDictionaryOrders.flatMap{$0["local_id"] as? Int64})
+                        }
+                        if let orders = data["orders"] as? [JSON],
+                            let orderitems = data["orderitems"] as? [JSON] {
+                            OrderManager.markSynced(list1, {
+                                OrderManager.update(orders, {
+                                    OrderItemManager.resetData(from: list1) {
+                                        if orderitems.count > 0 {
+                                            print("SAVE ORDERITEM TO CORE DATA")
+                                            OrderItemManager.saveOrderItemWith(array:orderitems) {
+                                                onComplete?()
+                                                print("SAVE ORDERS AND REFERENCE TO CORE DATA")
+                                                DispatchQueue.main.async {
+                                                    NotificationCenter.default.post(name:Notification.Name("SyncData:OrderOne"),object:nil)
+                                                }
+                                                //                                                DispatchQueue.main.async {
+                                                //                                                    NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                                                //                                                }
+                                            }
+                                        } else {
+                                            print("NO ORDERITEM on SERVER TO CORE DATA".uppercased())
+                                            onComplete?()
+                                            DispatchQueue.main.async {
+                                                NotificationCenter.default.post(name:Notification.Name("SyncData:OrderOne"),object:nil)
+                                            }
+                                            //                                            DispatchQueue.main.async {
+                                            //                                                NotificationCenter.default.post(name:Notification.Name("SyncData:OrderItem"),object:nil)
+                                            //                                            }
+                                        }
+                                    }
+                                })
+                            })
+                        } else {
+                            print("warning no data to parse when sync one Orders and ordertiems".uppercased())
+                            onComplete?()
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name:Notification.Name("SyncData:OrderOne"),object:nil)
+                            }
+                        }
+                        
+                    case .failure(_):
+                        onComplete?()
+                        print("Error: cant get order from server 2")
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name:Notification.Name("SyncData:OrderOne"),object:nil)
+                        }
+                        break
+                    }
+                })
+                return
             }
             
-            print(listDictionaryOrders)
             SyncService.shared.postAllOrdersToServer(list: listDictionaryOrders, completion: { (result) in
                 switch result {
                 case .success(let data):
@@ -218,8 +315,8 @@ final class LocalService: NSObject {
                         if bool == false {
                             onComplete?()
                             print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            //                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                            //                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                             return
                         }
                     }
@@ -234,21 +331,21 @@ final class LocalService: NSObject {
                                 print("SAVE ORDER TO CORE DATA")
                                 OrderManager.saveOrderWith(array:data) {
                                     onComplete?()
-                                    DispatchQueue.main.async {
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
-                                    }
+                                    //                                    DispatchQueue.main.async {
+                                    //                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Order"),object:nil)
+                                    //                                    }
                                 }
                             } else {
                                 onComplete?()
                             }
                         }
                     })
-                   
+                    
                 case .failure(_):
                     onComplete?()
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                    }
+                    //                    DispatchQueue.main.async {
+                    ////                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                    //                    }
                     print("Error: cant get order from server 2")
                     break
                 }
@@ -256,13 +353,53 @@ final class LocalService: NSObject {
         }
     }
     
-    func syncCustomers(_ onComplete:(()->Void)? = nil) {
+    func syncCustomers(_ one:Bool = false,_ onComplete:(()->Void)? = nil) {
         CustomerManager.getAllCustomersNotSynced { list in
             let listDictionaryCustomer:[JSON] = list.flatMap({$0.toDictionary})
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name:Notification.Name("SyncData:StartCustomer"),object:nil)
-            }
+            //            DispatchQueue.main.async {
+            //                NotificationCenter.default.post(name:Notification.Name("SyncData:StartCustomer"),object:nil)
+            //            }
             print("*******\nSTART SYNC CUSTOMERS: \(listDictionaryCustomer.count)\n*******")
+            if one == true {
+                SyncService.shared.postCustomersTypeOne(list:listDictionaryCustomer, completion: { (result) in
+                    switch result {
+                    case .success(let data):
+                        if let bool = LocalService.shared.isShouldSyncData?() {
+                            if bool == false {
+                                onComplete?()
+                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                                //                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                                //                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                                return
+                            }
+                        }
+                        // change state to synced true
+                        var list1:[Int64] = [0]
+                        if listDictionaryCustomer.count > 0 {
+                            list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["id"] as? Int64})
+                            list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["local_id"] as? Int64})
+                        }
+                        CustomerManager.markSynced(list1, {
+                            CustomerManager.update(data, {
+                                print("UPDATE CUSTOMER \(data) TO CORE DATA")
+                                onComplete?()
+                                //                                DispatchQueue.main.async {
+                                //                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Customer"),object:nil)
+                                //                                }
+                            })
+                        })
+                    case .failure(_):
+                        onComplete?()
+                        //                        DispatchQueue.main.async {
+                        //                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                        //                        }
+                        print("Error: cant get customer from server 2")
+                        break
+                    }
+                    
+                })
+                return
+            }
             SyncService.shared.postAllCustomerToServer(list:listDictionaryCustomer, completion: { (result) in
                 switch result {
                 case .success(let data):
@@ -271,14 +408,14 @@ final class LocalService: NSObject {
                             onComplete?()
                             print("APP IN STATE BUSY, SO WILL SYNCED LATER")
                             NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            //                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                             return
                         }
                     }
                     // change state to synced true
                     var list1:[Int64] = [0]
                     if listDictionaryCustomer.count > 0 {
-                         list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["id"] as? Int64})
+                        list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["id"] as? Int64})
                         list1.append(contentsOf: listDictionaryCustomer.flatMap{$0["local_id"] as? Int64})
                     }
                     CustomerManager.markSynced(list1, {
@@ -302,9 +439,9 @@ final class LocalService: NSObject {
                 case .failure(_):
                     onComplete?()
                     DispatchQueue.main.async {
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                        //                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                     }
-                    print("Error: cant get group from server 2")
+                    print("Error: cant get customer from server 2")
                     break
                 }
                 
@@ -315,71 +452,63 @@ final class LocalService: NSObject {
     private func syncGroups(_ onComplete:(()->Void)? = nil) {
         GroupManager.getAllGroupSynced(onComplete: { (list) in
             let listDictionaryGroup:[JSON] = list.flatMap({$0.toDictionary})
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name:Notification.Name("SyncData:StartGroup"),object:nil)
-            }
-            print("*******\nSTART SYNC GROUPS: \(listDictionaryGroup.count)\n*******")
+            //            DispatchQueue.main.async {
+            //                NotificationCenter.default.post(name:Notification.Name("SyncData:StartGroup"),object:nil)
+            //            }
+            print("*******\nSTART SYNC GROUPS: \(listDictionaryGroup)\n*******")
             SyncService.shared.postAllGroupToServer(list: listDictionaryGroup, completion: { result in
+                
                 switch result {
                 case .success(let data):
+                    if let bool = LocalService.shared.isShouldSyncData?() {
+                        if bool == false {
+                            onComplete?()
+                            print("APP IN STATE BUSY, SO WILL SYNCED LATER")
+                            //                            NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
+                            //                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                            return
+                        }
+                    }
+                    
                     guard data.count > 0 else {
                         onComplete?()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
-                        }
+                        //                        DispatchQueue.main.async {
+                        //                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                        //                        }
                         print("Dont have new group from server")
                         return
                     }
-
-                    switch result {
-                    case .success(let data):
-                        if let bool = LocalService.shared.isShouldSyncData?() {
-                            if bool == false {
-                                onComplete?()
-                                print("APP IN STATE BUSY, SO WILL SYNCED LATER")
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:APPBUSY"),object:nil)
-                                NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                                return
-                            }
-                        }
-                        
-                        var list1:[Int64] = [0]
-                        if listDictionaryGroup.count > 0 {
-                            list1.append(contentsOf: listDictionaryGroup.flatMap{$0["id"] as? Int64})
-                            list1.append(contentsOf: listDictionaryGroup.flatMap{$0["local_id"] as? Int64})
-                        }
-                        GroupManager.markSynced(list1, {
-                            print("SAVE GROUP TO CORE DATA")
-                            GroupManager.clearAllDataSynced {
-                                if data.count > 0 {
-                                    GroupManager.saveGroupWith(array: data) {
-                                        DispatchQueue.main.async {
-                                            NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
-                                        }
-                                        onComplete?()
-                                    }
-                                } else {
+                    
+                    var list1:[Int64] = [0]
+                    if listDictionaryGroup.count > 0 {
+                        list1.append(contentsOf: listDictionaryGroup.flatMap{$0["id"] as? Int64})
+                        list1.append(contentsOf: listDictionaryGroup.flatMap{$0["local_id"] as? Int64})
+                    }
+                    GroupManager.markSynced(list1, {
+                        print("SAVE GROUP TO CORE DATA")
+                        GroupManager.clearAllDataSynced {
+                            if data.count > 0 {
+                                GroupManager.saveGroupWith(array: data) {
+                                    //                                    DispatchQueue.main.async {
+                                    //                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                                    //                                    }
                                     onComplete?()
-                                    DispatchQueue.main.async {
-                                        NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
-                                    }
                                 }
+                            } else {
+                                onComplete?()
+                                //                                DispatchQueue.main.async {
+                                //                                    NotificationCenter.default.post(name:Notification.Name("SyncData:Group"),object:nil)
+                                //                                }
                             }
-                        })
-                    case .failure(_):
-                        onComplete?()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
                         }
-                        print("Error: cant get group from server 2")
-                        break
-                    }
-                case.failure(_):
+                    })
+                case .failure(_):
                     onComplete?()
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
-                    }
-                    print("Error: cant get group from server 1")
+                    //                    DispatchQueue.main.async {
+                    //                            NotificationCenter.default.post(name:Notification.Name("SyncData:FOREOUTSYNC"),object:nil)
+                    //                    }
+                    print("Error: cant get group from server 2")
+                    break
                 }
             })
         })
