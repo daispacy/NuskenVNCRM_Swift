@@ -15,8 +15,8 @@ class OrderManager: NSObject {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else { onComplete([]); return }
         
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        context.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
             
             var predicate2 = NSPredicate(format: "1 > 0")

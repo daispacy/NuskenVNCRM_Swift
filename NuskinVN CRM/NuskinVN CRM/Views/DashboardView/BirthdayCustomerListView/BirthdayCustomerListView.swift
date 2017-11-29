@@ -202,12 +202,16 @@ class BirthdayCustomerListView: CViewSwitchLanguage {
         if !is30 {
             CustomerManager.getCustomersBirthday {[weak self] (list) in
                 guard let _self = self else {return}
-                _self.reloadListCustomer(list)
+                DispatchQueue.main.async {
+                    _self.reloadListCustomer(list)
+                }
             }
         } else {
             CustomerManager.getCustomersDontHaveOrder30Day{[weak self] (list) in
                 guard let _self = self else {return}
-                _self.reloadListCustomer(list)
+                DispatchQueue.main.async {
+                    _self.reloadListCustomer(list)
+                }
             }
         }
     }

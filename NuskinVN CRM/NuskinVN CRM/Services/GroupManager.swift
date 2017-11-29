@@ -49,8 +49,8 @@ class GroupManager: NSObject {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else {onComplete([]);  return}
         
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
+        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        context.perform {
             do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
                 

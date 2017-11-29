@@ -102,8 +102,8 @@ extension AuthenticViewController {
                         case .success(_):
 //                            _self.authenticView.btnProcess.stopAnimation()
 //                            let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
-//                            AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
-                            AppConfig.navigation.gotoDashboardAfterSigninSuccess()
+                            AppConfig.navigation.changeRootControllerTo(viewcontroller: LaunchController(nibName: "LaunchController", bundle: Bundle.main))
+//                            AppConfig.navigation.gotoDashboardAfterSigninSuccess()
                         case .failure(_):
                             _self.authenticView.btnProcess.stopAnimation()
                             let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)

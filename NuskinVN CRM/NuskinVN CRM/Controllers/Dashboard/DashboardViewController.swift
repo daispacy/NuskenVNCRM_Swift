@@ -215,8 +215,9 @@ extension DashboardViewController {
             let itemTabbar = UITabBarItem(title: "dashboard".localized().uppercased(), image: UIImage(named: "tabbar_dashboard"), selectedImage: UIImage(named: "tabbar_dashboard")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 9
             tabBarItem  = itemTabbar
-            let nv = self.tabBarController?.viewControllers![1] as! UINavigationController            
-            nv.popToRootViewController(animated: true)
+            if let nv = self.tabBarController?.viewControllers?[1] as? UINavigationController{
+                nv.setViewControllers([OrderListController(nibName: "OrderListController", bundle: Bundle.main)], animated: false)
+            }
         } else {
             if tabBarItem.tag == 10 {
                 AppConfig.navigation.changeController(to: CustomerListController(nibName: "CustomerListController", bundle: Bundle.main), on: tabBarController, index: 0)

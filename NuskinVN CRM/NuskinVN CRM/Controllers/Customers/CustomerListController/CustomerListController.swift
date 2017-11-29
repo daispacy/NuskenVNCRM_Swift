@@ -451,10 +451,9 @@ extension CustomerListController {
             let itemTabbar = UITabBarItem(title: "title_tabbar_button_customer".localized().uppercased(), image: UIImage(named: "tabbar_customer"), selectedImage: UIImage(named: "tabbar_customer")?.withRenderingMode(.alwaysOriginal))
             itemTabbar.tag = 10
             tabBarItem  = itemTabbar
-            let nv = self.tabBarController?.viewControllers![1] as! UINavigationController
-            let vc = nv.viewControllers[0] as! OrderListController
-            vc.isGotoFromCustomerList = false
-            nv.popToRootViewController(animated: true)
+            if let nv = self.tabBarController?.viewControllers?[1] as? UINavigationController{
+                nv.setViewControllers([OrderListController(nibName: "OrderListController", bundle: Bundle.main)], animated: false)
+            }
         } else {
             if tabBarItem.tag == 9 {
                 AppConfig.navigation.changeController(to: DashboardViewController(), on: tabBarController, index: 0)
