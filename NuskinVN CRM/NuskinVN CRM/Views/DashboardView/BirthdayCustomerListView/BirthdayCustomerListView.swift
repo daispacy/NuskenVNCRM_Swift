@@ -282,3 +282,65 @@ extension BirthdayCustomerListView {
        
     }
 }
+
+// MARK: - ShowCase
+extension BirthdayCustomerListView: MaterialShowcaseDelegate {
+    
+    // MARK: - init showcase
+    func startTutorial(_ step:Int = 1) {
+        
+        if step == 2 {
+            if !AppConfig.setting.isShowTutorial(with: REMINDER_CUSTOMER_SCENE) {
+                AppConfig.setting.setFinishShowcase(key: REMINDER_CUSTOMER_SCENE)
+                self.getNextTutorial?()
+                return
+            }
+        }
+        
+        // showcase
+        configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
+            if shouldShow {
+                showcase.delegate = self
+                showcase.show(completion: nil)
+            }
+        }
+    }
+    
+    func configShowcase(_ showcase:MaterialShowcase,_ step:Int = 1,_ shouldShow:((MaterialShowcase,Bool)->Void)) {
+        guard let view = stackListCustomer.arrangedSubviews.first as? CustomerBlockView else {
+            self.getNextTutorial?()
+            return
+        }
+        
+        if step ==  1 {
+            showcase.setTargetView(view: view.lblName)
+            showcase.primaryText = ""
+            showcase.identifier = CELL_CUSTOMER_VIEW
+            showcase.secondaryText = "click_here_open_function_communicate".localized()
+            shouldShow(showcase,true)
+        } else if step == 2 {
+            showcase.setTargetView(view: view.lblName)
+            showcase.primaryText = ""
+            showcase.identifier = CELL_CUSTOMER_VIEW1
+            showcase.secondaryText = "click_here_open_function_communicate".localized()
+            shouldShow(showcase,true)
+        } else {
+            shouldShow(showcase,false)
+            if step > 2 {
+                AppConfig.setting.setFinishShowcase(key: CONGRAT_CUSTOMER_SCENE)
+                self.getNextTutorial?()
+            }
+        }
+    }
+    
+    func showCaseDidDismiss(showcase: MaterialShowcase) {
+        if let step = showcase.identifier {
+            print(step)
+            if let s = Int(step) {
+                let ss = s + 1
+                startTutorial(ss)
+            }
+        }
+        
+    }
+}

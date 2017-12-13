@@ -52,7 +52,7 @@ class AppConfig: NSObject {
         }
         
         static func resetTutorial() {
-            for key in [DASHBOARD_CONTROLLER_SCENE,MENU_DASHBOARD,REPORT_STATUS_ORDER,REPORT_CUSTOMER_ORDER] {
+            for key in LIST_SCENES {
                 UserDefaults.standard.removeObject(forKey: key)
             }
         }

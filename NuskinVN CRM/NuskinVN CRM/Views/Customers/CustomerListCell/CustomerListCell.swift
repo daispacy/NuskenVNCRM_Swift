@@ -69,41 +69,41 @@ class CustomerListCell: UITableViewCell {
         if isSelect {
             
             let functionView = Bundle.main.loadNibNamed("FunctionStackViewCustomer", owner: self, options: [:])?.first as! FunctionStackViewCustomer
-            var listFunction:[JSON] = [["tag":8,"img":"ic_dashboard_gradient_72"],["tag":1,"img":"ic_order_list_gradient_72"]] // default is order
+            var listFunction:[JSON] = [["tag":Int(FUNCTION_DASHBOARD)!,"img":"ic_dashboard_gradient_72"],["tag":Int(FUNCTION_ORDER)!,"img":"ic_order_list_gradient_72"]] // default is order
             if let obj = self.object {
                 if AppConfig.deeplink.facebook().characters.count > 0 {
                     if obj.facebook.characters.count > 0 {
-                        listFunction.append(["tag":5,"img":"ic_facebook_gradient_48"])
+                        listFunction.append(["tag":Int(FUNCTION_FACEBOOK)!,"img":"ic_facebook_gradient_48"])
                     }
                 }
                 
                     if obj.tel.characters.count > 0 {
-                        listFunction.append(["tag":4,"img":"ic_phone_gradient_48"])
+                        listFunction.append(["tag":Int(FUNCTION_CALL)!,"img":"ic_phone_gradient_48"])
                     }
                 
                     if obj.tel.characters.count > 0 {
-                        listFunction.append(["tag":9,"img":"ic_sms_72"])
+                        listFunction.append(["tag":Int(FUNCTION_SMS)!,"img":"ic_sms_72"])
                     }
                 
                     if obj.email.characters.count > 0 {
-                        listFunction.append(["tag":7,"img":"ic_email_gradient"])
+                        listFunction.append(["tag":Int(FUNCTION_EMAIL)!,"img":"ic_email_gradient"])
                     }
                 
                 if AppConfig.deeplink.skype().characters.count > 0 {
                     if obj.skype.characters.count > 0 {
-                        listFunction.append(["tag":3,"img":"ic_skype_gradient_72"])
+                        listFunction.append(["tag":Int(FUNCTION_SKYPE)!,"img":"ic_skype_gradient_72"])
                     }
                 }
                 
                 if AppConfig.deeplink.viber().characters.count > 0 {
                     if obj.viber.characters.count > 0 {
-                        listFunction.append(["tag":2,"img":"ic_viber_gradient_72"])
+                        listFunction.append(["tag":Int(FUNCTION_VIBER)!,"img":"ic_viber_gradient_72"])
                     }
                 }
                 
                 if AppConfig.deeplink.zalo().characters.count > 0 {
                     if obj.zalo.characters.count > 0 {
-                        listFunction.append(["tag":6,"img":"ic_zalo_128"])
+                        listFunction.append(["tag":Int(FUNCTION_ZALO)!,"img":"ic_zalo_128"])
                     }
                 }
                 
@@ -119,26 +119,26 @@ class CustomerListCell: UITableViewCell {
                 guard let _self = self else {return}
                 guard let obj = self?.object else {return}
                 print("open \(identifier)")
-                if identifier == 5/*"facebook"*/ {
+                if identifier == Int(FUNCTION_FACEBOOK)!/*"facebook"*/ {
                     _self.openDeepLink(link: AppConfig.deeplink.facebook().replacingOccurrences(of: "[|id|]", with: obj.facebook), linkItunes: AppConfig.deeplink.facebookLinkItunes())
-                } else if identifier == 3/*"skype"*/ {
+                } else if identifier == Int(FUNCTION_SKYPE)!/*"skype"*/ {
                     _self.openDeepLink(link: AppConfig.deeplink.skype().replacingOccurrences(of: "[|id|]", with: obj.skype), linkItunes: AppConfig.deeplink.skypeLinkItunes())
-                } else if identifier == 2/*"viber"*/ {
+                } else if identifier == Int(FUNCTION_VIBER)!/*"viber"*/ {
                     _self.openDeepLink(link: AppConfig.deeplink.viber().replacingOccurrences(of: "[|id|]", with: obj.viber), linkItunes: AppConfig.deeplink.viberLinkItunes())
-                } else if identifier == 4/*"tel"*/ {
+                } else if identifier == Int(FUNCTION_CALL)!/*"tel"*/ {
                     guard let number = URL(string: "tel://" + obj.tel) else { return }
                     UIApplication.shared.open(number)
-                } else if identifier == 6/*"zalo"*/ {
+                } else if identifier == Int(FUNCTION_ZALO)!/*"zalo"*/ {
                     _self.openDeepLink(link: AppConfig.deeplink.zalo().replacingOccurrences(of: "[|id|]", with: obj.zalo), linkItunes: AppConfig.deeplink.zaloLinkItunes())
-                } else if identifier == 1/*"order list"*/ {
+                } else if identifier == Int(FUNCTION_ORDER)!/*"order list"*/ {
                     _self.gotoOrderList?(obj)
-                } else if identifier == 7/*"send email"*/ {
+                } else if identifier == Int(FUNCTION_EMAIL)!/*"send email"*/ {
                     _self.involkeEmailView?(obj)
-                } else if identifier == 8/*"dashboard"*/ {
+                } else if identifier == Int(FUNCTION_DASHBOARD)!/*"dashboard"*/ {
                     let vc = DashboardCustomerController(nibName: "DashboardCustomerController", bundle: Bundle.main)
                     vc.customer = obj
                     topVC.present(vc, animated: true, completion: nil)
-                }  else if identifier == 9/*"sms"*/ {
+                }  else if identifier == Int(FUNCTION_SMS)!/*"sms"*/ {
                     guard let number = URL(string: "sms:" + obj.tel) else { return }
                     UIApplication.shared.open(number)
                 }
@@ -268,5 +268,104 @@ class FunctionStackViewCustomer: UIView {
         height.priority = 750
         button.addConstraints([width,height])
         button.tag = item["tag"] as! Int
+    }
+}
+
+extension FunctionStackViewCustomer: MaterialShowcaseDelegate {
+    
+    // MARK: - init showcase
+    func startTutorial() {
+        checkNextStep(1)
+    }
+    
+    func checkNextStep(_ step:Int = 1) {
+        // showcase
+        configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
+            if shouldShow {
+                showcase.delegate = self
+                showcase.show(completion: nil)
+            }
+        }
+    }
+    
+    func configShowcase(_ showcase:MaterialShowcase,_ step:Int = 1,_ shouldShow:((MaterialShowcase,Bool)->Void)) {
+
+        if step > 9 {
+            shouldShow(showcase,false)
+            return
+        }
+        
+        var btn:UIView? = nil
+        
+        for item in stackContainer.arrangedSubviews {
+            if item.tag == step {
+                btn = item
+                break
+            }
+        }
+        
+        guard let view = btn else {checkNextStep(step+1); return}
+
+        // showcase
+        showcase.setTargetView(view: view)
+        showcase.primaryText = ""
+        if step == 1 && !AppConfig.setting.isShowTutorial(with: DASHBOARD_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_DASHBOARD
+            showcase.secondaryText = "click_here_show_dashboard_customer".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: DASHBOARD_FUNCTION_SCENE)
+        } else if step == 2 && !AppConfig.setting.isShowTutorial(with: ORDER_FUNCTION_SCENE) && view.tag == step{
+            showcase.identifier = FUNCTION_ORDER
+            showcase.secondaryText = "click_here_show_list_orders_customer".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: ORDER_FUNCTION_SCENE)
+        } else if step == 3 && !AppConfig.setting.isShowTutorial(with: FACEBOOK_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_FACEBOOK
+            showcase.secondaryText = "click_here_interact_customer_facebook".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: FACEBOOK_FUNCTION_SCENE)
+        } else if step == 4 && !AppConfig.setting.isShowTutorial(with: CALL_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_CALL
+            showcase.secondaryText = "click_here_call_customer".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: CALL_FUNCTION_SCENE)
+        } else if step == 5 && !AppConfig.setting.isShowTutorial(with: SMS_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_SMS
+            showcase.secondaryText = "click_here_sms_customer".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: SMS_FUNCTION_SCENE)
+        } else if step == 6 && !AppConfig.setting.isShowTutorial(with: EMAIL_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_EMAIL
+            showcase.secondaryText = "click_here_email_customer".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: EMAIL_FUNCTION_SCENE)
+        } else if step == 7 && !AppConfig.setting.isShowTutorial(with: SKYPE_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_SKYPE
+            showcase.secondaryText = "click_here_interact_customer_skype".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: SKYPE_FUNCTION_SCENE)
+        } else if step == 8 && !AppConfig.setting.isShowTutorial(with: VIBER_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_VIBER
+            showcase.secondaryText = "click_here_interact_customer_viber".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: VIBER_FUNCTION_SCENE)
+        } else if step == 9 && !AppConfig.setting.isShowTutorial(with: ZALO_FUNCTION_SCENE) && view.tag == step {
+            showcase.identifier = FUNCTION_ZALO
+            showcase.secondaryText = "click_here_interact_customer_zalo".localized()
+            shouldShow(showcase,true)
+            AppConfig.setting.setFinishShowcase(key: ZALO_FUNCTION_SCENE)
+        } else {
+            checkNextStep(step+1)
+        }
+    }
+    
+    func showCaseDidDismiss(showcase: MaterialShowcase) {
+        if let step = showcase.identifier {
+            if let s = Int(step) {
+                let ss = s + 1
+                checkNextStep(ss)
+            }
+        }
+        
     }
 }

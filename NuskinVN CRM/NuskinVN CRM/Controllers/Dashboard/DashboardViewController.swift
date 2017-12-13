@@ -252,7 +252,6 @@ extension DashboardViewController: MaterialShowcaseDelegate {
     
     // MARK: - init showcase
     func startTutorial(_ step:Int = 1) {
-        return
         // showcase
         isStartingTutorial = true
         configShowcase(MaterialShowcase(), step) { showcase, shouldShow in

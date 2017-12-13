@@ -19,6 +19,7 @@ class TopProductView: UIView {
     @IBOutlet var btnOtherProduct: UIButton!
     
     var onMoreProduct:(()->Void)?
+    var getNextTutorial:(()->Void)?
     
     var dataReal:[JSON] = []
     
@@ -167,5 +168,54 @@ class BlockTopProductView: CViewSwitchLanguage {
         
         lblSub.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         lblSub.textColor = UIColor(hex: Theme.colorDBTextNormal)
+    }
+}
+
+// MARK: - ShowCase
+extension TopProductView: MaterialShowcaseDelegate {
+    
+    // MARK: - init showcase
+    func startTutorial(_ step:Int = 1) {
+        
+        // showcase
+        configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
+            if shouldShow {
+                showcase.delegate = self
+                showcase.show(completion: nil)
+            }
+        }
+    }
+    
+    func configShowcase(_ showcase:MaterialShowcase,_ step:Int = 1,_ shouldShow:((MaterialShowcase,Bool)->Void)) {
+        if step ==  1 {
+            showcase.setTargetView(view: btnRevenue)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_PROCESSED_ORDER
+            showcase.secondaryText = "click_here_view_revenue_products".localized()
+            shouldShow(showcase,true)
+        } else if step == 2 {
+            showcase.setTargetView(view: btnNumber)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_UNPROCESSED_ORDER
+            showcase.secondaryText = "click_here_view_number_products".localized()
+            shouldShow(showcase,true)
+        } else {
+            shouldShow(showcase,false)
+            if step > 2 {
+                AppConfig.setting.setFinishShowcase(key: REPORT_PRODUCT_SCENE)
+                self.getNextTutorial?()
+            }
+        }
+    }
+    
+    func showCaseDidDismiss(showcase: MaterialShowcase) {
+        if let step = showcase.identifier {
+            print(step)
+            if let s = Int(step) {
+                let ss = s + 1
+                startTutorial(ss)
+            }
+        }
+        
     }
 }

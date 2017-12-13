@@ -317,8 +317,8 @@ extension TotalSummaryView: MaterialShowcaseDelegate {
     func startTutorial(_ step:Int = 1) {
         
         if step == 4 {
-            if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER) {
-                AppConfig.setting.setFinishShowcase(key: REPORT_STATUS_ORDER)
+            if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER_SCENE) {
+                AppConfig.setting.setFinishShowcase(key: REPORT_STATUS_ORDER_SCENE)
                 self.getNextTutorial?()
                 return
             }
@@ -367,7 +367,7 @@ extension TotalSummaryView: MaterialShowcaseDelegate {
         } else {
             shouldShow(showcase,false)
             if step > 5 {
-                AppConfig.setting.setFinishShowcase(key: REPORT_CUSTOMER_ORDER)
+                AppConfig.setting.setFinishShowcase(key: REPORT_CUSTOMER_ORDER_SCENE)
                 self.getNextTutorial?()
             }
         }

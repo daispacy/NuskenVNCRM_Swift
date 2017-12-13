@@ -66,6 +66,11 @@ extension UIView {
         let targetRect = self.convert(self.bounds , to: containerView)
         return targetRect.center
     }
+    
+    func getWindowTop(to containerView: UIView) -> CGPoint {
+        let targetRect = self.convert(self.bounds , to: containerView)
+        return targetRect.origin
+    }
 }
 
 extension Bundle {

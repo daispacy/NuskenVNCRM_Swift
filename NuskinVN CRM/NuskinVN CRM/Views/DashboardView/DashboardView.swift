@@ -200,6 +200,10 @@ class DashboardView: CViewSwitchLanguage {
             stackView.insertArrangedSubview(topProductView, at: stackView.arrangedSubviews.count)
             topProductView.maxTopProduct = self.maxTopProduct
             topProductView.loadData(data: data2)
+            topProductView.getNextTutorial = {[weak self] in
+                guard let _self = self else {return}
+                _self.startTutorial()
+            }
         } else {
             topProductView.removeFromSuperview()
         }
@@ -215,6 +219,10 @@ class DashboardView: CViewSwitchLanguage {
             guard let _self = self else {return}
             _self.birthdayDontOrder30.reloadData(true,forceRemoveButtonCheck: true)
         }
+        birthdayDontOrder30.getNextTutorial = {[weak self] in
+            guard let _self = self else {return}
+            _self.startTutorial()
+        }
         
         // block customer have birthday today
         stackView.insertArrangedSubview(birthdayCustomerListView, at: stackView.arrangedSubviews.count)
@@ -226,6 +234,10 @@ class DashboardView: CViewSwitchLanguage {
         birthdayCustomerListView.needReloadData = {[weak self] in
             guard let _self = self else {return}
             _self.birthdayCustomerListView.reloadData(false,forceRemoveButtonCheck: true)
+        }
+        birthdayCustomerListView.getNextTutorial = {[weak self] in
+            guard let _self = self else {return}
+            _self.startTutorial()
         }
     }
     
@@ -251,13 +263,13 @@ class DashboardView: CViewSwitchLanguage {
     }
     
     func startTutorial(_ onComplete:(()->Void)? = nil) {
-        onComplete?()
-        return
-        if !AppConfig.setting.isShowTutorial(with: MENU_DASHBOARD) {
+//        onComplete?()
+//        return
+        if !AppConfig.setting.isShowTutorial(with: MENU_DASHBOARD_SCENE) {
             menuDashboard.startTutorial(1)
-        } else if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER) {
+        } else if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER_SCENE) {
             totalSummaryView.startTutorial(1)
-        } else if !AppConfig.setting.isShowTutorial(with: REPORT_CUSTOMER_ORDER) {
+        } else if !AppConfig.setting.isShowTutorial(with: REPORT_CUSTOMER_ORDER_SCENE) {
             let center = totalSummaryCustomerView.getWindowCenter(to: totalSummaryCustomerView.superview!)
             let point = CGPoint(x:0, y: center.y)
             self.scrollView.setContentOffset(point, animated: true)
@@ -265,6 +277,33 @@ class DashboardView: CViewSwitchLanguage {
                 timer.invalidate()
                 guard let _self = self else {return}
                 _self.totalSummaryCustomerView.startTutorial(4)
+            })
+        } else if !AppConfig.setting.isShowTutorial(with: REPORT_PRODUCT_SCENE) && topProductView.superview != nil{
+            let center = topProductView.getWindowTop(to: topProductView.superview!)
+            let point = CGPoint(x:0, y: center.y)
+            self.scrollView.setContentOffset(point, animated: true)
+            Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false, block: {[weak self] (timer) in
+                timer.invalidate()
+                guard let _self = self else {return}
+                _self.topProductView.startTutorial(1)
+            })
+        } else if !AppConfig.setting.isShowTutorial(with: REMINDER_CUSTOMER_SCENE) && birthdayCustomerListView.superview != nil{
+            let center = birthdayCustomerListView.getWindowTop(to: birthdayCustomerListView.superview!)
+            let point = CGPoint(x:0, y: center.y)
+            self.scrollView.setContentOffset(point, animated: true)
+            Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: {[weak self] (timer) in
+                timer.invalidate()
+                guard let _self = self else {return}
+                _self.birthdayCustomerListView.startTutorial(1)
+            })
+        } else if !AppConfig.setting.isShowTutorial(with: CONGRAT_CUSTOMER_SCENE) && birthdayDontOrder30.superview != nil{
+            let center = birthdayDontOrder30.getWindowTop(to: birthdayDontOrder30.superview!)
+            let point = CGPoint(x:0, y: center.y)
+            self.scrollView.setContentOffset(point, animated: true)
+            Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: {[weak self] (timer) in
+                timer.invalidate()
+                guard let _self = self else {return}
+                _self.birthdayDontOrder30.startTutorial(2)
             })
         } else {
             onComplete?()

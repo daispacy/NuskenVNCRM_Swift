@@ -328,7 +328,7 @@ extension MenuDashboardView: MaterialShowcaseDelegate {
         } else {
             shouldShow(showcase,false)
             if step > 4 {
-                AppConfig.setting.setFinishShowcase(key: MENU_DASHBOARD)
+                AppConfig.setting.setFinishShowcase(key: MENU_DASHBOARD_SCENE)
                 self.getNextTutorial?()
             }
         }
