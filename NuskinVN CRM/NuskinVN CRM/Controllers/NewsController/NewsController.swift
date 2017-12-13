@@ -26,6 +26,7 @@ class NewsController: UIViewController {
         let btnClose = UIButton(type: .custom)
         btnClose.addTarget(self, action: #selector(self.close(_:)), for: .touchUpInside)
         btnClose.setTitle("close".localized().uppercased(), for: UIControlState())
+        btnClose.frame = CGRect(x: 0, y: 0, width: 60, height: 30)
         let itemNotification = UIBarButtonItem(customView: btnClose)
         
         self.navigationItem.rightBarButtonItems  = [itemNotification]
@@ -88,7 +89,7 @@ class NewsController: UIViewController {
         }
     }
     
-    func savePhoto(img:UIImage) {
+    func savePhoto(img:UIImage,_ point:CGPoint? = nil) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
             alertController.dismiss(animated: true, completion: nil)
@@ -100,6 +101,17 @@ class NewsController: UIViewController {
         }
         alertController.addAction(cancelAction)
         alertController.addAction(okAction)
+        
+        if isIpad {
+            if let p = point {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = p
+            } else {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:Support.topVC!.view.frame.midX,y:Support.topVC!.view.frame.maxY)
+            }
+        }
+        
         Support.topVC?.present(alertController, animated: true, completion: nil)
     }
 }

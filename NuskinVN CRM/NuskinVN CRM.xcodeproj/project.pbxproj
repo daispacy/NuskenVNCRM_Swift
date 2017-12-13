@@ -173,9 +173,15 @@
 		23F0E0D01F76C333007D3A19 /* UIColor+Wrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0E0CF1F76C333007D3A19 /* UIColor+Wrap.swift */; };
 		23F68B111F90D243007B94EE /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F68B101F90D243007B94EE /* libsqlite3.0.tbd */; };
 		41179C7AAAECBD6682B70CD1 /* Pods_NuskinVN_CRMTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F707DCBFE1671896F88A7250 /* Pods_NuskinVN_CRMTests.framework */; };
+		D70235F01FDFE03200A75688 /* MaterialShowcase+Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70235EB1FDFE03200A75688 /* MaterialShowcase+Calculations.swift */; };
+		D70235F11FDFE03200A75688 /* MaterialShowcaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70235EC1FDFE03200A75688 /* MaterialShowcaseController.swift */; };
+		D70235F21FDFE03200A75688 /* MaterialShowcase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70235ED1FDFE03200A75688 /* MaterialShowcase.swift */; };
+		D70235F31FDFE03200A75688 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70235EE1FDFE03200A75688 /* Utility.swift */; };
+		D70235F41FDFE03200A75688 /* MaterialShowcaseInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70235EF1FDFE03200A75688 /* MaterialShowcaseInstructionView.swift */; };
 		D70CDDEA1FB4A4BD000258FA /* FormExportOrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70CDDE91FB4A4BD000258FA /* FormExportOrderDetailView.swift */; };
 		D70CDDEC1FB4A4D2000258FA /* FormExportOrderDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D70CDDEB1FB4A4D2000258FA /* FormExportOrderDetailView.xib */; };
 		D71BD8001FB44B81003C3D37 /* EmailAttachView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */; };
+		D72528A21FE01D1D00043CA5 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72528A11FE01D1D00043CA5 /* Constant.swift */; };
 		D73AF34C1FCAA99600D78D40 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73AF34B1FCAA99600D78D40 /* Customer.swift */; };
 		D73AF34E1FCABD6D00D78D40 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73AF34D1FCABD6D00D78D40 /* Order.swift */; };
 		D73D79941FB4D9BC0091E746 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73D79921FB4D9BC0091E746 /* Messages.framework */; };
@@ -385,9 +391,15 @@
 		2D94BC7DF7ED4D5918AED574 /* Pods_NuskinVN_CRM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NuskinVN_CRM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		439F154476C523B8B17C9702 /* Pods-NuskinVN CRMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRMTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRMTests/Pods-NuskinVN CRMTests.release.xcconfig"; sourceTree = "<group>"; };
 		C03969FBF191BE37AEAE9D1D /* Pods-NuskinVN CRM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NuskinVN CRM.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NuskinVN CRM/Pods-NuskinVN CRM.debug.xcconfig"; sourceTree = "<group>"; };
+		D70235EB1FDFE03200A75688 /* MaterialShowcase+Calculations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MaterialShowcase+Calculations.swift"; sourceTree = "<group>"; };
+		D70235EC1FDFE03200A75688 /* MaterialShowcaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialShowcaseController.swift; sourceTree = "<group>"; };
+		D70235ED1FDFE03200A75688 /* MaterialShowcase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialShowcase.swift; sourceTree = "<group>"; };
+		D70235EE1FDFE03200A75688 /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		D70235EF1FDFE03200A75688 /* MaterialShowcaseInstructionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialShowcaseInstructionView.swift; sourceTree = "<group>"; };
 		D70CDDE91FB4A4BD000258FA /* FormExportOrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormExportOrderDetailView.swift; sourceTree = "<group>"; };
 		D70CDDEB1FB4A4D2000258FA /* FormExportOrderDetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FormExportOrderDetailView.xib; sourceTree = "<group>"; };
 		D71BD7FF1FB44B81003C3D37 /* EmailAttachView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmailAttachView.xib; sourceTree = "<group>"; };
+		D72528A11FE01D1D00043CA5 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		D73AF34B1FCAA99600D78D40 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		D73AF34D1FCABD6D00D78D40 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		D73D79921FB4D9BC0091E746 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = System/Library/Frameworks/Messages.framework; sourceTree = SDKROOT; };
@@ -456,6 +468,7 @@
 		230248771F753C4100177679 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				D70235EA1FDFE03200A75688 /* ShowCase */,
 				233F78581F8E4C1600EDB1AF /* String+wrap.swift */,
 				2365D4D31F77AAC200673903 /* UIImage+Wrap.swift */,
 				2351E34E1F7B55DF00BC228A /* UIImageView+Wrap.swift */,
@@ -1017,6 +1030,7 @@
 				232D2D031F76CB5200B93B45 /* Theme.swift */,
 				23DEDE381F72CBD7003D4097 /* AppConfig.swift */,
 				23208F241FA1BAA800B2EDFF /* LocalNotification.swift */,
+				D72528A11FE01D1D00043CA5 /* Constant.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1094,6 +1108,18 @@
 				23F09A1F1F780BB1005654F0 /* PoupMenu.swift */,
 			);
 			path = PopupMenu;
+			sourceTree = "<group>";
+		};
+		D70235EA1FDFE03200A75688 /* ShowCase */ = {
+			isa = PBXGroup;
+			children = (
+				D70235EB1FDFE03200A75688 /* MaterialShowcase+Calculations.swift */,
+				D70235EC1FDFE03200A75688 /* MaterialShowcaseController.swift */,
+				D70235ED1FDFE03200A75688 /* MaterialShowcase.swift */,
+				D70235EE1FDFE03200A75688 /* Utility.swift */,
+				D70235EF1FDFE03200A75688 /* MaterialShowcaseInstructionView.swift */,
+			);
+			path = ShowCase;
 			sourceTree = "<group>";
 		};
 		D74094A71FBB267B00116F6A /* AboutController */ = {
@@ -1511,8 +1537,10 @@
 				23CC3BE31FA0C04200D33F64 /* SyncDataController.swift in Sources */,
 				2303C2961F972D03001F0A42 /* AddProductController.swift in Sources */,
 				231D97F01F95C836003E8DA3 /* OrderListCell.swift in Sources */,
+				D70235F41FDFE03200A75688 /* MaterialShowcaseInstructionView.swift in Sources */,
 				23776B0D1F9BCCD1003EE5BF /* ProductListController.swift in Sources */,
 				2386CBDC1F865A81005B5F23 /* CustomerListCell.swift in Sources */,
+				D72528A21FE01D1D00043CA5 /* Constant.swift in Sources */,
 				2365D4CE1F77A0A100673903 /* ChartStatisticsOrder.swift in Sources */,
 				2365D4D41F77AAC200673903 /* UIImage+Wrap.swift in Sources */,
 				232F17381F74C7FD0053A87D /* DashboardViewController.swift in Sources */,
@@ -1553,10 +1581,13 @@
 				234D77A21F826BB500CC4436 /* MenuDashboardView.swift in Sources */,
 				D7481C571FCB1C5B00689F0E /* Group.swift in Sources */,
 				232818E61F9C8EDA00D57799 /* ProductDO+CoreDataProperties.swift in Sources */,
+				D70235F01FDFE03200A75688 /* MaterialShowcase+Calculations.swift in Sources */,
+				D70235F21FDFE03200A75688 /* MaterialShowcase.swift in Sources */,
 				23EA78761F72301E0017E47E /* AuthenticViewController.swift in Sources */,
 				D73AF34C1FCAA99600D78D40 /* Customer.swift in Sources */,
 				23853AA61F8B30F50039D653 /* SyncService.swift in Sources */,
 				233F78591F8E4C1600EDB1AF /* String+wrap.swift in Sources */,
+				D70235F31FDFE03200A75688 /* Utility.swift in Sources */,
 				231C72141F72BD4F00654621 /* RootViewController.swift in Sources */,
 				D76A953B1FBDD93500CA64E1 /* CustomerStatusController.swift in Sources */,
 				23208F251FA1BAA800B2EDFF /* LocalNotification.swift in Sources */,
@@ -1564,6 +1595,7 @@
 				2336C5791F875ED00008DE86 /* CustomerDetailController.swift in Sources */,
 				2365131E1F8FE2DF006076BF /* DeepLink.swift in Sources */,
 				230A91A51F99C10D00761590 /* GroupManager.swift in Sources */,
+				D70235F11FDFE03200A75688 /* MaterialShowcaseController.swift in Sources */,
 				D70CDDEA1FB4A4BD000258FA /* FormExportOrderDetailView.swift in Sources */,
 				2303C2881F971073001F0A42 /* OrderProductListView.swift in Sources */,
 				232E18831FA47E7A00C52128 /* UserProfileController.swift in Sources */,

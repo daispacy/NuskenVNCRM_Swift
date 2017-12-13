@@ -161,21 +161,21 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     private func bindControl() {
         
         //listern data
-        txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                var oldemail = ""
-                if let cus = _self.customer {
-                    oldemail = cus.email
-                }
-                _self.lblErrorEmail.isHidden = true
-                
-                if Customer.isExist(email:$0, oldEmail: oldemail,except:_self.isEdit) {
-                    _self.lblErrorEmail.text = "email_has_exist".localized()
-                } else {
-                    _self.lblErrorEmail.text = "invalid_email".localized()
-                }
-            }
-        }).addDisposableTo(disposeBag)
+//        txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+//            if let _self = self {
+//                var oldemail = ""
+//                if let cus = _self.customer {
+//                    oldemail = cus.email
+//                }
+//                _self.lblErrorEmail.isHidden = true
+//
+//                if Customer.isExist(email:$0, oldEmail: oldemail,except:_self.isEdit) {
+//                    _self.lblErrorEmail.text = "email_has_exist".localized()
+//                } else {
+//                    _self.lblErrorEmail.text = "invalid_email".localized()
+//                }
+//            }
+//        }).addDisposableTo(disposeBag)
         
         
         btnBirthday.rx.tap
@@ -441,17 +441,18 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     }
     
     func validdateData() -> Bool {
-        guard let email = self.txtEmail.text, let name = self.txtName.text else { return false }
-        var oldemail = ""
-        if let cus = self.customer {
-            oldemail = cus.email
-        }
-        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !Customer.isExist(email:email,oldEmail: oldemail,except:self.isEdit)
+//        guard let email = self.txtEmail.text,
+        guard let name = self.txtName.text else { return false }
+//        var oldemail = ""
+//        if let cus = self.customer {
+//            oldemail = cus.email
+//        }
+//        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !Customer.isExist(email:email,oldEmail: oldemail,except:self.isEdit)
         let checkName = name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0
-        lblErrorEmail.isHidden = checkEmail
+        lblErrorEmail.isHidden = true//checkEmail
         lblErrorName.isHidden = checkName
         
-        return  checkEmail && checkName
+        return  /*checkEmail &&*/ checkName
     }
     
     func showSelectGetPhotos() {
@@ -465,6 +466,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             imagePickerController.sourceType = .camera
             imagePickerController.modalPresentationStyle = .fullScreen
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:self.imvAvatar.frame.midX,y:self.imvAvatar.frame.maxY + 65)
+            }
             self.present(imagePickerController, animated: true, completion: nil)
             
         }
@@ -474,6 +479,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             imagePickerController.sourceType = .photoLibrary
             imagePickerController.modalPresentationStyle = .popover
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:self.imvAvatar.frame.midX,y:self.imvAvatar.frame.maxY + 65)
+            }
             self.present(imagePickerController, animated: true, completion:nil)
             
         }
@@ -484,6 +493,12 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             alertController.addAction(actionPhotos)
         }
+        
+        if isIpad {
+            alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+            alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:imvAvatar.frame.midX,y:imvAvatar.frame.maxY + 65)
+        }
+        
         Support.topVC?.present(alertController, animated: true, completion: nil)
     }
     

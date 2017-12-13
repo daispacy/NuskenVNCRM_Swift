@@ -108,7 +108,7 @@ class MenuDashboardView: CViewSwitchLanguage {
     override func reloadTexts() {
         configText()
     }
-    
+
     // MARK: - event
     @IBAction func processButtonEvent(_ sender: UIButton) {
         var data:[JSON] = []
@@ -283,5 +283,64 @@ class MenuDashboardView: CViewSwitchLanguage {
         lblDay.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         lblWeek.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         lblMonth.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+    }
+}
+
+// MARK: - ShowCase
+extension MenuDashboardView: MaterialShowcaseDelegate {
+    
+    // MARK: - init showcase
+    func startTutorial(_ step:Int = 1) {
+        // showcase
+        configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
+            if shouldShow {
+                showcase.delegate = self
+                showcase.show(completion: nil)
+            }
+        }
+    }
+    
+    func configShowcase(_ showcase:MaterialShowcase,_ step:Int = 1,_ shouldShow:((MaterialShowcase,Bool)->Void)) {
+        if step ==  2 {
+            showcase.setTargetView(view: btnMonth)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_MONTH
+            showcase.secondaryText = "click_here_open_list_months".localized()
+            shouldShow(showcase,true)
+        } else if step == 3 {
+            showcase.setTargetView(view: btnWeek)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_WEEK
+            showcase.secondaryText = "click_here_open_list_weeks".localized()
+            shouldShow(showcase,true)
+        } else if step == 4 {
+            showcase.setTargetView(view: btnDay)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_DAY
+            showcase.secondaryText = "click_here_open_list_days".localized()
+            shouldShow(showcase,true)
+        } else if step == 1 {
+            showcase.setTargetView(view: btnYearLeft)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_YEAR
+            showcase.secondaryText = "click_here_change_year".localized()
+            shouldShow(showcase,true)
+        } else {
+            shouldShow(showcase,false)
+            if step > 4 {
+                AppConfig.setting.setFinishShowcase(key: MENU_DASHBOARD)
+                self.getNextTutorial?()
+            }
+        }
+    }
+    
+    func showCaseDidDismiss(showcase: MaterialShowcase) {
+        if let step = showcase.identifier {
+            if let s = Int(step) {
+                let ss = s + 1
+                startTutorial(ss)
+            }
+        }
+        
     }
 }

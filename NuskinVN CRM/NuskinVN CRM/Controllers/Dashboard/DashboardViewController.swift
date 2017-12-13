@@ -10,13 +10,14 @@ import UIKit
 
 class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     
-    private var dashboardView:DashboardView!
+    fileprivate var dashboardView:DashboardView!
 
     var isSyncWithLoading:Bool = false
     
     var fromDate:NSDate? = nil
     var toDate:NSDate? = nil
     var isLifeTime: Bool = true
+    var isStartingTutorial:Bool = false // prevent reload data when tutorial
     
     // MARK: - INIT
     override func viewDidLoad() {
@@ -26,11 +27,11 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
         
         // add menu from root
         addDefaultMenu()
-        
+
         // Do any additional setup after loading the view.
         tabBarController?.delegate = self
     }
-        
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -40,7 +41,9 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
             if let vc = tabbarController.selectedViewController as? UINavigationController{
                 if let vChild = vc.viewControllers.first {
                     if vChild.isEqual(self) {
-                        self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+                        if !self.isStartingTutorial {
+                            self.getDataForDashboard(fromDate: fromDate, toDate: toDate, isLifeTime: isLifeTime)
+                        }
                     }
                 }
             }
@@ -82,6 +85,7 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
 //        }
     }
     
+    // MARK: - private
     func getDataForDashboard(fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true) {
 //        print("\(fromDate) - \(toDate) - \(isLifeTime)")
         dashboardView.loading(true)
@@ -90,6 +94,14 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
                 DispatchQueue.main.async {
                     _self.dashboardView.loading(false)
                     _self.reloadData(data)
+                    
+                    if _self.isStartingTutorial {return}
+                    
+                    if !AppConfig.setting.isShowTutorial(with: DASHBOARD_CONTROLLER_SCENE) {
+                        _self.startTutorial(1)
+                    } else {
+                        _self.checkNextTutorial()
+                    }
                 }
             }
         }
@@ -207,6 +219,7 @@ class DashboardViewController: RootViewController, UITabBarControllerDelegate {
     }        
 }
 
+// MARK: - Tabbar Delegate
 extension DashboardViewController {
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
@@ -224,5 +237,83 @@ extension DashboardViewController {
             }
         }
         return true
+    }
+}
+
+// MARK: - ShowCase
+extension DashboardViewController: MaterialShowcaseDelegate {
+    
+    func checkNextTutorial() {
+        dashboardView.startTutorial {[weak self] in
+            guard let _self = self else {return}
+            _self.isStartingTutorial = false
+        }
+    }
+    
+    // MARK: - init showcase
+    func startTutorial(_ step:Int = 1) {
+        return
+        // showcase
+        isStartingTutorial = true
+        configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
+            if shouldShow {
+                showcase.delegate = self
+                showcase.show(completion: nil)
+            }
+        }
+    }
+    
+    func configShowcase(_ showcase:MaterialShowcase,_ step:Int = 1,_ shouldShow:((MaterialShowcase,Bool)->Void)) {
+        if step == 1 {
+            showcase.setTargetView(tabBar: self.tabBarController!.tabBar, itemIndex: 0)
+            showcase.primaryText = ""
+            showcase.identifier = TABBAR_BUTTON_CUSTOMER
+            showcase.secondaryText = "click_here_go_to_view_customers".localized()
+            shouldShow(showcase,true)
+        } else if step == 2 {
+            showcase.setTargetView(tabBar: self.tabBarController!.tabBar, itemIndex: 1)
+            showcase.primaryText = ""
+            showcase.identifier = TABBAR_BUTTON_ORDER
+            showcase.secondaryText = "click_here_go_to_view_orders".localized()
+            shouldShow(showcase,true)
+        } else if step == 3 {
+            showcase.setTargetView(barButtonItem: self.navigationItem.leftBarButtonItem!)
+            showcase.primaryText = ""
+            showcase.identifier = NAVIGATION_BUTTON_MENU
+            showcase.secondaryText = "click_here_open_menu".localized()
+            shouldShow(showcase,true)
+        } else if step == 4 {
+            showcase.setTargetView(barButtonItem: self.navigationItem.rightBarButtonItems!.last!)
+            showcase.primaryText = ""
+            showcase.identifier = NAVIGATION_BUTTON_NEWS
+            showcase.secondaryText = "click_here_open_news".localized()
+            shouldShow(showcase,true)
+        } else if step == 5 {
+            showcase.setTargetView(barButtonItem: self.navigationItem.rightBarButtonItems!.first!)
+            showcase.primaryText = ""
+            showcase.identifier = NAVIGATION_BUTTON_PROFILE
+            showcase.secondaryText = "click_here_open_profile".localized()
+            shouldShow(showcase,true)
+        } else {
+            shouldShow(showcase,false)
+            if step > 5 {
+                AppConfig.setting.setFinishShowcase(key: DASHBOARD_CONTROLLER_SCENE)
+                checkNextTutorial()
+            }
+        }
+    }
+    
+    // MARK: - showcase delegate
+//    func showCaseWillDismiss(showcase: MaterialShowcase) {
+//        print("Showcase \(showcase.identifier) will dismiss.")
+//    }
+    func showCaseDidDismiss(showcase: MaterialShowcase) {
+        if let step = showcase.identifier {
+            if let s = Int(step) {
+                let ss = s + 1
+                startTutorial(ss)
+            }
+        }
+        
     }
 }

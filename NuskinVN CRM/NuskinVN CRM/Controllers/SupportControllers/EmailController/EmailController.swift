@@ -78,7 +78,8 @@ class EmailController: UIViewController {
         txtFrom.text = from
         txtTo.text = to
         if from.characters.count == 0 {
-            vwFromEmail.isHidden = true
+//            vwFromEmail.isHidden = true
+            txtFrom.isEnabled = true
             txtTo.isEnabled = false
         }
         guard let user = UserManager.currentUser() else { return }
@@ -200,11 +201,12 @@ class EmailController: UIViewController {
     
     // MARK: - private
     func validateData() ->Bool {
-        guard let email = txtTo.text else { return false }
+        guard let email = txtTo.text, let from = txtFrom.text else { return false }
         if txtSubject.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 ||
             txtFromName.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 ||
             txtBody.text?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count == 0 ||
-            !Support.validate.isValidEmailAddress(emailAddressString: email){
+            !Support.validate.isValidEmailAddress(emailAddressString: email) ||
+            !Support.validate.isValidEmailAddress(emailAddressString: from){
             return false
         } else {
             return true
@@ -280,6 +282,10 @@ extension EmailController:UINavigationControllerDelegate,UIImagePickerController
             imagePickerController.sourceType = .camera
             imagePickerController.modalPresentationStyle = .fullScreen
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:Support.topVC!.view.frame.midX,y:Support.topVC!.view.frame.midY)
+            }
             self.present(imagePickerController, animated: true, completion: nil)
             
         }
@@ -289,6 +295,10 @@ extension EmailController:UINavigationControllerDelegate,UIImagePickerController
             imagePickerController.sourceType = .photoLibrary
             imagePickerController.modalPresentationStyle = .popover
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:Support.topVC!.view.frame.midX,y:Support.topVC!.view.frame.midY)
+            }
             self.present(imagePickerController, animated: true, completion:nil)
             
         }
@@ -299,6 +309,12 @@ extension EmailController:UINavigationControllerDelegate,UIImagePickerController
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             alertController.addAction(actionPhotos)
         }
+        
+        if isIpad {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:Support.topVC!.view.frame.midX,y:Support.topVC!.view.frame.midY)
+        }
+        
         Support.topVC?.present(alertController, animated: true, completion: nil)
     }
     

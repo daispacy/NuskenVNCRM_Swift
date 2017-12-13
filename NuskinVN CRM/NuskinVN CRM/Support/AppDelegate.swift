@@ -17,7 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        UIApplication.shared.setMinimumBackgroundFetchInterval(60)
+//        UIApplication.shared.setMinimumBackgroundFetchInterval(60)
+        
+        AppConfig.setting.resetTutorial()
         
         // set default language
         AppConfig.language.setLanguage(language: "vi")
@@ -72,70 +74,70 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: Deeplinks
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        return Deeplinker.handleDeeplink(url: url)
-    }
-    // MARK: Universal Links
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            if let url = userActivity.webpageURL {
-                return Deeplinker.handleDeeplink(url: url)
-            }
-        }
-        return false
-    }
-    
-    // Support for background fetch
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        if (UIApplication.shared.applicationState == .active) {
-            completionHandler(UIBackgroundFetchResult.noData)
-            print("PREVENT SYNC BACKGROUND WHEN APP ACTIVE")
-            return
-        }
-        print("start fecth")        
-        LocalService.shared.startSyncDataBackground {
-            completionHandler(UIBackgroundFetchResult.newData)
-            print("end fecth")
-        }
-        completionHandler(UIBackgroundFetchResult.noData)
-        
-    }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        
-        let aps = userInfo["aps"] as! [String: AnyObject]
-        
-        // 1
-//        if aps["content-available"] as? Int == 1 {
-//            print("start fecth from remote notification")
-//            LocalService.shared.startSyncDataBackground {
-////                LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())
-//                completionHandler(.newData)
-//                print("end fecth from remote notification")
+//    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+//        return Deeplinker.handleDeeplink(url: url)
+//    }
+//    // MARK: Universal Links
+//    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+//        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+//            if let url = userActivity.webpageURL {
+//                return Deeplinker.handleDeeplink(url: url)
 //            }
-//        } else  {
-            completionHandler(.newData)
 //        }
-    }
+//        return false
+//    }
+//
+//    // Support for background fetch
+//    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//        if (UIApplication.shared.applicationState == .active) {
+//            completionHandler(UIBackgroundFetchResult.noData)
+//            print("PREVENT SYNC BACKGROUND WHEN APP ACTIVE")
+//            return
+//        }
+//        print("start fecth")
+//        LocalService.shared.startSyncDataBackground {
+//            completionHandler(UIBackgroundFetchResult.newData)
+//            print("end fecth")
+//        }
+//        completionHandler(UIBackgroundFetchResult.noData)
+//
+//    }
     
-    func application(_ application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenParts = deviceToken.map { data -> String in
-            return String(format: "%02.2hhx", data)
-        }
-        
-        let token = tokenParts.joined()
-        if let user = UserManager.currentUser() {
-            user.device_token = "\(token)"
-            user.synced = false
-            UserManager.save()
-        }
-    }
+//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//
+//        let aps = userInfo["aps"] as! [String: AnyObject]
+//
+//        // 1
+////        if aps["content-available"] as? Int == 1 {
+////            print("start fecth from remote notification")
+////            LocalService.shared.startSyncDataBackground {
+//////                LocalNotification.dispatchlocalNotification(with: "Data", body: "sync_data".localized(), at: Date())
+////                completionHandler(.newData)
+////                print("end fecth from remote notification")
+////            }
+////        } else  {
+//            completionHandler(.newData)
+////        }
+//    }
     
-    func application(_ application: UIApplication,
-                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register: \(error)")
-    }
+//    func application(_ application: UIApplication,
+//                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+//        let tokenParts = deviceToken.map { data -> String in
+//            return String(format: "%02.2hhx", data)
+//        }
+//
+//        let token = tokenParts.joined()
+//        if let user = UserManager.currentUser() {
+//            user.device_token = "\(token)"
+//            user.synced = false
+//            UserManager.save()
+//        }
+//    }
+//
+//    func application(_ application: UIApplication,
+//                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
+//        print("Failed to register: \(error)")
+//    }
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -159,7 +161,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
         // handle any deeplink
-        Deeplinker.checkDeepLink()
+//        Deeplinker.checkDeepLink()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

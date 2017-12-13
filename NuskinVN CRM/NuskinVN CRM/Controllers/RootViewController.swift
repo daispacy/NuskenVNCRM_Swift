@@ -130,12 +130,12 @@ class RootViewController: UIViewController {
                 Support.topVC?.present(nv, animated: true, completion: {
                     vc.onDidRotate = {
                         [weak self] in
-                        guard let _self = self else {return}
-                        _self.showTabbar(false)
+                        guard let _ = self else {return}
+//                        _self.showTabbar(false)
                     }
                     vc.onDismissComplete = {[weak self] in
-                        guard let _self = self else {return}
-                        _self.showTabbar(true)
+                        guard let _ = self else {return}
+//                        _self.showTabbar(true)
                     }
                 })
             }
@@ -163,6 +163,7 @@ class RootViewController: UIViewController {
             guard let _self = self else {return}
             NotificationCenter.default.post(name: NSNotification.Name("SyncData:AllDone"), object: nil)
             _self.leftButtonMenu.stopAnimation()
+            _self.onReloadData?()
         }
 //        let vc = LaunchController(nibName: "LaunchController", bundle: Bundle.main)
 //        AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
@@ -253,17 +254,17 @@ class RootViewController: UIViewController {
             let vc = UserProfileController(nibName: "UserProfileController", bundle: Bundle.main)
             let nv = UINavigationController(rootViewController: vc)
             Support.topVC?.present(nv, animated: true, completion: {[weak self] in
-                guard let _self = self else {return}
-                _self.showTabbar(false)
+                guard let _ = self else {return}
+//                _self.showTabbar(false)
                 vc.onDidRotate = {
                     [weak self] in
-                    guard let _self = self else {return}
-                    _self.showTabbar(false)
+                    guard let _ = self else {return}
+//                    _self.showTabbar(false)
                 }
             })
             vc.onDismissComplete = {[weak self] in
                 guard let _self = self else {return}
-                _self.showTabbar(true)
+//                _self.showTabbar(true)
                 _self.refreshAvatar()
             }
         } else if sender.isEqual(btnNotification) {

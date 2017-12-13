@@ -217,8 +217,8 @@ class ChangePasswordController: RootViewController {
     func validdateData() -> Bool {
         guard let cpw = self.txtCurrentPW.text, let npw = self.txtNewPW.text, let rpw = self.txtReTypePW.text  else { return false }
         let checkCPW = Support.validate.isValidPassword(password: cpw)
-        let checkNPW = Support.validate.isValidPassword(password: npw)
-        let checkRPW = Support.validate.isValidPassword(password: rpw)
+        let checkNPW = Support.validate.isValidPasswordStrong(password: npw)
+        let checkRPW = Support.validate.isValidPasswordStrong(password: rpw)
         lblErrorNewPW.isHidden = checkNPW
         lblErrorRetypePW.isHidden = checkRPW
         

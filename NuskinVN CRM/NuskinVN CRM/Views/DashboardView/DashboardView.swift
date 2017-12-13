@@ -53,6 +53,12 @@ class DashboardView: CViewSwitchLanguage {
             _self.onSelectFilter?(from,to,lifetime)
         }
         
+        // next tutorial from menu dashboard
+        menuDashboard.getNextTutorial = {[weak self] in
+            guard let _self = self else {return}
+            _self.startTutorial()
+        }
+        
         // menu
         stackView.insertArrangedSubview(menuDashboard, at: 0)
         menuDashboard.updateControlsYear(nil)
@@ -114,6 +120,12 @@ class DashboardView: CViewSwitchLanguage {
             let totalOrderUncomplete = data["total_orders_not_processed"] {
             stackView.insertArrangedSubview(totalSummaryView, at: stackView.arrangedSubviews.count)
             totalSummaryView.configSummary(totalCustomer: "\(totalCustomer)", totalOrderComplete: "\(totalOrderComplete)", totalOrderUnComplete: "\(totalOrderUncomplete)")
+            
+            totalSummaryView.getNextTutorial = {[weak self] in
+                guard let _self = self else {return}
+                _self.startTutorial()
+            }
+            
         } else {
             totalSummaryView.removeFromSuperview()
         }
@@ -146,6 +158,11 @@ class DashboardView: CViewSwitchLanguage {
                             _self.gotoOrderListByCustomerID?(listIDs)
                         }
                     }
+                }
+                
+                totalSummaryCustomerView.getNextTutorial = {[weak self] in
+                    guard let _self = self else {return}
+                    _self.startTutorial()
                 }
             }
         } else {
@@ -229,6 +246,28 @@ class DashboardView: CViewSwitchLanguage {
             } else {
                 indicatorLoading.stopAnimating()
             }
+        }
+        
+    }
+    
+    func startTutorial(_ onComplete:(()->Void)? = nil) {
+        onComplete?()
+        return
+        if !AppConfig.setting.isShowTutorial(with: MENU_DASHBOARD) {
+            menuDashboard.startTutorial(1)
+        } else if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER) {
+            totalSummaryView.startTutorial(1)
+        } else if !AppConfig.setting.isShowTutorial(with: REPORT_CUSTOMER_ORDER) {
+            let center = totalSummaryCustomerView.getWindowCenter(to: totalSummaryCustomerView.superview!)
+            let point = CGPoint(x:0, y: center.y)
+            self.scrollView.setContentOffset(point, animated: true)
+            Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false, block: {[weak self] (timer) in
+                timer.invalidate()
+                guard let _self = self else {return}
+                _self.totalSummaryCustomerView.startTutorial(4)
+            })
+        } else {
+            onComplete?()
         }
         
     }

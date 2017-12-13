@@ -309,3 +309,78 @@ class TotalSummaryView: CViewSwitchLanguage {
         lblTotalSales.attributedText = attributeStringForTotalSales
     }
 }
+
+// MARK: - ShowCase
+extension TotalSummaryView: MaterialShowcaseDelegate {
+    
+    // MARK: - init showcase
+    func startTutorial(_ step:Int = 1) {
+        
+        if step == 4 {
+            if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER) {
+                AppConfig.setting.setFinishShowcase(key: REPORT_STATUS_ORDER)
+                self.getNextTutorial?()
+                return
+            }
+        }
+        
+        // showcase
+        configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
+            if shouldShow {
+                showcase.delegate = self
+                showcase.show(completion: nil)
+            }
+        }
+    }
+    
+    func configShowcase(_ showcase:MaterialShowcase,_ step:Int = 1,_ shouldShow:((MaterialShowcase,Bool)->Void)) {
+        if step ==  1 {
+            showcase.setTargetView(view: lblOrderComplete)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_PROCESSED_ORDER
+            showcase.secondaryText = "click_here_open_list_processed_orders".localized()
+            shouldShow(showcase,true)
+        } else if step == 2 {
+            showcase.setTargetView(view: lblUnComplete)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_UNPROCESSED_ORDER
+            showcase.secondaryText = "click_here_open_list_unprocessed_orders".localized()
+            shouldShow(showcase,true)
+        } else if step == 3 {
+            showcase.setTargetView(view: lblCustomer)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_INVALID_ORDER
+            showcase.secondaryText = "click_here_open_list_invalid_orders".localized()
+            shouldShow(showcase,true)
+        } else if step == 4 {
+            showcase.setTargetView(view: lblTotalSalesOne)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_ORDERED_CUSTOMER
+            showcase.secondaryText = "click_here_open_list_ordered_customers".localized()
+            shouldShow(showcase,true)
+        } else if step == 5 {
+            showcase.setTargetView(view: lblTotalSalesTwo)
+            showcase.primaryText = ""
+            showcase.identifier = BUTTON_UNORDERED_CUSTOMER
+            showcase.secondaryText = "click_here_open_list_unordered_customers".localized()
+            shouldShow(showcase,true)
+        } else {
+            shouldShow(showcase,false)
+            if step > 5 {
+                AppConfig.setting.setFinishShowcase(key: REPORT_CUSTOMER_ORDER)
+                self.getNextTutorial?()
+            }
+        }
+    }
+    
+    func showCaseDidDismiss(showcase: MaterialShowcase) {
+        if let step = showcase.identifier {
+            print(step)
+            if let s = Int(step) {
+                let ss = s + 1
+                startTutorial(ss)
+            }
+        }
+        
+    }
+}

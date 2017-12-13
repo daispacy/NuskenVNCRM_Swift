@@ -59,7 +59,7 @@ UICollectionViewDelegateFlowLayout {
             rightButtonMenu.setTitle("skip".localized(), for: .normal)
             rightButtonMenu.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
             rightButtonMenu.setTitleColor(UIColor.white, for: .normal)
-            rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+            rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 60, height: 30)
             rightButtonMenu.rx.tap.subscribe(onNext: {[weak self] in
                 if let _self = self {
                     let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
@@ -118,7 +118,7 @@ UICollectionViewDelegateFlowLayout {
         }
     }
     
-    func selectAction(obj:Group) {
+    func selectAction(obj:Group,_ point:CGPoint? = nil) {
         
         if obj.isTemp == true {
             showPopupGroup()
@@ -187,6 +187,17 @@ UICollectionViewDelegateFlowLayout {
             alertController.addAction(editAction)
             alertController.addAction(deleteAction)
         }
+        
+        if isIpad {
+            if let p = point {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = p
+            } else {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:Support.topVC!.view.frame.midX,y:Support.topVC!.view.frame.maxY)
+            }
+        }
+        
         Support.topVC?.present(alertController, animated: true, completion: nil)
     }
 }
@@ -206,9 +217,15 @@ extension GroupCustomerController {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        let attributes = collectionView.layoutAttributesForItem(at: indexPath)
+        
+        let cellRect = attributes!.frame
+        
+        let cellFrameInSuperview =  collectionView.convert(cellRect, to: self.view)
+        
         let obj:Group = listGroups[indexPath.row]
         if self.gotoFromCustomerList {
-            self.selectAction(obj: obj)
+            self.selectAction(obj: obj, CGPoint(x:cellFrameInSuperview.midX, y: cellFrameInSuperview.midY))
         } else {
             self.onSelectGroup?(obj)
             self.navigationController?.popViewController(animated: true)

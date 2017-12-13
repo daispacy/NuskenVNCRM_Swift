@@ -99,12 +99,14 @@ class SyncDataController: RootViewController {
     
     // MARK: - interface
     func startSync(_ isLoading:Bool? = false) {
-        LocalService.shared.startSyncDataBackground(onComplete: {[weak self] in
-            guard let _self = self else {return}
-            _self.timerTimeOut?.invalidate()
-            _self.dismiss(animated: false, completion: nil)
-            return
-        })
+        LocalService.shared.startSyncDataBackground(
+//            onComplete: {[weak self] in
+//            guard let _self = self else {return}
+//            _self.timerTimeOut?.invalidate()
+//            _self.dismiss(animated: false, completion: nil)
+//            return
+//        }
+        )
         if let bool = isLoading {
             self.isLoading = bool
             if bool {

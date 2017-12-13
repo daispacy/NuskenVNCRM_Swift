@@ -129,6 +129,8 @@ class CViewSwitchLanguage:UIView, ReloadedUIView {
     
     var data:JSON?
     
+    var getNextTutorial:(()->Void)?
+    
     open override func awakeFromNib() {
         super.awakeFromNib()
         registerSwitchLanguage()

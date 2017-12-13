@@ -53,6 +53,12 @@ class Support: NSObject {
             return  returnValue
         }
         
+        static func isValidPasswordStrong(password: String) -> Bool {
+            let passwordRegex = "(?:(?:(?=.*?[0-9])(?=.*?[-!@#$%&*ˆ+=_])|(?:(?=.*?[0-9])|(?=.*?[A-Z])|(?=.*?[-!@#$%&*ˆ+=_])))|(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-!@#$%&*ˆ+=_]))[A-Za-z0-9-!@#$%&*ˆ+=_]{6,999}"
+
+            return NSPredicate(format: "SELF MATCHES %@", passwordRegex).evaluate(with: password)
+        }
+
         static func isValidPassword(password: String) -> Bool {
             var returnValue = true
             if(password.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count < 6) {

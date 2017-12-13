@@ -35,6 +35,7 @@
 "sorry_please_provide_order_code" = "Mã đơn hàng không hợp lệ.";
 "change_pw" = "Đổi mật khẩu";
 "new_password" = "Mật khẩu mới";
+"new_password_note" = "Mật khẩu mới (Mật khẩu phải có ít  nhất 6 chữ số, gồm ít nhất 1  chữ, 1 số và 1 ký tự đặc biệt như !, $, #, @)";
 "current_password" = "Mật khẩu hiện tại";
 "retype_password" = "Xác nhận lại mật khẩu";
 "invalid_password" = "Mật khẩu không hợp lệ";
@@ -44,7 +45,7 @@
 "password_is_wrong" = "Mật khẩu hiện tại không đúng.";
 "new_password_not_same_current_password" = "Mật khẩu mới không được giống mật khẩu hiện tại.";
 "msg_err_vnid" = "VNID không hợp lệ. VNID hợp lệ có dạng: VNxxxxxx";
-"msg_err_pw" = "Mật khẩu không hợp lệ. Mật khẩu phải lớn hơn 5 ký tự";
+"msg_err_pw" = "Mật khẩu phải có ít nhất 6 chữ số, gồm ít nhất 1 chữ, 1 số và 1 ký tự đặc biệt như !, $, #, @";
 "price_not_lower_sugguest_price" = "Giá bán lẻ không được thấp hơn giá NPP";
 "order_code_is_exist" = "Mã đơn hàng này đã được sử dụng";
 "transporter_other" = "Đơn vị vận chuyển khác";

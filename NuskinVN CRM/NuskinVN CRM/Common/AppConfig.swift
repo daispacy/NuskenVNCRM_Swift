@@ -9,6 +9,9 @@
 import UIKit
 import Localize_Swift
 
+let isIpad = UI_USER_INTERFACE_IDIOM() == .pad
+
+// MARK: - APPConfig
 class AppConfig: NSObject {
     
     // MARK: - Other
@@ -33,6 +36,25 @@ class AppConfig: NSObject {
                 return str as! String
             }
             return "lhuynh@nuskin.com"
+        }
+        
+        
+        static func isShowTutorial(with key:String) -> Bool {
+            if let remember =  UserDefaults.standard.value(forKey: key) as? Bool {
+                return remember
+            }
+            return false
+        }
+        
+        static func setFinishShowcase(key:String) {
+            if key.characters.count == 0 {return}
+            UserDefaults.standard.setValue(true, forKey: key)
+        }
+        
+        static func resetTutorial() {
+            for key in [DASHBOARD_CONTROLLER_SCENE,MENU_DASHBOARD,REPORT_STATUS_ORDER,REPORT_CUSTOMER_ORDER] {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
     }
     
@@ -167,6 +189,7 @@ class AppConfig: NSObject {
         static func gotoDashboardAfterSigninSuccess() {
             
             LocalNotification.registerForLocalNotification(on: UIApplication.shared)
+            
             BirthdayManager.clearData {
                 //start service if signin Success
                 //            LocalService.shared.startSyncData()

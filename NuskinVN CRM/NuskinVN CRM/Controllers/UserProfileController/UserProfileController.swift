@@ -218,6 +218,10 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
             imagePickerController.sourceType = .camera
             imagePickerController.modalPresentationStyle = .fullScreen
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:self.imvAvatar.frame.midX,y:self.imvAvatar.frame.maxY + 65)
+            }
             self.present(imagePickerController, animated: true, completion: nil)
             
         }
@@ -227,6 +231,10 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
             imagePickerController.sourceType = .photoLibrary
             imagePickerController.modalPresentationStyle = .popover
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:self.imvAvatar.frame.midX,y:self.imvAvatar.frame.maxY + 65)
+            }
             self.present(imagePickerController, animated: true, completion:nil)
             
         }
@@ -237,6 +245,12 @@ class UserProfileController: RootViewController, UINavigationControllerDelegate,
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             alertController.addAction(actionPhotos)
         }
+        
+        if isIpad {
+            alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+            alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:imvAvatar.frame.midX,y:imvAvatar.frame.maxY + 65)
+        }
+        
         Support.topVC?.present(alertController, animated: true, completion: nil)
     }
     
