@@ -290,8 +290,10 @@ class RootViewController: UIViewController {
             firstSyncData()
         } else if menuItem.title == "support".localized() {
             let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
+             guard let user = UserManager.currentUser() else { return }
+            guard let email = user.email else { return }
             Support.topVC!.present(vc1, animated: true, completion: {
-                vc1.show(from: "", to: AppConfig.setting.emailSupport())
+                vc1.show(from: email, to: AppConfig.setting.emailSupport())
             })
         } else if menuItem.title == "version".localized() {
             let vc1 = AboutController(nibName: "AboutController", bundle: Bundle.main)

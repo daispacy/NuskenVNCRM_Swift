@@ -291,6 +291,7 @@ extension MenuDashboardView: MaterialShowcaseDelegate {
     
     // MARK: - init showcase
     func startTutorial(_ step:Int = 1) {
+        return
         // showcase
         configShowcase(MaterialShowcase(), step) { showcase, shouldShow in
             if shouldShow {

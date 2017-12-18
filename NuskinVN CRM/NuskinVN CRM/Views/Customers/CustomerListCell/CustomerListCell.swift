@@ -275,6 +275,7 @@ extension FunctionStackViewCustomer: MaterialShowcaseDelegate {
     
     // MARK: - init showcase
     func startTutorial() {
+        return
         checkNextStep(1)
     }
     

@@ -263,8 +263,8 @@ class DashboardView: CViewSwitchLanguage {
     }
     
     func startTutorial(_ onComplete:(()->Void)? = nil) {
-//        onComplete?()
-//        return
+        onComplete?()
+        return
         if !AppConfig.setting.isShowTutorial(with: MENU_DASHBOARD_SCENE) {
             menuDashboard.startTutorial(1)
         } else if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER_SCENE) {

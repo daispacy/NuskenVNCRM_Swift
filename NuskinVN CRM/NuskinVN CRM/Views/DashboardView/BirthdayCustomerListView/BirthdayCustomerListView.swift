@@ -288,7 +288,7 @@ extension BirthdayCustomerListView: MaterialShowcaseDelegate {
     
     // MARK: - init showcase
     func startTutorial(_ step:Int = 1) {
-        
+        return
         if step == 2 {
             if !AppConfig.setting.isShowTutorial(with: REMINDER_CUSTOMER_SCENE) {
                 AppConfig.setting.setFinishShowcase(key: REMINDER_CUSTOMER_SCENE)

@@ -222,6 +222,7 @@ extension PopupCustomerFunctionController: MaterialShowcaseDelegate {
     
     // MARK: - init showcase
     func startTutorial(_ step:Int = 1) {
+        return
         // showcase
         if AppConfig.setting.isShowTutorial(with: POPUP_FUNCTION_SCENE) {
             checkNextTutorial()

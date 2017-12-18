@@ -144,7 +144,7 @@ extension MaterialShowcase {
   /// Shows it over current screen after completing setup process
   public func show(animated: Bool = true, completion handler: (()-> Void)?) {
     initViews()
-    alpha = 0.0
+    alpha = 0.5
     containerView.addSubview(self)
     self.layoutIfNeeded()
     

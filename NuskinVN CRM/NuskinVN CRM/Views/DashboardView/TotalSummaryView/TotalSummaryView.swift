@@ -315,7 +315,7 @@ extension TotalSummaryView: MaterialShowcaseDelegate {
     
     // MARK: - init showcase
     func startTutorial(_ step:Int = 1) {
-        
+        return
         if step == 4 {
             if !AppConfig.setting.isShowTutorial(with: REPORT_STATUS_ORDER_SCENE) {
                 AppConfig.setting.setFinishShowcase(key: REPORT_STATUS_ORDER_SCENE)
