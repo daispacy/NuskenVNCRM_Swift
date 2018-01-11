@@ -26,7 +26,7 @@ struct OrderItem {
         
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[Product] = []
             let temp = result.flatMap({$0 as? ProductDO})
             list = temp.flatMap{Product.parse($0.toDictionary)}

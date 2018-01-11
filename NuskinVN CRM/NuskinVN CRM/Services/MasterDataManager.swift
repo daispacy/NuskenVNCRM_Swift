@@ -12,7 +12,7 @@ import CoreData
 class MasterDataManager: NSObject {
     static func saveDataWith(_ array: [JSON],_ onComplete:@escaping (()->Void)) {
         MasterDataManager.clearData({
-            let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let container = CoreDataStack.sharedInstance.managedObjectContext
             container.perform {
                 for jsonObject in array {
                     _ = MasterDataManager.createDataEntityFrom(dictionary: jsonObject,container)
@@ -39,7 +39,7 @@ class MasterDataManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[MasterDataDO] = []
             list = result.flatMap({$0 as? MasterDataDO})
             return list

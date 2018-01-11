@@ -33,7 +33,7 @@ class ProductManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[Product] = []
             list = result.flatMap({$0 as? ProductDO}).flatMap{Product.parse($0.toDictionary)}
             onComplete(list)
@@ -57,7 +57,7 @@ class ProductManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[GroupProductDO] = []
             list = result.flatMap({$0 as? GroupProductDO})
             onComplete(list)
@@ -71,7 +71,7 @@ class ProductManager: NSObject {
     
     static func saveProducctWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         ProductManager.clearDataProduct {
-            let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let container = CoreDataStack.sharedInstance.managedObjectContext
             container.perform {
                 for jsonObject in array {
                     ProductManager.createProductEntityFrom(dictionary:jsonObject,container)
@@ -88,7 +88,7 @@ class ProductManager: NSObject {
     
     static func saveGroupWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         ProductManager.clearDataGroupProduct {
-            let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let container = CoreDataStack.sharedInstance.managedObjectContext
             container.perform {
                 for jsonObject in array {
                     _ = ProductManager.createGroupEntityFrom(dictionary: jsonObject,container)
@@ -269,7 +269,7 @@ class ProductManager: NSObject {
     static func clearDataProduct(_ complete:(()->Void)) {
         do {
             
-            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ProductDO")
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
@@ -288,7 +288,7 @@ class ProductManager: NSObject {
     static func clearDataGroupProduct(_ complete:(()->Void)) {
         do {
             
-            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupProductDO")
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]

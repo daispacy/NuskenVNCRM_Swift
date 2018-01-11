@@ -73,6 +73,11 @@ class OrderDetailController: RootViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    override func reloadData() {
+        self.navigationController?.popViewController(animated: false)
+        self.onPop?(self.customerSelected!)
+    }
+    
     deinit {
         self.view.removeGestureRecognizer(tapGesture)
         NotificationCenter.default.removeObserver(self)
@@ -415,8 +420,8 @@ class OrderDetailController: RootViewController {
                         ord.synced = false
                         OrderManager.update([ord.toDO]) {
                             OrderItemManager.clearData(from:ord.id, onComplete: {
-                                let container = CoreDataStack.sharedInstance.persistentContainer
-                                container.performBackgroundTask() { (context) in
+                                let container = CoreDataStack.sharedInstance.managedObjectContext
+                                container.perform {
                                     _ = _self.listProducts.map({
                                         var dict = $0
                                         dict["order_id"] = ord.id
@@ -425,16 +430,15 @@ class OrderDetailController: RootViewController {
                                         if let pro = dict["product"] as? Product {
                                             dict["product_id"] = pro.id
                                         }
-                                        _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,context)
+                                        _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,container)
                                     })
                                     do {
-                                        try context.save()
+                                        try container.save()
                                     } catch {
                                         fatalError("Failure to save context: \(error)")
                                     }
                                     DispatchQueue.main.async {
-                                        _self.navigationController?.popViewController(animated: true)
-                                        _self.onPop?(customer)
+                                        _self.firstSyncData()
                                     }
                                 }
                             })
@@ -481,19 +485,31 @@ class OrderDetailController: RootViewController {
                         OrderManager.saveOrderWith(array: [ord.toDO]) {
                             let container = CoreDataStack.sharedInstance.managedObjectContext
                             container.perform {
-                                _ = _self.listProducts.map({
-                                    var dict = $0
-                                    dict["order_id"] = ord.id
-                                    dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                                    dict["quantity"] = dict["total"]
-                                    if let pro = dict["product"] as? Product {
-                                        dict["product_id"] = pro.id
+                                let container = CoreDataStack.sharedInstance.managedObjectContext
+                                container.perform {
+                                    _ = _self.listProducts.map({
+                                        var dict = $0
+                                        dict["order_id"] = ord.id
+                                        dict["id"] = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
+                                        dict["quantity"] = dict["total"]
+                                        if let pro = dict["product"] as? Product {
+                                            dict["product_id"] = pro.id
+                                        }
+                                        
+                                        _ = OrderItemManager.createOrderItemEntityFrom(dictionary: dict,container)
+                                        
+                                    })
+                                    do {
+                                        try container.save()
+                                    } catch {
                                     }
-                                    OrderItemManager.createOrderItemEntityFrom(dictionary: dict,container)
-                                })
-                                DispatchQueue.main.async {
-                                    _self.navigationController?.popViewController(animated: true)
-                                    _self.onPop?(customer)
+                                    DispatchQueue.main.async {
+                                        _self.onReloadData = {
+                                            _self.navigationController?.popViewController(animated: true)
+                                            _self.onPop?(customer)
+                                        }
+                                        _self.firstSyncData()
+                                    }
                                 }
                             }
                         }

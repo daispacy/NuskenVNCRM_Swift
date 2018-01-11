@@ -182,6 +182,7 @@ class SyncDataController: RootViewController {
                 didSyncedGroup &&
                 didSyncedOrderItem {
                 self.timerTimeOut?.invalidate()
+                CoreDataStack.sharedInstance.saveContext()
                 self.onReloadData?()
                 dismiss(animated: false, completion: nil)
             }

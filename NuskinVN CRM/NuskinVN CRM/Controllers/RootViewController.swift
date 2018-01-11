@@ -142,9 +142,14 @@ class RootViewController: UIViewController {
         }
     }
     
+    func reloadData() {
+        
+    }
+    
     func preventSyncData() {
         // prevent sync data while working with order
         print("REGISTER PREVENT SYNC")
+        return
         LocalService.shared.isShouldSyncData = {[weak self] in
             if let _ = self {
                 return false
@@ -154,7 +159,6 @@ class RootViewController: UIViewController {
     }
     
     func firstSyncData() {
-        leftButtonMenu.startAnimation(activityIndicatorStyle: .white)
         let vc = SyncDataController(nibName: "SyncDataController", bundle: Bundle.main) as SyncDataController
         Support.topVC?.present(vc, animated: false, completion: {
             vc.startSync(true)
@@ -162,8 +166,8 @@ class RootViewController: UIViewController {
         vc.onReloadData = {[weak self] in
             guard let _self = self else {return}
             NotificationCenter.default.post(name: NSNotification.Name("SyncData:AllDone"), object: nil)
-            _self.leftButtonMenu.stopAnimation()
             _self.onReloadData?()
+            _self.reloadData()
         }
 //        let vc = LaunchController(nibName: "LaunchController", bundle: Bundle.main)
 //        AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)

@@ -294,7 +294,7 @@ class UserManager: NSObject {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[UserDO] = []
             list = result.flatMap({$0 as? UserDO})
             if list.count > 0 {
@@ -311,7 +311,7 @@ class UserManager: NSObject {
     }
     
     static func save() {
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         do {
             try context.save()
         } catch {
@@ -320,7 +320,7 @@ class UserManager: NSObject {
     }
     
     static func reset() {
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
         
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -422,7 +422,7 @@ class UserManager: NSObject {
     static func clearData(_ fromList:[JSON]) {
         do {
             
-            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserDO")
             
             do {

@@ -104,6 +104,7 @@ class LaunchController: UIViewController {
                 didSyncedMasterData &&
                 didSyncedProduct {
                 self.view.stopLoading()
+                CoreDataStack.sharedInstance.saveContext()
                 AppConfig.navigation.gotoDashboardAfterSigninSuccess()
             }
             return

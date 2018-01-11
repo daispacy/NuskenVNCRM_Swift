@@ -89,7 +89,7 @@ class OrderListCell: UITableViewCell {
         
         if let user = UserManager.currentUser() {
             if user.username == "phamdaiit" {
-                lblCode.text = lblCode.text?.appending(" [\(order.id)]")
+                lblCode.text = lblCode.text?.appending(" [\(order.synced)]")
             }
         }
         

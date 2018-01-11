@@ -47,7 +47,7 @@ struct Group {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.count(for:fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.count(for:fetchRequest)
             return Int64(result)
             
         } catch {
@@ -93,7 +93,7 @@ struct Group {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[Customer] = []
             let listTemp = result.flatMap{$0 as? CustomerDO}
             list = listTemp.flatMap{Customer.parse($0.toDictionary)}

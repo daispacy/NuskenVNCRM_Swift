@@ -13,7 +13,7 @@ class GroupManager: NSObject {
     
     static func saveGroupWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
         GroupManager.clearData(array,onComplete: { array in
-            let save = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let save = CoreDataStack.sharedInstance.managedObjectContext
             save.perform {
                 for jsonObject in array.reversed() {
                     _ = GroupManager.createGroupEntityFrom(dictionary: jsonObject, save)
@@ -49,7 +49,7 @@ class GroupManager: NSObject {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else {onComplete([]);  return}
         
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         context.perform {
             do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
@@ -99,7 +99,7 @@ class GroupManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[Group] = []
             let temp = result.flatMap({$0 as? GroupDO})
             list = temp.flatMap{Group.parse($0.toDictionary)}
@@ -191,7 +191,7 @@ class GroupManager: NSObject {
     }
     
     static func updateGroupEntity(_ group:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext        
+        let context = CoreDataStack.sharedInstance.managedObjectContext        
         do {
             try context.save()
             print("group saved!")
@@ -204,7 +204,7 @@ class GroupManager: NSObject {
     }
     
     static func deleteGroupEntity(_ group:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         
         do {
             context.delete(group)
@@ -305,7 +305,7 @@ class GroupManager: NSObject {
     static func clearData(_ fromList:[JSON], onComplete:(([JSON])->Void)) {
         do {
             var list:[JSON] = []
-            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GroupDO")
             
             do {

@@ -34,7 +34,7 @@ class NotOrder30DOManager: NSObject {
             }
         }
         do {
-            try CoreDataStack.sharedInstance.saveManagedObjectContext.save()
+            try CoreDataStack.sharedInstance.managedObjectContext.save()
         } catch let error {
             print(error)
         }
@@ -52,7 +52,7 @@ class NotOrder30DOManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             let a = result.flatMap{$0 as? NotOrder30DO}
             let b = a.filter({if Int(($0.date_remind?.timeIntervalSinceNow)!) > -2592000 {
                 return true
@@ -71,7 +71,7 @@ class NotOrder30DOManager: NSObject {
     
     
     static func createBirthdayEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         if let object = NSEntityDescription.insertNewObject(forEntityName: "NotOrder30DO", into: context) as? NotOrder30DO {
             
             if let data = dictionary["customer_id"] as? String {

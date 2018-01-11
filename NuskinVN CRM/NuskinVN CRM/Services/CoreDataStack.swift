@@ -13,7 +13,39 @@ import CoreData
 class CoreDataStack: NSObject {
     
     static let sharedInstance = CoreDataStack()
-    private override init() {}
+    var shouldRefresh:(()->Void)?
+    private override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(contextObjectsDidChange(_:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
+    }
+    
+    func contextObjectsDidChange(_ notification: Notification) {
+        managedObjectContext.perform {
+            do {
+                if self.managedObjectContext.hasChanges {
+                    try self.managedObjectContext.save()
+                }
+            } catch {
+                let saveError = error as NSError
+                print("Unable to Save Changes of Managed Object Context")
+                print("\(saveError), \(saveError.localizedDescription)")
+            }
+            
+            self.saveManagedObjectContext.perform {
+                do {
+                    if self.saveManagedObjectContext.hasChanges {
+                        try self.saveManagedObjectContext.save()
+                        self.shouldRefresh?()
+                    }
+                } catch {
+                    let saveError = error as NSError
+                    print("Unable to Save Changes of Private Managed Object Context")
+                    print("\(saveError), \(saveError.localizedDescription)")
+                }
+            }
+            
+        }
+    }
     
     // MARK: - Core Data stack
     lazy var persistentContainer: NSPersistentContainer = {
@@ -61,9 +93,17 @@ class CoreDataStack: NSObject {
     // MARK: - Core Data Saving support
     
     func saveContext () {
+        
+        do {
+            try? CoreDataStack.sharedInstance.managedObjectContext.save()
+        }
+        do {
+            try? CoreDataStack.sharedInstance.saveManagedObjectContext.save()
+        }
+        
         let context = persistentContainer.viewContext
         
-        if context.hasChanges {
+//        if context.hasChanges {
             do {
                 try context.save()
             } catch {
@@ -72,7 +112,7 @@ class CoreDataStack: NSObject {
 //                let nserror = error as NSError
 //                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
-        }
+//        }
     }
 }
 

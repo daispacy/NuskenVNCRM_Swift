@@ -48,6 +48,7 @@ UISearchBarDelegate{
     var fromDate:NSDate? = nil
     var toDate:NSDate? = nil
     var isLifeTime: Bool = true
+    var checkSync:Int = 0
     
     // MARK: - init
     override func viewDidLoad() {
@@ -105,7 +106,11 @@ UISearchBarDelegate{
     }
     
      func reloadSynced(notification:Notification) {
+            checkSync += 1
+        if checkSync == 2 {
+            checkSync = 0
             self.refreshListOrder()
+        }
     }
     
     func keyboardWillShow(notification: NSNotification) {
@@ -153,20 +158,28 @@ UISearchBarDelegate{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadSynced(notification:)), name: Notification.Name("SyncData:OrderOne"), object: nil)
+        CoreDataStack.sharedInstance.shouldRefresh = {
+            DispatchQueue.main.async {
+                self.refreshListOrder()
+            }
+        }
+        
+        checkSync = 0
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadSynced(notification:)), name: Notification.Name("SyncData:Order"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadSynced(notification:)), name: Notification.Name("SyncData:OrderItem"), object: nil)
         
         listStatus = AppConfig.order.listStatus()
         listPaymentStatus = AppConfig.order.listPaymentStatus()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         refreshListOrder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 //        self.showTabbar(false)
+        NotificationCenter.default.removeObserver(self, name:  Notification.Name("SyncData:Order"), object: nil)
+        NotificationCenter.default.removeObserver(self, name:  Notification.Name("SyncData:OrderItem"), object: nil)
+        CoreDataStack.sharedInstance.shouldRefresh = nil
     }
     
     override func configText() {
@@ -185,7 +198,8 @@ UISearchBarDelegate{
         if self.tableView != nil {
             self.tableView.removeGestureRecognizer(tapGesture!)
         }
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     // MARK: - private
@@ -230,17 +244,17 @@ UISearchBarDelegate{
         
         OrderManager.getAllOrders(search: self.searchText, status: self.status, paymentStatus: self.payment_status, customer_id:self.customer_id,fromDate: self.fromDate,toDate: self.toDate,isLifeTime: self.isLifeTime) {[weak self] list in
             DispatchQueue.main.async {
-            if let _self = self {
-                _self.listOrder.removeAll()
-                _self.tableView.reloadData()
-                
+                if let _self = self {
+
+                    Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: {tm in
                     if list.count > 0 {
-                        _self.listOrder.append(contentsOf: list)
-                        _self.tableView.reloadData()
+                        _self.listOrder = list
                         _self.showLoading(isShow: false, isShowMessage: false)
                     } else {
                         _self.showLoading(isShow: false, isShowMessage: true)
                     }
+                        _self.tableView.reloadData()
+                    })
                 }
             }
         }
@@ -408,7 +422,8 @@ UISearchBarDelegate{
     // MARK: - sync & reload
     func syncIfCan() {
         
-        self.refreshListOrder()
+        firstSyncData()
+//        self.refreshListOrder()
         return
         
         if let bool = LocalService.shared.isShouldSyncData?() {

@@ -13,7 +13,7 @@ class CustomerManager: NSObject {
     
     static func getReportCustomers(fromDate:NSDate? = nil,toDate:NSDate? = nil, isLifeTime:Bool = true,group:Group? = nil,_ onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
-        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let container = CoreDataStack.sharedInstance.managedObjectContext
         container.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
             
@@ -76,7 +76,7 @@ class CustomerManager: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
             fetchRequest.predicate = predicateCompound
             do {
-                let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.count(for:fetchRequest)
+                let result = try CoreDataStack.sharedInstance.managedObjectContext.count(for:fetchRequest)
                 onComplete(Int64(result))
             } catch {
                 let fetchError = error as NSError
@@ -87,7 +87,7 @@ class CustomerManager: NSObject {
     
     static func getAllCustomers(search:String? = nil,group:Group? = nil,onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         context.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
             
@@ -137,7 +137,7 @@ class CustomerManager: NSObject {
     
     static func getCustomersBirthday(onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         context.perform {
             var data:[Customer] = []
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
@@ -189,7 +189,7 @@ class CustomerManager: NSObject {
     static func getAllCustomersOrdered(search:String? = nil,group:Group? = nil,onComplete:@escaping (([Customer])->Void)) {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else {onComplete([]); return }
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         context.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
             
@@ -241,8 +241,8 @@ class CustomerManager: NSObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
+        let context = CoreDataStack.sharedInstance.managedObjectContext
+        context.perform {
             do {
                 let result = try context.fetch(fetchRequest)
                 var list:[Customer] = []
@@ -258,8 +258,8 @@ class CustomerManager: NSObject {
     }
     
     static func markSynced(_ list:[Int64],_ done:@escaping (()->Void)) {
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
+        let context = CoreDataStack.sharedInstance.managedObjectContext
+        context.perform {
             let entity = NSEntityDescription.entity(forEntityName: "CustomerDO", in: context)
             let batchRequest = NSBatchUpdateRequest(entity: entity!)
             batchRequest.resultType = .statusOnlyResultType
@@ -283,7 +283,7 @@ class CustomerManager: NSObject {
             return
         }
         
-        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let container = CoreDataStack.sharedInstance.managedObjectContext
         container.perform {
             var i =  1
             for item in list {
@@ -320,7 +320,7 @@ class CustomerManager: NSObject {
     }
     
     static func saveCustomerWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
-        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let container = CoreDataStack.sharedInstance.managedObjectContext
         container.perform {
             for jsonObject in array.reversed() {
                 _ = CustomerManager.createCustomerEntityFrom(dictionary: jsonObject,container)
@@ -344,7 +344,7 @@ class CustomerManager: NSObject {
         fetchRequest.predicate = predicate1
         
         do {
-            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let result = try context.fetch(fetchRequest)
             _ = result.flatMap({$0 as? CustomerDO}).map({
                 $0.status = 0
@@ -516,7 +516,7 @@ class CustomerManager: NSObject {
     static func clearData(_ fromList:[JSON], onComplete:(([JSON])->Void)) {
         do {
             var list:[JSON] = []
-            let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
                     
             do {

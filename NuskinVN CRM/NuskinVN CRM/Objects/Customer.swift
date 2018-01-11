@@ -157,7 +157,7 @@ struct Customer {
         fetchRequest.predicate = predicate
         do {
             
-            let results = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let results = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             
             return results.count != 0
             
@@ -181,7 +181,7 @@ struct Customer {
         
         do {
             
-            let results = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest) as! [OrderDO]
+            let results = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest) as! [OrderDO]
             return results.count > 0
             
         } catch {
@@ -216,7 +216,7 @@ struct Customer {
         fetchRequest.predicate = predicate
         
         do {
-            let results = try? CoreDataStack.sharedInstance.saveManagedObjectContext.count(for: fetchRequest)
+            let results = try? CoreDataStack.sharedInstance.managedObjectContext.count(for: fetchRequest)
             if results != nil {
                 return Int64(results!)
             }
@@ -242,7 +242,7 @@ struct Customer {
         
         do {
             
-            let results = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest) as! [OrderDO]
+            let results = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest) as! [OrderDO]
             return results
             
         } catch let error as NSError {
@@ -266,7 +266,7 @@ struct Customer {
         
         do {
             
-            let results = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequestGroupDO) as! [GroupDO]
+            let results = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequestGroupDO) as! [GroupDO]
             return results.flatMap({Group.parse($0.toDictionary)})
             
         } catch let error as NSError {

@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "NSManagedObjectContextDidSaveNotification"), object: nil, queue: nil) { (note) in
-            let main = CoreDataStack.sharedInstance.saveManagedObjectContext
+            let main = CoreDataStack.sharedInstance.managedObjectContext
             let other:NSManagedObjectContext = note.object as! NSManagedObjectContext
             if other.persistentStoreCoordinator == main.persistentStoreCoordinator {
                 if (other != main) {
@@ -148,6 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         LocalService.shared.timerSyncToServer?.invalidate()
+        CoreDataStack.sharedInstance.saveContext()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -169,6 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         
         CoreDataStack.sharedInstance.saveContext()
+        
     }
 }
 

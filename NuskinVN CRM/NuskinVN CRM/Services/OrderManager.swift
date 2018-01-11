@@ -15,7 +15,7 @@ class OrderManager: NSObject {
         // Initialize Fetch Request
         guard let user = UserManager.currentUser() else { onComplete([]); return }
         
-        let context = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         context.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderDO")
             
@@ -56,10 +56,10 @@ class OrderManager: NSObject {
     static func getAllOrders(search:String? = nil,status:Int64? = nil, paymentStatus:Int64? = nil, customer_id:[Int64]? = nil,fromDate:NSDate? = nil, toDate:NSDate? = nil, isLifeTime:Bool = true, onComplete:@escaping (([Order])->Void)) {
         guard let user = UserManager.currentUser() else {onComplete([]); return}
         // Initialize Fetch Request
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
+        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        context.perform {
             let fetchRequest = NSFetchRequest<OrderDO>(entityName: "OrderDO")
-            
+            fetchRequest.returnsObjectsAsFaults = false
             
             let predicate1 = NSPredicate(format: "distributor_id IN %@", [user.id])
             var predicate2 = NSPredicate(format: "1 > 0")
@@ -127,7 +127,7 @@ class OrderManager: NSObject {
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.saveManagedObjectContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[Order] = []
             list = result.flatMap({$0 as? OrderDO}).flatMap({Order.parse(dictionary: $0.toDictionary)})
             onComplete(list)
@@ -140,7 +140,7 @@ class OrderManager: NSObject {
     }
     
     static func saveOrderWith(array: [JSON],_ onComplete:@escaping (()->Void)) {
-        let container = CoreDataStack.sharedInstance.saveManagedObjectContext
+        let container = CoreDataStack.sharedInstance.managedObjectContext
         container.perform {
             for jsonObject in array {
                 OrderManager.createOrderEntityFrom(dictionary:jsonObject,container)
@@ -178,8 +178,8 @@ class OrderManager: NSObject {
             return
         }
         
-        let container = CoreDataStack.sharedInstance.persistentContainer
-        container.performBackgroundTask() { (context) in
+        let container = CoreDataStack.sharedInstance.managedObjectContext
+        container.perform {
             var i =  1
             for item in list {
                 
@@ -192,13 +192,13 @@ class OrderManager: NSObject {
                     return
                 }
                 
-                let entity = NSEntityDescription.entity(forEntityName: "OrderDO", in: context)
+                let entity = NSEntityDescription.entity(forEntityName: "OrderDO", in: container)
                 let batchRequest = NSBatchUpdateRequest(entity: entity!)
                 batchRequest.resultType = .statusOnlyResultType
                 batchRequest.predicate = NSPredicate(format: "id IN %@",listIDS);
                 batchRequest.propertiesToUpdate = order.toDO
                 do {
-                    try context.execute(batchRequest)
+                    try container.execute(batchRequest)
                     if i == list.count {
                         done()
                     }
