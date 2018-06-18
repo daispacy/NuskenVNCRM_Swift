@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,11 +15,21 @@
             <rect key="frame" x="0.0" y="0.0" width="361" height="163"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPj-3z-Zm8">
-                    <rect key="frame" x="0.0" y="10" width="361" height="143"/>
+                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="CPj-3z-Zm8">
+                    <rect key="frame" x="5" y="10" width="361" height="143"/>
                     <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ESv-QF-iOG">
+                            <rect key="frame" x="0.0" y="46.5" width="50" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="50" id="Fmp-0I-3L8">
+                                    <variation key="heightClass=compact-widthClass=compact" constant="50"/>
+                                    <variation key="heightClass=regular-widthClass=regular" constant="80"/>
+                                </constraint>
+                                <constraint firstAttribute="height" constant="50" id="pjU-nV-wBH"/>
+                            </constraints>
+                        </imageView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="eWm-56-Uk0">
-                            <rect key="frame" x="0.0" y="0.0" width="361" height="143"/>
+                            <rect key="frame" x="55" y="46" width="361" height="51"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="255" verticalHuggingPriority="255" horizontalCompressionResistancePriority="755" verticalCompressionResistancePriority="755" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Des-WP-cIS">
                                     <rect key="frame" x="0.0" y="0.0" width="361" height="20.5"/>
@@ -28,16 +38,16 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="4Sk-Wp-wCq">
-                                    <rect key="frame" x="0.0" y="30.5" width="361" height="112.5"/>
+                                    <rect key="frame" x="0.0" y="30.5" width="361" height="20.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n5x-Zk-48Z">
-                                            <rect key="frame" x="0.0" y="0.0" width="180.5" height="112.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="180.5" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xn1-Ax-lEL">
-                                            <rect key="frame" x="180.5" y="0.0" width="180.5" height="112.5"/>
+                                            <rect key="frame" x="125.5" y="0.0" width="180.5" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -47,40 +57,24 @@
                             </subviews>
                         </stackView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ljv-3W-U4y">
-                            <rect key="frame" x="358.5" y="0.0" width="60" height="143"/>
+                            <rect key="frame" x="361" y="0.0" width="50" height="143"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="xT5-As-cj1">
-                                    <rect key="frame" x="2.5" y="51" width="55" height="40"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RJZ-p9-V7W">
-                                            <rect key="frame" x="0.0" y="0.0" width="25" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="25" id="tPX-yq-ZoH"/>
-                                                <constraint firstAttribute="height" constant="40" id="vFV-bb-djC"/>
-                                            </constraints>
-                                            <state key="normal" image="ic_edit_gradient_36"/>
-                                            <connections>
-                                                <action selector="processEdit:" destination="iN0-l3-epB" eventType="touchUpInside" id="Hta-xN-PYz"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wkc-pl-c02">
-                                            <rect key="frame" x="30" y="0.0" width="25" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="2k6-xO-t1S"/>
-                                            </constraints>
-                                            <state key="normal" image="ic_delete_gradient_36"/>
-                                            <connections>
-                                                <action selector="processRemove:" destination="iN0-l3-epB" eventType="touchUpInside" id="pit-XA-E3h"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                </stackView>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RJZ-p9-V7W">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="143"/>
+                                    <state key="normal" image="ic_delete_gradient_36"/>
+                                    <connections>
+                                        <action selector="processEdit:" destination="iN0-l3-epB" eventType="touchUpInside" id="Hta-xN-PYz"/>
+                                        <action selector="processRemove:" destination="iN0-l3-epB" eventType="touchUpInside" id="kWm-vc-Tw3"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstItem="xT5-As-cj1" firstAttribute="centerY" secondItem="ljv-3W-U4y" secondAttribute="centerY" id="SMK-Ke-S28"/>
-                                <constraint firstItem="xT5-As-cj1" firstAttribute="centerX" secondItem="ljv-3W-U4y" secondAttribute="centerX" id="iwA-h4-L5i"/>
-                                <constraint firstAttribute="width" constant="60" id="lS5-M9-8F3"/>
+                                <constraint firstAttribute="bottom" secondItem="RJZ-p9-V7W" secondAttribute="bottom" id="2Hh-kW-rl8"/>
+                                <constraint firstItem="RJZ-p9-V7W" firstAttribute="leading" secondItem="ljv-3W-U4y" secondAttribute="leading" id="4GT-vt-Htm"/>
+                                <constraint firstItem="RJZ-p9-V7W" firstAttribute="top" secondItem="ljv-3W-U4y" secondAttribute="top" id="Dp2-Dt-g9H"/>
+                                <constraint firstAttribute="width" constant="50" id="lS5-M9-8F3"/>
+                                <constraint firstAttribute="trailing" secondItem="RJZ-p9-V7W" secondAttribute="trailing" id="tZk-S8-BOa"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -90,20 +84,22 @@
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="CPj-3z-Zm8" secondAttribute="bottom" constant="10" id="Jen-3Y-Yjo"/>
                 <constraint firstItem="CPj-3z-Zm8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="YBg-eQ-sgp"/>
-                <constraint firstItem="CPj-3z-Zm8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="n0p-Bd-KNi"/>
+                <constraint firstItem="CPj-3z-Zm8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="n0p-Bd-KNi"/>
                 <constraint firstAttribute="trailing" secondItem="CPj-3z-Zm8" secondAttribute="trailing" id="oaf-wE-w1S"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="btnDelete" destination="RJZ-p9-V7W" id="Y9f-wR-4Va"/>
+                <outlet property="imgProduct" destination="ESv-QF-iOG" id="dtj-qo-oG7"/>
                 <outlet property="lblName" destination="Des-WP-cIS" id="uiP-MC-0j7"/>
                 <outlet property="lblPrice" destination="xn1-Ax-lEL" id="RVU-gS-nLg"/>
                 <outlet property="lblTotal" destination="n5x-Zk-48Z" id="RFQ-4A-yn7"/>
+                <outlet property="vwControl" destination="ljv-3W-U4y" id="Y6V-Ac-YBp"/>
             </connections>
             <point key="canvasLocation" x="87.5" y="-126.5"/>
         </view>
     </objects>
     <resources>
         <image name="ic_delete_gradient_36" width="12" height="12"/>
-        <image name="ic_edit_gradient_36" width="12" height="12"/>
     </resources>
 </document>

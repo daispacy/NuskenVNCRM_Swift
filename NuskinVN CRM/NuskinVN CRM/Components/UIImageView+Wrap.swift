@@ -11,9 +11,12 @@ import UIKit
 
 let imageCache = NSCache<NSString, UIImage>()
 
+private var KeepTap:String = "KeepTap"
+private var KeepTapEvent:String = "KeepTapEvent"
+
 extension UIImageView {
     
-    func loadImageUsingCacheWithURLString(_ URLString: String, placeHolder: UIImage?) {
+    func loadImageUsingCacheWithURLString(_ URLString: String, size:CGSize?, placeHolder: UIImage?) {
         
         self.image = nil
         if let cachedImage = imageCache.object(forKey: NSString(string: URLString)) {
@@ -37,12 +40,47 @@ extension UIImageView {
                 DispatchQueue.main.async {
                     if let data = data {
                         if let downloadedImage = UIImage(data: data) {
-                            imageCache.setObject(downloadedImage, forKey: NSString(string: URLString))
-                            self.image = downloadedImage
+                            if let s = size {
+                                let img = downloadedImage.resizeImageWith(newSize: s)
+                                imageCache.setObject(img, forKey: NSString(string: URLString))
+                                self.image = img
+                            } else {
+                                self.image = downloadedImage
+                                imageCache.setObject(downloadedImage, forKey: NSString(string: URLString))
+                            }
                         }
                     }
                 }
             }).resume()
+        }
+    }
+    
+    var singleTap:UITapGestureRecognizer {
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(self.tapDetected(_:)))
+        singleTap.numberOfTapsRequired = 1 // you can change this value
+        return singleTap
+    }
+    
+    func addEvent(_ event:(()->Void)) {
+        if objc_getAssociatedObject(self, &KeepTap) != nil {return}
+        
+        self.isUserInteractionEnabled = true
+        self.addGestureRecognizer(singleTap)
+        objc_setAssociatedObject(self, &KeepTap, singleTap, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &KeepTapEvent, event, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    }
+    
+    func removeEvent() {
+        if let tap = objc_getAssociatedObject(self, &KeepTap) as? UITapGestureRecognizer {
+            self.removeGestureRecognizer(tap)
+        }
+    }
+    
+    //Action
+    func tapDetected(_ sender:UITapGestureRecognizer) {
+        print("Imageview Clicked")
+        if let event = objc_getAssociatedObject(self, &KeepTapEvent) as? (()->Void) {
+            event()
         }
     }
 }

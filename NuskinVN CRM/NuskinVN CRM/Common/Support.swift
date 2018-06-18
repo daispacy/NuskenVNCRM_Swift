@@ -12,6 +12,15 @@ import Alamofire
 
 class Support: NSObject {
     
+    // MARK: - Top Controller
+    static var topVC:UIViewController? {
+        var topVC = UIApplication.shared.keyWindow?.rootViewController
+        while((topVC!.presentedViewController) != nil){
+            topVC = topVC!.presentedViewController
+        }
+        return topVC
+    }
+    
     // MARK: - check internet connection
     class connectivity {
         class func isConnectedToInternet() ->Bool {
@@ -44,6 +53,12 @@ class Support: NSObject {
             return  returnValue
         }
         
+        static func isValidPasswordStrong(password: String) -> Bool {
+            let passwordRegex = "(?:(?:(?=.*?[0-9])(?=.*?[-!@#$%&*ˆ+=_])|(?:(?=.*?[0-9])|(?=.*?[A-Z])|(?=.*?[-!@#$%&*ˆ+=_])))|(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-!@#$%&*ˆ+=_]))[A-Za-z0-9-!@#$%&*ˆ+=_]{6,999}"
+
+            return NSPredicate(format: "SELF MATCHES %@", passwordRegex).evaluate(with: password)
+        }
+
         static func isValidPassword(password: String) -> Bool {
             var returnValue = true
             if(password.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count < 6) {
@@ -129,7 +144,7 @@ class Support: NSObject {
             KxMenu.sharedMenu().menuView.target = sender
         }
         
-        static func showAlert(message:String,buttons:Array<String> ,vc:UIViewController, onAction:@escaping ((Int)-> Void)) {
+        static func showAlert(message:String,buttons:Array<String> ,vc:UIViewController, onAction:@escaping ((Int)-> Void),_ deinitial:(()-> Void)?) {
             let test = CustomAlertController(nibName: "CustomAlertController", bundle: Bundle.main)
             vc.present(test, animated: false, completion: {done in
                 test.message(message: message, buttons: buttons, select: {
@@ -137,6 +152,9 @@ class Support: NSObject {
                     onAction(i)
                 })
             })
+            test.onDeinit = {
+                deinitial?()
+            }
         }
     }
     

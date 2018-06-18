@@ -1,95 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="9C8-dN-lcJ" customClass="FunctionStackViewCustomer" customModule="NuskinVN_CRM" customModuleProvider="target">
+        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9C8-dN-lcJ" customClass="FunctionStackViewCustomer" customModule="NuskinVN_CRM" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="372" height="106"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Tzg-dC-c1o">
-                    <rect key="frame" x="56" y="46" width="260" height="50"/>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2ZW-SO-HaN">
+                    <rect key="frame" x="0.0" y="0.0" width="372" height="106"/>
                     <subviews>
-                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f3j-ow-Bo8" userLabel="1">
-                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="height" priority="750" constant="50" id="sHj-FH-zmn"/>
-                                <constraint firstAttribute="width" priority="750" constant="50" id="t0V-fJ-56G"/>
-                            </constraints>
-                            <state key="normal" image="ic_account_gradient"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                    <integer key="value" value="7"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                        </button>
-                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DF8-gO-lbf" userLabel="2">
-                            <rect key="frame" x="70" y="0.0" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" priority="750" constant="50" id="caM-eA-a5W"/>
-                            </constraints>
-                            <state key="normal" image="ic_account_gradient"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                    <integer key="value" value="7"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                        </button>
-                        <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uTh-N0-rQl" userLabel="3">
-                            <rect key="frame" x="140" y="0.0" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" priority="750" constant="50" id="22j-LC-jko"/>
-                            </constraints>
-                            <state key="normal" image="ic_account_gradient"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                    <integer key="value" value="7"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                        </button>
-                        <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iWA-5K-NDP" userLabel="4">
-                            <rect key="frame" x="210" y="0.0" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" priority="750" constant="50" id="C7f-St-U2p"/>
-                            </constraints>
-                            <state key="normal" image="ic_account_gradient"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                    <integer key="value" value="7"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                        </button>
+                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tzg-dC-c1o">
+                            <rect key="frame" x="0.0" y="0.0" width="372" height="106"/>
+                        </stackView>
                     </subviews>
-                    <viewLayoutGuide key="safeArea" id="CYL-m9-sxN"/>
-                </stackView>
+                    <constraints>
+                        <constraint firstItem="Tzg-dC-c1o" firstAttribute="top" secondItem="2ZW-SO-HaN" secondAttribute="top" id="SEI-70-Llf"/>
+                        <constraint firstItem="Tzg-dC-c1o" firstAttribute="leading" secondItem="2ZW-SO-HaN" secondAttribute="leading" id="d44-5G-rNG"/>
+                        <constraint firstAttribute="bottom" secondItem="Tzg-dC-c1o" secondAttribute="bottom" id="jCW-WI-MP3"/>
+                        <constraint firstAttribute="trailing" secondItem="Tzg-dC-c1o" secondAttribute="trailing" id="nnK-C0-5S0"/>
+                        <constraint firstItem="Tzg-dC-c1o" firstAttribute="height" secondItem="2ZW-SO-HaN" secondAttribute="height" id="r3r-1a-nBh"/>
+                    </constraints>
+                </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="Tzg-dC-c1o" firstAttribute="top" secondItem="cpk-0b-GIg" secondAttribute="top" priority="250" id="c3r-Qr-SPO"/>
-                <constraint firstItem="cpk-0b-GIg" firstAttribute="bottom" secondItem="Tzg-dC-c1o" secondAttribute="bottom" constant="10" id="iV6-nl-7Xj"/>
-                <constraint firstItem="Tzg-dC-c1o" firstAttribute="centerX" secondItem="cpk-0b-GIg" secondAttribute="centerX" id="otI-Gj-J4t"/>
+                <constraint firstAttribute="trailing" secondItem="2ZW-SO-HaN" secondAttribute="trailing" id="4eJ-eF-8yF"/>
+                <constraint firstItem="2ZW-SO-HaN" firstAttribute="bottom" secondItem="9C8-dN-lcJ" secondAttribute="bottom" id="OVu-qA-tk2"/>
+                <constraint firstItem="2ZW-SO-HaN" firstAttribute="leading" secondItem="9C8-dN-lcJ" secondAttribute="leading" id="dMo-UH-h8p"/>
+                <constraint firstAttribute="top" secondItem="2ZW-SO-HaN" secondAttribute="top" id="hxZ-T3-Vh9"/>
+                <constraint firstItem="Tzg-dC-c1o" firstAttribute="width" secondItem="9C8-dN-lcJ" secondAttribute="width" priority="250" id="jIr-1H-7x5"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="cpk-0b-GIg"/>
             <connections>
-                <outlet property="btnFacebook" destination="f3j-ow-Bo8" id="cIS-af-h9b"/>
-                <outlet property="btnSkype" destination="uTh-N0-rQl" id="ndG-EO-nZ2"/>
-                <outlet property="btnViber" destination="iWA-5K-NDP" id="wkb-5S-yWc"/>
-                <outlet property="btnZalo" destination="DF8-gO-lbf" id="6Bj-AC-sp3"/>
+                <outlet property="stackContainer" destination="Tzg-dC-c1o" id="0SL-qG-X4b"/>
             </connections>
             <point key="canvasLocation" x="59" y="-173"/>
         </view>
     </objects>
-    <resources>
-        <image name="ic_account_gradient" width="24" height="24"/>
-    </resources>
 </document>

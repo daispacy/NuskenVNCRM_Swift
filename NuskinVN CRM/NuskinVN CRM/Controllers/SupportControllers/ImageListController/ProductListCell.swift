@@ -16,26 +16,25 @@ class ProductListCell: UITableViewCell {
     @IBOutlet var lblOther: UILabel!
     @IBOutlet var lblPrice: UILabel!
     
-    var product:ProductDO?
+    var product:Product?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
-    func show(_ product:ProductDO) {
+    func show(_ product:Product) {
         self.product = product
         
-        if let name = product.name {
-            lblName.text = name
-        }
+            lblName.text = product.name
        
-        if let imgStr = product.avatar {
-            avatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/a_\(imgStr)", placeHolder: UIImage(named:"ic_top_product_block"))
-        }
+        let imgStr = product.avatar
+            if imgStr.characters.count > 0 {
+                avatar.loadImageUsingCacheWithURLString("\(Server.domainImage.rawValue)/upload/1/products/m_\(imgStr)",size:nil, placeHolder: UIImage(named:"ic_top_product_block"))
+            }
         
         lblOther.text = "PV: \(product.pv)"
-        lblPrice.text = "\(product.price) \("price_unit".localized())"
+        lblPrice.text = "\(product.retail_price.toTextPrice()) \("price_unit".localized())"
     }
     
     override func prepareForReuse() {

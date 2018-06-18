@@ -13,26 +13,6 @@ import CoreData
 @objc(OrderDO)
 public class OrderDO: NSManagedObject {
     
-    var customerManage:CustomerDO?
-    var orderItemsManager:[OrderItemDO] = []
-    var totalPrice:Int64  {
-        var total:Int64 = 0
-        _ = orderItems().map({
-            total += ($0.price * $0.quantity)
-        })
-        return total
-    }
-    
-    var totalPV:Int64  {
-        var total:Int64 = 0
-        _ = orderItems().map({
-            if let product = $0.product() {
-                total += (product.pv * $0.quantity)
-            }
-        })
-        return total
-    }
-    
     //MARK: - Initialize
     convenience init(needSave: Bool,  context: NSManagedObjectContext?) {
         
@@ -46,50 +26,28 @@ public class OrderDO: NSManagedObject {
         }
     }
     
-    func customer() -> CustomerDO? {
+    var toDictionary:[String:Any] {
         
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CustomerDO")
-//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "id IN %@ AND distributor_id IN %@", [customer_id],[UserManager.currentUser().id_card_no])
-            fetchRequest.returnsObjectsAsFaults = false
-            
-            do {
-                let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-                var list:[CustomerDO] = []
-                list = result.flatMap({$0 as? CustomerDO})
-                if list.count > 0 {
-                    customerManage = list[0]
-                    return list[0]
-                }
-                
-            } catch {
-                let fetchError = error as NSError
-                print(fetchError)
-            }
-        
-        return nil
-    }
-    
-    func orderItems() -> [OrderItemDO] {
-        
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
-            //            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "fullname", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "order_id IN %@", [id])
-            fetchRequest.returnsObjectsAsFaults = false
-            
-            do {
-                let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
-                var list:[OrderItemDO] = []
-                list = result.flatMap({$0 as? OrderItemDO})
-                orderItemsManager = list
-                return list
-                
-                
-            } catch {
-                let fetchError = error as NSError
-                print(fetchError)
-            }
-        
-        return []
+        return [
+            "code":code ?? "",
+            "id":id,
+            "local_id":local_id,
+            "store_id":store_id,
+            "distributor_id":distributor_id,
+            "customer_id":customer_id,
+            "status":status,
+            "payment_status":payment_status,
+            "payment_option":payment_option,
+            "shipping_unit":shipping_unit,
+            "svd":svd ?? "",
+            "email":email ?? "",
+            "tel":tel ?? "",
+            "cell":cell ?? "",
+            "address":address ?? "",
+            "date_created":date_created as Any,
+            "last_updated":last_updated as Any,
+            "properties":properties ?? "",
+            "synced":synced
+        ]
     }
 }

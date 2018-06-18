@@ -12,7 +12,7 @@ import CoreData
 class AddGroupController: UIViewController {
     
     // block event
-    var onAddGroup:((GroupDO) -> Void)?
+    var onAddGroup:((Group) -> Void)?
     var onDismiss:(() -> Void)?
     
     @IBOutlet var vwOverlay: UIView!
@@ -31,9 +31,9 @@ class AddGroupController: UIViewController {
     @IBOutlet var containerView: UIView!
     
     var isEdit: Bool!
-    var group:GroupDO?
+    var group:Group?
     var name:String = ""
-    var position:Int64 = GroupLevel.one.rawValue
+    var position:Int64 = 1
     var group_color:String = "gradient"
     
     var tapGesture:UITapGestureRecognizer!
@@ -46,6 +46,13 @@ class AddGroupController: UIViewController {
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
         isEdit = false
+        
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
     }
     
     deinit {
@@ -56,6 +63,11 @@ class AddGroupController: UIViewController {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
     }
     
     override func viewDidLoad() {
@@ -119,19 +131,28 @@ class AddGroupController: UIViewController {
         
         if let na = txtName.text {
             name = na
-            if GroupDO.validAddNewGroup(name: name, except: isEdit) {
-                dismissView()
-                if !isEdit {
-                    group = GroupDO(needSave: true, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
-                    group?.status = 1
-                    group?.synced = false
-                    group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
-                }
-                    group?.synced = false
-                    group?.setColor(group_color)
-                    group?.group_name = name
-                 onAddGroup?(group!)
+            
+            dismissView()
+            if !isEdit {
+                group = Group()
+                group?.status = 1
+                group?.synced = false
+                group?.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
             }
+            group?.position = self.position
+            group?.synced = false
+            group?.setColor(group_color)
+            group?.group_name = name
+            if !isEdit {
+                GroupManager.saveGroupWith(array: [group!.toDO], {
+                    DispatchQueue.main.async {
+                        self.onAddGroup?(self.group!)
+                    }
+                })
+            } else {
+                onAddGroup?(group!)
+            }
+            
         }
     }
     
@@ -151,22 +172,22 @@ class AddGroupController: UIViewController {
         
         switch sender.tag {
         case 11:
-            position = GroupLevel.ten.rawValue
+            position = 1
         case 12:
-            position = GroupLevel.nine.rawValue
+            position = 2
         case 13:
-            position = GroupLevel.seven.rawValue
+            position = 3
         case 14:
-            position = GroupLevel.three.rawValue
+            position = 4
         case 15:
-            position = GroupLevel.one.rawValue
+            position = 5
         default:
-            position = GroupLevel.one.rawValue
+            position = 6
         }
     }
     
     // MARK: - properties
-    func setEditGroup(gr:GroupDO) {
+    func setEditGroup(gr:Group) {
         group = gr
         isEdit = true
         configText()
@@ -247,8 +268,6 @@ class AddGroupController: UIViewController {
         
         containerView.layer.cornerRadius = 12
         containerView.clipsToBounds      = true
-        
-//        group = GroupCustomer(id: 0, distributor_id: UserManager.currentUser().id_card_no!, store_id: UserManager.currentUser().id_card_no!)
     }
     
     func configText() {
@@ -370,31 +389,31 @@ class AddGroupController: UIViewController {
         _ = groupLevel.map({
             $0.isSelected = false
             switch (gr.position) {
-            case GroupLevel.one.rawValue:
-                if $0.tag == 15 {
+            case 1:
+                if $0.tag == 11 {
                     $0.isSelected = true
                 }
                 break
                 
-            case GroupLevel.three.rawValue:
-                if $0.tag == 14 {
+            case 2:
+                if $0.tag == 12 {
                     $0.isSelected = true
                 }
                 break
                 
-            case GroupLevel.seven.rawValue:
+            case 3:
                 if $0.tag == 13 {
                     $0.isSelected = true
                 }
                 break
                 
-            case GroupLevel.nine.rawValue:
-                if $0.tag == 12 {
+            case 4:
+                if $0.tag == 14 {
                     $0.isSelected = true
                 }
                 break
-            case GroupLevel.ten.rawValue:
-                if $0.tag == 11 {
+            case 6:
+                if $0.tag == 15 {
                     $0.isSelected = true
                 }
                 break

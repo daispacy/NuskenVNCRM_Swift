@@ -19,12 +19,13 @@ UICollectionViewDelegateFlowLayout {
     @IBOutlet var vwOverlay: UIView!
     @IBOutlet var collectView: UICollectionView!
     
-    var onSelectGroup:((GroupDO)->Void)?
+    var onSelectGroup:((Group)->Void)?
     var gotoFromCustomerList:Bool = false
     
-    var listGroups:[GroupDO]!
-    let defaultItem:GroupDO = {
-        let group = GroupDO(needSave: false, context: CoreDataStack.sharedInstance.persistentContainer.viewContext)
+    var listGroups:[Group]!
+    let defaultItem:Group = {
+        var group = Group()
+        group.isTemp = true
         group.group_name = "add_group".localized()
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: ["color":"0xbec2c5"])
@@ -58,7 +59,7 @@ UICollectionViewDelegateFlowLayout {
             rightButtonMenu.setTitle("skip".localized(), for: .normal)
             rightButtonMenu.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
             rightButtonMenu.setTitleColor(UIColor.white, for: .normal)
-            rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+            rightButtonMenu.frame = CGRect(x: 0, y: 0, width: 60, height: 30)
             rightButtonMenu.rx.tap.subscribe(onNext: {[weak self] in
                 if let _self = self {
                     let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
@@ -98,7 +99,7 @@ UICollectionViewDelegateFlowLayout {
         })
     }
     
-    func showPopupGroup(object:GroupDO? = nil) {
+    func showPopupGroup(object:Group? = nil) {
         let vc = AddGroupController(nibName: "AddGroupController", bundle: Bundle.main)
         
         present(vc, animated: false, completion: {done in
@@ -108,12 +109,96 @@ UICollectionViewDelegateFlowLayout {
         })
         vc.onAddGroup = {[weak self] group in
             if let _self = self {
-                group.synced = false
-                GroupManager.updateGroupEntity(group, onComplete: {
+                var obj = group
+                obj.synced = false
+                GroupManager.update([obj.toDO]) {
                     _self.refreshList()
+                }
+            }
+        }
+    }
+    
+    func selectAction(obj:Group,_ point:CGPoint? = nil) {
+        
+        if obj.isTemp == true {
+            showPopupGroup()
+            return
+        }
+        
+        let alertController = UIAlertController(title: nil, message: "\("group".localized().uppercased()): \(obj.group_name.uppercased())", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
+            alertController.dismiss(animated: true, completion: nil)
+        }
+        
+        let okAction = UIAlertAction(title: "add_user".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+            let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
+            self.navigationController?.pushViewController(vc, animated: true)
+            vc.setGroupSelected(group: obj)
+        }
+        
+        let editAction = UIAlertAction(title: "edit_group".localized(), style: UIAlertActionStyle.destructive) { (result : UIAlertAction) -> Void in
+            self.showPopupGroup(object: obj)
+        }
+        
+        let deleteAction = UIAlertAction(title: "delete_group".localized(), style: UIAlertActionStyle.destructive) { (result : UIAlertAction) -> Void in
+            Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self.navigationController!, onAction: { [weak self]
+                i in
+                if let _self = self {
+                    if i == 1 {
+                        var gr = obj
+                        gr.status = 0
+                        gr.synced = false
+                        GroupManager.update([gr.toDictionary]){
+                            _self.refreshList()
+                        }
+//                        // delete if group not synced
+//                        if gr.id == 0 {
+//                            GroupManager.update([gr.toDictionary]){
+//                                _self.refreshList()
+//                            }
+//                        } else {
+//                            GroupManager.update(gr, onComplete: {
+//                                _self.refreshList()
+//                            })
+//                        }
+                    }
+                }
+                },nil)
+        }
+        
+        let emailAction = UIAlertAction(title: "send_email".localized(), style: UIAlertActionStyle.destructive) { (result : UIAlertAction) -> Void in
+            if let user = UserManager.currentUser() {
+                let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
+                let nv = UINavigationController(rootViewController: vc1)
+                vc1.navigationController?.setNavigationBarHidden(true, animated: false)
+                Support.topVC!.present(nv, animated: true, completion: {
+                    vc1.show(from: user.email!, to: obj.getListEmailCustomers())
                 })
             }
         }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(okAction)
+        alertController.addAction(emailAction)
+        
+        if ((obj.distributor_id == 0 && obj.id > 0) || obj.isTemp) {
+            
+        } else {
+            alertController.addAction(editAction)
+            alertController.addAction(deleteAction)
+        }
+        
+        if isIpad {
+            if let p = point {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = p
+            } else {
+                alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+                alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:Support.topVC!.view.frame.midX,y:Support.topVC!.view.frame.maxY)
+            }
+        }
+        
+        Support.topVC?.present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -123,49 +208,6 @@ extension GroupCustomerController {
         let cell:GroupCollectCustomerCell = collectView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! GroupCollectCustomerCell
         
         cell.show(data: listGroups[indexPath.row])
-        cell.onSelectOption = {
-            sender, group in
-            let popup = PopupOptionGroupController(nibName: "PopupOptionGroupController", bundle: Bundle.main)
-            popup.onSelect = {
-                option in
-                switch option.tag {
-                case 2:
-                    Support.popup.showAlert(message: "would_you_like_delete_group".localized(), buttons: ["cancel".localized(),"ok".localized()], vc: self, onAction: { [weak self]
-                        i in
-                        if let _self = self {
-                            if i == 1 {
-                                let gr = group
-                                gr.status = 0
-                                gr.synced = false
-                                // delete if group not synced
-                                if gr.id == 0 {
-                                    GroupManager.deleteGroupEntity(gr, onComplete: {
-                                        _self.refreshList()
-                                    })
-                                } else {
-                                    GroupManager.updateGroupEntity(gr, onComplete: {
-                                        _self.refreshList()
-                                    })
-                                }
-                            }
-                        }
-                    })
-                    
-                default:
-                    self.showPopupGroup(object: group)
-                    break
-                }
-            }
-            popup.show(data: [OptionGroup(name: "edit_group".localized(),
-                                          icon: "ic_edit_gradient_36",
-                                          tag: 1),
-                              OptionGroup(name: "delete_group".localized(),
-                                          icon: "ic_delete_gradient_36",
-                                          tag: 2),
-                              ],
-                       fromView: sender as! UIButton)
-            self.present(popup, animated: false, completion: nil)
-        }
         return cell
     }
     
@@ -175,20 +217,18 @@ extension GroupCustomerController {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let obj:GroupDO = listGroups[indexPath.row]
-        if obj.isTemp == true {
-            showPopupGroup()
+        let attributes = collectionView.layoutAttributesForItem(at: indexPath)
+        
+        let cellRect = attributes!.frame
+        
+        let cellFrameInSuperview =  collectionView.convert(cellRect, to: self.view)
+        
+        let obj:Group = listGroups[indexPath.row]
+        if self.gotoFromCustomerList {
+            self.selectAction(obj: obj, CGPoint(x:cellFrameInSuperview.midX, y: cellFrameInSuperview.midY))
         } else {
-            if gotoFromCustomerList {
-                let vc = CustomerDetailController(nibName: "CustomerDetailController", bundle: Bundle.main)
-                vc.onDidLoad = {
-                    vc.setGroupSelected(group: obj)
-                }
-                self.navigationController?.pushViewController(vc, animated: true)
-            } else {
-                onSelectGroup?(obj)
-                self.navigationController?.popViewController(animated: true)
-            }
+            self.onSelectGroup?(obj)
+            self.navigationController?.popViewController(animated: true)
         }
     }
     

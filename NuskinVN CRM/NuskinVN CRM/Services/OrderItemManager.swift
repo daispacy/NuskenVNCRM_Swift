@@ -11,33 +11,36 @@ import CoreData
 
 class OrderItemManager: NSObject {
     
-    static func saveOrderItemWith(orerID:Int64? = 0, array: [JSON]) {
-        clearData(orerID,fromList: array,onComplete: { array in
-            if let array = array {
-                _ = array.map{OrderItemManager.createOrderItemEntityFrom(dictionary: $0)}
+    static func saveOrderItemWith(orerID:Int64? = 0, array: [JSON],_  onComplete:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.managedObjectContext
+        container.perform {
+            for jsonObject in array {
+                _ = OrderItemManager.createOrderItemEntityFrom(dictionary: jsonObject,container)
             }
             do {
-                try CoreDataStack.sharedInstance.persistentContainer.viewContext.save()
-            } catch let error {
-                print(error)
+                try container.save()
+                onComplete()
+            } catch {
+                onComplete()
+                fatalError("Failure to save context: \(error)")
             }
-        })
+        }
     }
     
-    static func getAllOrderItem(_ orderID:Int64 = 0, onComplete:(([OrderItemDO])->Void)) {
+    static func getAllOrderItem(_ orderID:Int64 = 0, localID:Int64 = 0, onComplete:(([OrderItemDO])->Void)) {
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
         fetchRequest.returnsObjectsAsFaults = false
         var predicate3 = NSPredicate(format: "(1 > 0)")
-        if orderID != 0 {
-            predicate3 = NSPredicate(format: "order_id IN %@",[orderID])
+        if orderID != 0 && localID != 0{
+            predicate3 = NSPredicate(format: "(order_id IN %@ OR order_id IN %@)",[orderID],[localID])
         }
         let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [predicate3])
 //        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "group_name", ascending: true)]
         fetchRequest.predicate = predicateCompound
         
         do {
-            let result = try CoreDataStack.sharedInstance.persistentContainer.viewContext.fetch(fetchRequest)
+            let result = try CoreDataStack.sharedInstance.managedObjectContext.fetch(fetchRequest)
             var list:[OrderItemDO] = []
             list = result.flatMap({$0 as? OrderItemDO})
             onComplete(list)
@@ -50,7 +53,7 @@ class OrderItemManager: NSObject {
     }
     
     static func updateOrderItemEntity(_ group:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext        
+        let context = CoreDataStack.sharedInstance.managedObjectContext
         do {
             try context.save()
             print("order item saved!")
@@ -63,7 +66,7 @@ class OrderItemManager: NSObject {
     }
     
     static func deleteOrderItemEntity(_ group:NSManagedObject, onComplete:(()->Void)) {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+        let context = CoreDataStack.sharedInstance.managedObjectContext
     
         do {
             context.delete(group)
@@ -77,8 +80,7 @@ class OrderItemManager: NSObject {
         onComplete()
     }
     
-    static func createOrderItemEntityFrom(dictionary: JSON) -> NSManagedObject? {
-        let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+    static func createOrderItemEntityFrom(dictionary: JSON,_ context:NSManagedObjectContext){
         if let object = NSEntityDescription.insertNewObject(forEntityName: "OrderItemDO", into: context) as? OrderItemDO {
             
             object.synced = false
@@ -112,17 +114,15 @@ class OrderItemManager: NSObject {
             } else if let data = dictionary["price"] as? Int64 {
                 object.price = data
             }
-
-            return object
+            do{try? context.save()}
         }
-        return nil
     }
     
     static func clearData(_ orderID:Int64? = 0, fromList:[JSON], onComplete:(([JSON]?)->Void)) {
         do {
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
-            fetchRequest.returnsObjectsAsFaults = false
+            
             fetchRequest.predicate = NSPredicate(format: "order_id IN %@",[orderID])
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
@@ -138,10 +138,50 @@ class OrderItemManager: NSObject {
     
     static func clearData(from:Int64? = 0, onComplete:(()->Void)) {
         do {
-            let context = CoreDataStack.sharedInstance.persistentContainer.viewContext
+            let context = CoreDataStack.sharedInstance.managedObjectContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.predicate = NSPredicate(format: "order_id IN %@",[from])
+            do {
+                let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
+                print("\(objects) REMOVED")
+                _ = objects.map {_ = $0.map({context.delete($0)})}
+                
+                onComplete()
+                
+            } catch let error {
+                print("ERROR DELETING : \(error)")
+            }
+        }
+    }
+    
+    static func resetData(_ onComplete:@escaping (()->Void)) {
+        let container = CoreDataStack.sharedInstance.managedObjectContext
+        container.perform {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
+            
+            
+            do {
+                let objects  = try container.fetch(fetchRequest) as? [NSManagedObject]
+                _ = objects.map {_ = $0.map({container.delete($0)})}
+                try container.save()
+                onComplete()
+            } catch {
+                onComplete()
+            }
+        }
+    }
+    
+    static func resetData(from:[Int64], onComplete:(()->Void)) {
+        if from.count == 0 {
+            onComplete()
+            return
+        }
+        do {
+            let context = CoreDataStack.sharedInstance.managedObjectContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderItemDO")
+            
+            fetchRequest.predicate = NSPredicate(format: "order_id IN %@",from)
             do {
                 let objects  = try context.fetch(fetchRequest) as? [NSManagedObject]
                 _ = objects.map {_ = $0.map({context.delete($0)})}
@@ -149,6 +189,7 @@ class OrderItemManager: NSObject {
                 onComplete()
                 
             } catch let error {
+                onComplete()
                 print("ERROR DELETING : \(error)")
             }
         }

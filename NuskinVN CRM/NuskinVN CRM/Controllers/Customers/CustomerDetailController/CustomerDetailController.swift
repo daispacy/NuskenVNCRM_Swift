@@ -43,18 +43,18 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     var isEdit:Bool = false
     var activeField:UITextField?
     var tapGesture:UITapGestureRecognizer?
-    var customer:CustomerDO?
+    var customer:Customer?
     var listCountry:[City] = []
     
-    var groupSelected:GroupDO?
+    var groupSelected:Group?
     var birthday:Date?
     var gender:Int64 = 0
+    var city_id:Int64 = 0
+    var district_id:Int64 = 0
     var avatar:String?
-    
+            
     override func viewDidLoad() {
            super.viewDidLoad()
-        
-        title = "add_customer".localized().uppercased()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -75,7 +75,18 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         bindControl()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.preventSyncData()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.view.endEditing(true)
+    }
+    
     deinit {
+        LocalService.shared.isShouldSyncData = nil
         self.view.removeGestureRecognizer(tapGesture!)
     }
     
@@ -111,55 +122,60 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
     }
     
     // MARK: - interface
-    func edit(customer:CustomerDO) {
+    func edit(customer:Customer) {
         self.customer = customer
         self.isEdit = true
+        self.avatar = customer.avatar
+        self.city_id = customer.city_id
+        self.district_id = customer.district_id
+        self.gender = customer.gender
+        if let birth = customer.birthday as Date?{
+            self.birthday = birth
+        }
+        
         let listGroups = customer.listGroups()
         if listGroups.count > 0 {
             self.groupSelected = listGroups.first
         }
+        onDidLoad = {[weak self] in
+            guard let _self = self else { return true }
+            _self.configText()
+            return true
+        }
         
     }
     
-    func setGroupSelected(group:GroupDO) {
+    func setGroupSelected(group:Group) {
         self.groupSelected = group
-        self.btnGroup.setTitle(group.group_name, for: .normal)
-        self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+        onDidLoad = { [weak self] in
+            if let _self = self {
+            _self.btnGroup.setTitle(group.group_name, for: .normal)
+            _self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                return true
+            }
+            return true
+        }
     }
     
     // MARK: - private
     private func bindControl() {
         
-        // validate
-        let funcValidateEmail = Support.validate.self
-        
-        let nameIsValid = txtName.rx.text.orEmpty
-            .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 }
-            .shareReplay(1)
-        let emailIsValid = txtEmail.rx.text.orEmpty
-            .map { funcValidateEmail.isValidEmailAddress(emailAddressString: $0) && CustomerDO.isExist(email:$0,except:self.isEdit)}
-            .shareReplay(1)
-        
-        nameIsValid.bind(to: lblErrorName.rx.isHidden).disposed(by: disposeBag)
-        emailIsValid.bind(to: lblErrorEmail.rx.isHidden).disposed(by: disposeBag)
-        
-        let everythingValid = Observable.combineLatest(nameIsValid, emailIsValid) { $0 && $1 }
-            .shareReplay(1)
-        
-        everythingValid
-            .bind(to: btnProcess.rx.isEnabled)
-            .disposed(by: disposeBag)
-        
         //listern data
-        txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
-            if let _self = self {
-                if CustomerDO.isExist(email:$0,except:_self.isEdit) {
-                    _self.lblErrorEmail.text = "email_has_exist".localized()
-                } else {
-                    _self.lblErrorEmail.text = "invalid_email".localized()
-                }
-            }
-        }).disposed(by: disposeBag)
+//        txtEmail.rx.text.orEmpty.subscribe(onNext:{ [weak self] in
+//            if let _self = self {
+//                var oldemail = ""
+//                if let cus = _self.customer {
+//                    oldemail = cus.email
+//                }
+//                _self.lblErrorEmail.isHidden = true
+//
+//                if Customer.isExist(email:$0, oldEmail: oldemail,except:_self.isEdit) {
+//                    _self.lblErrorEmail.text = "email_has_exist".localized()
+//                } else {
+//                    _self.lblErrorEmail.text = "invalid_email".localized()
+//                }
+//            }
+//        }).addDisposableTo(disposeBag)
         
         
         btnBirthday.rx.tap
@@ -181,7 +197,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     })
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnGroup.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -195,7 +211,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     _self.navigationController?.pushViewController(vc, animated: true)
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnChoosePhotos.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -203,7 +219,7 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     _self.showSelectGetPhotos()
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnGender.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -214,49 +230,61 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                         print("\(item) \(index)")
                         _self.btnGender.setTitle(item, for: .normal)
                         _self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                        _self.gender = Int64(index)
+                        _self.gender = Int64(index + 1)
                     }
                     popupC.onDismiss = {
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     }
-                    var topVC = UIApplication.shared.keyWindow?.rootViewController
-                    while((topVC!.presentedViewController) != nil){
-                        topVC = topVC!.presentedViewController
-                    }
-                    topVC?.present(popupC, animated: false, completion: {isDone in
+                    Support.topVC?.present(popupC, animated: false, completion: {isDone in
                         _self.btnGender.imageView!.transform = _self.btnGender.imageView!.transform.rotated(by: CGFloat(Double.pi))
                     })
                     popupC.show(data: ["male".localized(),"female".localized()], fromView: _self.btnGender.superview!)
+                    popupC.ondeinitial = {
+                        [weak self] in
+                        guard let _self = self else {return}
+                        _self.preventSyncData()
+                    }
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnCity.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    DispatchQueue.main.async {
-                        var listData:[String] = []
-                        _ = _self.listCountry.filter{$0.country_id == 0}.map({
-                            listData.append($0.name)
-                        })
-                        
-                        let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
-                        vc.onDidLoad = {
-                            vc.title = "choose_city".localized().uppercased()
-                            vc.showData(data: listData.sorted(by: {$0 < $1}))
-                        }
-                        vc.onSelectData = { name in
-                            _self.btnCity.setTitle(name, for: .normal)
-                            _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-                            if !_self.btnDistrict.isEnabled {
-                                _self.btnDistrict.isEnabled = true
-                            }
-                        }
-                        _self.navigationController?.pushViewController(vc, animated: true)
+                    
+                    var listData:[String] = []
+                    _ = _self.listCountry.filter{$0.country_id == 0}.map({
+                        listData.append($0.name)
+                    })
+                    
+                    let vc = SimpleListController(nibName: "SimpleListController", bundle: Bundle.main)
+                    vc.onDidLoad = {
+                        vc.title = "choose_city".localized().uppercased()
+                        vc.showData(data: listData)
+                        return true
                     }
+                    vc.onSelectData = { name in
+                        _ = _self.listCountry.map({
+                            if $0.name == name {
+                                _self.city_id = $0.id
+                            }
+                        })
+                        if name != _self.btnCity.titleLabel?.text {
+                            _self.btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
+                            _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
+                            _self.district_id = 0
+                        }
+                        _self.btnCity.setTitle(name, for: .normal)
+                        _self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
+                        if !_self.btnDistrict.isEnabled {
+                            _self.btnDistrict.isEnabled = true
+                        }
+                    }
+                    _self.navigationController?.pushViewController(vc, animated: true)
+                    
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnDistrict.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -285,7 +313,8 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                                 
                                 vc.onDidLoad = {
                                     vc.title = "choose_district".localized().uppercased()
-                                    vc.showData(data: listData.sorted(by: {$0 < $1}))
+                                    vc.showData(data: listData)
+                                    return true
                                 }
                             }
                         }
@@ -293,70 +322,113 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                     
                     
                     vc.onSelectData = { name in
+                        _ = _self.listCountry.map({
+                            if $0.name == name && $0.country_id > 0{
+                                _self.district_id = $0.id
+                            }
+                        })
                         _self.btnDistrict.setTitle(name, for: .normal)
                         _self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         // event process
         btnProcess.rx.tap
             .subscribe(onNext:{ [weak self] in
                 if let _self = self {
-                    if _self.customer == nil{
-                        let customer = NSEntityDescription.insertNewObject(forEntityName: "CustomerDO", into: CoreDataStack.sharedInstance.persistentContainer.viewContext) as! CustomerDO
+                    
+                    if !_self.validdateData() {
+                        Support.popup.showAlert(message: "email_invalid_or_name_customer_invalid".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
+                        })
+                        return
+                    }
+                    
+                    guard let user = UserManager.currentUser() else {
+                        Support.popup.showAlert(message: "please_login_before_use_this_function".localized(), buttons: ["ok".localized()], vc: _self.navigationController!, onAction: {index in
+                            
+                        }, { [weak self] index in
+                            guard let _self = self else {return}
+                            _self.preventSyncData()
+                        })
+                        return
+                    }
+                    
+                    if _self.customer == nil {
+                        
+                        var customer = Customer()
                         customer.id = -Int64(Date.init(timeIntervalSinceNow: 0).toString(dateFormat: "89yyyyMMddHHmmss"))!
                         customer.status = 1
-                        customer.email = _self.txtEmail.text
-                        customer.fullname = _self.txtName.text
-                        customer.address = _self.txtAddress.text
-                        customer.avatar = _self.avatar
-                        customer.city = _self.btnCity.titleLabel?.text
-                        customer.county  = _self.btnDistrict.titleLabel?.text
+                        customer.date_created = Date.init(timeIntervalSinceNow: 0) as NSDate
+                        customer.email = _self.txtEmail.text ?? ""
+                        customer.fullname = _self.txtName.text ?? ""
+                        customer.address = _self.txtAddress.text ?? ""
+                        customer.avatar = _self.avatar ?? ""
+                        customer.city = _self.btnCity.titleLabel?.text ?? ""
+                        customer.county  = _self.btnDistrict.titleLabel?.text ?? ""
                         customer.gender = _self.gender
-                        customer.tel = _self.txtPhone.text
+                        customer.tel = _self.txtPhone.text ?? ""
                         customer.setSkype(_self.txtSkype.text ?? "")
                         customer.setFacebook(_self.txtFacebook.text ?? "")
                         customer.setZalo(_self.txtZalo.text ?? "")
                         customer.setViber(_self.txtViber.text ?? "")
+                        customer.city_id = _self.city_id
+                        customer.district_id = _self.district_id
+                        if let birth = _self.birthday as NSDate? {
+                            customer.birthday = birth
+                        }
                         customer.synced = false
                         if let group = _self.groupSelected {
                                 customer.group_id = group.id
                         }
-                        customer.distributor_id = UserManager.currentUser().id_card_no
-                        customer.store_id = UserManager.currentUser().store_id
-                        
-                        CustomerManager.updateCustomerEntity(customer, onComplete: {
-                            _self.navigationController?.popToRootViewController(animated: true)
-                        })
+                        customer.distributor_id = user.id
+                        customer.store_id = user.store_id
+                        CustomerManager.saveCustomerWith(array: [customer.toDO]) {
+                            DispatchQueue.main.async {
+                                _self.navigationController?.popToRootViewController(animated: true)
+                            }
+                        }
                     } else {
-                        if let customerUpdate = _self.customer {
-                            customerUpdate.fullname = _self.txtName.text
-                            customerUpdate.address = _self.txtAddress.text
-                            customerUpdate.avatar = _self.avatar
-                            customerUpdate.city = _self.btnCity.titleLabel?.text
-                            customerUpdate.county  = _self.btnDistrict.titleLabel?.text
+                        if var customerUpdate = _self.customer {
+                            customerUpdate.email = _self.txtEmail.text ?? ""
+                            customerUpdate.fullname = _self.txtName.text ?? ""
+                            customerUpdate.address = _self.txtAddress.text ?? ""
+                            customerUpdate.avatar = _self.avatar ?? ""
+                            customerUpdate.city = _self.btnCity.titleLabel?.text ?? ""
+                            customerUpdate.county  = _self.btnDistrict.titleLabel?.text ?? ""
                             customerUpdate.gender = _self.gender
-                            customerUpdate.tel = _self.txtPhone.text
+                            customerUpdate.tel = _self.txtPhone.text ?? ""
                             customerUpdate.setSkype(_self.txtSkype.text ?? "")
                             customerUpdate.setFacebook(_self.txtFacebook.text ?? "")
                             customerUpdate.setZalo(_self.txtZalo.text ?? "")
                             customerUpdate.setViber(_self.txtViber.text ?? "")
-                            customerUpdate.distributor_id = UserManager.currentUser().id_card_no
-                            customerUpdate.store_id = UserManager.currentUser().store_id
+                            customerUpdate.distributor_id = user.id
+                            customerUpdate.store_id = user.store_id
+                            customerUpdate.city_id = _self.city_id
+                            customerUpdate.district_id = _self.district_id
+                            if let birth = _self.birthday as NSDate? {
+                                customerUpdate.birthday = birth
+                            }
+                            
                             customerUpdate.synced = false
                             if let group = _self.groupSelected {
                                 customerUpdate.group_id = group.id
                             }
-                            CustomerManager.updateCustomerEntity(customerUpdate, onComplete: {
-                                _self.navigationController?.popToRootViewController(animated: true)
-                            })
+                            CustomerManager.update([customerUpdate.toDO]) {
+                                DispatchQueue.main.async {
+                                    _self.navigationController?.popToRootViewController(animated: true)
+                                }
+                            }
                         }
                     }
                 }
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
         
         btnCancel.rx.tap
             .subscribe(onNext:{ [weak self] in
@@ -365,7 +437,22 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
                 }
                 
             })
-            .disposed(by: disposeBag)
+            .addDisposableTo(disposeBag)
+    }
+    
+    func validdateData() -> Bool {
+//        guard let email = self.txtEmail.text,
+        guard let name = self.txtName.text else { return false }
+//        var oldemail = ""
+//        if let cus = self.customer {
+//            oldemail = cus.email
+//        }
+//        let checkEmail = Support.validate.isValidEmailAddress(emailAddressString: email) && !Customer.isExist(email:email,oldEmail: oldemail,except:self.isEdit)
+        let checkName = name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0
+        lblErrorEmail.isHidden = true//checkEmail
+        lblErrorName.isHidden = checkName
+        
+        return  /*checkEmail &&*/ checkName
     }
     
     func showSelectGetPhotos() {
@@ -373,12 +460,16 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         let cancelAction = UIAlertAction(title: "cancel".localized(), style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
             alertController.dismiss(animated: true, completion: nil)
         }
-        let okAction = UIAlertAction(title: "camera".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+        let okAction = UIAlertAction(title: "take_a_photo".localized(), style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
             let imagePickerController = UIImagePickerController()
             
             imagePickerController.sourceType = .camera
             imagePickerController.modalPresentationStyle = .fullScreen
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:self.imvAvatar.frame.midX,y:self.imvAvatar.frame.maxY + 65)
+            }
             self.present(imagePickerController, animated: true, completion: nil)
             
         }
@@ -388,6 +479,10 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             imagePickerController.sourceType = .photoLibrary
             imagePickerController.modalPresentationStyle = .popover
             imagePickerController.delegate = self
+            if isIpad {
+                imagePickerController.popoverPresentationController?.sourceView = Support.topVC?.view
+                imagePickerController.popoverPresentationController?.sourceRect.origin = CGPoint(x:self.imvAvatar.frame.midX,y:self.imvAvatar.frame.maxY + 65)
+            }
             self.present(imagePickerController, animated: true, completion:nil)
             
         }
@@ -398,7 +493,13 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             alertController.addAction(actionPhotos)
         }
-        self.navigationController?.present(alertController, animated: true, completion: nil)
+        
+        if isIpad {
+            alertController.popoverPresentationController?.sourceView = Support.topVC?.view
+            alertController.popoverPresentationController?.sourceRect.origin = CGPoint(x:imvAvatar.frame.midX,y:imvAvatar.frame.maxY + 65)
+        }
+        
+        Support.topVC?.present(alertController, animated: true, completion: nil)
     }
     
     private func configView() {
@@ -422,11 +523,11 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         
         btnProcess.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnProcess.frame, isReverse:true)
         btnProcess.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnProcess.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnProcess.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnCancel.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnCancel.frame, isReverse:true)
         btnCancel.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnCancel.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnCancel.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblErrorName.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)!
         lblErrorEmail.font = lblErrorName.font
@@ -440,19 +541,16 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         
         
             if let group = self.groupSelected {
-                if let group_name = group.group_name {
+                let group_name = group.group_name
                     if group_name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         self.btnGroup.setTitle(group_name, for: .normal)
                         self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
-                }
             }
         
         
         // set value when edit a customer
         if self.customer != nil {
-            
-            txtEmail.isEnabled = false
             
             txtName.text = customer?.fullname
             txtEmail.text = customer?.email
@@ -463,29 +561,29 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
             txtFacebook.text = customer?.facebook
             txtAddress.text = customer?.address
             
-            if customer?.gender == 0 {
+            if customer?.gender == 1 {
                 btnGender.setTitle("male".localized(), for: .normal)
             } else {
                 btnGender.setTitle("female".localized(), for: .normal)
             }
             if let cus = self.customer {
-//                if customer.birthday.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
-//                    btnBirthday.setTitle(customer.birthday, for: .normal)
-//                    self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-//                }
-                if let city = cus.city {
+
+                let city = cus.city
                     if city.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         btnCity.setTitle(city, for: .normal)
                         self.btnCity.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                         btnDistrict.isEnabled = true
                     }
-                }
                 
-                if let country = cus.county {
+                let country = cus.county
                     if country.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).characters.count > 0 {
                         btnDistrict.setTitle(country, for: .normal)
                         self.btnDistrict.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                     }
+                
+                if let birth = cus.birthday as Date? {
+                    self.btnBirthday.setTitle(birth.toString(dateFormat: "dd/MM/yyyy"), for: .normal)
+                    self.btnBirthday.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
                 }
             }
             self.btnGender.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
@@ -509,22 +607,20 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         btnDistrict.setTitle("placeholder_district".localized(), for: .normal)
         btnCity.setTitle("placeholder_city".localized(), for: .normal)
         if let group = self.groupSelected {
-            if let group_name = group.group_name {
+            let group_name = group.group_name
                 self.btnGroup.setTitle(group_name, for: .normal)
                 self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.titleGroup), for: .normal)
-            } else {
-                btnGroup.setTitle("placeholder_group".localized(), for: .normal)
-                self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
-            }
         } else {
              btnGroup.setTitle("placeholder_group".localized(), for: .normal)
             self.btnGroup.setTitleColor(UIColor(hex: Theme.color.customer.subGroup), for: .normal)
         }
         
-        if customer == nil {
+        if !self.isEdit {
             btnProcess.setTitle("add".localized().uppercased(), for: .normal)
+            title = "add_customer".localized().uppercased()
         } else {
             btnProcess.setTitle("update".localized().uppercased(), for: .normal)
+            title = "edit_customer".localized().uppercased()
         }
         
         btnCancel.setTitle("cancel".localized(), for: .normal)
@@ -537,13 +633,24 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
         })
         
         if let cus = customer {
-            if let avaStr = cus.avatar {
-                if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
-                    let decodedimage = UIImage(data: dataDecoded)
-                    imvAvatar.image = decodedimage
-                    self.avatar = avaStr
+            let avaStr = cus.avatar
+                if let urlAvatar = cus.urlAvatar {
+                    if avaStr.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
+                        if avaStr.contains(".jpg") || avaStr.contains(".png"){
+                            imvAvatar.loadImageUsingCacheWithURLString(urlAvatar,size:nil, placeHolder: nil)
+                        } else {
+                            if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                                let decodedimage = UIImage(data: dataDecoded)
+                                imvAvatar.image = decodedimage
+                            }
+                        }
+                    }
+                } else {
+                    if let dataDecoded : Data = Data(base64Encoded: avaStr, options: .ignoreUnknownCharacters) {
+                        let decodedimage = UIImage(data: dataDecoded)
+                        imvAvatar.image = decodedimage
+                    }
                 }
-            }
         }
     }
     
@@ -561,31 +668,21 @@ class CustomerDetailController: RootViewController, UINavigationControllerDelega
 extension CustomerDetailController {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imvAvatar.image = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
+            let imgScale = image.resizeImageWith(newSize: CGSize(width: 100, height: 100))
+            imvAvatar.image = imgScale
             picker.dismiss(animated: true, completion: nil)
-            let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
+            let imageData:NSData = UIImageJPEGRepresentation(imgScale, 0.5)! as NSData
             let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
             self.avatar = strBase64            
         }
+//        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
+//        LocalService.shared.startSyncData()
     }
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : Any]?) {
-        // Whatever you want here
-        
-    }
-}
-
-class CButtonWithImageRight1: UIButton {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width-5, 0, 25)
-        titleEdgeInsets = UIEdgeInsetsMake(0, -15, 0, 0)
-    }
-}
-
-class CButtonWithImageRight2: UIButton {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        imageEdgeInsets = UIEdgeInsetsMake(0, frame.size.width - 10, 0, 20)
-        titleEdgeInsets = UIEdgeInsetsMake(0, -13, 0, 0)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+//        print("START SYNC DATA WHEN UIImagePickerController CLOSED")
+//        LocalService.shared.startSyncData()
+        picker.dismiss(animated: true) {
+            
+        }
     }
 }

@@ -9,18 +9,10 @@
 import UIKit
 import Localize_Swift
 
+let isIpad = UI_USER_INTERFACE_IDIOM() == .pad
+
+// MARK: - APPConfig
 class AppConfig: NSObject {
-    
-    // MARK: - Database
-    class db:AppConfig {
-        static var name:String {
-            let id = UserManager.currentUser().id_card_no
-                return "crm\(id).sqlite"
-            
-//                return "crm999999.sqlite"
-            
-        }
-    }
     
     // MARK: - Other
     class setting: AppConfig {
@@ -33,6 +25,36 @@ class AppConfig: NSObject {
                 return remember
             }
             return false
+        }
+        
+        static func setEmailSupport(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "App:EmailSupport")
+            
+        }
+        static func emailSupport() -> String {
+            if let str = UserDefaults.standard.value(forKey: "App:EmailSupport") {
+                return str as! String
+            }
+            return "lhuynh@nuskin.com"
+        }
+        
+        
+        static func isShowTutorial(with key:String) -> Bool {
+            if let remember =  UserDefaults.standard.value(forKey: key) as? Bool {
+                return remember
+            }
+            return false
+        }
+        
+        static func setFinishShowcase(key:String) {
+            if key.characters.count == 0 {return}
+            UserDefaults.standard.setValue(true, forKey: key)
+        }
+        
+        static func resetTutorial() {
+            for key in LIST_SCENES {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
     }
     
@@ -92,6 +114,50 @@ class AppConfig: NSObject {
             }
             return ""
         }
+        
+        static func setFacebookLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:FacebookLinkItunes")
+            
+        }
+        static func facebookLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:FacebookLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setViberLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:ViberLinkItunes")
+            
+        }
+        static func viberLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:ViberLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setZaloLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:ZaloLinkItunes")
+            
+        }
+        static func zaloLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:ZaloLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
+        
+        static func setSkypeLinkItunes(str:String) {
+            UserDefaults.standard.setValue(str, forKey: "AppDeepLink:SkypeLinkItunes")
+            
+        }
+        static func skypeLinkItunes() -> String {
+            if let str = UserDefaults.standard.value(forKey: "AppDeepLink:SkypeLinkItunes") {
+                return str as! String
+            }
+            return ""
+        }
     }
     
     // MARK: - language
@@ -122,22 +188,27 @@ class AppConfig: NSObject {
     class navigation: AppConfig {
         static func gotoDashboardAfterSigninSuccess() {
             
-            //start service if signin Success
-            LocalService.shared.startSyncData()            
+            LocalNotification.registerForLocalNotification(on: UIApplication.shared)
             
-            let vc:UITabBarController = UITabBarController.init()
-            
-            let uinaviVC1 = UINavigationController.init(rootViewController: DashboardViewController())
-            let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
-            
-            vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)
-            
-            let itemTabbar2 = UITabBarItem(title: "title_tabbar_button_order".localized().uppercased(), image: UIImage(named: "tabbar_order"), selectedImage: nil)
-            itemTabbar2.tag = 1
-            
-            uinaviVC2.tabBarItem  = itemTabbar2
-           
-            AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
+            BirthdayManager.clearData {
+                //start service if signin Success
+                //            LocalService.shared.startSyncData()
+                DispatchQueue.main.async {
+                    let vc:UITabBarController = UITabBarController.init()
+                    let tempController = DashboardViewController()
+                    let uinaviVC1 = UINavigationController.init(rootViewController:tempController)
+                    let uinaviVC2 = UINavigationController.init(rootViewController: OrderListController(nibName: "OrderListController", bundle: Bundle.main))
+                    
+                    vc.setViewControllers([uinaviVC1,uinaviVC2], animated: true)
+                    
+                    let itemTabbar2 = UITabBarItem(title: "title_tabbar_button_order".localized().uppercased(), image: UIImage(named: "tabbar_order"), selectedImage: nil)
+                    itemTabbar2.tag = 1
+                    
+                    uinaviVC2.tabBarItem  = itemTabbar2
+                    
+                    AppConfig.navigation.changeRootControllerTo(viewcontroller: vc)
+                }
+            }
         }
         
         static func changeRootControllerTo(viewcontroller:UIViewController, animated:Bool? = false) {
@@ -167,17 +238,12 @@ class AppConfig: NSObject {
     
     // MARK: - order
     class order: AppConfig {
-        static let listStatus:[JSON] = [["id":Int64(0),"name":"invalid".localized()],
-                                   ["id":Int64(1),"name":"process".localized()],
-                                   ["id":Int64(3),"name":"unprocess".localized()]]
-        static let listPaymentStatus:[JSON] = [["id":Int64(2),"name":"no_charge".localized()],
-                                          ["id":Int64(1),"name":"money_collected".localized()]]
-        static let listPaymentMethod:[JSON] = [["id":Int64(1),"name":"cod".localized()]/*,
-                                          "online".localized(),
-                                          "credit_card".localized(),
-                                          "paypal".localized()*/]
-        static let listTranspoter:[JSON] = [["id":Int64(1),"name":"Vnpost - EMS".localized()],
-                                       ["id":Int64(2),"name":"Viettel post".localized()],
-                                       ["id":Int64(3),"name":"fast_delivery".localized()]]
+        static func listStatus() ->[JSON] { return MasterDataManager.getData("ORDER_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})}
+        
+        static func listPaymentStatus() ->[JSON] {return MasterDataManager.getData("PAYMENT_STATUS").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]}) }
+        
+        static func listPaymentMethod() ->[JSON] {return MasterDataManager.getData("PAYMENT_TYPE").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})}
+        
+        static func listTranspoter() -> [JSON] {return MasterDataManager.getData("SHIPPER").flatMap({["id":$0.data_value,"name":$0.data_name?.localized() ?? ""]})}
     }
 }

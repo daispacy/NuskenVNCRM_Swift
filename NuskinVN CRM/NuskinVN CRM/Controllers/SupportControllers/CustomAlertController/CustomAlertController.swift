@@ -16,6 +16,7 @@ class CustomAlertController: UIViewController {
     @IBOutlet var vwcontrol: UIView!
     
     private var select_: ((Int) -> Void)?
+    var onDeinit: (()->Void)?
     
     var tapGesture:UITapGestureRecognizer?
     
@@ -26,7 +27,6 @@ class CustomAlertController: UIViewController {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
         self.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -41,17 +41,24 @@ class CustomAlertController: UIViewController {
         
         btnFirst.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnFirst.frame, isReverse:true)
         btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnFirst.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFirst.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnSecond.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnSecond.frame, isReverse:true)
         btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnSecond.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnSecond.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
     
         lblMessage.textColor = UIColor(hex:Theme.colorAlertTextNormal)
         lblMessage.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
         
         vwcontrol.layer.cornerRadius = 10;
         vwcontrol.clipsToBounds      = true;
+        
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,6 +67,8 @@ class CustomAlertController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        print("REMOVE CCHECK SYNC ALERT")
+        LocalService.shared.isShouldSyncData = nil
         if(tapGesture != nil) {
             self.view.removeGestureRecognizer(tapGesture!)
         }
@@ -67,6 +76,7 @@ class CustomAlertController: UIViewController {
     
     deinit {
         print("\(String(describing: CustomAlertController.self)) dealloc")
+        self.onDeinit?()
     }
     
     // MARK: - INTERFACE

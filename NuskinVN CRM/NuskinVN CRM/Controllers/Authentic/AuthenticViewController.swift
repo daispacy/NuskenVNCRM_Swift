@@ -80,17 +80,17 @@ extension AuthenticViewController {
                             })
                         })
                     }
-                }, onFail: {[weak self] msg in
-                    if let _self = self {
-                        _self.authenticView.btnProcess.stopAnimation()
-                        let test = CustomAlertController(nibName: "CustomAlertController", bundle: Bundle.main)
-                        _self.present(test, animated: false, completion: {done in
-                            test.message(message: msg, buttons: ["ok".localized().uppercased()], select: {
-                                i in
-                                print("item select \(i)")
+                    }, onFail: {[weak self] msg in
+                        if let _self = self {
+                            _self.authenticView.btnProcess.stopAnimation()
+                            let test = CustomAlertController(nibName: "CustomAlertController", bundle: Bundle.main)
+                            _self.present(test, animated: false, completion: {done in
+                                test.message(message: msg, buttons: ["ok".localized().uppercased()], select: {
+                                    i in
+                                    print("item select \(i)")
+                                })
                             })
-                        })
-                    }
+                        }
                 })
                 
             } else if(self.type_ == .AUTH_LOGIN){
@@ -98,38 +98,25 @@ extension AuthenticViewController {
                 SyncService.shared.login(email: nil, username: authenticView.vnid, password: authenticView.password!, completion: {
                     [weak self] result in
                     if let _self = self {
-                        switch result {
-                        case .success(_):
-                            _self.authenticView.btnProcess.stopAnimation()
-                            AppConfig.navigation.gotoDashboardAfterSigninSuccess()
-                        case .failure(_):
-                            _self.authenticView.btnProcess.stopAnimation()
-                            let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
-                            _self.present(test, animated: false, completion: {done in
-                                test.message(message: "msg_login_failed".localized(), buttons: ["ok".localized().uppercased()], select: {
-                                    i in
-                                    print("item select \(i)")
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(_):
+                                AppConfig.navigation.changeRootControllerTo(viewcontroller: LaunchController(nibName: "LaunchController", bundle: Bundle.main))
+                            case .failure(_):
+                                _self.authenticView.btnProcess.stopAnimation()
+                                let test = CustomAlertController(nibName: String(describing: CustomAlertController.self), bundle: Bundle.main)
+                                _self.present(test, animated: false, completion: {done in
+                                    test.message(message: "msg_login_failed_or_user_invalid".localized(), buttons: ["ok".localized().uppercased()], select: {
+                                        i in
+                                        print("item select \(i)")
+                                    })
                                 })
-                            })
+                            }
                         }
                     }
                 })
             }
-            
-            //            let uinaviVC = UINavigationController.init(rootViewController: DashboardViewController())
-            //
-            //            UIView.transition(with: appdelegate.window!, duration: 0.5, options: .overrideInheritedCurve, animations: {
-            //                appdelegate.window?.rootViewController = uinaviVC
-            //                appdelegate.window?.makeKeyAndVisible()
-            //            }, completion: nil)
-            
         }
-        
-        
-        
-        //        let test = CalendarViewController(nibName: "CalendarViewController", bundle: Bundle.main)
-        //        present(test, animated: false, completion: nil)
-        
     }
     
     func test(object:KxMenuItem){

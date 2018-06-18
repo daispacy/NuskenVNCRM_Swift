@@ -30,14 +30,27 @@ UISearchBarDelegate{
         tableView.addGestureRecognizer(tapGesture!)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.preventSyncData()
+    }
+    
     // MARK: - interface
     func showData(data:[String]) {
         listData = data
         listFiltered = listData
-        tableView.reloadData()
+        onDidLoad = {[weak self] in
+            guard let _self = self else { return true }
+            _self.tableView.reloadData()
+            return true
+        }
     }
     
-    deinit {
+    deinit {        
         self.tableView.removeGestureRecognizer(tapGesture!)
     }
     
@@ -68,15 +81,15 @@ extension SimpleListController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        cell.textLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         cell.textLabel?.textColor = UIColor(hex:Theme.color.customer.subGroup)
         cell.textLabel?.text = listFiltered[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onSelectData?(listFiltered[indexPath.row])
         self.navigationController?.popViewController(animated: true)
+        onSelectData?(listFiltered[indexPath.row])
     }
 }
 

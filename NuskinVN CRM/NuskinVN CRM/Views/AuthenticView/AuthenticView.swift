@@ -35,7 +35,9 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
     @IBOutlet fileprivate var btnRemember: CButtonWithImage!
     @IBOutlet var btnProcess: CButton!
     @IBOutlet fileprivate var btnGoToResetPassword: UIButton!
+    @IBOutlet weak var btnGotoForgetPassword: UIButton!
     @IBOutlet var lblMEssage: CMessageLabel!
+    @IBOutlet weak var btnSupport: UIButton!
     
     @IBOutlet var topContraintLogo: NSLayoutConstraint!
     
@@ -178,10 +180,19 @@ class AuthenticView: CViewSwitchLanguage, UITextFieldDelegate {
             } else {
                 delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:true)
             }
-        }else {
+        } else if sender.isEqual(btnRemember){
             btnRemember.isSelected = !btnRemember.isSelected
             AppConfig.setting.setRememerID(isRemember: btnRemember.isSelected)
+        } else if (sender.isEqual(btnGotoForgetPassword) == true){
+            delegate_?.AuthenticViewDidProcessEvent(view: self,isGotoReset:true)
         }
+    }
+    
+    @IBAction func processSupport(_ sender: Any) {
+        let vc1 = EmailController(nibName: "EmailController", bundle: Bundle.main)
+        Support.topVC!.present(vc1, animated: true, completion: {
+            vc1.show(from: "", to: AppConfig.setting.emailSupport())
+        })
     }
     
     // from protocol
@@ -204,7 +215,7 @@ extension AuthenticView {
             btnProcess.setTitle("login".localized().uppercased(), for: .normal)
             break
         default:
-            btnProcess.setTitle("reset_pw".localized().uppercased(), for: .normal)
+            btnProcess.setTitle("send_pw".localized().uppercased(), for: .normal)
             break
         }
         self.setNeedsLayout()
@@ -220,6 +231,7 @@ extension AuthenticView {
         txtPassword.alpha = 0
         btnRemember.alpha = 0
         btnGoToResetPassword.alpha = 0
+        btnGotoForgetPassword.alpha = 0
         stackEmail.alpha = 0
         
         setupControl()
@@ -256,9 +268,12 @@ extension AuthenticView {
         self.txtPassword.alpha = 1
         self.btnRemember.alpha = 1
         self.btnGoToResetPassword.alpha = 1
+        self.btnGotoForgetPassword.alpha = 1
         stackEmail.alpha = 0
         
-        btnGoToResetPassword.setTitle("reset_pw".localized().uppercased(), for: .normal)
+        btnGoToResetPassword.setTitle("register".localized().uppercased(), for: .normal)
+        btnGotoForgetPassword.setTitle("reset_pw".localized().uppercased(), for: .normal)
+        btnSupport.setTitle("support".localized().uppercased(), for: .normal)
     }
     
     private func loadViewReset() {
@@ -270,6 +285,7 @@ extension AuthenticView {
         self.txtPassword.alpha = 0
         self.btnRemember.alpha = 0
         self.btnGoToResetPassword.alpha = 0
+        self.btnGotoForgetPassword.alpha = 0
         stackEmail.alpha = 1
         
         btnGoToResetPassword.setTitle("login".localized().uppercased(), for: .normal)
@@ -290,6 +306,12 @@ extension AuthenticView {
         
         btnGoToResetPassword.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
         btnGoToResetPassword.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
+        btnGotoForgetPassword.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
+        btnGotoForgetPassword.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        
+        btnSupport.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
+        btnSupport.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)
         
         btnRemember.setTitleColor(UIColor(hex:Theme.colorATTextColor), for: .normal)
         btnRemember.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.small)

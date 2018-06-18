@@ -16,28 +16,30 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var bottomLine: UIView!
     @IBOutlet var vwBtnCheck: UIView!
     @IBOutlet var btnCheck: UIButton!
-    @IBOutlet var imgAvatar: CImageViewRoundGradient!
+
     @IBOutlet var lblNameCustomer: UILabel!
     @IBOutlet var lblDateCreated: UILabel!
     @IBOutlet var lblCode: UILabel!
     @IBOutlet var lblGoal: UILabel!
     @IBOutlet var lblTotalPrice: UILabel!
     @IBOutlet var lblStatus: UILabel!
+    @IBOutlet var lblPaymentStatus: UILabel!
+    @IBOutlet var vwStatus: UIView!
     
     var isEdit:Bool = false
-    var object:OrderDO!
+    var object:Order!
     var isSelect:Bool = false
     var isChecked:Bool = false
     var disposeBag = DisposeBag()
     
-    var onSelectOrder:((OrderDO, Bool) -> Void)?
-    var onEditOrder:((OrderDO) -> Void)?
+    var onSelectOrder:((Order, Bool) -> Void)?
+    var onEditOrder:((Order) -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
-        lblStatus.text = "loading".localized()
+//        lblStatus.text = "loading".localized()
         self.layoutIfNeeded()
         self.setNeedsDisplay()
         
@@ -62,7 +64,7 @@ class OrderListCell: UITableViewCell {
     }
     
     // MARK: - interface
-    func show(_ order:OrderDO, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
+    func show(_ order:Order, isEdit:Bool,isSelect:Bool, isChecked:Bool) {
         object = order
         self.isEdit = isEdit
         self.isSelect = isSelect
@@ -71,27 +73,61 @@ class OrderListCell: UITableViewCell {
         configView()
         
         if let customer = order.customer() {
-            if let fullname = customer.fullname {
-                lblNameCustomer.text = fullname
-            }
+            lblNameCustomer.text = customer.fullname
         }else {
             lblNameCustomer.text = "unknown".localized()
         }
-            lblTotalPrice.text = "\(order.totalPrice) \("price_unit".localized())"
-        lblGoal.text = "\(order.totalPV) \("pv".localized().uppercased())"
+        lblTotalPrice.text = "\(order.totalPrice.toTextPrice()) \("price_unit".localized())"
+        lblGoal.text = "\(order.totalPV.toTextPrice()) \("pv".localized().uppercased())"
         
         if let date = order.date_created {
             let date_created = date as Date
-            lblDateCreated.text = date_created.toString(dateFormat: "yyyy-MM-dd HH:mm:ss")
+            lblDateCreated.text = date_created.toString(dateFormat: "dd-MM-yyyy")
         }
         
         lblCode.text = order.code
-        _ = AppConfig.order.listStatus.map({
-            if $0["id"] as! Int64 == order.status {
-                lblStatus.text = $0["name"] as? String
+        
+        if let user = UserManager.currentUser() {
+            if user.username == "phamdaiit" {
+                lblCode.text = lblCode.text?.appending(" [\(order.synced)]")
+            }
+        }
+        
+        _ = AppConfig.order.listStatus().map({[weak self] item in
+            if let _self = self {
+                if order.status == item["id"] as! Int64 {
+                    _self.lblStatus.text = item["name"] as? String
+                }
             }
         })
         
+        _ = AppConfig.order.listPaymentStatus().map({[weak self] item in
+            if let _self = self {
+                if order.payment_status == item["id"] as! Int64 {
+                    _self.lblPaymentStatus.text = item["name"] as? String
+                }
+            }
+        })
+        
+        switch order.status {
+        case 0: // invalid
+            lblStatus.textColor = UIColor(hex:"0xff1744")
+        case 1: // process
+            lblStatus.textColor = UIColor(hex:"0x38a4dd")
+        case 3: // unprocess
+            lblStatus.textColor = UIColor(hex:"0xffab00")
+        default:
+            lblStatus.textColor = UIColor.clear
+        }
+
+        switch order.payment_status {
+        case 2: // unpaid
+            lblPaymentStatus.textColor = UIColor(hex:"0xff1744")
+        case 1: // paid
+            lblPaymentStatus.textColor = UIColor(hex:"0x38a4dd")
+        default:
+            lblStatus.textColor = UIColor.clear
+        }
     }
     
     func setSelect() {
@@ -112,12 +148,22 @@ class OrderListCell: UITableViewCell {
         vwBtnCheck.isHidden = !isEdit
         btnCheck.isSelected = isChecked
 
-        configLabel(lbl: lblCode)
-        configLabel(lbl: lblGoal)
+        configLabel(lbl: lblCode)        
         configLabel(lbl: lblNameCustomer, isTitle: true)
         configLabel(lbl: lblTotalPrice)
-        configLabel(lbl: lblDateCreated)
-        configLabel(lbl: lblStatus)
+//        configLabel(lbl: lblStatus)
+        
+        lblDateCreated.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblDateCreated.textColor = UIColor(hex:Theme.color.customer.titleGroup)
+        
+        lblGoal.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblGoal.textColor = UIColor(hex:Theme.color.customer.titleGroup)
+        
+        lblStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblStatus.textColor = UIColor(hex:Theme.color.customer.titleGroup)
+        
+        lblPaymentStatus.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lblPaymentStatus.textColor = UIColor(hex:Theme.color.customer.titleGroup)
     }
     
     func configText() {
@@ -125,7 +171,7 @@ class OrderListCell: UITableViewCell {
     }
     
     func configLabel(lbl:UILabel,isTitle:Bool = false) {        
-        lbl.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        lbl.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         lbl.textColor = UIColor(hex:isTitle ? Theme.color.order.listCustomerName : Theme.color.customer.titleGroup)
     }
     
@@ -137,6 +183,7 @@ class OrderListCell: UITableViewCell {
         isChecked = false
         isSelect = false
         isEdit = false
+        lblStatus.textColor = UIColor.clear
         configView()
         configText()
         super.prepareForReuse()

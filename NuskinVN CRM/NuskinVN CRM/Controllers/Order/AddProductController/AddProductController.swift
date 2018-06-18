@@ -22,16 +22,18 @@ class AddProductController: UIViewController {
     @IBOutlet var txtName: UITextField!
     @IBOutlet var txtTotal: UITextField!
     @IBOutlet var txtPrice: UITextField!
+    @IBOutlet var txtNPPPrice: UITextField!
     @IBOutlet var txtPV: UITextField!
     @IBOutlet var txtSugguestPrice: UITextField!
     @IBOutlet var collectLabelAddProruct: [UILabel]!
     
+    var ondeinitial:(()->Void)?
     var onAddData:((JSON,Bool)->Void)?
-    var onCheckProductExist:((ProductDO)->Bool)?
-    var onChangeOrderItem:((OrderItemDO)->Void)?
+    var onCheckProductExist:((Product)->Bool)?
+    var onChangeOrderItem:((OrderItem)->Void)?
     var tapGesture:UITapGestureRecognizer!
-    var product:ProductDO?
-    var orderItem:OrderItemDO?
+    var product:Product?
+    var orderItem:OrderItem?
     var disposeBag = DisposeBag()
     var isEdit:Bool = false
     
@@ -55,6 +57,13 @@ class AddProductController: UIViewController {
         configView()
         configText()
         
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
+        
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         tapGesture.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tapGesture)
@@ -69,6 +78,7 @@ class AddProductController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
         if(tapGesture != nil) {
             self.view.removeGestureRecognizer(tapGesture!)
         }
@@ -108,38 +118,51 @@ class AddProductController: UIViewController {
         self.view.removeGestureRecognizer(tapGesture)
         NotificationCenter.default.removeObserver(self)
         print("\(String(describing: AddProductController.self)) dealloc")
+        self.ondeinitial?()
     }
     
     // MARK: - INTERFACE
-    func showProduct(_ product:ProductDO) {
+    func showProduct(_ product:Product) {
         self.product = product
         txtName.text = product.name
-        txtSugguestPrice.text = "\(product.price)"
-        txtPrice.text = "\(product.price)"
+        txtSugguestPrice.text = "\(product.retail_price.toTextPrice())"
+        txtPrice.text = "\(product.retail_price.toTextPrice())"
+        txtNPPPrice.text = "\(product.price.toTextPrice())"
         txtTotal.text = "\(1)"
-        txtPV.text = "\(product.pv)"
+        txtPV.text = "\(product.pv.toTextPrice())"
         configText()
         configView()
     }
     
     func edit(json:JSON) {
         self.isEdit = true
-        if let pro = json["product"] as? ProductDO {
-            self.product = pro
-            txtName.text = pro.name
-            txtSugguestPrice.text = "\(pro.price)"
-            txtPV.text = "\(pro.pv)"
-        }
+        guard let pro = json["product"] as? Product else { return}
+        
+        self.product = pro
+        txtName.text = pro.name
+        txtNPPPrice.text = "\(pro.price.toTextPrice())"
+        txtSugguestPrice.text = "\(pro.retail_price.toTextPrice())"
+        txtPV.text = "\(pro.pv.toTextPrice())"
+        
         if let quantity = Int64("\(json["total"] ?? 0)") {
-            txtTotal.text = "\(quantity)"
+            txtTotal.text = "\(quantity.toTextPrice())"
+            txtPV.text = "\((pro.pv * quantity).toTextPrice())"
         }
         
         if let price = Int64("\(json["price"] ?? 0)") {
-            txtPrice.text = "\(price)"
+            txtPrice.text = "\(price.toTextPrice())"
+        }
+        
+        if self.isEdit {
+            lblMessage.text = "edit_product".localized().uppercased()
+            btnFirst.setTitle("update".localized().uppercased(), for: .normal)
+        } else {
+            lblMessage.text = "add_product".localized().uppercased()
+            btnFirst.setTitle("add".localized().uppercased(), for: .normal)
         }
     }
     
-    func edit(orderItem:OrderItemDO) {
+    func edit(orderItem:OrderItem) {
         self.isEdit = true
         self.orderItem = orderItem
         //        txtName.text = product.name
@@ -156,10 +179,10 @@ class AddProductController: UIViewController {
                         let product = self?.product {
                         let text = $0
                         if text.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).characters.count > 0 {
-                            _self.txtPV.text = "\(Int64(text)! * product.pv)"
+                            _self.txtPV.text = "\(Int64(text.replacingOccurrences(of: ".", with: ""))! * product.pv)"
                         }
                     }
-                }).disposed(by: disposeBag)
+                }).addDisposableTo(disposeBag)
     }
     
     // MARK: - BUTTON EVENT
@@ -172,20 +195,19 @@ class AddProductController: UIViewController {
                 lblError.isHidden = false
                 return
             }
-            if let strprice = self.txtPrice.text,
-                let strrecommendPrice = self.txtSugguestPrice.text,
+            if let strprice = self.txtNPPPrice.text,
+                let pro = self.product,
                 let strtotal = self.txtTotal.text {
                 
-                if let price = Int64(strprice),
-                    let recommendPrice = Int64(strrecommendPrice),
-                    let total = Int64(strtotal){
-                    if price < recommendPrice {
+                if let price = Int64(strprice.replacingOccurrences(of: ".", with: "")),
+                    let total = Int64(strtotal.replacingOccurrences(of: ".", with: "")){
+                    if price < pro.price {
                         lblError.text = "price_not_lower_sugguest_price".localized()
                         lblError.isHidden = false
                         return
                     }
                     
-                    if let orderItem = self.orderItem {
+                    if var orderItem = self.orderItem {
                         orderItem.price = price
                         orderItem.quantity = total
                         self.onChangeOrderItem?(orderItem)
@@ -198,6 +220,13 @@ class AddProductController: UIViewController {
                                     if bool {
                                         Support.popup.showAlert(message: "product_exist_in_order".localized(), buttons: ["ok".localized()], vc: self, onAction: {index in
                                                                                      
+                                        }, {
+                                            LocalService.shared.isShouldSyncData = {[weak self] in
+                                                if let _ = self {
+                                                    return false
+                                                }
+                                                return true
+                                            }
                                         })
                                         return
                                     }
@@ -238,11 +267,11 @@ class AddProductController: UIViewController {
     func configView() {
         btnFirst.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnFirst.frame, isReverse:true)
         btnFirst.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnFirst.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnFirst.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         btnSecond.backgroundColor = UIColor(_gradient: Theme.colorGradient, frame: btnSecond.frame, isReverse:true)
         btnSecond.setTitleColor(UIColor(hex:Theme.colorAlertButtonTitleColor), for: .normal)
-        btnSecond.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
+        btnSecond.titleLabel?.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
         
         lblMessage.textColor = UIColor(hex:Theme.colorAlertTextNormal)
         lblMessage.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
@@ -253,6 +282,7 @@ class AddProductController: UIViewController {
         configTextfield(txtName)
         configTextfield(txtTotal)
         configTextfield(txtPrice)
+        configTextfield(txtNPPPrice)
         configTextfield(txtSugguestPrice)
         configTextfield(txtPV)
         
@@ -279,7 +309,7 @@ class AddProductController: UIViewController {
         
         txtName.placeholder = "placeholder_product_name".localized()
         txtSugguestPrice.placeholder = "recommend_price".localized()
-        txtPV.placeholder = "pv".localized()
+        txtPV.placeholder = "pv".localized().uppercased()
         txtPrice.placeholder = "placeholder_price".localized()
         txtTotal.placeholder = "placeholder_quantity".localized()
         
@@ -292,6 +322,31 @@ class AddProductController: UIViewController {
     private func configTextfield(_ textfield:UITextField) {
         textfield.textColor = UIColor(hex: Theme.color.customer.subGroup)
         textfield.font = UIFont(name: Theme.font.bold, size: Theme.fontSize.normal)
+        textfield.delegate = self
+    }
+}
+
+// MARK: - testfield delegate
+extension AddProductController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+        textField.text = textField.text?.toPrice()
+        txtPV.text = txtPV.text?.toPrice()
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentCharacterCount = textField.text?.characters.count ?? 0
+        if (range.length + range.location > currentCharacterCount){
+            return false
+        }
+        if  textField.isEqual(txtPrice) {
+            let newLength = currentCharacterCount + string.characters.count - range.length
+            let numberOfDot = textField.text!.characters.filter{$0 == "."}.count
+            return newLength <= 12 + numberOfDot
+        } else if  textField.isEqual(txtTotal) {
+            let newLength = currentCharacterCount + string.characters.count - range.length
+            let numberOfDot = textField.text!.characters.filter{$0 == "."}.count
+            return newLength <= 4 + numberOfDot
+        }
+        return true
+    }
 }

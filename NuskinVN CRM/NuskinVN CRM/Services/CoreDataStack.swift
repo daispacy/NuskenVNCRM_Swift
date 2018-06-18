@@ -13,7 +13,39 @@ import CoreData
 class CoreDataStack: NSObject {
     
     static let sharedInstance = CoreDataStack()
-    private override init() {}
+    var shouldRefresh:(()->Void)?
+    private override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(contextObjectsDidChange(_:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
+    }
+    
+    func contextObjectsDidChange(_ notification: Notification) {
+        managedObjectContext.perform {
+            do {
+                if self.managedObjectContext.hasChanges {
+                    try self.managedObjectContext.save()
+                }
+            } catch {
+                let saveError = error as NSError
+                print("Unable to Save Changes of Managed Object Context")
+                print("\(saveError), \(saveError.localizedDescription)")
+            }
+            
+            self.saveManagedObjectContext.perform {
+                do {
+                    if self.saveManagedObjectContext.hasChanges {
+                        try self.saveManagedObjectContext.save()
+                        self.shouldRefresh?()
+                    }
+                } catch {
+                    let saveError = error as NSError
+                    print("Unable to Save Changes of Private Managed Object Context")
+                    print("\(saveError), \(saveError.localizedDescription)")
+                }
+            }
+            
+        }
+    }
     
     // MARK: - Core Data stack
     lazy var persistentContainer: NSPersistentContainer = {
@@ -43,11 +75,35 @@ class CoreDataStack: NSObject {
         return container
     }()
     
+    
+    lazy var managedObjectContext:NSManagedObjectContext = {
+        let write = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.mainQueueConcurrencyType)
+        write.parent = self.saveManagedObjectContext
+        
+        return write
+    }()
+    
+    lazy var saveManagedObjectContext:NSManagedObjectContext = {
+        let coordinator = self.persistentContainer.persistentStoreCoordinator
+        let write = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.privateQueueConcurrencyType)
+        write.persistentStoreCoordinator = coordinator
+        return write
+    }()
+    
     // MARK: - Core Data Saving support
     
     func saveContext () {
+        
+        do {
+            try? CoreDataStack.sharedInstance.managedObjectContext.save()
+        }
+        do {
+            try? CoreDataStack.sharedInstance.saveManagedObjectContext.save()
+        }
+        
         let context = persistentContainer.viewContext
-        if context.hasChanges {
+        
+//        if context.hasChanges {
             do {
                 try context.save()
             } catch {
@@ -56,7 +112,7 @@ class CoreDataStack: NSObject {
 //                let nserror = error as NSError
 //                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
-        }
+//        }
     }
 }
 
@@ -66,8 +122,16 @@ extension CoreDataStack {
     
     func applicationDocumentsDirectory() {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "yo.BlogReaderApp" in the application's documents directory.
-        if let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).last {
+        if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).last {
             print(url.absoluteString)
+            let checkDeletaOldData = UserDefaults.standard.bool(forKey: "App:DeleteOldCoreData")
+            if !checkDeletaOldData {
+                let storeURL: URL = url.appendingPathComponent("/CRM.sqlite") as URL
+                do {
+                    try? FileManager.default.removeItem(at: storeURL)
+                    UserDefaults.standard.set(true, forKey: "App:DeleteOldCoreData")
+                }
+            }
         }
     }
 }

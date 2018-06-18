@@ -82,12 +82,7 @@ class PopupOptionGroupController: UIViewController{
         } else {
             oldframe.size.height = CGFloat(listData!.count*40) + 20 + CGFloat((listData!.count-1)*5)
         }
-      
-        UIView.animate(withDuration: 0.5, animations: { () -> Void in
-            self.containerTable.frame = oldframe
-        }) { (_) -> Void in
-            
-        }
+        self.containerTable.frame = oldframe
     }
     
     // MARK: - event
@@ -121,13 +116,15 @@ class PopupOptionGroupController: UIViewController{
                 btn.setTitleColor(UIColor(hex:Theme.color.customer.titleGroup), for: .normal)
                 btn.titleLabel?.font = UIFont(name: Theme.font.normal, size: Theme.fontSize.normal)
                 btn.setImage(UIImage(named:$0.icon), for: .normal)
+                btn.contentMode = .center
                 btn.tag = $0.tag
                 btn.contentHorizontalAlignment = .left
-                btn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+                btn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
                 btn.addTarget(self, action: #selector(self.optionPress(_:)), for: .touchUpInside)
                 tableView.insertArrangedSubview(btn, at: tableView.arrangedSubviews.count)
                 btn.translatesAutoresizingMaskIntoConstraints = false
-                btn.heightAnchor.constraint(equalToConstant: 40)
+                btn.heightAnchor.constraint(equalToConstant: 50)
+                btn.widthAnchor.constraint(equalToConstant: 50)
             })
             
             var newframe:CGRect = fromView.frame
@@ -138,17 +135,13 @@ class PopupOptionGroupController: UIViewController{
             containerTable.frame = newframe
             var oldframe = newframe
             oldframe.size.width = fromView.superview!.frame.size.width
-            if CGFloat(listData!.count*40) + 20 + CGFloat((listData!.count-1)*5) > maxHeight {
+            if CGFloat(listData!.count*50) + 20 + CGFloat((listData!.count-1)*5) > maxHeight {
                 oldframe.size.height = maxHeight
             } else {
-                oldframe.size.height = CGFloat(listData!.count*40) + 20 + CGFloat((listData!.count-1)*5)
+                oldframe.size.height = CGFloat(listData!.count*50) + 15 + CGFloat((listData!.count-1)*5)
             }
  
-            self.view.layoutIfNeeded()
-            UIView.animate(withDuration:0.5, animations: { () -> Void in
-                self.containerTable.frame = oldframe
-            }) { (_) -> Void in
-            }
+            self.containerTable.frame = oldframe            
         }
     }
     

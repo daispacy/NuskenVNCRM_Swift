@@ -10,20 +10,25 @@ import UIKit
 
 class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var startAnimation:(()->Void)?
+    var ondeinitial:(() -> Void)?
     var onSelect:((String,Int) -> Void)?
+    var onSelectObject:((JSON) -> Void)?
     var onDismiss:(() -> Void)?
+    var needReloadData:(() -> Void)?
     
     var tableView:UITableView!
     var containerTable:UIView!
     @IBOutlet var vwOverlay: UIView!
     var tapGesture:UITapGestureRecognizer!
     var hostView: UIView?
+    var textAlignment:NSTextAlignment = .left
     
     var listData:Array<String>?
+    var listObject:[JSON]?
+    var isObject:Bool = false
     
-    let maxHeight:CGFloat = {
-        return 250
-    }()
+    let maxHeight:CGFloat = 250
     
     // MARK: - INIT
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -45,14 +50,59 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         // Do any additional setup after loading the view.
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dissMissView))
         vwOverlay.addGestureRecognizer(tapGesture)
+        
+        // prevent sync data while working with order
+        LocalService.shared.isShouldSyncData = {[weak self] in
+            if let _ = self {
+                return false
+            }
+            return true
+        }
+    }
+   
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard let host = self.hostView else {return}
+        let point:CGPoint = host.superview!.convert(self.hostView!.frame.origin, to: nil)
+        var newframe:CGRect = host.frame
+        newframe.origin.x = host.superview!.frame.origin.x
+        newframe.origin.y = point.y + host.frame.maxY
+        newframe.size.width = host.superview!.frame.size.width
+        newframe.size.height = 1
+        self.containerTable.frame = newframe
+        var oldframe = newframe
+        oldframe.size.width = host.superview!.frame.size.width
+        if self.tableView.contentSize.height > self.maxHeight {
+            oldframe.size.height = self.maxHeight
+        } else {
+            oldframe.size.height = self.tableView.contentSize.height
+        }
+        self.containerTable.frame = oldframe
+        
+        tableView.transform = CGAffineTransform(scaleX: 0, y: 0.5)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+            self.tableView.transform = .identity // get back to original scale in an animated way
+        }, completion: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        LocalService.shared.isShouldSyncData = nil
     }
     
     deinit {
         vwOverlay.removeGestureRecognizer(tapGesture)
         print("deinit PopupController")
+        self.ondeinitial?()
     }
     
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
+        
+        tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
+        
         let point:CGPoint = hostView!.superview!.convert(hostView!.frame.origin, to: nil)
         
         var newframe:CGRect = hostView!.frame
@@ -63,12 +113,12 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         containerTable.frame = newframe
         var oldframe = newframe
         oldframe.size.width = hostView!.superview!.frame.size.width
-        if CGFloat(listData!.count*44) > maxHeight {
+        if tableView.contentSize.height > maxHeight {
             oldframe.size.height = maxHeight
         } else {
-            oldframe.size.height = CGFloat(listData!.count*44)
+            oldframe.size.height = tableView.contentSize.height
         }
-      
+        
         UIView.animate(withDuration: 0.5, animations: { () -> Void in
             self.containerTable.frame = oldframe
         }) { (_) -> Void in
@@ -76,38 +126,58 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
     }
     
+//    override func viewDidLayoutSubviews() {
+//
+//        let point:CGPoint = hostView!.superview!.convert(hostView!.frame.origin, to: nil)
+//
+//        var newframe:CGRect = hostView!.frame
+//        newframe.origin.x = hostView!.superview!.frame.origin.x
+//        newframe.origin.y = point.y + hostView!.frame.maxY
+//        newframe.size.width = hostView!.superview!.frame.size.width
+//        newframe.size.height = 1
+//        containerTable.frame = newframe
+//        var oldframe = newframe
+//        oldframe.size.width = hostView!.superview!.frame.size.width
+//        if tableView.contentSize.height > maxHeight {
+//            oldframe.size.height = maxHeight
+//        } else {
+//            oldframe.size.height = tableView.contentSize.height
+//        }
+//
+//        UIView.animate(withDuration: 0.5, animations: { () -> Void in
+//            self.containerTable.frame = oldframe
+//        }) { (_) -> Void in
+//
+//        }
+//    }
+    
     // MARK:  - INTERFACE
     func show(data:Array<String>? = nil, fromView:UIView) {
         if let dt = data {
             listData = dt
             hostView = fromView
             
-            let point:CGPoint = fromView.superview!.convert(fromView.frame.origin, to: nil)
-        
             addTableView()
-            tableView.reloadData()
-            
-            var newframe:CGRect = fromView.frame
-            newframe.origin.x = fromView.superview!.frame.origin.x
-            newframe.origin.y = point.y + fromView.frame.maxY
-            newframe.size.width = fromView.superview!.frame.size.width
-            newframe.size.height = 1
-            containerTable.frame = newframe
-            var oldframe = newframe
-            oldframe.size.width = fromView.superview!.frame.size.width
-            if CGFloat(listData!.count*44) > maxHeight {
-                oldframe.size.height = maxHeight
-            } else {
-                oldframe.size.height = CGFloat(listData!.count*44)
-            }
- 
+            tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.top)
+            tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
-            UIView.animate(withDuration:0.5, animations: { () -> Void in
-                self.containerTable.frame = oldframe
-            }) { (_) -> Void in
-            }
         }
     }
+    
+    func show(_ data:[JSON]? = nil, fromView:UIView) {
+        if let dt = data {
+            isObject = true
+            listObject = dt
+            hostView = fromView
+            
+            addTableView()
+            tableView.reloadSections(IndexSet(integersIn: 0...0), with: UITableViewRowAnimation.top)
+            tableView.layoutIfNeeded()
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    
     
     // MARK: - PRIVATE
     func addTableView() {
@@ -115,6 +185,8 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
         tableView = UITableView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 1, height: 1)), style: .plain)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 50
         containerTable.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.topAnchor.constraint(equalTo: containerTable.topAnchor).isActive = true
@@ -142,21 +214,31 @@ class PopupController: UIViewController, UITableViewDelegate, UITableViewDataSou
 
 extension PopupController {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.isObject {
+            return listObject!.count
+        }
         return listData!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.text = listData![indexPath.row]
+        if self.isObject {
+            let obj = listObject![indexPath.row]
+            cell.textLabel?.text = obj["text"] as? String
+        } else {
+            cell.textLabel?.text = listData![indexPath.row]
+        }
+        cell.textLabel?.textAlignment = textAlignment
+        cell.textLabel?.numberOfLines = 0
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(44)
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onSelect?(listData![indexPath.row],indexPath.row)
         self.dissMissView()
+        if self.isObject {
+            onSelectObject?(listObject![indexPath.row])
+        } else {
+            onSelect?(listData![indexPath.row],indexPath.row)
+        }
     }
 }

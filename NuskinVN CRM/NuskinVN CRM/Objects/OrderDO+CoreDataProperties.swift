@@ -18,6 +18,7 @@ extension OrderDO {
     }
 
     @NSManaged public var id: Int64
+    @NSManaged public var local_id: Int64
     @NSManaged public var store_id: Int64
     @NSManaged public var customer_id: Int64
     @NSManaged public var distributor_id: Int64

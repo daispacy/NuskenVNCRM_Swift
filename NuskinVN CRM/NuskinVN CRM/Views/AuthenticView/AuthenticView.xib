@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13528" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13770" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13526"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13770"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -41,7 +41,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fp9-Ey-zdP">
-                                    <rect key="frame" x="82" y="296.33333333333331" width="250" height="289.99999999999994"/>
+                                    <rect key="frame" x="82" y="271" width="250" height="340"/>
                                     <subviews>
                                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MKC-pV-HHc" userLabel="lblMessage" customClass="CMessageLabel" customModule="NuskinVN_CRM" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="0.0"/>
@@ -139,13 +139,23 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHd-p3-vFa" userLabel="btnResetPassword">
-                                            <rect key="frame" x="0.0" y="250.00000000000006" width="250" height="40"/>
+                                            <rect key="frame" x="0.0" y="250" width="250" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" priority="750" constant="40" id="bEq-gE-yyS"/>
                                             </constraints>
                                             <state key="normal" title="Button"/>
                                             <connections>
                                                 <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="OMB-17-8d7"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SAg-Vf-12G" userLabel="btnResetPassword">
+                                            <rect key="frame" x="0.0" y="300" width="250" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" priority="750" constant="40" id="5ky-jA-03S"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <connections>
+                                                <action selector="processAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="Lwe-hk-Zfl"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -155,13 +165,26 @@
                                         </constraint>
                                     </constraints>
                                 </stackView>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xlV-Mz-okR">
+                                    <rect key="frame" x="10" y="696" width="394" height="40"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="40" id="n6p-hZ-I75"/>
+                                    </constraints>
+                                    <state key="normal" title="Button"/>
+                                    <connections>
+                                        <action selector="processSupport:" destination="iN0-l3-epB" eventType="touchUpInside" id="vae-RG-TsB"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerX" secondItem="SVr-bP-VjG" secondAttribute="centerX" id="ILL-jI-mj6"/>
+                                <constraint firstAttribute="trailing" secondItem="xlV-Mz-okR" secondAttribute="trailing" constant="10" id="QfX-Aw-Dee"/>
                                 <constraint firstItem="Fp9-Ey-zdP" firstAttribute="centerY" secondItem="SVr-bP-VjG" secondAttribute="centerY" multiplier="1.2" id="ZP9-Bo-2xn">
                                     <variation key="heightClass=compact-widthClass=compact" constant="0.0"/>
                                 </constraint>
+                                <constraint firstAttribute="bottom" secondItem="xlV-Mz-okR" secondAttribute="bottom" id="laB-Rj-sT8"/>
+                                <constraint firstItem="xlV-Mz-okR" firstAttribute="leading" secondItem="SVr-bP-VjG" secondAttribute="leading" constant="10" id="oML-wZ-bDa"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -192,8 +215,10 @@
             </constraints>
             <connections>
                 <outlet property="btnGoToResetPassword" destination="eHd-p3-vFa" id="Uth-uc-fGe"/>
+                <outlet property="btnGotoForgetPassword" destination="SAg-Vf-12G" id="hjo-dW-gJH"/>
                 <outlet property="btnProcess" destination="Gnc-Qo-jI3" id="yph-9b-Bue"/>
                 <outlet property="btnRemember" destination="Qwa-iR-Fxo" id="XhX-vT-gM6"/>
+                <outlet property="btnSupport" destination="xlV-Mz-okR" id="KaF-rf-pEU"/>
                 <outlet property="iconEmail" destination="hmE-0k-i5h" id="Mt2-2z-KCo"/>
                 <outlet property="iconPassword" destination="OSe-dF-eKZ" id="VSn-ce-zup"/>
                 <outlet property="iconVNID" destination="MfO-Ig-uRy" id="ftv-OO-WYE"/>
